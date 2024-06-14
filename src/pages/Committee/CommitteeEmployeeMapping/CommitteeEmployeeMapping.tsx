@@ -105,12 +105,10 @@ export default function CommitteeEmployeeMapping() {
     };
 
     const reject = () => {
-        // toast.warn({summary: 'Rejected', detail: 'You have rejected', life: 3000 });
         toast.warn("Rejected: You have rejected", { autoClose: 3000 });
     };
 
     const handledeleteClick = (del_id: any) => {
-        // console.log(del_id + " del_id ");
         delete_id = del_id;
         confirmDialog({
             message: t("text.DoYouWantToDeleteThisRecord"),
@@ -138,8 +136,8 @@ export default function CommitteeEmployeeMapping() {
                  `CommitteeEmp_Mapping/GetCommitteeEmp_Mapping`,
                 collectData
             );
-            console.log("result", response.data.data)
             const data = response.data.data;
+            console.log("🚀 ~ fetchZonesData ~ data:", data)
             const zonesWithIds = data.map((emp: any, index: any) => ({
                 ...emp,
                 serialNo: index + 1,

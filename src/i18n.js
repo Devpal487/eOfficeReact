@@ -571,7 +571,7 @@ const resources = {
         selectAuthority :"Select Authority",
         selectStatus :"Select Status",
         SelectDepartment :"Select Department ",
-
+        selectCommGroupname:"Select Committee/Group name"
 
 
 
@@ -1143,7 +1143,8 @@ const resources = {
         FileDef:"फ़ाइल परिभाषा",
         selectAuthority :"प्राधिकरण का चयन करें",
         selectStatus :"स्थिति चुनें",
-        SelectDepartment :"Select Department",
+        SelectDepartment :"विभाग का चयन करें",
+        selectCommGroupname:"समिति/समूह का नाम चुनें"
         
  
 

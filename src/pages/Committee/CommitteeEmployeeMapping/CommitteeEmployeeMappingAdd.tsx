@@ -21,24 +21,22 @@ import ToastApp from "../../../ToastApp";
 import dayjs, { Dayjs } from "dayjs";
 import api from "../../../utils/Url";
 import CustomLabel from "../../../CustomLable";
+import { getISTDate } from "../../../utils/Constant";
+
 
 type Props = {};
 
 const CommitteeEmployeeMappingAdd = (props: Props) => {
     const { t } = useTranslation();
+    const {defaultValuestime} = getISTDate();
 
     const [option, setOption] = useState([
         {
             value: "-1",
-            label: t("text.SelectEmployee"),
+            label: t("text.SelectAuthority"),
         },
     ]);
-    const [option1, setOption1] = useState([
-        { value: "-1", label: t("text.SelectRole") },
-    ]);
-    const [option2, setOption2] = useState([
-        { value: "-1", label: t("text.SelectUserType") },
-    ]);
+    
     const [UserName, setUserName] = useState([
         { value: "-1", label: t("text.SelectEmployee") },
     ]);
@@ -49,54 +47,26 @@ const CommitteeEmployeeMappingAdd = (props: Props) => {
 
     const getGender = () => {
         const collectData = {
-            genderID: -1,
+            "id": -1,
+            "officeId": -1,
+            "under_id": -1,
+            "divisionid": -1
         };
-        api.post(`Gender/GetGenderMaster`, collectData).then((res) => {
+        api.post(`AuthorityMaster/GetAuthorityMaster`, collectData).then((res) => {
             const arr = [];
             console.log("result" + JSON.stringify(res.data.data));
             for (let index = 0; index < res.data.data.length; index++) {
                 arr.push({
-                    label: res.data.data[index]["genderName"],
-                    value: res.data.data[index]["genderID"],
+                    label: res.data.data[index]["authorityType"],
+                    value: res.data.data[index]["id"],
                 });
             }
             setOption(arr);
         });
     };
 
-    const getRole = () => {
-        const collectData = {
-            roleId: "-1",
-        };
-        api.post(`RoleMaster/GetRoleMaster`, collectData).then((res) => {
-            const arr = [];
-            console.log("result" + JSON.stringify(res.data.data));
-            for (let index = 0; index < res.data.data.length; index++) {
-                arr.push({
-                    label: res.data.data[index]["roleName"],
-                    value: res.data.data[index]["roleId"],
-                });
-            }
-            setOption1(arr);
-        });
-    };
 
-    const getUserType = () => {
-        const collectData = {
-            useR_TYPE_ID: -1,
-        };
-        api.post(`USER_TYPE/GetUSER_TYPE`, collectData).then((res) => {
-            const arr = [];
-            console.log("result" + JSON.stringify(res.data.data));
-            for (let index = 0; index < res.data.data.length; index++) {
-                arr.push({
-                    label: res.data.data[index]["useR_TYPE_NAME"],
-                    value: res.data.data[index]["useR_TYPE_ID"],
-                });
-            }
-            setOption2(arr);
-        });
-    };
+
 
     const getUserName = () => {
         const collectData = {
@@ -140,136 +110,27 @@ const CommitteeEmployeeMappingAdd = (props: Props) => {
     const [toaster, setToaster] = useState(false);
 
     useEffect(() => {
-        getRole();
         getGender();
-        getUserType();
         getUserName();
     }, []);
 
-    const validationSchema = Yup.object({
-        firsT_NAME: Yup.string().test(
-            "required",
-            // "First Name Required",
-            t("text.reqFirst"),
-            function (value: any) {
-                return value && value.trim() !== "";
-            }
-        ),
-
-        logiN_NAME: Yup.string().test(
-            "required",
-            // "login ID Required",
-            t("text.reqLogin"),
-            function (value: any) {
-                return value && value.trim() !== "";
-            }
-        ),
-        password: Yup.string().test(
-            "required",
-            // "Password Required",
-            t("text.reqPassword"),
-            function (value: any) {
-                return value && value.trim() !== "";
-            }
-        ),
-        cuR_MOBILE: Yup.string()
-            // .required("Mobile Number Required")
-            .required(t("text.reqMobile"))
-            .test(
-                // "is-valid-mobile",
-                t("text.validMobile"),
-                // "Invalid mobile number format",
-                t("text.InvalidMobile"),
-                function (value: any) {
-                    const trimmedValue = value.trim();
-                    if (trimmedValue && trimmedValue.length === 10) {
-                        if (trimmedValue.charAt(0) === "0") {
-                            return false;
-                        }
-                        return true;
-                    }
-                    return false;
-                }
-            ),
-        email: Yup.string()
-            // .required("Email ID Required")
-            .required(t("text.reqEmail"))
-            .test(
-                // "is-valid-email",
-                t("text.validEmai"),
-                t("text.InvalidEmail"),
-                // "Invalid email format",
-                function (value: any) {
-                    const trimmedValue = value.trim();
-                    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedValue);
-                }
-            ),
-        dob: Yup.string().test(
-            "required",
-            // "Date of Birth Required",
-            t("text.reqDate"),
-            function (value: any) {
-                return value && value.trim() !== "";
-            }
-        ),
-        gendeR_ID: Yup.string().test(
-            "required",
-            // "Gender Required",
-            t("text.reqGender"),
-            function (value: any) {
-                return value && value.trim() !== "";
-            }
-        ),
-        useR_TYPE_ID: Yup.string().test(
-            "required",
-            // "User Type Required",
-            t("text.reqUser"),
-
-            function (value: any) {
-                return value && value.trim() !== "";
-            }
-        ),
-        rolename: Yup.string().test(
-            "required",
-            // "Role Required",
-            t("text.reqRole"),
-            function (value: any) {
-                return value && value.trim() !== "";
-            }
-        ),
-    });
-
     const formik = useFormik({
         initialValues: {
-            useR_ID: "-1",
-            ranK_ID: "",
-            suR_NAME: "",
-            firsT_NAME: "",
-            middlE_NAME: "",
-            shorT_NAME: "",
-            useR_CODE: "",
-            dob: "",
-            doa: "",
-            doj: "",
-            gendeR_ID: "",
-            cuR_PHONE: "",
-            cuR_MOBILE: "",
-            email: "",
-            iS_ACTIVE: true,
-            iS_DELETED: false,
-            useR_TYPE_ID: "",
-            otp: "",
-            logiN_NAME: "",
-            password: "",
-            rolename: "",
-            employeeID: 0,
+            "id": -1,
+            "empId": 0,
+            "designationInCommittee": 0,
+            "doj": "",
+            "dol": "",
+            "priority": 0,
+            "committeeId": 0,
+            "officeId": 1,
+            "userId": "",
+            "ipAddress": "",
+            "uploadDate": defaultValuestime
         },
-        validationSchema: validationSchema,
         onSubmit: async (values) => {
-            values.doa = "1900-01-01T07:47:27.349Z";
-            values.doj = "1900-01-01T07:47:27.349Z";
 
-            const response = await api.post(`USER/AddUpdateUSER`, values);
+            const response = await api.post(`CommitteeEmp_Mapping/AddUpdateCommitteeEmp_Mapping`, values);
             if (response.data.isSuccess) {
                 setToaster(false);
                 toast.success(response.data.mesg);
@@ -281,18 +142,7 @@ const CommitteeEmployeeMappingAdd = (props: Props) => {
         },
     });
 
-    const requiredFields = [
-        "firsT_NAME",
-
-        "logiN_NAME",
-        "password",
-        "cuR_MOBILE",
-        "email",
-        "dob",
-        "gendeR_ID",
-        "useR_TYPE_ID",
-        "rolename",
-    ];
+    const requiredFields = [];
 
     return (
         <div>
@@ -335,44 +185,43 @@ const CommitteeEmployeeMappingAdd = (props: Props) => {
                     <form onSubmit={formik.handleSubmit}>
                         {toaster === false ? "" : <ToastApp />}
                         <Grid item xs={12} container spacing={2}>
-                            
-
-                            <Grid xs={12} sm={4} item>
-                            <TextField
-                                    type="text"
-                                    label={<CustomLabel text={t("text.EnterCommitteeOrGroupName")} />}
-                                    value={formik.values.firsT_NAME}
-                                    name="firsT_NAME"
-                                    id="firsT_NAME"
-                                    placeholder={t("text.EnterCommitteeOrGroupName")}
-                                    size="small"
-                                    fullWidth
-                                    style={{ backgroundColor: "white" }}
-                                    onChange={formik.handleChange}
-                                    onBlur={formik.handleBlur}
-                                />
-                            </Grid>
-
-
-                            <Grid xs={12} sm={4} item>
+                            <Grid xs={12} sm={4} item alignItems="center" justifyContent="center" >
                                 <input type="checkbox" aria-label="Head" placeholder="Head"/>
                                 <label>Head</label>
-                            </Grid>
-
-                            <Grid xs={12} sm={4} item>
                             </Grid>
 
                             <Grid xs={12} sm={4} item>
                             <Autocomplete
                                     disablePortal
                                     id="combo-box-demo"
-                                    options={option}
+                                    options={UserName}
                                     fullWidth
                                     size="small"
                                     onChange={(event, newValue) => {
-                                        formik.setFieldValue("gendeR_ID", newValue?.value);
-                                        formik.setFieldTouched("gendeR_ID", true);
-                                        formik.setFieldTouched("gendeR_ID", false);
+                                        formik.setFieldValue("empId", newValue?.value);
+                                        formik.setFieldTouched("empId", true);
+                                        formik.setFieldTouched("empId", false);
+                                    }}
+                                    renderInput={(params) => (
+                                        <TextField
+                                            {...params}
+                                            label={<CustomLabel text={t("text.selectCommGroupname")} />}
+                                        />
+                                    )}
+                                />
+                            </Grid>
+
+                            <Grid xs={12} sm={4} item>
+                            <Autocomplete
+                                    disablePortal
+                                    id="combo-box-demo"
+                                    options={UserName}
+                                    fullWidth
+                                    size="small"
+                                    onChange={(event, newValue) => {
+                                        formik.setFieldValue("empId", newValue?.value);
+                                        formik.setFieldTouched("empId", true);
+                                        formik.setFieldTouched("empId", false);
                                     }}
                                     renderInput={(params) => (
                                         <TextField
@@ -409,7 +258,7 @@ const CommitteeEmployeeMappingAdd = (props: Props) => {
                             <TextField
                                     type="date"
                                     label={<CustomLabel text={t("text.EnterDateOfJoining")} />}
-                                    value={formik.values.firsT_NAME}
+                                    value={formik.values.doj}
                                     name="firsT_NAME"
                                     InputLabelProps={{ shrink: true }}
                                     id="firsT_NAME"
@@ -426,7 +275,7 @@ const CommitteeEmployeeMappingAdd = (props: Props) => {
                             <TextField
                                      type="date"
                                      label={<CustomLabel text={t("text.EnterDateOfLeaving")} />}
-                                     value={formik.values.firsT_NAME}
+                                     value={formik.values.dol}
                                     InputLabelProps={{ shrink: true }}
                                     name="firsT_NAME"
                                      id="firsT_NAME"

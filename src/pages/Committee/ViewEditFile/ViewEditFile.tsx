@@ -233,6 +233,8 @@ const ViewEditFile = (props: Props) => {
                         fileRdate: res.data.data[index]["fileRdate"],
                         updateremark: res.data.data[index]["updateremark"],
                         authorityLevel: res.data.data[index]["authorityLevel"],
+                        routeName: res.data.data[index]["routeName"],
+                        routeID: res.data.data[index]["routeID"],
                     });
                 }
                 setFileMovementTableData(arr);
@@ -252,13 +254,14 @@ const ViewEditFile = (props: Props) => {
             "hdnAuthMail": "",
             "status": ""
         };
-        api
-            .post(`FileMovement/SP_ForwardFileApi`, value)
-            .then((res) => {
-                if (res.data.isSuccess) {
-                    toast.success(res.data.mesg);
-                }
-            });
+        console.log("🚀 ~ farwordData ~ value:", value)
+        // api
+        //     .post(`FileMovement/SP_ForwardFileApi`, value)
+        //     .then((res) => {
+        //         if (res.data.isSuccess) {
+        //             toast.success(res.data.mesg);
+        //         }
+        //     });
     };
 
     let navigate = useNavigate();
@@ -338,20 +341,20 @@ const ViewEditFile = (props: Props) => {
     };
 
     const tabStyle = {
-        '&:hover': {
-            backgroundColor: '#90CAF9'
-        },
-
         default: {
-            backgroundColor: 'transparent',
-            '&:hover': {
-                backgroundColor: '#f0f0f0'
+            backgroundColor: '#00009c',
+            color: '#fff',
+            fontWeight: 'normal',
+            // '&:hover': {
+            //   backgroundColor: '#f0f0f0',
+            // },
             },
-        },
-        selected: {
-            backgroundColor: '#90CAF9',
-        },
-    };
+            selected: {
+                backgroundColor: '#f0f0f0',
+                // color: '#00009c',
+                fontWeight: 'bold',
+            },
+        };
 
     const getFileData = (rid: any) => {
         console.log("RID", rid)
@@ -537,43 +540,16 @@ const ViewEditFile = (props: Props) => {
                                 />
                             </Grid>
 
-                            <Grid item lg={3} md={4} xs={12}>
-                            <TextField
-                                label={<CustomLabel text="File Open Date" required={false}  />}
-                                placeholder="File Open Date"
-                                size="small"
-                                value={fileOpenDates}
-                                fullWidth
-                                style={{backgroundColor: 'white'}}
-                                onChange={formik.handleChange}
-                                onBlur={formik.handleBlur}
-                                />
+                            <Grid item lg={3} md={4} xs={12} display="flex" alignItems="center">
+                                <Typography fontWeight={600}>File Open Date:{" "}</Typography> <p>{" "}{fileOpenDates}</p>
                             </Grid>
 
-                            <Grid item lg={3} md={4} xs={12}>
-                            <TextField
-                                label={<CustomLabel text="File Transfer" required={false}  />}
-                                placeholder="File Transfer"
-                                value={fileTransfered}
-                                size="small"
-                                fullWidth
-                                style={{backgroundColor: 'white'}}
-                                onChange={formik.handleChange}
-                                onBlur={formik.handleBlur}
-                                />
+                            <Grid item lg={3} md={4} xs={12} display="flex" alignItems="center">
+                            <Typography fontWeight={600}>File Transfer:{" "}</Typography> <p>{" "}{fileTransfered}</p>
                             </Grid>
 
-                            <Grid item lg={3} md={4} xs={12}>
-                            <TextField
-                                label={<CustomLabel text="Status" required={false}  />}
-                                placeholder="Status"
-                                size="small"
-                                value={lastStatus}
-                                fullWidth
-                                style={{backgroundColor: 'white'}}
-                                onChange={formik.handleChange}
-                                onBlur={formik.handleBlur}
-                                />
+                            <Grid item lg={3} md={4} xs={12} display="flex" alignItems="center">
+                            <Typography fontWeight={600}>Status:{" "}</Typography> <p>{" "}{lastStatus}</p>
                             </Grid>
 
                             <Grid item lg={3} md={4} xs={12}>
@@ -626,6 +602,7 @@ const ViewEditFile = (props: Props) => {
                                     <Tab
                                         label="Notesheet"
                                         sx={value === 0 ? tabStyle.selected : tabStyle.default}
+
                                     />
                                     <Tab
                                         label="Correspondence"
@@ -654,7 +631,7 @@ const ViewEditFile = (props: Props) => {
                         <Divider />
                         <br />
 
-                        <Grid item xs={12} container>
+                        <Grid item xs={12} container spacing={2}>
                             <Grid xs={1} sm={1} item>
                                 <IconButton
                                     onClick={toggleDrawer(true)}
@@ -850,7 +827,7 @@ const ViewEditFile = (props: Props) => {
                                                                         color:"#000"
                                                                     }}
                                                                 >
-                                                                    {row.lastStatus}
+                                                                    {row.routeName}
                                                                 </td>
 
                                                                 <td

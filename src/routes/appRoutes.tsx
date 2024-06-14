@@ -84,6 +84,7 @@ import FileGroup from "../pages/FileManagement/FileGroup/FileGroup";
 import FileSubject from "../pages/FileManagement/FileSubject/FileSubject";
 import InstituteEdit from "../pages/master/InstitueForm/InstituteEdit";
 import AuthorityEmployeeMapping from "../pages/master/Authority Employee Mapping/AuthorityEmployeeMapping";
+import AuthorityMail from "../pages/Committee/AuthorityMail/AuthorityMail";
 
 const appRoutes: RouteType[] = [
   {
@@ -543,6 +544,8 @@ const appRoutes: RouteType[] = [
         element: <CommitteeEmployeeMappingEdit />,
         state: "Committee.CommitteeEmployeeMappingEdit",
       },
+
+      
       {
         path: "/Committee/ViewEditFile",
         element: <ViewEditFile/>,
@@ -551,6 +554,16 @@ const appRoutes: RouteType[] = [
           displayText: "View Edit File",
         },
       },
+
+      {
+        path: "/Committee/AuthorityMail",
+        element: <AuthorityMail/>,
+        state: "Committee.AuthorityMail",
+        sidebarProps: {
+          displayText: "Authority Mail",
+        },
+      },
+
       {
         path: "/Committee/Correspondence",
         element: <Correspondence/>,

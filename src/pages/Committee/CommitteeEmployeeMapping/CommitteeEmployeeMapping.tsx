@@ -24,6 +24,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
 import CircularProgress from "@mui/material/CircularProgress";
 import api from "../../../utils/Url";
+import dayjs, { Dayjs } from "dayjs";
 
 
 interface MenuPermission {
@@ -45,7 +46,7 @@ export default function CommitteeEmployeeMapping() {
         isDel: false,
     });
 
-    
+
     let navigate = useNavigate();
     const { t } = useTranslation();
 
@@ -89,11 +90,11 @@ export default function CommitteeEmployeeMapping() {
 
     const accept = () => {
         const collectData = {
-            fileID: delete_id
+            id: delete_id
         };
         console.log("collectData " + JSON.stringify(collectData));
         api
-            .delete( `FileDetail/DeleteFileDetails`, {data:collectData})
+            .delete(`CommitteeEmp_Mapping/DeleteCommitteeEmp_Mapping`, { data: collectData })
             .then((response) => {
                 if (response.data.isSuccess) {
                     toast.success(response.data.mesg);
@@ -105,12 +106,10 @@ export default function CommitteeEmployeeMapping() {
     };
 
     const reject = () => {
-        // toast.warn({summary: 'Rejected', detail: 'You have rejected', life: 3000 });
         toast.warn("Rejected: You have rejected", { autoClose: 3000 });
     };
 
     const handledeleteClick = (del_id: any) => {
-        // console.log(del_id + " del_id ");
         delete_id = del_id;
         confirmDialog({
             message: t("text.DoYouWantToDeleteThisRecord"),
@@ -131,15 +130,16 @@ export default function CommitteeEmployeeMapping() {
                 "committeeId": -1,
                 "officeId": -1,
                 "userId": "",
-                "ipAddress": ""
+                "ipAddress": "",
+                "divisionid": -1
             };
             console.log("collectData", collectData)
             const response = await api.post(
-                 `CommitteeEmp_Mapping/GetCommitteeEmp_Mapping`,
+                `CommitteeEmp_Mapping/GetCommitteeEmp_Mapping`,
                 collectData
             );
-            console.log("result", response.data.data)
             const data = response.data.data;
+            console.log("🚀 ~ fetchZonesData ~ data:", data)
             const zonesWithIds = data.map((emp: any, index: any) => ({
                 ...emp,
                 serialNo: index + 1,
@@ -189,7 +189,7 @@ export default function CommitteeEmployeeMapping() {
                                             handledeleteClick(params.row.id);
                                         }}
                                     />
-                                
+
 
                                 </Stack>,
                             ];
@@ -211,28 +211,17 @@ export default function CommitteeEmployeeMapping() {
                     },
                     {
                         field: "designationInCommittee",
-                        headerName: t("text.FileName"),
+                        headerName: t("text.Authority"),
                         flex: 1,
                         headerClassName: "MuiDataGrid-colCell",
                     },
                     {
-                        field: "fileNo",
-                        headerName: t("text.FileNo"),
+                        field: "doj",
+                        headerName: t("text.DateOfJoining"),
                         flex: 1,
                         headerClassName: "MuiDataGrid-colCell",
                     },
-                    {
-                        field: "synopsis",
-                        headerName:t("text.Synopsis"),
-                        flex: 1,
-                        headerClassName: "MuiDataGrid-colCell",
-                    },
-                    {
-                        field: "chackNo",
-                        headerName: t("text.ChackNo"),
-                        flex: 1,
-                        headerClassName: "MuiDataGrid-colCell",
-                    },
+                  
                     // {
                     //     field: "empStatus",
                     //     headerName: "Emp status",
@@ -304,7 +293,7 @@ export default function CommitteeEmployeeMapping() {
                         sx={{ padding: "20px" }}
                         align="left"
                     >
-                       {t("text.CommitteeEmployeeMapping")}
+                        {t("text.CommitteeEmployeeMapping")}
                     </Typography>
                     <Divider />
 
@@ -318,7 +307,7 @@ export default function CommitteeEmployeeMapping() {
                             endIcon={<AddCircleIcon />}
                             size="large"
                         >
-                          {t("text.Add")}
+                            {t("text.Add")}
                         </Button>
                         {/*)} */}
 
@@ -331,10 +320,10 @@ export default function CommitteeEmployeeMapping() {
             )} */}
                     </Stack>
 
-                    
-          
 
-                    {isLoading ? ( 
+
+
+                    {isLoading ? (
                         <div
                             style={{
                                 display: "flex",
@@ -344,7 +333,7 @@ export default function CommitteeEmployeeMapping() {
                         >
                             <CircularProgress />
                         </div>
-                    ) : ( 
+                    ) : (
                         <Box>
                             <br />
                             <div style={{ width: "100%", backgroundColor: "#FFFFFF" }}>
@@ -372,7 +361,7 @@ export default function CommitteeEmployeeMapping() {
                                 />
                             </div>
 
-                        </Box> )} 
+                        </Box>)}
                 </Paper>
             </Card>
             <ToastApp />

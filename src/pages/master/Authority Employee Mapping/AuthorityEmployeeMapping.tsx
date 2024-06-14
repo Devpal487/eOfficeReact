@@ -265,13 +265,13 @@ export default function AuthorityEmployeeMapping() {
                                 headerClassName: "MuiDataGrid-colCell",
                             },
                             {
-                                field: "empId",
+                                field: "empName",
                                 headerName: t("text.EmployeeName"),
                                 flex: 1,
                                 headerClassName: "MuiDataGrid-colCell",
                             },
                             {
-                                field: "authorityId",
+                                field: "authorityName",
                                 headerName: t("text.Authority"),
                                 flex: 1,
                                 headerClassName: "MuiDataGrid-colCell",

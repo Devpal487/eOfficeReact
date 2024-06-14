@@ -38,8 +38,8 @@ import Dialog, { DialogProps } from '@mui/material/Dialog';
 import ToastApp from "../../../ToastApp";
 import { EditIcons, UploadIcons, PasteIcons, PrintIcons, PendingIcons, UpgradeIcons, FileCopyIcons, FilemoveIcons, HighlightIcons, SmsIcons, MakeIcons, ArchiveIcons } from "../../../utils/icons";
 import CustomLabel from "../../../CustomLable";
-import FindInPageIcon from '@mui/icons-material/FindInPage';
 import moment from "moment";
+import { getId, getdivisionId} from "../../../utils/Constant";
 
 
 const Transition = React.forwardRef(function Transition(
@@ -57,7 +57,10 @@ type Props = {};
 const ViewEditFile = (props: Props) => {
 
     const { t } = useTranslation();
-
+    const userId = getId();
+    console.log("🚀 ~ ViewEditFile ~ userId:", userId)
+    const divId = getdivisionId();
+    console.log("🚀 ~ ViewEditFile ~ divId:", divId)
     const [getFileNumber, setGetFileNumber] = useState(false);
     const [value, setValue] = useState(0);
     const [MovementTableData, setMovementTableData] = useState<any>([]);
@@ -87,6 +90,9 @@ const ViewEditFile = (props: Props) => {
     const [fileOpenDates, setFileOpenDates] = useState("");
     const [fileTransfered, setFileTransfered] = useState("");
     const [lastStatus, setLastStatus] = useState("");
+
+    const [nodeId, setNodeId] = useState("");
+
 
     const handlefileMovementDetailOpen = () => {
         setFileMovementDetailOpen(true);
@@ -246,22 +252,40 @@ const ViewEditFile = (props: Props) => {
     const farwordData = () => {
 
         const value = {
-            "eid": localStorage.getItem("useR_ID"),
-            "fileNo":formik.values.fileLable.toString() || "",
+            "eid": userId,
+            "fileNo":fileName,
             "remark": 0,
-            "hdnjurisdiction":parseInt(localStorage.getItem('id') + ""),
-            "hdnFilNu":formik.values.fileNo,
-            "hdnAuthMail": "",
+            "hdnjurisdiction":divId,
+            "hdnFilNu":fileID,
+            "hdnAuthMail": userId,
             "status": ""
         };
         console.log("🚀 ~ farwordData ~ value:", value)
-        // api
-        //     .post(`FileMovement/SP_ForwardFileApi`, value)
-        //     .then((res) => {
-        //         if (res.data.isSuccess) {
-        //             toast.success(res.data.mesg);
-        //         }
-        //     });
+        api
+            .post(`FileMovement/SP_ForwardFileApi`, value)
+            .then((res) => {
+                if (res.data.isSuccess) {
+                    toast.success(res.data.mesg);
+                    handlefileMovementDetailClose();
+                }else{
+                    toast.error(res.data.mesg);
+                }
+            });
+    };
+
+    const getRouteView =async(id:any)=>{
+        const collectData ={
+            "id": id,
+            "nodeID": -1,
+            "titleID": -1,
+            "user_Id": ""
+          };
+          await api.post(``, collectData)
+          .then((res:any) => {
+              console.log("🚀 ~ .then ~ res:", res)
+              setNodeId(res.data.data);
+          	
+          })
     };
 
     let navigate = useNavigate();
@@ -867,9 +891,9 @@ const ViewEditFile = (props: Props) => {
                                             <Button autoFocus onClick={handleForwardData}>
                                                 Forward
                                             </Button>
-                                            <Button autoFocus onClick={handleClose}>
+                                            {/* <Button autoFocus onClick={}>
                                                 View Routes
-                                            </Button>
+                                            </Button> */}
                                         </DialogActions>
                                     </Dialog>
                                 </>

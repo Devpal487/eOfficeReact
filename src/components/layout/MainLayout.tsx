@@ -76,6 +76,7 @@ const MainLayout = () => {
       {menuId: 5, menuName: 'Corresp.', path:"/Committee/Correspondence",displayNo:0},
       {menuId: 6, menuName: 'Split Pdf To Jump', path:"/Committee/SplitPDF",displayNo:0},
       {menuId: 7, menuName: 'Document Indexing', path:"/Committee/DocumentIndexing",displayNo:0},
+      {menuId: 7, menuName: 'Authority Mail', path:"/Committee/AuthorityMail",displayNo:0},
      
      
     ] 

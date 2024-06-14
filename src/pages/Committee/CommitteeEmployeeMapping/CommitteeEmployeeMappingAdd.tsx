@@ -30,7 +30,9 @@ type Props = {};
 
 const CommitteeEmployeeMappingAdd = (props: Props) => {
     const { t } = useTranslation();
+
     const { defaultValuestime } = getISTDate();
+
 
     const [option, setOption] = useState([
         {
@@ -144,12 +146,14 @@ const CommitteeEmployeeMappingAdd = (props: Props) => {
             "dol": "",
             "priority": 0,
             "committeeId": 0,
-            "officeId": 0,
+
+            "officeId": 1,
             "userId": "",
             "ipAddress": "",
             "uploadDate": defaultValuestime,
             "head": "",
             "divisionid": parseInt(localStorage.getItem('id') + ""),
+
         },
         onSubmit: async (values) => {
 
@@ -209,6 +213,7 @@ const CommitteeEmployeeMappingAdd = (props: Props) => {
                         {toaster === false ? "" : <ToastApp />}
                         <Grid item xs={12} container spacing={2}>
                             <Grid xs={12} sm={4} item alignItems="center" justifyContent="center" >
+
                                 <FormControlLabel
                                     control={
                                         <Checkbox
@@ -296,7 +301,9 @@ const CommitteeEmployeeMappingAdd = (props: Props) => {
                                     type="date"
                                     label={<CustomLabel text={t("text.EnterDateOfJoining")} />}
                                     value={formik.values.doj}
+
                                     name="doj"
+
                                     InputLabelProps={{ shrink: true }}
                                     id="doj"
                                     placeholder={t("text.EnterDateOfJoining")}
@@ -309,10 +316,13 @@ const CommitteeEmployeeMappingAdd = (props: Props) => {
                             </Grid>
 
                             <Grid xs={12} sm={4} item>
+
+
                                 <TextField
                                     type="date"
                                     label={<CustomLabel text={t("text.EnterDateOfLeaving")} />}
                                     value={formik.values.dol}
+
                                     InputLabelProps={{ shrink: true }}
                                     name="dol"
                                     id="dol"

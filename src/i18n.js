@@ -571,11 +571,13 @@ const resources = {
         selectAuthority :"Select Authority",
         selectStatus :"Select Status",
         SelectDepartment :"Select Department ",
+
         selectCommGroupname:"Select Committee/Group Name",
         DateOfJoining:"Date Of Joining",
         SelectStatus:"Select Status",
         FromTo:"From To",
         AthorityMail:"Authority Mail",
+
 
 
 

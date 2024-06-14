@@ -16,11 +16,13 @@ export function getISTDate() {
 
 
 export function getId() {
-  let ID = localStorage.getItem("useR_ID");
-  if (ID !== null) {
-    ID = ID.replace(/\D/g, ''); 
+  let ID:any = localStorage.getItem("useR_ID");
+  try {
+    return JSON.parse(ID);
+  } catch (error) {
+    console.error("Error parsing ID from localStorage:", error);
+    return null;
   }
-  return ID;
 }
 
 export function getdivisionId(){

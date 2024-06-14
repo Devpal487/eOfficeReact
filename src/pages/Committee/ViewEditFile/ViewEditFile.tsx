@@ -167,6 +167,7 @@ const ViewEditFile = (props: Props) => {
 
     useEffect(() => {
         // getTableData();
+        // getMoveTableData();
         getFileNo();
     }, []);
 
@@ -222,6 +223,80 @@ const ViewEditFile = (props: Props) => {
             });
     };
 
+
+    const getMoveTableData = () => {
+        // setIsTableLoading(true);
+        const collectData = {
+            "fileNo": formik.values.fileNo,
+            "cDocsFlag": "C",
+            "type": 2
+
+
+        };
+        api
+            .post(`FileNumber/GetFileMovementDetail`, collectData)
+            .then((res) => {
+                const arr: any = [];
+                console.log("result" + JSON.stringify(res.data.data));
+                for (let index = 0; index < res.data.data.length; index++) {
+                    arr.push({
+                        //id: res.data.data[index]["rid"],
+                        designation: res.data.data[index]["designation"],
+                        lastStatus: res.data.data[index]["lastStatus"],
+                        fileRdate: res.data.data[index]["fileRdate"],
+                        updateremark: res.data.data[index]["updateremark"],
+                        authorityLevel: res.data.data[index]["authorityLevel"],
+
+
+
+
+                    });
+                }
+                setFileMovementTableData(arr);
+                // setIsTableLoading(false);
+            });
+    };
+
+
+    const farwordData = () => {
+
+        const value = {
+
+            "eid": localStorage.getItem("useR_ID"),
+            "fileNo":formik.values.fileLable.toString() || "",
+            "remark": 0,
+            "hdnjurisdiction":parseInt(localStorage.getItem('id') + ""),
+            "hdnFilNu":formik.values.fileNo,
+            "hdnAuthMail": "",
+            "status": ""
+            // "caId": -1,
+            // "cId": 0,
+            // "fileNo": 0,
+            // "cFileNm": "",
+            // "cFileDesc": formik.values.FileDesc.toString() || "",
+            // "cDocsFlag": formik.values.fileattach_name.toString() || "",
+            // "inst_id": 0,
+            // "user_id": 0,
+            // "createdDate": defaultValuestime,
+            // "rId": 0,
+            // "divisionid": parseInt(localStorage.getItem('id') + ""),
+        };
+        api
+            .post(`FileMovement/SP_ForwardFileApi`, value)
+            .then((res) => {
+                if (res.data.isSuccess) {
+
+
+                    toast.success(res.data.mesg);
+
+
+
+                }
+
+
+            });
+    };
+
     let collectData: {
         fileNo: any;
         cDocsFlag: string;
@@ -261,7 +336,8 @@ const ViewEditFile = (props: Props) => {
             user_id: -1,
             fileNo: "",
             FileDesc: "",
-            fileattach_name: ""
+            fileattach_name: "",
+            fileLable:""
 
 
         },
@@ -422,7 +498,21 @@ const ViewEditFile = (props: Props) => {
         { text: " Print", icon: <PrintIcons />, },
         { text: " Update Remark", icon: <UpgradeIcons />, onClick: () => { console.log("Clicked UpdateRemark"); } },
         { text: " Pending PUC", icon: <PendingIcons />, onClick: () => { console.log("Clicked PendingPUC"); } },
-        { text: " File Movement Details", icon: <FilemoveIcons />, onClick: handlefileMovementDetailOpen },
+        {
+            text: " File Movement Details", icon: <FilemoveIcons />,
+            onClick: () => {
+
+
+
+                if (formik.values.fileNo) {
+                    handlefileMovementDetailOpen();
+                    getMoveTableData();
+                } else {
+                    toast.error("Please select file Number");
+                }
+
+            }
+        },
         { text: " Moved To Awaited List", icon: <FileCopyIcons />, onClick: () => { console.log("Clicked MovedToAwaitedList"); } },
         { text: " Moved To Parked Or Archived List", icon: <ArchiveIcons />, onClick: () => { console.log("Clicked MovedToParkedOrAchiveList"); } },
         { text: " Close The File", icon: <HighlightIcons />, onClick: () => { console.log("Clicked MovedToParkedOrAchiveList"); } },
@@ -436,23 +526,9 @@ const ViewEditFile = (props: Props) => {
     const back = useNavigate();
 
     const handleForwardData = async () => {
-        toast.success("forward clicked");
-        // const collectData = {
-        //         "eid": 0,
-        //         "fileNo": "",
-        //         "remark": 0,
-        //         "hdnjurisdiction": 0,
-        //         "hdnFilNu": 0,
-        //         "hdnAuthMail": "",
-        //         "status": ""
-        // }
-        // const response = await api.post(`FileMovement/SP_ForwardFileApi`, collectData)
-
-        // if(response.data.isSuccess){
-        //     toast.success(response.data.mesg)
-        // }else{
-        //     toast.error(response.data.mesg)
-        // }
+        //toast.success("forward clicked");
+        farwordData();
+       
     }
     return (
         <div>
@@ -511,6 +587,7 @@ const ViewEditFile = (props: Props) => {
                                         console.log(newValue?.value);
 
                                         formik.setFieldValue("fileNo", newValue?.value);
+                                        formik.setFieldValue("fileLable", newValue?.lable);
 
                                         formik.setFieldTouched("fileNo", true);
                                         formik.setFieldTouched("fileNo", false);
@@ -815,7 +892,7 @@ const ViewEditFile = (props: Props) => {
                                                                         textAlign: "center",
                                                                     }}
                                                                 >
-                                                                    {row.Authority}
+                                                                    {row.designation}
                                                                 </td>
 
                                                                 <td
@@ -825,7 +902,7 @@ const ViewEditFile = (props: Props) => {
                                                                         textAlign: "center",
                                                                     }}
                                                                 >
-                                                                    {row.RouteStatus}
+                                                                    {row.lastStatus}
                                                                 </td>
 
                                                                 <td
@@ -838,7 +915,7 @@ const ViewEditFile = (props: Props) => {
                                                                         textDecoration: isHover1 ? "underline" : "none",
                                                                     }}
                                                                 >
-                                                                    {row.FileRecOn}
+                                                                    {row.fileRdate}
                                                                 </td>
                                                                 <td
                                                                     style={{
@@ -847,7 +924,7 @@ const ViewEditFile = (props: Props) => {
                                                                         textAlign: "center",
                                                                     }}
                                                                 >
-                                                                    {row.Remark}
+                                                                    {row.updateremark}
                                                                 </td>
                                                             </tr>
                                                         ))}
@@ -975,14 +1052,14 @@ const ViewEditFile = (props: Props) => {
                                                             borderTop: "1px solid black",
                                                             textAlign: "center",
                                                             cursor: "pointer",
-                                                            color: "blue" ,
-                                                            textDecoration:"underline",
+                                                            color: "blue",
+                                                            textDecoration: "underline",
                                                         }}
-                                                       
+
                                                     >
-                                                       <a  onMouseEnter={handleMouseEntered}
-                                                        onMouseLeave={handleMouseLeaveed}
-                                                        onClick={() => handleAddCommentClicks(row)}> {row.cFileNm}</a>
+                                                        <a onMouseEnter={handleMouseEntered}
+                                                            onMouseLeave={handleMouseLeaveed}
+                                                            onClick={() => handleAddCommentClicks(row)}> {row.cFileNm}</a>
                                                     </td>
 
                                                     <Dialog

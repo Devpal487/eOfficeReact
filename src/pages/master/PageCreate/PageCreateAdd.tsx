@@ -78,6 +78,7 @@ const PageCreateAdd = (props: Props) => {
     const location = useLocation();
     console.log("location", location.state);
     const userid = getId();
+    console.log("🚀 ~ PageCreateAdd ~ userid:", userid)
     const instid = getinstId();
     const { t } = useTranslation();
     const { defaultValuestime } = getISTDate();

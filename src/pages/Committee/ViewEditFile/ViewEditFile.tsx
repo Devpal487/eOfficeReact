@@ -39,6 +39,7 @@ import ToastApp from "../../../ToastApp";
 import { EditIcons, UploadIcons, PasteIcons, PrintIcons, PendingIcons, UpgradeIcons, FileCopyIcons, FilemoveIcons, HighlightIcons, SmsIcons, MakeIcons, ArchiveIcons } from "../../../utils/icons";
 import CustomLabel from "../../../CustomLable";
 import FindInPageIcon from '@mui/icons-material/FindInPage';
+import moment from "moment";
 
 
 const Transition = React.forwardRef(function Transition(
@@ -50,19 +51,6 @@ const Transition = React.forwardRef(function Transition(
     return <Slide direction="up" ref={ref} {...props} />;
 });
 
-const style = {
-    position: "absolute" as "absolute",
-    top: "50%",
-    left: "50%",
-    transform: "translate(-50%, -50%)",
-    width: "120vh",
-    height: "85vh",
-    bgcolor: "#f5f5f5",
-    border: "1px solid #000",
-    boxShadow: 24,
-    p: 4,
-    borderRadius: 10,
-};
 
 type Props = {};
 
@@ -95,6 +83,10 @@ const ViewEditFile = (props: Props) => {
 
     //dialog entry
     const [fileID, setFileID] = useState("");
+    const [fileName, setFileName] = useState("");
+    const [fileOpenDates, setFileOpenDates] = useState("");
+    const [fileTransfered, setFileTransfered] = useState("");
+    const [lastStatus, setLastStatus] = useState("");
 
     const handlefileMovementDetailOpen = () => {
         setFileMovementDetailOpen(true);
@@ -166,7 +158,6 @@ const ViewEditFile = (props: Props) => {
     };
 
     useEffect(() => {
-        // getTableData();
         getFileNo();
     }, []);
 
@@ -189,10 +180,10 @@ const ViewEditFile = (props: Props) => {
             });
     };
 
-    const getTableData = () => {
+    const getTableData = (id:any) => {
         setIsTableLoading(true);
         const collectData = {
-            "fileNo": formik.values.fileNo,
+            "fileNo": id,
             "cDocsFlag": "C",
             "type": 2
 
@@ -202,7 +193,7 @@ const ViewEditFile = (props: Props) => {
             .post(`FileNumber/GetViewEditFileNo`, collectData)
             .then((res) => {
                 const arr: any = [];
-                console.log("result" + JSON.stringify(res.data.data));
+                // console.log("result" + JSON.stringify(res.data.data));
                 for (let index = 0; index < res.data.data.length; index++) {
                     arr.push({
                         id: res.data.data[index]["rid"],
@@ -211,24 +202,67 @@ const ViewEditFile = (props: Props) => {
                         fileNm: res.data.data[index]["fileNm"],
                         cFileNm: res.data.data[index]["cFileNm"],
                         date: res.data.data[index]["date"],
-
-
-
-
                     });
+                    setFileOpenDates(res.data.data[index]["cFileOpenDate"])
+                    setFileTransfered(res.data.data[index]["cFileTranfer"])
+                    setLastStatus(res.data.data[index]["lastStaus"])
                 }
                 setMovementTableData(arr);
                 setIsTableLoading(false);
             });
     };
 
-    let collectData: {
-        fileNo: any;
-        cDocsFlag: string;
-        type: number;
-    } | undefined;
+
+    const getMoveTableData = () => {
+        // setIsTableLoading(true);
+        const collectData = {
+            "fileNo": formik.values.fileNo,
+            "cDocsFlag": "C",
+            "type": 2
+        };
+        api
+            .post(`FileNumber/GetFileMovementDetail`, collectData)
+            .then((res) => {
+                const arr: any = [];
+                console.log("result" + JSON.stringify(res.data.data));
+                for (let index = 0; index < res.data.data.length; index++) {
+                    arr.push({
+                        //id: res.data.data[index]["rid"],
+                        designation: res.data.data[index]["designation"],
+                        lastStatus: res.data.data[index]["lastStatus"],
+                        fileRdate: res.data.data[index]["fileRdate"],
+                        updateremark: res.data.data[index]["updateremark"],
+                        authorityLevel: res.data.data[index]["authorityLevel"],
+                        routeName: res.data.data[index]["routeName"],
+                        routeID: res.data.data[index]["routeID"],
+                    });
+                }
+                setFileMovementTableData(arr);
+                // setIsTableLoading(false);
+            });
+    };
 
 
+    const farwordData = () => {
+
+        const value = {
+            "eid": localStorage.getItem("useR_ID"),
+            "fileNo":formik.values.fileLable.toString() || "",
+            "remark": 0,
+            "hdnjurisdiction":parseInt(localStorage.getItem('id') + ""),
+            "hdnFilNu":formik.values.fileNo,
+            "hdnAuthMail": "",
+            "status": ""
+        };
+        console.log("🚀 ~ farwordData ~ value:", value)
+        // api
+        //     .post(`FileMovement/SP_ForwardFileApi`, value)
+        //     .then((res) => {
+        //         if (res.data.isSuccess) {
+        //             toast.success(res.data.mesg);
+        //         }
+        //     });
+    };
 
     let navigate = useNavigate();
 
@@ -261,9 +295,8 @@ const ViewEditFile = (props: Props) => {
             user_id: -1,
             fileNo: "",
             FileDesc: "",
-            fileattach_name: ""
-
-
+            fileattach_name: "",
+            fileLable:""
         },
 
         onSubmit: async (values) => {
@@ -300,34 +333,28 @@ const ViewEditFile = (props: Props) => {
             .post(`CreateNewFileAttach/AddUpdateCreateNewFileAttach`, value)
             .then((res) => {
                 if (res.data.isSuccess) {
-
                     // getFileNo();
                     // formik.setFieldValue('rFileNumber', res.data.insertedId);  
                     toast.success(res.data.mesg);
-
-
-
                 }
-
-
             });
     };
 
     const tabStyle = {
-        '&:hover': {
-            backgroundColor: '#90CAF9'
-        },
-
         default: {
-            backgroundColor: 'transparent',
-            '&:hover': {
-                backgroundColor: '#f0f0f0'
+            backgroundColor: '#00009c',
+            color: '#fff',
+            fontWeight: 'normal',
+            // '&:hover': {
+            //   backgroundColor: '#f0f0f0',
+            // },
             },
-        },
-        selected: {
-            backgroundColor: '#90CAF9',
-        },
-    };
+            selected: {
+                backgroundColor: '#f0f0f0',
+                // color: '#00009c',
+                fontWeight: 'bold',
+            },
+        };
 
     const getFileData = (rid: any) => {
         console.log("RID", rid)
@@ -415,44 +442,34 @@ const ViewEditFile = (props: Props) => {
     };
 
     const items = [
-        { text: " Split Pdf", icon: <EditIcons />, onClick: () => { navigate("/Committee/SplitPDF"); console.log("Clicked SplitPdf"); } },
-        { text: " Upload Letters", icon: <UploadIcons />, onClick: () => { toggleRight(); console.log("Clicked UploadLetters"); } },
-        { text: " Make Correspondence", icon: <MakeIcons />, onClick: () => { navigate("/Committee/Correspondence"); console.log("Clicked MakeCorrespondence"); } },
-        { text: " FLRD", icon: <PasteIcons />, },
-        { text: " Print", icon: <PrintIcons />, },
-        { text: " Update Remark", icon: <UpgradeIcons />, onClick: () => { console.log("Clicked UpdateRemark"); } },
-        { text: " Pending PUC", icon: <PendingIcons />, onClick: () => { console.log("Clicked PendingPUC"); } },
-        { text: " File Movement Details", icon: <FilemoveIcons />, onClick: handlefileMovementDetailOpen },
-        { text: " Moved To Awaited List", icon: <FileCopyIcons />, onClick: () => { console.log("Clicked MovedToAwaitedList"); } },
-        { text: " Moved To Parked Or Archived List", icon: <ArchiveIcons />, onClick: () => { console.log("Clicked MovedToParkedOrAchiveList"); } },
-        { text: " Close The File", icon: <HighlightIcons />, onClick: () => { console.log("Clicked MovedToParkedOrAchiveList"); } },
-        { text: " File Summary", icon: <SmsIcons />, onClick: () => { console.log("Clicked FileSummery"); } },
+        { text: " Split Pdf", icon: <EditIcons />, onClick: () => { navigate("/Committee/SplitPDF");} },
+        { text: " Upload Letters", icon: <UploadIcons />, onClick: () => { toggleRight(); } },
+        { text: " Make Correspondence", icon: <MakeIcons />, onClick: () => { navigate("/Committee/Correspondence"); } },
+        { text: " FLRD", icon: <PasteIcons />},
+        { text: " Print", icon: <PrintIcons />},
+        { text: " Update Remark", icon: <UpgradeIcons />},
+        { text: " Pending PUC", icon: <PendingIcons />},
+        { text: " File Movement Details", icon: <FilemoveIcons />,
+            onClick: () => {
+                if (formik.values.fileNo) {
+                    handlefileMovementDetailOpen();
+                    getMoveTableData();
+                } else {
+                    toast.error("Please select file Number");
+                }
+            }
+        },
+        { text: " Moved To Awaited List", icon: <FileCopyIcons />},
+        { text: " Moved To Parked Or Archived List", icon: <ArchiveIcons />},
+        { text: " Close The File", icon: <HighlightIcons />},
+        { text: " File Summary", icon: <SmsIcons />},
     ];
-
-    // console.log("Drawer Items:", items);
-    // console.log("Drawer Items:");
-
 
     const back = useNavigate();
 
     const handleForwardData = async () => {
-        toast.success("forward clicked");
-        // const collectData = {
-        //         "eid": 0,
-        //         "fileNo": "",
-        //         "remark": 0,
-        //         "hdnjurisdiction": 0,
-        //         "hdnFilNu": 0,
-        //         "hdnAuthMail": "",
-        //         "status": ""
-        // }
-        // const response = await api.post(`FileMovement/SP_ForwardFileApi`, collectData)
-
-        // if(response.data.isSuccess){
-        //     toast.success(response.data.mesg)
-        // }else{
-        //     toast.error(response.data.mesg)
-        // }
+        farwordData();
+       
     }
     return (
         <div>
@@ -495,23 +512,22 @@ const ViewEditFile = (props: Props) => {
                     <br />
                     <form onSubmit={formik.handleSubmit}>
                         <Grid item xs={12} container spacing={2}>
-                            <Grid item lg={4} xs={12}>
+                            <Grid item lg={3} md={4} xs={12}>
                                 <Autocomplete
                                     disablePortal
                                     id="combo-box-demo"
                                     options={ParentInst}
-                                    // value={
-                                    //     ZoneOption.find(
-                                    //         (option) => option.value === formik.values.fileTypeId
-                                    //     ) || null
-                                    // }
                                     fullWidth
                                     size="small"
                                     onChange={(event, newValue: any) => {
-                                        console.log(newValue?.value);
-
+                                        console.log(newValue);
                                         formik.setFieldValue("fileNo", newValue?.value);
-
+                                        if(newValue?.value != null){
+                                            getTableData(newValue?.value);
+                                        }
+                                        setFileID(newValue?.value);
+                                        setFileName(newValue?.label);
+                                        formik.setFieldValue("fileLable", newValue?.lable);
                                         formik.setFieldTouched("fileNo", true);
                                         formik.setFieldTouched("fileNo", false);
                                     }}
@@ -524,35 +540,19 @@ const ViewEditFile = (props: Props) => {
                                 />
                             </Grid>
 
-                            <Grid item lg={2} xs={12} >
-                                <Button
-                                    onClick={getTableData}
-
-                                    style={{
-                                        backgroundColor: "#059669",
-                                        color: "white",
-                                        width: "85%"
-
-                                    }}
-
-                                >
-                                    {t("text.Search")}
-                                </Button>
-
-                                {/* <FindInPageIcon onClick={getTableData}
-
-                                    style={{
-                                        backgroundColor: "#059669",
-                                        color: "white",
-
-                                    }}
-                                /> */}
-
-
+                            <Grid item lg={3} md={4} xs={12} display="flex" alignItems="center">
+                                <Typography fontWeight={600}>File Open Date:{" "}</Typography> <p>{" "}{fileOpenDates}</p>
                             </Grid>
 
+                            <Grid item lg={3} md={4} xs={12} display="flex" alignItems="center">
+                            <Typography fontWeight={600}>File Transfer:{" "}</Typography> <p>{" "}{fileTransfered}</p>
+                            </Grid>
 
-                            <Grid item lg={6} xs={12}>
+                            <Grid item lg={3} md={4} xs={12} display="flex" alignItems="center">
+                            <Typography fontWeight={600}>Status:{" "}</Typography> <p>{" "}{lastStatus}</p>
+                            </Grid>
+
+                            <Grid item lg={3} md={4} xs={12}>
                                 <FormControlLabel
                                     control={
                                         <Checkbox
@@ -578,7 +578,6 @@ const ViewEditFile = (props: Props) => {
                                             label="RFID"
                                             type="text"
                                             fullWidth
-                                        // onChange={handleTextFieldChange}
                                         />
                                     </DialogContent>
                                     <DialogActions>
@@ -600,10 +599,10 @@ const ViewEditFile = (props: Props) => {
                                     centered
                                     variant="fullWidth"
                                 >
-
                                     <Tab
                                         label="Notesheet"
                                         sx={value === 0 ? tabStyle.selected : tabStyle.default}
+
                                     />
                                     <Tab
                                         label="Correspondence"
@@ -614,17 +613,17 @@ const ViewEditFile = (props: Props) => {
                                         sx={value === 2 ? tabStyle.selected : tabStyle.default}
                                     />
                                     <Tab
-                                        label="Other1"
+                                        label="Other"
                                         sx={value === 3 ? tabStyle.selected : tabStyle.default}
                                     />
-                                    <Tab
+                                    {/* <Tab
                                         label="Other2"
                                         sx={value === 4 ? tabStyle.selected : tabStyle.default}
                                     />
                                     <Tab
                                         label="Other3"
                                         sx={value === 5 ? tabStyle.selected : tabStyle.default}
-                                    />
+                                    /> */}
                                 </Tabs>
                             </Grid>
                         </Grid>
@@ -633,17 +632,19 @@ const ViewEditFile = (props: Props) => {
                         <br />
 
                         <Grid item xs={12} container spacing={2}>
-                            <Grid xs={12} sm={12} item>
+                            <Grid xs={1} sm={1} item>
                                 <IconButton
                                     onClick={toggleDrawer(true)}
-                                    style={{ marginBottom: "10px", marginLeft: "30px" }}
+                                    style={{ marginBottom: "10px", }}
                                 >
                                     <MenuIcon />
                                 </IconButton>
+                            </Grid>
+                            <Grid xs={11} sm={11} item>
+                               
                                 <Drawer
                                     anchor="left"
                                     open={isDrawerOpen}
-                                    // onClose={toggleDrawer(false)}
                                     style={{ zIndex: 1300 }}
                                 >
 
@@ -701,7 +702,6 @@ const ViewEditFile = (props: Props) => {
                                         // onClose={handlefileMovementDetailClose}
                                         fullWidth={fullWidth}
                                         maxWidth={maxWidth}
-                                    // sx={{backgroundColor:"#f4f4f5"}}
                                     >
                                         <DialogTitle
                                             // style={{ cursor: "move" }}
@@ -712,7 +712,7 @@ const ViewEditFile = (props: Props) => {
                                                 justifyContent: "space-between",
                                             }}
                                         >
-                                            <Typography fontWeight="600">File Movement Details for :- <i>#{fileID}</i> </Typography>
+                                            <Typography fontWeight="600" fontSize={20}>File Movement Details for :- <i>#{fileID}-{fileName}</i> </Typography>
                                             <IconButton
                                                 edge="end"
                                                 onClick={handlefileMovementDetailClose}
@@ -732,7 +732,6 @@ const ViewEditFile = (props: Props) => {
                                                         borderCollapse: "collapse",
                                                         width: "97%",
                                                         border: "1px solid black",
-                                                        // marginLeft: "30px",
                                                     }}
                                                 >
                                                     <thead
@@ -801,11 +800,12 @@ const ViewEditFile = (props: Props) => {
                                                                     style={{
                                                                         borderLeft: "1px solid black",
                                                                         borderTop: "1px solid black",
-                                                                        // textAlign: "center",
+                                                                        textAlign: "center",
                                                                         padding: "2px",
+                                                                        color:"#000"
                                                                     }}
                                                                 >
-                                                                    {row.SrNo}
+                                                                    {index+1}
                                                                 </td>
 
                                                                 <td
@@ -813,9 +813,10 @@ const ViewEditFile = (props: Props) => {
                                                                         borderLeft: "1px solid black",
                                                                         borderTop: "1px solid black",
                                                                         textAlign: "center",
+                                                                        color:"#000"
                                                                     }}
                                                                 >
-                                                                    {row.Authority}
+                                                                    {row.designation}
                                                                 </td>
 
                                                                 <td
@@ -823,9 +824,10 @@ const ViewEditFile = (props: Props) => {
                                                                         borderLeft: "1px solid black",
                                                                         borderTop: "1px solid black",
                                                                         textAlign: "center",
+                                                                        color:"#000"
                                                                     }}
                                                                 >
-                                                                    {row.RouteStatus}
+                                                                    {row.routeName}
                                                                 </td>
 
                                                                 <td
@@ -833,21 +835,20 @@ const ViewEditFile = (props: Props) => {
                                                                         borderLeft: "1px solid black",
                                                                         borderTop: "1px solid black",
                                                                         textAlign: "center",
-                                                                        cursor: "pointer",
-                                                                        color: isHover1 ? "blue" : "black",
-                                                                        textDecoration: isHover1 ? "underline" : "none",
+                                                                        color:"#000"
                                                                     }}
                                                                 >
-                                                                    {row.FileRecOn}
+                                                                    {moment(row.fileRdate).format("DD-MM-YYYY")}
                                                                 </td>
                                                                 <td
                                                                     style={{
                                                                         borderLeft: "1px solid black",
                                                                         borderTop: "1px solid black",
                                                                         textAlign: "center",
+                                                                        color:"#000"
                                                                     }}
                                                                 >
-                                                                    {row.Remark}
+                                                                    {row.updateremark}
                                                                 </td>
                                                             </tr>
                                                         ))}
@@ -975,14 +976,14 @@ const ViewEditFile = (props: Props) => {
                                                             borderTop: "1px solid black",
                                                             textAlign: "center",
                                                             cursor: "pointer",
-                                                            color: "blue" ,
-                                                            textDecoration:"underline",
+                                                            color: "blue",
+                                                            textDecoration: "underline",
                                                         }}
-                                                       
+
                                                     >
-                                                       <a  onMouseEnter={handleMouseEntered}
-                                                        onMouseLeave={handleMouseLeaveed}
-                                                        onClick={() => handleAddCommentClicks(row)}> {row.cFileNm}</a>
+                                                        <a onMouseEnter={handleMouseEntered}
+                                                            onMouseLeave={handleMouseLeaveed}
+                                                            onClick={() => handleAddCommentClicks(row)}> {row.cFileNm}</a>
                                                     </td>
 
                                                     <Dialog
@@ -1061,7 +1062,6 @@ const ViewEditFile = (props: Props) => {
                                                         }}
                                                     >
                                                         {row.date}
-                                                        {/* <p onClick={handleReceiveData}>{row.receiver}</p> */}
                                                     </td>
                                                 </tr>
                                             ))}

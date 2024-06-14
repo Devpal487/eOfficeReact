@@ -38,8 +38,8 @@ import Dialog, { DialogProps } from '@mui/material/Dialog';
 import ToastApp from "../../../ToastApp";
 import { EditIcons, UploadIcons, PasteIcons, PrintIcons, PendingIcons, UpgradeIcons, FileCopyIcons, FilemoveIcons, HighlightIcons, SmsIcons, MakeIcons, ArchiveIcons } from "../../../utils/icons";
 import CustomLabel from "../../../CustomLable";
-import FindInPageIcon from '@mui/icons-material/FindInPage';
 import moment from "moment";
+import { getId, getdivisionId} from "../../../utils/Constant";
 
 
 const Transition = React.forwardRef(function Transition(
@@ -57,7 +57,10 @@ type Props = {};
 const ViewEditFile = (props: Props) => {
 
     const { t } = useTranslation();
-
+    const userId = getId();
+    console.log("🚀 ~ ViewEditFile ~ userId:", userId)
+    const divId = getdivisionId();
+    console.log("🚀 ~ ViewEditFile ~ divId:", divId)
     const [getFileNumber, setGetFileNumber] = useState(false);
     const [value, setValue] = useState(0);
     const [MovementTableData, setMovementTableData] = useState<any>([]);
@@ -87,6 +90,9 @@ const ViewEditFile = (props: Props) => {
     const [fileOpenDates, setFileOpenDates] = useState("");
     const [fileTransfered, setFileTransfered] = useState("");
     const [lastStatus, setLastStatus] = useState("");
+
+    const [nodeId, setNodeId] = useState("");
+
 
     const handlefileMovementDetailOpen = () => {
         setFileMovementDetailOpen(true);
@@ -158,8 +164,6 @@ const ViewEditFile = (props: Props) => {
     };
 
     useEffect(() => {
-        // getTableData();
-        // getMoveTableData();
         getFileNo();
     }, []);
 
@@ -221,8 +225,6 @@ const ViewEditFile = (props: Props) => {
             "fileNo": formik.values.fileNo,
             "cDocsFlag": "C",
             "type": 2
-
-
         };
         api
             .post(`FileNumber/GetFileMovementDetail`, collectData)
@@ -237,10 +239,8 @@ const ViewEditFile = (props: Props) => {
                         fileRdate: res.data.data[index]["fileRdate"],
                         updateremark: res.data.data[index]["updateremark"],
                         authorityLevel: res.data.data[index]["authorityLevel"],
-
-
-
-
+                        routeName: res.data.data[index]["routeName"],
+                        routeID: res.data.data[index]["routeID"],
                     });
                 }
                 setFileMovementTableData(arr);
@@ -252,49 +252,41 @@ const ViewEditFile = (props: Props) => {
     const farwordData = () => {
 
         const value = {
-
-            "eid": localStorage.getItem("useR_ID"),
-            "fileNo":formik.values.fileLable.toString() || "",
+            "eid": userId,
+            "fileNo":fileName,
             "remark": 0,
-            "hdnjurisdiction":parseInt(localStorage.getItem('id') + ""),
-            "hdnFilNu":formik.values.fileNo,
-            "hdnAuthMail": "",
+            "hdnjurisdiction":divId,
+            "hdnFilNu":fileID,
+            "hdnAuthMail": userId,
             "status": ""
-            // "caId": -1,
-            // "cId": 0,
-            // "fileNo": 0,
-            // "cFileNm": "",
-            // "cFileDesc": formik.values.FileDesc.toString() || "",
-            // "cDocsFlag": formik.values.fileattach_name.toString() || "",
-            // "inst_id": 0,
-            // "user_id": 0,
-            // "createdDate": defaultValuestime,
-            // "rId": 0,
-            // "divisionid": parseInt(localStorage.getItem('id') + ""),
         };
+        console.log("🚀 ~ farwordData ~ value:", value)
         api
             .post(`FileMovement/SP_ForwardFileApi`, value)
             .then((res) => {
                 if (res.data.isSuccess) {
-
-
                     toast.success(res.data.mesg);
-
-
-
+                    handlefileMovementDetailClose();
+                }else{
+                    toast.error(res.data.mesg);
                 }
-
-
             });
     };
 
-    let collectData: {
-        fileNo: any;
-        cDocsFlag: string;
-        type: number;
-    } | undefined;
-
-
+    const getRouteView =async(id:any)=>{
+        const collectData ={
+            "id": id,
+            "nodeID": -1,
+            "titleID": -1,
+            "user_Id": ""
+          };
+          await api.post(``, collectData)
+          .then((res:any) => {
+              console.log("🚀 ~ .then ~ res:", res)
+              setNodeId(res.data.data);
+          	
+          })
+    };
 
     let navigate = useNavigate();
 
@@ -329,8 +321,6 @@ const ViewEditFile = (props: Props) => {
             FileDesc: "",
             fileattach_name: "",
             fileLable:""
-
-
         },
 
         onSubmit: async (values) => {
@@ -476,38 +466,32 @@ const ViewEditFile = (props: Props) => {
     };
 
     const items = [
-        { text: " Split Pdf", icon: <EditIcons />, onClick: () => { navigate("/Committee/SplitPDF"); console.log("Clicked SplitPdf"); } },
-        { text: " Upload Letters", icon: <UploadIcons />, onClick: () => { toggleRight(); console.log("Clicked UploadLetters"); } },
-        { text: " Make Correspondence", icon: <MakeIcons />, onClick: () => { navigate("/Committee/Correspondence"); console.log("Clicked MakeCorrespondence"); } },
-        { text: " FLRD", icon: <PasteIcons />, },
-        { text: " Print", icon: <PrintIcons />, },
-        { text: " Update Remark", icon: <UpgradeIcons />, onClick: () => { console.log("Clicked UpdateRemark"); } },
-        { text: " Pending PUC", icon: <PendingIcons />, onClick: () => { console.log("Clicked PendingPUC"); } },
-        {
-            text: " File Movement Details", icon: <FilemoveIcons />,
+        { text: " Split Pdf", icon: <EditIcons />, onClick: () => { navigate("/Committee/SplitPDF");} },
+        { text: " Upload Letters", icon: <UploadIcons />, onClick: () => { toggleRight(); } },
+        { text: " Make Correspondence", icon: <MakeIcons />, onClick: () => { navigate("/Committee/Correspondence"); } },
+        { text: " FLRD", icon: <PasteIcons />},
+        { text: " Print", icon: <PrintIcons />},
+        { text: " Update Remark", icon: <UpgradeIcons />},
+        { text: " Pending PUC", icon: <PendingIcons />},
+        { text: " File Movement Details", icon: <FilemoveIcons />,
             onClick: () => {
-
-
-
                 if (formik.values.fileNo) {
                     handlefileMovementDetailOpen();
                     getMoveTableData();
                 } else {
                     toast.error("Please select file Number");
                 }
-
             }
         },
-        { text: " Moved To Awaited List", icon: <FileCopyIcons />, onClick: () => { console.log("Clicked MovedToAwaitedList"); } },
-        { text: " Moved To Parked Or Archived List", icon: <ArchiveIcons />, onClick: () => { console.log("Clicked MovedToParkedOrAchiveList"); } },
-        { text: " Close The File", icon: <HighlightIcons />, onClick: () => { console.log("Clicked MovedToParkedOrAchiveList"); } },
-        { text: " File Summary", icon: <SmsIcons />, onClick: () => { console.log("Clicked FileSummery"); } },
+        { text: " Moved To Awaited List", icon: <FileCopyIcons />},
+        { text: " Moved To Parked Or Archived List", icon: <ArchiveIcons />},
+        { text: " Close The File", icon: <HighlightIcons />},
+        { text: " File Summary", icon: <SmsIcons />},
     ];
 
     const back = useNavigate();
 
     const handleForwardData = async () => {
-        //toast.success("forward clicked");
         farwordData();
        
     }
@@ -562,8 +546,12 @@ const ViewEditFile = (props: Props) => {
                                     onChange={(event, newValue: any) => {
                                         console.log(newValue);
                                         formik.setFieldValue("fileNo", newValue?.value);
+                                        if(newValue?.value != null){
+                                            getTableData(newValue?.value);
+                                        }
+                                        setFileID(newValue?.value);
+                                        setFileName(newValue?.label);
                                         formik.setFieldValue("fileLable", newValue?.lable);
-
                                         formik.setFieldTouched("fileNo", true);
                                         formik.setFieldTouched("fileNo", false);
                                     }}
@@ -863,7 +851,7 @@ const ViewEditFile = (props: Props) => {
                                                                         color:"#000"
                                                                     }}
                                                                 >
-                                                                    {row.lastStatus}
+                                                                    {row.routeName}
                                                                 </td>
 
                                                                 <td
@@ -874,7 +862,7 @@ const ViewEditFile = (props: Props) => {
                                                                         color:"#000"
                                                                     }}
                                                                 >
-                                                                    {row.fileRdate}
+                                                                    {moment(row.fileRdate).format("DD-MM-YYYY")}
                                                                 </td>
                                                                 <td
                                                                     style={{
@@ -903,9 +891,9 @@ const ViewEditFile = (props: Props) => {
                                             <Button autoFocus onClick={handleForwardData}>
                                                 Forward
                                             </Button>
-                                            <Button autoFocus onClick={handleClose}>
+                                            {/* <Button autoFocus onClick={}>
                                                 View Routes
-                                            </Button>
+                                            </Button> */}
                                         </DialogActions>
                                     </Dialog>
                                 </>

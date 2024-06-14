@@ -29,6 +29,8 @@ import { Margin } from "@mui/icons-material";
 import nopdf from '../../../assets/images/nopdf.png'
 import moment from 'moment';
 import api from "../../../utils/Url";
+import { getISTDate } from "../../../utils/Constant";
+import CustomLabel from "../../../CustomLable";
 
 // const style = {
 //   position: "absolute" as "absolute",
@@ -54,6 +56,7 @@ const SplitPDF = (props: Props) => {
 
   const [selectedRows, setSelectedRows] = useState<any>([]);
   const [selectedRow, setSelectedRow] = useState<any>([]);
+  const { defaultValuestime } = getISTDate();
 
 
   let navigate = useNavigate();
@@ -61,8 +64,7 @@ const SplitPDF = (props: Props) => {
 
   const [toaster, setToaster] = useState(false);
   const [tableData, setTableData] = useState<any>([]);
-  const [DocFileOption, setDocFileOption] = useState([{ value: "-1", label: t("text.SelectFileType") }]);
-  const [StatusOption, setStatusOption] = useState([{ value: "-1", label: t("text.SelectFileStatus") }]);
+ 
   const [DocOption, setDocOption] = useState([{ value: "-1", label: t("text.SelectDoc") }]);
 
 
@@ -75,10 +77,6 @@ const SplitPDF = (props: Props) => {
   useEffect(() => {
     const dataString = localStorage.getItem("userdata");
 
-
-
-    getFileType();
-    getFileStatus();
     getDoc();
   }, []);
 
@@ -90,7 +88,7 @@ const SplitPDF = (props: Props) => {
       fromDate: formik.values.fDate.toString() || "",
       toDate: formik.values.perUt.toString() || "",
       filestatus: "",
-      textSearch:formik.values.textSearch.toString() || "",
+      textSearch: formik.values.textSearch.toString() || "",
       docMid: formik.values.docMid.toString() || "",
       fileTypId: "",
       divisionid: "",
@@ -99,13 +97,13 @@ const SplitPDF = (props: Props) => {
 
     };
     api
-      .post( `DocMangr/GetDocMangrForIndex`, collectData)
+      .post(`ReferenceDiary/GetDocMangrForIndex`, collectData)
       .then((res) => {
         const arr: any = [];
         console.log("result" + JSON.stringify(res.data.data));
         for (let index = 0; index < res.data.data.length; index++) {
           arr.push({
-            id: res.data.data[index]["pdFid"],
+            id: res.data.data[index]["docMid"],
             fileNo: res.data.data[index]["fileNo"],
             docMid: res.data.data[index]["docMid"],
             fileDef: res.data.data[index]["fileDef"],
@@ -117,7 +115,7 @@ const SplitPDF = (props: Props) => {
             ismain: res.data.data[index]["ismain"],
             pdfName: res.data.data[index]["pdfName"],
             docFile: res.data.data[index]["docFile"],
-           // pdFid: res.data.data[index]["pdFid"],
+            // pdFid: res.data.data[index]["pdFid"],
             complt: res.data.data[index]["complt"],
             partNo: res.data.data[index]["partNo"],
             comments: res.data.data[index]["comments"],
@@ -137,7 +135,7 @@ const SplitPDF = (props: Props) => {
             filename: res.data.data[index]["filename"],
             pagecount: res.data.data[index]["pagecount"],
             divisionid: res.data.data[index]["divisionid"],
-            
+
             isSelected: false,
           });
         }
@@ -150,17 +148,17 @@ const SplitPDF = (props: Props) => {
 
 
   const AddSplitPdf = () => {
-    var array1=[];
-    
+    var array1 = [];
+
     for (let index = 0; index < tableData.length; index++) {
       const rowData = tableData[index];
-      var array2 =[];
-      console.log(rowData); 
-      console.log(rowData.divisionid); 
-      console.log(rowData.fileNo); 
-      if(rowData.isSelected==true){
-      array2.push({"chkSplit":true,"pdfName":rowData.pdfName,"pdFid":rowData.pdFid})
-      array1.push({"docMid":rowData.docMid,"divisionid":rowData.divisionid,docMangrSplits:array2})
+      var array2 = [];
+      console.log(rowData);
+      console.log(rowData.divisionid);
+      console.log(rowData.fileNo);
+      if (rowData.isSelected == true) {
+        array2.push({ "chkSplit": true, "pdfName": rowData.pdfName, "pdFid": rowData.pdFid })
+        array1.push({ "docMid": rowData.docMid, "divisionid": rowData.divisionid, docMangrSplits: array2 })
       }
 
     }
@@ -168,68 +166,55 @@ const SplitPDF = (props: Props) => {
       docMangrReqForSplit: array1
 
     };
-  
-    api.post( `SplitPdf/AddUpdateSplitPdf`, collectData)
+
+    api.post(`SplitPdf/AddUpdateSplitPdf`, collectData)
       .then(response => {
-       
-        
-        if(response.data.status==1){
+
+
+        if (response.data.status == 1) {
 
           console.log("Split PDF API response:", response);
           toast.success("Split PDF API successfully called");
           setTableData([]);
         } else {
 
-          
+
           toast.error("Error calling Split PDF API");
         }
-       
+
       })
       .catch(error => {
         console.error("Error in Split PDF API:", error);
         toast.error("Error calling Split PDF API");
 
-        
+
       });
   }
 
 
-  const getFileType = () => {
-    const collectData = {
-      docID: -1,
-      parentDocId: -1,
-      userId: "",
-
-    };
-    api
-      .post(`OtherDocType/GetOtherDocType`, collectData)
-      .then((res) => {
-        const arr = res.data.data.map((item: any) => ({
-          label: item.doc_Name,
-          value: item.docID
-        }));
-        setDocFileOption(arr);
-      })
-
-  };
+ 
 
 
   const getDoc = () => {
     const collectData = {
-      docMid: -1,
-      fileTypId: -1,
-      divisionid: -1,
-      subsubjId: -1,
-      user_Id: -1,
-      fileNo: ""
+      "rid": -1,
+      "rlId": -1,
+      "rFileType": -1,
+      "inst_id": -1,
+      "user_id": "",
+      "fromdate":"2020-06-01T08:43:55.854Z",
+      "todate": defaultValuestime,
+      "refNo": -1,
+      "divisionid": -1,
+      "type": 1
 
     };
     api
-      .post(`DocMangr/GetDocMangr`, collectData)
+      .post(`ReferenceDiary/GetReferenceDiary`, collectData)
       .then((res) => {
         const arr = res.data.data.map((item: any) => ({
-          label: item.fileNo,
-          value: item.docMid
+          label: item.rFileNumber,
+          value: item.rid
         }));
         setDocOption(arr);
       })
@@ -238,34 +223,7 @@ const SplitPDF = (props: Props) => {
 
 
 
-  const getFileStatus = () => {
-    const collectData = {
-
-
-    };
-
-    api
-      .post( `FileStatus/GetFileStatus`, collectData)
-      .then((res) => {
-        var array = [];
-        for (let index = 0; index < res.data.data.length; index++) {
-          array.push({
-            label: res.data.data[index]["fStatus"],
-            value: res.data.data[index]["fStatus"],
-          });
-        }
-        // const arr = res.data.data.map((item:any) => ({
-        //   lable:item.fStatus,
-        //   value:item.fStatus
-        // }))
-        //console.log(arr)
-        console.log(array)
-
-        setStatusOption(array);
-      })
-
-  };
-
+ 
 
 
 
@@ -323,7 +281,7 @@ const SplitPDF = (props: Props) => {
       console.log("Before submission formik values", values)
 
       // Handle form submission
-      
+
     },
   });
 
@@ -403,7 +361,7 @@ const SplitPDF = (props: Props) => {
           <Divider />
           <br />
           <form onSubmit={formik.handleSubmit}>
-             <ToastApp />
+            <ToastApp />
             <Grid item xs={12} container spacing={2}>
 
               {/* <Grid item md={4} xs={12}>
@@ -500,12 +458,7 @@ const SplitPDF = (props: Props) => {
                     formik.setFieldTouched("docMid", false);
                   }}
                   renderInput={(params) => (
-                    <TextField {...params} label={
-                      <span>
-                        {t("text.SelectDoc")} {""}
-
-                      </span>
-                    } />
+                    <TextField {...params} label={<CustomLabel text={t("text.SelectDoc")} />} />
                   )}
                 />
 
@@ -521,10 +474,10 @@ const SplitPDF = (props: Props) => {
               <Grid item md={3} xs={12}>
                 <TextField
                   type="text"
-                  InputLabelProps={{ shrink: true }}
+                  
                   id="textSearch"
                   name="textSearch"
-                  label={t("text.Search")}
+                  label={<CustomLabel text={t("text.Search")} />}
                   value={formik.values.textSearch}
                   placeholder={t("text.Search")}
                   size="small"
@@ -542,9 +495,9 @@ const SplitPDF = (props: Props) => {
                   InputLabelProps={{ shrink: true }}
                   id="fDate"
                   name="fDate"
-                  label={t("text.DateFrom")}
+                  label={<CustomLabel text={t("text.FromDate")} />}
                   value={formik.values.fDate}
-                  placeholder="From Date"
+                  placeholder={t("text.FromDate")}
                   size="small"
                   fullWidth
                   style={{ backgroundColor: "white" }}
@@ -560,9 +513,9 @@ const SplitPDF = (props: Props) => {
                   InputLabelProps={{ shrink: true }}
                   id="perUt"
                   name="perUt"
-                  label={t("text.DateTo")}
+                  label={<CustomLabel text={t("text.DateTo")} />}
                   value={formik.values.perUt}
-                  placeholder={t("text.PeriodTo")}
+                  placeholder={t("text.DateTo")}
                   size="small"
                   fullWidth
                   style={{ backgroundColor: "white" }}
@@ -594,7 +547,7 @@ const SplitPDF = (props: Props) => {
                     borderCollapse: "collapse",
                     width: "100%",
                     border: "1px solid black",
-                    
+
                   }}
                 >
                   <thead
@@ -631,7 +584,7 @@ const SplitPDF = (props: Props) => {
                           paddingBottom: "5px",
                         }}
                       >
-                        {t("text.PdfFileName")}
+                        {t("text.FileDef")}
                       </th>
                       <th
                         style={{
@@ -640,17 +593,9 @@ const SplitPDF = (props: Props) => {
                           paddingBottom: "5px",
                         }}
                       >
-                        {t("text.Synopsis")}
+                        {t("text.InstituteName")}
                       </th>
-                      <th
-                        style={{
-                          borderLeft: "1px solid black",
-                          paddingTop: "5px",
-                          paddingBottom: "5px",
-                        }}
-                      >
-                        {t("text.FileType")}
-                      </th>
+                     
                       <th
                         style={{
                           borderLeft: "1px solid black",
@@ -761,18 +706,10 @@ const SplitPDF = (props: Props) => {
                             textAlign: "center",
                           }}
                         >
-                          {row.synopsis}
+                          {row.insname}
                         </td>
 
-                        <td
-                          style={{
-                            borderLeft: "1px solid black",
-                            borderTop: "1px solid black",
-                            textAlign: "center",
-                          }}
-                        >
-                          {row.fileType}
-                        </td>
+                       
 
                         <td
                           style={{
@@ -802,7 +739,7 @@ const SplitPDF = (props: Props) => {
                             textAlign: "center",
                           }}
                         >
-                          {formatDate(row.perUt)}
+                          {formatDate(row.cDate)}
 
                         </td>
 

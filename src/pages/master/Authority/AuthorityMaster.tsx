@@ -26,6 +26,7 @@ import { getISTDate } from "../../../utils/Constant";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import axios from "axios";
+import CustomLabel from "../../../CustomLable";
 
 
 
@@ -165,13 +166,13 @@ export default function AuthorityMaster() {
                             },
                             {
                                 field: "authorityType",
-                                headerName:"Authority Type",
+                                headerName:t("text.AuthorityType"),
                                 flex: 1,
                                 headerClassName: "MuiDataGrid-colCell",
                             },
                             {
                                 field: "remark",
-                                headerName:"Remark",
+                                headerName:t("text.Remark"),
                                 flex: 1,
                                 headerClassName: "MuiDataGrid-colCell",
                             }
@@ -189,7 +190,7 @@ export default function AuthorityMaster() {
     const validationSchema = Yup.object({
         authorityType: Yup.string().test(
             "required",
-            "Authority Type Required",
+            t("text.reqAuthorityType"),
             function (value: any) {
                 return value && value.trim() !== "";
             }
@@ -273,7 +274,7 @@ export default function AuthorityMaster() {
                             sx={{ padding: "20px" }}
                             align="left"
                         >
-                            Authority Master
+                            {t("text.AuthorityMaster")}
                         </Typography>
                         <Divider />
 
@@ -287,14 +288,8 @@ export default function AuthorityMaster() {
                                         <TextField
                                                 id="authorityType"
                                                 type="text"
-                                                label={
-                                                    <span>
-                                                      Enter Authority Type{" "} {requiredFields.includes('authorityType') && (
-                                                        <span style={{ color: formik.values.authorityType ? 'green' : 'red' }}>*</span>
-                                                      )}
-                                                    </span>
-                                                  }
-                                                placeholder="Enter Authority Type"
+                                                label={<CustomLabel text={t("text.EnterAuthorityType")} required={requiredFields.includes('authorityType')}  />}
+                                                placeholder={t("text.EnterAuthorityType")}
                                                 value={formik.values.authorityType}
                                                 size="small"
                                                 name="authorityType"
@@ -314,11 +309,7 @@ export default function AuthorityMaster() {
                                             <TextField
                                                 id="remark"
                                                 type="text"
-                                                label={
-                                                    <span>
-                                                        {t("text.Remark")} {""}
-                                                    </span>
-                                                }
+                                                label={<CustomLabel text={t("text.Remark")} />}
                                                 placeholder={t("text.Remark")}
                                                 value={formik.values.remark}
                                                 size="small"

@@ -4,11 +4,12 @@ import React, { useState, useEffect } from 'react'
 import axios from 'axios';
 import { Navigate, useLocation, useNavigate } from 'react-router-dom';
 import api from '../../../utils/Url';
-import {useTranslation} from "react-i18next";
+import { useTranslation } from "react-i18next";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { toast } from "react-toastify";
 import ToastApp from "../../../ToastApp";
+import CustomLabel from '../../../CustomLable';
 
 
 type Props = {};
@@ -21,10 +22,10 @@ const GenderMasterEdit = (props: Props) => {
   let navigate = useNavigate();
   const { t } = useTranslation();
 
-  const[toaster,setToaster]=useState(false);
-  
+  const [toaster, setToaster] = useState(false);
+
   const validationSchema = Yup.object({
-   
+
     genderName: Yup.string().test(
       "required",
       t("text.reqGenderName"),
@@ -101,24 +102,11 @@ const GenderMasterEdit = (props: Props) => {
           <Divider />
           <br />
           <form onSubmit={formik.handleSubmit}>
-            {toaster===false ?"":<ToastApp/>}
+            {toaster === false ? "" : <ToastApp />}
             <Grid item xs={12} container spacing={2}>
               <Grid item lg={6} sm={6} xs={12}>
                 <TextField
-                  label={
-                    <span>
-                      {t("text.EnterGenderName")}{" "}
-                      {requiredFields.includes("genderName") && (
-                        <span
-                          style={{
-                            color: formik.values.genderName ? "green" : "red",
-                          }}
-                        >
-                          *
-                        </span>
-                      )}
-                    </span>
-                  }
+                  label={<CustomLabel text={t("text.EnterGenderName")} required={requiredFields.includes('genderName')} />}
                   value={formik.values.genderName}
                   placeholder={t("text.EnterGenderName")}
                   size="small"
@@ -138,7 +126,7 @@ const GenderMasterEdit = (props: Props) => {
 
               <Grid item lg={6} sm={6} xs={12}>
                 <TextField
-                  label={t("text.EnterGenderCode")}
+                  label={<CustomLabel text={t("text.EnterGenderCode")} />}
                   value={formik.values.genderCode}
                   name="genderCode"
                   id="genderCode"
@@ -152,17 +140,17 @@ const GenderMasterEdit = (props: Props) => {
               </Grid>
 
               <Grid item lg={6} sm={6} xs={12}>
-                  <Button
-                    type="submit"
-                    fullWidth
-                    style={{
-                      backgroundColor: "#059669",
-                      color: "white",
-                      marginTop: "10px",
-                    }}
-                  >
-                    {t("text.update")}
-                  </Button>
+                <Button
+                  type="submit"
+                  fullWidth
+                  style={{
+                    backgroundColor: "#059669",
+                    color: "white",
+                    marginTop: "10px",
+                  }}
+                >
+                  {t("text.update")}
+                </Button>
               </Grid>
               <Grid item lg={6} sm={6} xs={12}>
                 <Button

@@ -235,7 +235,7 @@ export default function UserManagement() {
                       direction="row"
                       sx={{ alignItems: "center", marginTop: "5px" }}
                     >
-                      {permissionData?.isEdit ? (
+                      {/* {permissionData?.isEdit ? ( */}
                         <EditIcon
                           style={{
                             fontSize: "20px",
@@ -245,9 +245,9 @@ export default function UserManagement() {
                           className="cursor-pointer"
                           onClick={() => routeChangeEdit(params.row)}
                         />
-                      ) : (
+                      {/* ) : (
                         ""
-                      )}
+                      )} */}
 
                       <VisibilityIcon
                         style={{

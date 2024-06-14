@@ -43,37 +43,10 @@ import MenuMasterEdit from "../pages/master/Menu/MenuMasterEdit";
 import EmployeeMaster from "../pages/Employee/EmployeeMaster";
 import EmployeeAdd from "../pages/Employee/EmployeeAdd";
 import EmployeeEdit from "../pages/Employee/EmployeeEdit";
-// import FileClass from "../pages/Library/FileClass/FileClass";
-// import FileClassAdd from "../pages/Library/FileClass/FileClassAdd";
-// import FileClassEdit from "../pages/Library/FileClass/FileClassEdit";
-// import FileGroup from "../pages/Library/FileGroup/FileGroup";
-// import FileSubject from "../pages/Library/FileSubject/FileSubject";
-// import FileType from "../pages/Library/FileType/FileType";
-// import FileDetail from "../pages/Library/FileDetail/FileDetail";
-// import FileDetailAdd from "../pages/Library/FileDetail/FileDetailAdd";
-// import FileDetailEdit from "../pages/Library/FileDetail/FileDetailEdit";
-// import LocationItem from "../pages/Library/LocationItem/LocationItem";
-// import LocationItemAdd from "../pages/Library/LocationItem/LocationItemAdd";
-// import LocationItemEdit from "../pages/Library/LocationItem/LocationItemEdit";
-// import ReceiptStatus from "../pages/Library/ReceiptStatus/ReceiptStatus";
-// import ReceiptType from "../pages/Library/ReceiptType/ReceiptType";
-// import Location from "../pages/Library/Location/Location";
-import FileCategory from "../pages/master/FileCategory/FileCategory";
-import FileCategoryAdd from "../pages/master/FileCategory/FileCategoryAdd";
-import FileCategoryEdit from "../pages/master/FileCategory/FileCategoryEdit";
-// import FileDetailsReports from "../pages/reports/FileDetailsReports/FileDetailsReports";
-// import FileMovementReports from "../pages/reports/FileMovementReports/FileMovementReports";
-// import FileMovement from "../pages/Library/FileMovement/FileMovement";
-// import UserFileMovement from "../pages/Library/UserFileMovement/UserFileMovement";
 import Jurisdiction from "../pages/master/Jurisdiction/Jurisdiction";
 import JurisdictionMasterAdd from "../pages/master/Jurisdiction/JurisdictionMasterAdd";
 import JurisdictionMasterEdit from "../pages/master/Jurisdiction/JurisdictionMasterEdit";
 import NodePermission from "../pages/master/NodePermission/NodePermission";
-// import ReqForm from "../pages/Library/ReqForm/ReqForm";
-// import ReqFormEdit from "../pages/Library/ReqForm/ReqFormEdit";
-// import ReqFormAdd from "../pages/Library/ReqForm/ReqFormAdd";
-import FileMaster from "../pages/master/FileMaster/FileMaster";
-import LetterType from "../pages/master/LetterType/LetterType";
 import CommitteeMaster from "../pages/Committee/Committee/CommitteeMaster";
 import CommitteeAdd from "../pages/Committee/Committee/CommitteeAdd";
 import CommitteeEdit from "../pages/Committee/Committee/CommitteeEdit";
@@ -81,7 +54,6 @@ import CommitteeEmployeeMapping from "../pages/Committee/CommitteeEmployeeMappin
 import CommitteeEmployeeMappingAdd from "../pages/Committee/CommitteeEmployeeMapping/CommitteeEmployeeMappingAdd";
 import CommitteeEmployeeMappingEdit from "../pages/Committee/CommitteeEmployeeMapping/CommitteeEmployeeMappingEdit";
 import Route from "../pages/Route/RouteMaster/Route";
-// import FileMovementEdit from "../pages/Library/FileMovement/FileMovementEdit";
 import RouteAdd from "../pages/Route/RouteMaster/RouteAdd";
 import RouteEdit from "../pages/Route/RouteMaster/RouteEdit";
 import AuthorityMaster from "../pages/master/Authority/AuthorityMaster";
@@ -99,6 +71,19 @@ import SectionMaster from "../pages/master/SectionMaster/SectionMaster";
 import SectionMasterAdd from "../pages/master/SectionMaster/SectionMasterAdd";
 import SectionMasterEdit from "../pages/master/SectionMaster/SectionMasterEdit";
 import DocumentIndexing from "../pages/reports/DocumentReports/DocumentIndexing";
+import FileCategory from "../pages/FileManagement/FileCategory/FileCategory";
+import FileCategoryAdd from "../pages/FileManagement/FileCategory/FileCategoryAdd";
+import FileCategoryEdit from "../pages/FileManagement/FileCategory/FileCategoryEdit";
+import FileMaster from "../pages/FileManagement/FileMaster/FileMaster";
+import LetterType from "../pages/FileManagement/LetterType/LetterType";
+import FileType from "../pages/FileManagement/FileType/FileType";
+import FileClassAdd from "../pages/FileManagement/FileClass/FileClassAdd";
+import FileClassEdit from "../pages/FileManagement/FileClass/FileClassEdit";
+import FileClass from "../pages/FileManagement/FileClass/FileClass";
+import FileGroup from "../pages/FileManagement/FileGroup/FileGroup";
+import FileSubject from "../pages/FileManagement/FileSubject/FileSubject";
+import InstituteEdit from "../pages/master/InstitueForm/InstituteEdit";
+import AuthorityEmployeeMapping from "../pages/master/Authority Employee Mapping/AuthorityEmployeeMapping";
 
 const appRoutes: RouteType[] = [
   {
@@ -302,24 +287,6 @@ const appRoutes: RouteType[] = [
         element: <MenuMasterEdit />,
         state: "master.MenuMasterEdit",
       },
-      {
-        path: "/master/FileCategory",
-        element: <FileCategory />,
-        state: "master.FileCategory",
-        sidebarProps: {
-          displayText: "File Category",
-        },
-      },
-      {
-        path: "/master/FileCategoryAdd",
-        element: <FileCategoryAdd />,
-        state: "master.FileCategoryAdd",
-      },
-      {
-        path: "/master/FileCategoryEdit",
-        element: <FileCategoryEdit />,
-        state: "master.FileCategoryEdit",
-      },
 
       {
         path: "/master/Jurisdiction",
@@ -349,28 +316,21 @@ const appRoutes: RouteType[] = [
         element: <JurisdictionMasterEdit/>,
         state: "master.JurisdictionMasterEdit",
       },
-      {
-        path: "/master/FileMaster",
-        element: <FileMaster />,
-        state: "master.FileMaster",
-        sidebarProps: {
-          displayText: "File Master",
-        },
-      },
-      {
-        path: "/master/LetterType",
-        element: <LetterType />,
-        state: "master.LetterType",
-        sidebarProps: {
-          displayText: "Letter Type",
-        },
-      },
+     
       {
         path: "/master/AuthorityMaster",
         element: <AuthorityMaster />,
         state: "master.AuthorityMaster",
         sidebarProps: {
           displayText: "Authority",
+        },
+      },
+      {
+        path: "/master/AuthorityEmployeeMapping",
+        element: <AuthorityEmployeeMapping />,
+        state: "master.AuthorityEmployeeMapping",
+        sidebarProps: {
+          displayText: "Authority Emp Mapping",
         },
       },
       {
@@ -409,6 +369,12 @@ const appRoutes: RouteType[] = [
       },
 
       {
+        path: "/master/InstituteEdit",
+        element: <InstituteEdit/>,
+        state: "master.InstituteEdit",
+      },
+
+      {
         path: "/master/SectionMaster",
         element: <SectionMaster/>,
         state: "master.SectionMaster",
@@ -436,38 +402,98 @@ const appRoutes: RouteType[] = [
   //======================Master Form End========================
 
 
-  //======================Route Section Start========================
+  //======================FileManagement Start====================
   {
-    path: "/Route",
-    element: <DashboardPageLayout />,
-    state: "Route",
-    child: [
-      {
-        index: true,
-        element: <DashboardIndex />,
-        state: "Route.index",
-      },
-      {
-        path: "/Route/Route",
-        element: <Route />,
-        state: "Route.Route",
-        sidebarProps: {
-          displayText: "Route",
+      path: "/FileManagement",
+      element: <DashboardPageLayout />,
+      state: "FileManagement",
+      child: [
+        {
+          index: true,
+          element: <DashboardIndex />,
+          state: "FileManagement.index",
         },
-      },
-      {
-        path: "/Route/RouteAdd",
-        element: <RouteAdd />,
-        state: "Route.RouteAdd",
-      },
-      {
-        path: "/Route/RouteEdit",
-        element: <RouteEdit />,
-        state: "Route.RouteEdit",
-      },
-    ],
-  },
-  //======================Route Section End========================
+        {
+          path: "/FileManagement/FileCategory",
+          element: <FileCategory />,
+          state: "FileManagement.FileCategory",
+          sidebarProps: {
+            displayText: "File Category",
+          },
+        },
+        {
+          path: "/FileManagement/FileCategoryAdd",
+          element: <FileCategoryAdd />,
+          state: "FileManagement.FileCategoryAdd",
+        },
+        {
+          path: "/FileManagement/FileCategoryEdit",
+          element: <FileCategoryEdit />,
+          state: "FileManagement.FileCategoryEdit",
+        },
+        {
+          path: "/FileManagement/FileMaster",
+          element: <FileMaster />,
+          state: "FileManagement.FileMaster",
+          sidebarProps: {
+            displayText: "File Master",
+          },
+        },
+        {
+          path: "/FileManagement/LetterType",
+          element: <LetterType />,
+          state: "FileManagement.LetterType",
+          sidebarProps: {
+            displayText: "Letter Type",
+          },
+        },
+        {
+          path: "/FileManagement/FileType",
+          element: <FileType/>,
+          state: "FileManagement.FileType",
+          sidebarProps: {
+            displayText: "File Type",
+          },
+        },
+        {
+          path: "/FileManagement/FileClass",
+          element: <FileClass/>,
+          state: "FileManagement.FileClass",
+          sidebarProps: {
+            displayText: "File Class",
+          },
+        },
+  
+        {
+          path: "/FileManagement/FileClassAdd",
+          element: <FileClassAdd/>,
+          state: "FileManagement.FileClassAdd",
+          
+        },
+        {
+          path: "/FileManagement/FileClassEdit",
+          element: <FileClassEdit/>,
+          state: "FileManagement.FileClassEdit",
+          
+        },
+        {
+          path: "/FileManagement/FileGroup",
+          element: <FileGroup/>,
+          state: "FileManagement.FileGroup",
+          sidebarProps: {
+            displayText: "File Group",
+          },
+        },
+        {
+          path: "/FileManagement/FileSubject",
+          element: <FileSubject/>,
+          state: "FileManagement.FileSubject",
+          sidebarProps: {
+            displayText: "File Subject",
+          },
+        },
+      ]},
+  //======================FileManagement End====================
 
   
 //   //==================Start Committee====================
@@ -546,8 +572,6 @@ const appRoutes: RouteType[] = [
         state: "Committee.SplitPage",
        
       },
-
-
       {
         path: "/Committee/DocumentIndexing",
         element: <DocumentIndexing/>,
@@ -555,7 +579,24 @@ const appRoutes: RouteType[] = [
        
       },
 
-      
+      {
+        path: "/Committee/Route",
+        element: <Route />,
+        state: "Committee.Route",
+        sidebarProps: {
+          displayText: "Route",
+        },
+      },
+      {
+        path: "/Committee/RouteAdd",
+        element: <RouteAdd />,
+        state: "Committee.RouteAdd",
+      },
+      {
+        path: "/Committee/RouteEdit",
+        element: <RouteEdit />,
+        state: "Committee.RouteEdit",
+      },
 
 
 
@@ -563,168 +604,6 @@ const appRoutes: RouteType[] = [
   },
 //   //===================End committee===================
 
-
-  //==================Start Library====================
-  // {
-  //   path: "/Library",
-  //   element: <DashboardPageLayout />,
-  //   state: "Library",
-  //   child: [
-  //     {
-  //       path: "/Library/FileAssigning",
-  //       element: <FileAssigning />,
-  //       state: "Library.FileAssigning",
-  //       sidebarProps: {
-  //         displayText: "File Assigning",
-  //       },
-  //     },
-
-  //     {
-  //       path: "/Library/IssueReturn",
-  //       element: <IssueReturn />,
-  //       state: "Library.IssueReturn",
-  //       sidebarProps: {
-  //         displayText: "Issue Return",
-  //       },
-  //     },
-  //     {
-  //       path: "/Library/FileClass",
-  //       element: <FileClass/>,
-  //       state: "Library.FileClass",
-  //       sidebarProps: {
-  //         displayText: "File Class",
-  //       },
-  //     },
-
-  //     {
-  //       path: "/Library/FileClassAdd",
-  //       element: <FileClassAdd/>,
-  //       state: "Library.FileClassAdd",
-        
-  //     },
-  //     {
-  //       path: "/Library/FileClassEdit",
-  //       element: <FileClassEdit/>,
-  //       state: "Library.FileClassEdit",
-        
-  //     },
-  //     {
-  //       path: "/Library/FileGroup",
-  //       element: <FileGroup/>,
-  //       state: "Library.FileGroup",
-  //       sidebarProps: {
-  //         displayText: "File Group",
-  //       },
-  //     },
-  //     {
-  //       path: "/Library/FileSubject",
-  //       element: <FileSubject/>,
-  //       state: "Library.FileSubject",
-  //       sidebarProps: {
-  //         displayText: "File Subject",
-  //       },
-  //     },
-  //     {
-  //       path: "/Library/FileMovement",
-  //       element: <FileMovement/>,
-  //       state: "Library.FileMovement",
-  //       sidebarProps: {
-  //         displayText: "File Movement",
-  //       },
-        
-  //     },
-  //     {
-  //       path: "/Library/FileMovementEdit",
-  //       element: <FileMovementEdit/>,
-  //       state: "Library.FileMovementEdit",
-        
-  //     },
-
-
-  //     {
-  //       path: "/Library/UserFileMovement",
-  //       element: <UserFileMovement/>,
-  //       state: "Library.UserFileMovement",
-  //       sidebarProps: {
-  //         displayText: " User File Movement",
-  //       },
-  //     },
-
-
-
-  //     {
-  //       path: "/Library/FileType",
-  //       element: <FileType/>,
-  //       state: "Library.FileType",
-  //       sidebarProps: {
-  //         displayText: "File Type",
-  //       },
-  //     },
-
-  //     {
-  //       path: "/Library/FileDetail",
-  //       element: <FileDetail/>,
-  //       state: "Library.FileDetail",
-  //       sidebarProps: {
-  //         displayText: "File Detail",
-  //       },
-  //     },
-
-  //     {
-  //       path: "/Library/FileDetailAdd",
-  //       element: <FileDetailAdd/>,
-  //       state: "Library.FileDetailAdd",
-        
-  //     },
-
-  //     {
-  //       path: "/Library/FileDetailEdit",
-  //       element: <FileDetailEdit/>,
-  //       state: "Library.FileDetailEdit",
-        
-  //     },
-  //     {
-  //       path: "/Library/ReceiptType",
-  //       element: <ReceiptType/>,
-  //       state: "Library.ReceiptType",
-  //       sidebarProps: {
-  //         displayText: "Receipt Type",
-  //       },
-  //     },
-
-  //     {
-  //       path: "/Library/Location",
-  //       element: <Location/>,
-  //       state: "Library.Location",
-  //       sidebarProps: {
-  //         displayText: "Location",
-  //       },
-  //     },
-  //     {
-  //       path: "/Library/ReqForm",
-  //       element: <ReqForm/>,
-  //       state: "Library.ReqForm",
-  //       sidebarProps: {
-  //         displayText: "Requist Form",
-  //       },
-  //     },
-  //     {
-  //       path: "/Library/ReqFormAdd",
-  //       element: <ReqFormAdd/>,
-  //       state: "Library.ReqFormAdd",
-       
-  //     },
-  //     {
-  //       path: "/Library/ReqFormEdit",
-  //       element: <ReqFormEdit/>,
-  //       state: "Library.ReqFormEdit",
-       
-  //     },
-
-      
-  //   ],
-  // },
-  //===================End Library===================
 
   /////-------------------start ------UserManagement-----------------------
 
@@ -748,7 +627,7 @@ const appRoutes: RouteType[] = [
       element: <UserManagement/>,
       state: "UserManagement.UserManagement",
       sidebarProps: {
-        displayText: "User Management  Master",
+        displayText: "User Management Master",
       }
     },
     {
@@ -788,6 +667,14 @@ const appRoutes: RouteType[] = [
           state: "UserManagement.UserPermissionMaster",
           sidebarProps: {
             displayText: "User Permission",
+          },
+        },
+        {
+          path: "/UserManagement/NodePermission",
+          element: <NodePermission/>,
+          state: "UserManagement.NodePermission",
+          sidebarProps: {
+            displayText: "Node Permission",
           },
         },
     ]

@@ -283,7 +283,7 @@ export default function RouteAdd() {
       if (response.data.isSuccess) {
         setToaster(false);
         toast.success(response.data.mesg);
-        navigate("/Route/Route");
+        navigate("/Committee/Route");
       } else {
         setToaster(true);
         toast.error(response.data.mesg);

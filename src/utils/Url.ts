@@ -1,17 +1,9 @@
-// export default {
-//    HOST_URL3: `http://103.12.1.132:8117/api/`,
-//    HOST_URL2: `http://103.12.1.132:8118/api/`,
-//    HOST_URL: `http://103.12.1.132:8118/api/`,
-// }
-
-
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
 
-//export const HOST_URL = 'http://103.12.1.132:8123/api/';
-export const HOST_URL = 'https://localhost:7237/api/';
+export const HOST_URL = 'http://103.12.1.132:8123/api/';
 
 
 
@@ -24,11 +16,9 @@ api.interceptors.request.use(
     const tokenWithQuotes = sessionStorage.getItem('token');
 
 const token = tokenWithQuotes?.replace(/^"(.*)"$/, '$1');
-// console.log("token", token);
 
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
-      // console.log("first", config.headers.Authorization)
     }
     return config;
   },

@@ -35,7 +35,8 @@ import { TextareaAutosize } from "@mui/base/TextareaAutosize";
 // import QuillEditor from "../../../QuillEditor";
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
-import nopdf from '../../../assets/images/imagepreview.jpg'
+import nopdf from '../../../assets/images/imagepreview.jpg';
+import CustomLabel from "../../../CustomLable";
 
 
 const style = {
@@ -61,7 +62,7 @@ export default function Correspondence() {
     const [editId, setEditId] = useState<any>(-1);
     const [isLoading, setIsLoading] = useState(true);
 
-    const [fileTypeOption, setFileTypeOption] = useState([{ value: "-1", label: t("text.SelectFileType") }]);
+    const [fileTypeOption, setFileTypeOption] = useState([{ value: "-1", label: t("text.SelectFileNo") }]);
 
     const [panOpens, setPanOpen] = useState(false);
     const [modalImg, setModalImg] = useState("");
@@ -225,13 +226,13 @@ export default function Correspondence() {
                             },
                             {
                                 field: "fileNo",
-                                headerName: "File Number",
+                                headerName:t("text.FileNo"),
                                 flex: 1,
                                 headerClassName: "MuiDataGrid-colCell",
                             },
                             {
                                 field: "reviewFlag",
-                                headerName: "Type",
+                                headerName:t("text.Type"),
                                 flex: 1,
                                 headerClassName: "MuiDataGrid-colCell",
                                 renderCell: (params) => {
@@ -270,7 +271,7 @@ export default function Correspondence() {
         initialValues: {
             "fileId": -1,
             "fileNo": "",
-            "fNid": "",
+            "fNid": 0,
             "fileType": "",
             "fileCont": "",
             "nodeId": 0,
@@ -384,7 +385,7 @@ export default function Correspondence() {
                             sx={{ padding: "20px" }}
                             align="left"
                         >
-                            Correspondance
+                           {t("text.Correspondence")}
                         </Typography>
                         <Divider />
 
@@ -401,26 +402,20 @@ export default function Correspondence() {
                                         options={fileTypeOption}
                                         value={
                                             fileTypeOption.find(
-                                                (option) => option.value === formik.values.fNid
+                                                (option: any) => option.value === formik.values.fNid
                                             ) || null
                                         }
                                         fullWidth
                                         size="small"
                                         onChange={(event: any, newValue: any) => {
                                             console.log(newValue?.value);
-                                            // if(newValue!=null){
-                                                formik.setFieldValue("fNid", newValue?.value);
-                                            // }
+
+                                            formik.setFieldValue("fNid", newValue?.value?.toString());
                                             formik.setFieldTouched("fNid", true);
                                             formik.setFieldTouched("fNid", false);
                                         }}
                                         renderInput={(params) => (
-                                            <TextField {...params} label={
-                                                <span>
-                                                    Select File Number {""}
-
-                                                </span>
-                                            } />
+                                            <TextField {...params} label={<CustomLabel text={t("text.SelectFileNo")} />} />
                                         )}
                                     />
                                     {formik.touched.fNid &&
@@ -430,6 +425,22 @@ export default function Correspondence() {
                                         </div>
                                     ) : null}
                                 </Grid>
+
+                                {/* <Grid item xs={6} sm={6}>
+                                            <TextField
+                                                id="fileNm"
+                                                type="text"
+                                                label="Save File ID"
+                                                placeholder="Save File ID"
+                                                // value={formik.values.fileNm}
+                                                size="small"
+                                                name="fileNm"
+                                                fullWidth
+                                                // onChange={formik.handleChange}
+                                                // onBlur={formik.handleBlur}
+                                            />
+                                            
+                                        </Grid> */}
 
                                 <Grid item xs={12} sm={6}>
                                     <FormControl
@@ -442,13 +453,16 @@ export default function Correspondence() {
                                             marginLeft: "12px",
                                         }}
                                     >
+                                        {/* <Grid>
+                    <FormLabel>Type</FormLabel>
+                  </Grid> */}
                                         <Grid>
                                             <RadioGroup
                                                 row
                                                 aria-labelledby="demo-row-radio-buttons-group-label"
                                                 name="row-radio-buttons-group"
-                                                // defaultValue="N"
-                                                value={formik.values.reviewFlag || "N"}
+                                                defaultValue="N"
+                                                value={formik.values.reviewFlag}
                                                 onChange={(event) => {
                                                     console.log("radio value check", event.target.value);
                                                     formik.setFieldValue("reviewFlag", event.target.value);
@@ -457,27 +471,27 @@ export default function Correspondence() {
                                                 <FormControlLabel
                                                     value="N"
                                                     control={<Radio />}
-                                                    label="Note Sheet"
+                                                    label={t("text.NoteSheet")}
                                                 />
                                                 <FormControlLabel
                                                     value="C"
                                                     control={<Radio />}
-                                                    label="Correspondence"
+                                                    label={t("text.Correspondence")}
                                                 />
                                                 <FormControlLabel
                                                     value="R"
                                                     control={<Radio />}
-                                                    label="Report"
+                                                    label={t("text.Report")}
                                                 />
                                                 <FormControlLabel
                                                     value="1"
                                                     control={<Radio />}
-                                                    label="Offer"
+                                                    label={t("text.Ofer")}
                                                 />
                                                 <FormControlLabel
                                                     value="2"
                                                     control={<Radio />}
-                                                    label="Other"
+                                                    label={t("text.Other")}
                                                 />
                                             </RadioGroup>
                                         </Grid>
@@ -498,11 +512,7 @@ export default function Correspondence() {
                                             type="file"
                                             //   inputProps={{ accept: "application/pdf" }}
                                             InputLabelProps={{ shrink: true }}
-                                            label={
-                                                <strong style={{ color: "#000" }}>
-                                                    {t("text.AttachedFile")}
-                                                </strong>
-                                            }
+                                            label={<CustomLabel text={t("text.AttachedFile")} />}
                                             size="small"
                                             fullWidth
                                             style={{ backgroundColor: "white" }}
@@ -594,7 +604,7 @@ export default function Correspondence() {
                                 <Grid xs={12} sm={12} item>
                                     <TextareaAutosize
                                         aria-label="empty textarea"
-                                        placeholder="Enter Remark"
+                                        placeholder={t("text.EnterRemark")}
                                         // name="fileCont"
                                         // id="fileCont"
                                         style={{

@@ -30,6 +30,7 @@ const resources = {
         InActive: "InActive",
         Action: "Action",
         SrNo: "Sr No.",
+        zoneName:"zone Name",
 
         zoneCode: "Zone Code",
         Status: "Status",
@@ -353,7 +354,8 @@ const resources = {
         RecOrDisp: "Received/Dispatch",
         EnterLetterNumber: "Enter Letter Number",
         LetterSentOn: "Letter Sent On",
-        ReceivedData: "Received Data",
+        ReceivedData: "Received Date",
+        fileOpenDate:"File Open Date",
         EnterMobNo: "Enter Mobile Number",
         EnterTc: "Enter Tc",
         SendTo: "Send To",
@@ -546,11 +548,29 @@ const resources = {
         EnterMaxTenDigits:"Enter Maximum Ten Digits",
         Department:"Department",
         Section:"Section",
+        eSection:"Enter Section",
         CreateSectionMaster:"Create Section Master",
         EditSectionMaster:"Edit Section Master",
         SectionMaster:"Section Master",
-
-
+        Clarification:"Clarification",
+        UpdateStatus:"Update Status",
+        SentenceNo:"Sentence Number",
+        DateOfReceiptOfCheck:"Date Of Receipt Of Check",
+        DateOfIssue:"Date Of Issue",
+        DateOfApproval:"Date Of Approval",
+        RetirementDate:"Retirement Date",
+        SeniorityNo:"Seniority Number",
+        AuditNo:"Audit Number",
+        SentenceNoOrDate:"Sentence Number/Date",
+        FromDate:"From Date",
+        EnterUserTypeCode:"Enter User Type Code",
+        DesignationShort:"Designation Short",
+        DesignationMaster:"Designation Master",
+        reqAuthorityType:"Authority Type Is Require",
+        FileDef:"File Definition",
+        selectAuthority :"Select Authority",
+        selectStatus :"Select Status",
+        SelectDepartment :"Select Department ",
 
 
 
@@ -898,7 +918,8 @@ const resources = {
         RecOrDisp: "प्राप्त हुआ/डिस्पैच",
         EnterLetterNumber: "पत्र संख्या दर्ज करें",
         LetterSentOn: "पत्र भेजा गया",
-        ReceivedData: "प्राप्त डेटा",
+        ReceivedData: "प्राप्त तारीख",
+        fileOpenDate:"फ़ाइल खोलने की तिथि",
         EnterMobNo: "मोबाइल नंबर दर्ज करें",
         EnterTc: "टीसी दर्ज करें",
         SendTo: "को भेजें",
@@ -1100,9 +1121,33 @@ const resources = {
         EnterMaxTenDigits:"अधिकतम दस अंक दर्ज करें",
         Department:"विभाग",
         Section:"अनुभाग",
+        eSection:"अनुभाग दर्ज करें",
         CreateSectionMaster:"अनुभाग मास्टर बनाएं",
         EditSectionMaster:"अनुभाग मास्टर संपादित करें",
         SectionMaster:"अनुभाग मास्टर",
+        Clarification:"स्‍पष्‍टीकरण",
+        UpdateStatus:"स्थिति अपडेट करें",
+        SentenceNo:"दंडादेश संख्या",
+        DateOfReceiptOfCheck:"चेक की प्राप्ति की तिथि",
+        DateOfIssue:"जारी करने की तिथि",
+        DateOfApproval:"अनुमोदन की तिथि",
+        RetirementDate:"सेवानिवृत्ति की तारीख",
+        SeniorityNo:"वरिष्ठता संख्या",
+        AuditNo:"लेखापरीक्षा संख्या",
+        SentenceNoOrDate:"दंडादेश संख्या/ दिनांक	",
+        FromDate:"तारीख से",
+        EnterUserTypeCode:"उपयोगकर्ता प्रकार कोड दर्ज करें",
+        DesignationShort:"पदनाम लघु",
+        DesignationMaster:"पदनाम मास्टर",
+        reqAuthorityType:"प्राधिकरण प्रकार की आवश्यकता है",
+        FileDef:"फ़ाइल परिभाषा",
+        selectAuthority :"प्राधिकरण का चयन करें",
+        selectStatus :"स्थिति चुनें",
+        SelectDepartment :"Select Department",
+        
+ 
+
+        
 
 
 

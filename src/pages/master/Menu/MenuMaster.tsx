@@ -100,16 +100,16 @@ const{i18n,t}=useTranslation();
   let delete_id = "";
   useEffect(() => {
     getList();
-    var data = JSON.parse(localStorage.getItem("userdata")!);
-    var menudata = data[0]["userPermission"][0]["parentMenu"];
-    for (let index = 0; index < menudata.length; index++) {
-      var childMenudata = menudata[index]["childMenu"];
-      var sas = childMenudata.find((x: any) => x.path == location.pathname);
-      if (sas != "undefined") {
-        setMenupermisiondata(sas);
-        break;
-      }
-    }
+    // var data = JSON.parse(localStorage.getItem("userdata")!);
+    // var menudata = data[0]["userPermission"][0]["parentMenu"];
+    // for (let index = 0; index < menudata.length; index++) {
+    //   var childMenudata = menudata[index]["childMenu"];
+    //   var sas = childMenudata.find((x: any) => x.path == location.pathname);
+    //   if (sas != "undefined") {
+        // setMenupermisiondata(sas);
+    //     break;
+    //   }
+    // }
   }, []);
 
 
@@ -228,6 +228,12 @@ const{i18n,t}=useTranslation();
           {
             field: "pageUrl",
             headerName: t("text.PageURL"),
+            flex: 1,
+            headerClassName: "MuiDataGrid-colCell",
+          },
+          {
+            field: "displayNo",
+            headerName: "displayNo",
             flex: 1,
             headerClassName: "MuiDataGrid-colCell",
           },

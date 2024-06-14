@@ -14,7 +14,8 @@ import Autocomplete from "@mui/material/Autocomplete";
 import { Divider } from "@mui/material";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import {useTranslation} from "react-i18next";
+import { useTranslation } from "react-i18next";
+import CustomLabel from "../../../CustomLable";
 type Props = {};
 
 const MenuMasterAdd = (props: Props) => {
@@ -24,7 +25,7 @@ const MenuMasterAdd = (props: Props) => {
   let navigate = useNavigate();
 
   const getMenuName = () => {
-    api.post( `Menu/GetParentMenuMaster`).then((res) => {
+    api.post(`Menu/GetParentMenuMaster`).then((res) => {
       const arr = [];
       console.log("result" + JSON.stringify(res.data.data));
       for (let index = 0; index < res.data.data.length; index++) {
@@ -38,15 +39,15 @@ const MenuMasterAdd = (props: Props) => {
   };
 
   const back = useNavigate();
-  const{t}=useTranslation();
+  const { t } = useTranslation();
   const validationSchema = Yup.object({
     menuName:
-    Yup.string().test(
-      'required', // Unique name for the test
-      t('text.reqMenuName'),// Translation for "*Menu Name is required"
-      function (value:any) {
-        return value && value.trim() !== ''; // Your validation logic here
-      }  ),
+      Yup.string().test(
+        'required', // Unique name for the test
+        t('text.reqMenuName'),// Translation for "*Menu Name is required"
+        function (value: any) {
+          return value && value.trim() !== ''; // Your validation logic here
+        }),
 
   });
 
@@ -72,12 +73,12 @@ const MenuMasterAdd = (props: Props) => {
     },
     validationSchema: validationSchema,
     onSubmit: async (values) => {
-      
+
       const response = await api.post(
         `Menu/AddUpdateMenuMaster`,
         values
-        );
-  try {
+      );
+      try {
         // console.log("API Response:", response.data);
         alert(response.data.mesg);
         navigate("/master/MenuMaster");
@@ -105,7 +106,7 @@ const MenuMasterAdd = (props: Props) => {
             textAlign="center"
             style={{ marginTop: "10px", fontSize: "18px", fontWeight: 500 }}
           >
-          {t("text.CreateMenuMaster")}
+            {t("text.CreateMenuMaster")}
           </Typography>
           <Grid xs={4} sm={12} item>
             <Typography style={{ marginTop: "-75px" }}>
@@ -126,21 +127,15 @@ const MenuMasterAdd = (props: Props) => {
           </Grid>
           <Divider />
           <br />
-        
+
           <form onSubmit={formik.handleSubmit}>
             <Grid container spacing={1}>
-            <Grid xs={12} sm={4} item>
+              <Grid xs={12} sm={4} item>
                 <TextField
                   type="text"
                   name="menuName"
                   id="menuName"
-                  label={
-                    <span>
-                        {t("text.EnterMenuName")}{requiredFields.includes('menuName') && (
-                        <span style={{ color: formik.values.menuName ? 'green' : 'red' }}>*</span>
-                      )}
-                    </span>
-                  }
+                  label={<CustomLabel text={t("text.EnterMenuName")} required={requiredFields.includes('menuName')} />}
                   value={formik.values.menuName}
                   placeholder={t("text.EnterMenuName")}
                   size="small"
@@ -157,48 +152,40 @@ const MenuMasterAdd = (props: Props) => {
               </Grid>
 
               <Grid xs={12} sm={4} item>
-              <TextField
+                <TextField
                   type="text"
                   name="pageUrl"
                   id="pageUrl"
-                  label={
-                    <span>
-                       {t("text.EnterPageURL")}
-                    </span>
-                  }
+                  label={<CustomLabel text={t("text.EnterPageURL")} />}
                   value={formik.values.pageUrl}
-                  placeholder= {t("text.EnterPageURL")}
+                  placeholder={t("text.EnterPageURL")}
                   size="small"
                   fullWidth
                   style={{ backgroundColor: "white", borderColor: formik.touched.pageUrl && formik.errors.pageUrl ? 'red' : 'initial', }}
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                 />
-                
+
               </Grid>
 
               <Grid xs={12} sm={4} item>
-               <TextField
+                <TextField
                   type="text"
                   name="icon"
                   id="icon"
-                  label={
-                    <span>
-                      {t("text.EnterIcon")}
-                    </span>
-                  }
+                  label={<CustomLabel text={t("text.EnterIcon")} />}
                   value={formik.values.icon}
-                  placeholder= {t("text.EnterIcon")}
+                  placeholder={t("text.EnterIcon")}
                   size="small"
                   fullWidth
                   style={{ backgroundColor: "white", borderColor: formik.touched.icon && formik.errors.icon ? 'red' : 'initial', }}
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                 />
-               
+
               </Grid>
               <Grid xs={12} sm={4} item>
-                
+
                 <Autocomplete
                   disablePortal
                   id="combo-box-demo"
@@ -207,7 +194,7 @@ const MenuMasterAdd = (props: Props) => {
                   onOpen={() => {
                     getMenuName();
                   }}
-                 
+
                   size="small"
                   onChange={(event, newValue) => {
                     // console.log(newValue?.value);
@@ -215,36 +202,28 @@ const MenuMasterAdd = (props: Props) => {
                     formik.setFieldValue("parentId", newValue?.value);
                   }}
                   renderInput={(params) => (
-                    <TextField {...params} label={
-                      <span>
-                         {t("text.selectParentMenuName")} 
-                      </span>
-                    } />
+                    <TextField {...params} label={<CustomLabel text={t("text.selectParentMenuName")} />} />
                   )}
                 />
 
               </Grid>
               <Grid xs={12} sm={4} item>
-               <TextField
+                <TextField
                   type="text"
                   name="displayNo"
                   id="displayNo"
-                  label={
-                    <span>
-                      {t("text.EnterdisplayNo")}
-                    </span>
-                  }
+                  label={<CustomLabel text={t("text.EnterdisplayNo")} />}
                   value={formik.values.displayNo}
-                  placeholder= {t("text.EnterdisplayNo")}
+                  placeholder={t("text.EnterdisplayNo")}
                   size="small"
                   fullWidth
                   style={{ backgroundColor: "white", borderColor: formik.touched.displayNo && formik.errors.displayNo ? 'red' : 'initial', }}
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                 />
-               
+
               </Grid>
-             
+
 
               <Grid xs={12} item>
                 <div style={{ justifyContent: "space-between", flex: 2 }}>
@@ -269,7 +248,7 @@ const MenuMasterAdd = (props: Props) => {
                     }}
                     onClick={() => formik.resetForm()}
                   >
-                 {t("text.reset")}
+                    {t("text.reset")}
                   </Button>
                 </div>
               </Grid>

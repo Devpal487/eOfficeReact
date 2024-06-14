@@ -385,7 +385,7 @@ export default function UserPermissionMaster() {
                   direction="row"
                   sx={{ alignItems: "center", marginTop: "5px" }}
                 >
-                  {permissionData?.isEdit ? (
+                  {/* {permissionData?.isEdit ? ( */}
                     <EditIcon
                       style={{
                         fontSize: "20px",
@@ -395,10 +395,10 @@ export default function UserPermissionMaster() {
                       className="cursor-pointer"
                       onClick={() => routeChangeEdit(params.row)}
                     />
-                  ) : (
+                  {/* ) : (
                     ""
-                  )}
-                  {permissionData?.isDel ? (
+                  )} */}
+                  {/* {permissionData?.isDel ? ( */}
                     <DeleteIcon
                       style={{
                         fontSize: "20px",
@@ -409,9 +409,9 @@ export default function UserPermissionMaster() {
                         handledeleteClick(params.row.id);
                       }}
                     />
-                  ) : (
+                  {/* ) : (
                     ""
-                  )}
+                  )} */}
                   
                   {/* <Switch
                     checked={Boolean(params.row.isActive)}
@@ -739,7 +739,7 @@ export default function UserPermissionMaster() {
           setEnteredEployeeName(null);
           
           setOpen(false);
-          let path = `/Master/UserPermissionMaster`;
+          let path = `/UserManagement/UserPermissionMaster`;
           getList();
           navigate(path);
         } else {

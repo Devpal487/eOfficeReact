@@ -10,6 +10,7 @@ import { useTranslation } from "react-i18next";
 import { toast } from "react-toastify";
 import ToastApp from '../../../ToastApp';
 import { getISTDate } from "../../../utils/Constant";
+import CustomLabel from '../../../CustomLable';
 
 type Props = {};
 
@@ -112,13 +113,7 @@ const DesignationMasterEdit = (props: Props) => {
                   <TextField
                     id="designationName"
                     name="designationName"
-                    label={
-                      <span>
-                        {t("text.enterDesName")}{" "}{requiredFields.includes('designationName') && (
-                          <span style={{ color: formik.values.designationName ? 'green' : 'red' }}>*</span>
-                        )}
-                      </span>
-                    }
+                    label={<CustomLabel text={t("text.enterDesName")} required={requiredFields.includes('designationName')}  />}
                     value={formik.values.designationName}
                     placeholder={t("text.enterDesName")}
                     size="small"
@@ -139,7 +134,7 @@ const DesignationMasterEdit = (props: Props) => {
                   <TextField
                     id="designationCode"
                     name="designationCode"
-                    label={t("text.entershortCode")}
+                    label={<CustomLabel text={t("text.entershortCode")}  />}
                     value={formik.values.designationCode}
                     placeholder={t("text.entershortCode")}
                     size="small"

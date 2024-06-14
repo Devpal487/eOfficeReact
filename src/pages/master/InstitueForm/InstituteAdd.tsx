@@ -45,6 +45,7 @@ import { toast } from "react-toastify";
 import ToastApp from "../../../ToastApp";
 import { ColorLens as ColorLensIcon } from "@mui/icons-material";
 import { SketchPicker } from "react-color";
+import CustomLabel from "../../../CustomLable";
 
 const style = {
     position: "absolute" as "absolute",
@@ -589,7 +590,7 @@ const InstituteAdd = (props: Props) => {
 
                             <Grid item md={12} style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
                                 <FormControl component="fieldset" style={{ padding: "1%", border: "1px solid #ccc", borderRadius: "5px", flex: '1' }}>
-                                    <FormLabel component="legend"> {t("text.ShowAcademicSession")}</FormLabel>
+                                    <FormLabel component="legend">{<CustomLabel text={t("text.ShowAcademicSession")} />}</FormLabel>
                                     <RadioGroup
                                         row
                                         aria-label="academicSession"
@@ -604,7 +605,7 @@ const InstituteAdd = (props: Props) => {
                                 </FormControl>
 
                                 <FormControl component="fieldset" style={{ padding: "1%", border: "1px solid #ccc", borderRadius: "5px", flex: '1' }}>
-                                    <FormLabel component="legend">{t("text.ShowFinancialYear")}</FormLabel>
+                                    <FormLabel component="legend">{<CustomLabel text={t("text.ShowFinancialYear")} />}</FormLabel>
                                     <RadioGroup
                                         row
                                         aria-label="shoFincYr"
@@ -620,7 +621,7 @@ const InstituteAdd = (props: Props) => {
 
 
                                 <FormControl component="fieldset" style={{ padding: "1%", border: "1px solid #ccc", borderRadius: "5px", flex: '1' }}>
-                                    <FormLabel component="legend">{t("text.EditAcademicSession")}</FormLabel>
+                                    <FormLabel component="legend">{<CustomLabel text={t("text.EditAcademicSession")} />}</FormLabel>
                                     <RadioGroup
                                         row
                                         aria-label="editAcadSess"
@@ -635,7 +636,7 @@ const InstituteAdd = (props: Props) => {
                                 </FormControl>
 
                                 <FormControl component="fieldset" style={{ padding: "1%", border: "1px solid #ccc", borderRadius: "5px", flex: '1' }}>
-                                    <FormLabel component="legend">{t("text.EditableFinancialYear")}</FormLabel>
+                                    <FormLabel component="legend">{<CustomLabel text={t("text.EditableFinancialYear")} />}</FormLabel>
                                     <RadioGroup
                                         row
                                         aria-label="editFincYr"
@@ -650,7 +651,7 @@ const InstituteAdd = (props: Props) => {
                                 </FormControl>
 
                                 <FormControl component="fieldset" style={{ padding: "1%", border: "1px solid #ccc", borderRadius: "5px", flex: '1' }}>
-                                    <FormLabel component="legend">{t("text.DefaultJurisdiction")}</FormLabel>
+                                    <FormLabel component="legend">{<CustomLabel text={t("text.DefaultJurisdiction")} />}</FormLabel>
                                     <RadioGroup
                                         row
                                         aria-label="jurisdictionDefault"
@@ -668,7 +669,7 @@ const InstituteAdd = (props: Props) => {
                             <Grid item md={12}>
 
                                 <FormControl component="fieldset">
-                                    <FormLabel component="legend">{t("text.OrgType")}</FormLabel>
+                                    <FormLabel component="legend">{<CustomLabel text={t("text.OrgType")} />}</FormLabel>
                                     <RadioGroup
                                         row
                                         aria-label="inst_type"
@@ -689,7 +690,7 @@ const InstituteAdd = (props: Props) => {
                             <Grid md={4} item>
                                 <TextField
 
-                                    label={t("text.InstituteName")}
+                                    label={<CustomLabel text={t("text.InstituteName")} />}
                                     value={formik.values.insname}
                                     placeholder={t("text.InstituteName")}
                                     size="small"
@@ -706,7 +707,7 @@ const InstituteAdd = (props: Props) => {
                             <Grid md={4} item>
                                 <TextField
 
-                                    label={t("text.ShortName")}
+                                    label={<CustomLabel text={t("text.ShortName")} />}
                                     value={formik.values.shortName}
                                     placeholder={t("text.ShortName")}
                                     size="small"
@@ -745,12 +746,7 @@ const InstituteAdd = (props: Props) => {
                                     renderInput={(params) => (
                                         <TextField
                                             {...params}
-                                            label={
-                                                <span>
-                                                    {t("text.SelectCountry")} {""}
-
-                                                </span>
-                                            }
+                                            label={<CustomLabel text={t("text.SelectCountry")} />}
                                         />
                                     )}
                                 />
@@ -782,12 +778,7 @@ const InstituteAdd = (props: Props) => {
                                     renderInput={(params) => (
                                         <TextField
                                             {...params}
-                                            label={
-                                                <span>
-                                                    {t("text.SelectState")} {""}
-
-                                                </span>
-                                            }
+                                            label={<CustomLabel text={t("text.SelectState")} />}
                                         />
                                     )}
                                 />
@@ -819,12 +810,7 @@ const InstituteAdd = (props: Props) => {
                                     renderInput={(params) => (
                                         <TextField
                                             {...params}
-                                            label={
-                                                <span>
-                                                    {t("text.SelectCity")} {""}
-
-                                                </span>
-                                            }
+                                            label={<CustomLabel text={t("text.SelectCity")} />}
                                         />
                                     )}
                                 />
@@ -837,7 +823,7 @@ const InstituteAdd = (props: Props) => {
                             <Grid md={4} item>
                                 <TextField
 
-                                    label={t("text.Address")}
+                                    label={<CustomLabel text={t("text.Address")} />}
                                     value={formik.values.address}
                                     placeholder={t("text.Address")}
                                     size="small"
@@ -853,7 +839,7 @@ const InstituteAdd = (props: Props) => {
                             <Grid md={4} item>
                                 <TextField
 
-                                    label={t("text.District")}
+                                    label={<CustomLabel text={t("text.District")} />}
                                     value={formik.values.district}
                                     placeholder={t("text.District")}
                                     size="small"
@@ -870,13 +856,7 @@ const InstituteAdd = (props: Props) => {
                                 <TextField
                                     id="esYear"
                                     name="esYear"
-                                    label={
-                                        <span>
-                                            {t("text.YearOfEstablishment")}{" "}{requiredFields.includes('esYear') && (
-                                                <span style={{ color: formik.values.esYear ? 'green' : 'red' }}>*</span>
-                                            )}
-                                        </span>
-                                    }
+                                    label={<CustomLabel text={t("text.YearOfEstablishment")} required={requiredFields.includes('esYear')}  />}
                                     value={formik.values.esYear}
                                     placeholder={t("text.YearOfEstablishment")}
                                     size="small"
@@ -895,7 +875,7 @@ const InstituteAdd = (props: Props) => {
                             <Grid md={4} item>
                                 <TextField
 
-                                    label={t("text.Category")}
+                                    label={<CustomLabel text={t("text.Category")} />}
                                     value={formik.values.collegeCategory}
                                     placeholder={t("text.Category")}
                                     size="small"
@@ -911,7 +891,7 @@ const InstituteAdd = (props: Props) => {
                             <Grid md={4} item>
                                 <TextField
 
-                                    label={t("text.Principal")}
+                                    label={<CustomLabel text={t("text.Principal")} />}
                                     value={formik.values.principal}
                                     placeholder={t("text.Principal")}
                                     size="small"
@@ -927,7 +907,7 @@ const InstituteAdd = (props: Props) => {
                             <Grid md={4} item>
                                 <TextField
 
-                                    label={t("text.collegeStatus")}
+                                    label={<CustomLabel text={t("text.collegeStatus")} />}
                                     value={formik.values.collegeStatus}
                                     placeholder={t("text.collegeStatus")}
                                     size="small"
@@ -943,7 +923,7 @@ const InstituteAdd = (props: Props) => {
                             <Grid md={4} item>
                                 <TextField
 
-                                    label={t("text.ResidencialAddress")}
+                                    label={<CustomLabel text={t("text.ResidencialAddress")} />}
                                     value={formik.values.resiAddress}
                                     placeholder={t("text.ResidencialAddress")}
                                     size="small"
@@ -960,13 +940,7 @@ const InstituteAdd = (props: Props) => {
                                 <TextField
                                     id="phone"
                                     name="phone"
-                                    label={
-                                        <span>
-                                            {t("text.MobNo")}{" "}{requiredFields.includes('phone') && (
-                                                <span style={{ color: formik.values.phone ? 'green' : 'red' }}>*</span>
-                                            )}
-                                        </span>
-                                    }
+                                    label={<CustomLabel text={t("text.MobNo")} required={requiredFields.includes('phone')}  />}
                                     value={formik.values.phone}
                                     placeholder={t("text.MobNo")}
                                     size="small"
@@ -987,7 +961,7 @@ const InstituteAdd = (props: Props) => {
                             <Grid md={4} item>
                                 <TextField
 
-                                    label={t("text.OficeNO")}
+                                    label={<CustomLabel text={t("text.OficeNO")} />}
                                     value={formik.values.officeNo}
                                     placeholder={t("text.OficeNO")}
                                     size="small"
@@ -1005,7 +979,7 @@ const InstituteAdd = (props: Props) => {
                             <Grid md={4} item>
                                 <TextField
 
-                                    label={t("text.ResiNO")}
+                                    label={<CustomLabel text={t("text.ResiNO")} />}
                                     value={formik.values.resiNo}
                                     placeholder={t("text.ResiNO")}
                                     size="small"
@@ -1023,7 +997,7 @@ const InstituteAdd = (props: Props) => {
                             <Grid md={4} item>
                                 <TextField
 
-                                    label={t("text.PinCode")}
+                                    label={<CustomLabel text={t("text.PinCode")} />}
                                     value={formik.values.pincode}
                                     placeholder={t("text.PinCode")}
                                     size="small"
@@ -1041,7 +1015,7 @@ const InstituteAdd = (props: Props) => {
                             <Grid md={4} item>
                                 <TextField
 
-                                    label={t("text.Email")}
+                                    label={<CustomLabel text={t("text.Email")} />}
                                     value={formik.values.email}
                                     placeholder={t("text.Email")}
                                     size="small"
@@ -1058,7 +1032,7 @@ const InstituteAdd = (props: Props) => {
                             <Grid md={4} item>
                                 <TextField
 
-                                    label={t("text.Fax")}
+                                    label={<CustomLabel text={t("text.Fax")} />}
                                     value={formik.values.fax}
                                     placeholder={t("text.Fax")}
                                     size="small"
@@ -1076,7 +1050,7 @@ const InstituteAdd = (props: Props) => {
                             <Grid md={4} item>
                                 <TextField
 
-                                    label={t("text.Website")}
+                                    label={<CustomLabel text={t("text.Website")} />}
                                     value={formik.values.website}
                                     placeholder={t("text.Website")}
                                     size="small"
@@ -1092,7 +1066,7 @@ const InstituteAdd = (props: Props) => {
                             <Grid md={4} item>
                                 <TextField
 
-                                    label={t("text.DistrictArea")}
+                                    label={<CustomLabel text={t("text.DistrictArea")} />}
                                     value={formik.values.districtArea}
                                     placeholder={t("text.DistrictArea")}
                                     size="small"
@@ -1109,7 +1083,7 @@ const InstituteAdd = (props: Props) => {
                             <Grid md={4} item>
                                 <TextField
 
-                                    label={t("text.StatusPg")}
+                                    label={<CustomLabel text={t("text.StatusPg")} />}
                                     value={formik.values.statusPG}
                                     placeholder={t("text.StatusPg")}
                                     size="small"
@@ -1125,7 +1099,7 @@ const InstituteAdd = (props: Props) => {
                             <Grid md={4} item>
                                 <TextField
 
-                                    label={t("text.Registrar")}
+                                    label={<CustomLabel text={t("text.Registrar")} />}
                                     value={formik.values.registrar}
                                     placeholder={t("text.Registrar")}
                                     size="small"
@@ -1142,7 +1116,7 @@ const InstituteAdd = (props: Props) => {
                             <Grid md={4} item>
                                 <TextField
 
-                                    label={t("text.NameOfFaculties")}
+                                    label={<CustomLabel text={t("text.NameOfFaculties")} />}
                                     value={formik.values.facultiesName}
                                     placeholder={t("text.NameOfFaculties")}
                                     size="small"
@@ -1160,13 +1134,7 @@ const InstituteAdd = (props: Props) => {
                                 <TextField
                                     id="noOfTeachers"
                                     name="noOfTeachers"
-                                    label={
-                                        <span>
-                                            {t("text.NoOfTeachers")}{" "}{requiredFields.includes('noOfTeachers') && (
-                                                <span style={{ color: formik.values.noOfTeachers ? 'green' : 'red' }}>*</span>
-                                            )}
-                                        </span>
-                                    }
+                                    label={<CustomLabel text={t("text.NoOfTeachers")} required={requiredFields.includes('noOfTeachers')}  />}
                                     value={formik.values.noOfTeachers}
                                     placeholder={t("text.NoOfTeachers")}
                                     size="small"
@@ -1185,7 +1153,7 @@ const InstituteAdd = (props: Props) => {
                             <Grid md={4} item>
                                 <TextField
                                     type="date"
-                                    label={t("text.DateFrom")}
+                                    label={<CustomLabel text={t("text.DateFrom")} />}
                                     value={formik.values.datefrom}
                                     placeholder={t("text.DateFrom")}
                                     size="small"
@@ -1201,7 +1169,7 @@ const InstituteAdd = (props: Props) => {
                             <Grid md={4} item>
                                 <TextField
                                     type="date"
-                                    label={t("text.AccesedByNaac")}
+                                    label={<CustomLabel text={t("text.AccesedByNaac")} />}
                                     value={formik.values.date_R}
                                     placeholder={t("text.AccesedByNaac")}
                                     size="small"
@@ -1218,13 +1186,7 @@ const InstituteAdd = (props: Props) => {
                                 <TextField
                                     id="session_year"
                                     name="session_year"
-                                    label={
-                                        <span>
-                                            {t("text.SessionYear")}{" "}{requiredFields.includes('session_year') && (
-                                                <span style={{ color: formik.values.session_year ? 'green' : 'red' }}>*</span>
-                                            )}
-                                        </span>
-                                    }
+                                    label={<CustomLabel text={t("text.SessionYear")} required={requiredFields.includes('session_year')}  />}
                                     value={formik.values.session_year}
                                     placeholder={t("text.SessionYear")}
                                     size="small"
@@ -1245,13 +1207,7 @@ const InstituteAdd = (props: Props) => {
                                 <TextField
                                     id="reAttenDuration"
                                     name="reAttenDuration"
-                                    label={
-                                        <span>
-                                            {t("text.ReAtendenceDuration")}{" "}{requiredFields.includes('reAttenDuration') && (
-                                                <span style={{ color: formik.values.reAttenDuration ? 'green' : 'red' }}>*</span>
-                                            )}
-                                        </span>
-                                    }
+                                    label={<CustomLabel text={t("text.ReAtendenceDuration")} required={requiredFields.includes('reAttenDuration')}  />}
                                     value={formik.values.reAttenDuration}
                                     placeholder={t("text.ReAtendenceDuration")}
                                     size="small"
@@ -1301,12 +1257,7 @@ const InstituteAdd = (props: Props) => {
                                     renderInput={(params) => (
                                         <TextField
                                             {...params}
-                                            label={
-                                                <span>
-                                                    {t("text.EnableAutoStuCredentials")} {""}
-
-                                                </span>
-                                            }
+                                            label={<CustomLabel text={t("text.EnableAutoStuCredentials")} />}
                                         />
                                     )}
                                 />
@@ -1349,11 +1300,7 @@ const InstituteAdd = (props: Props) => {
                                     renderInput={(params) => (
                                         <TextField
                                             {...params}
-                                            label={
-                                                <span>
-                                                    {t("text.SelectStudentRoles")}
-                                                </span>
-                                            }
+                                            label={<CustomLabel text={t("text.SelectStudentRoles")} />}
                                         />
                                     )}
                                 />
@@ -1392,12 +1339,7 @@ const InstituteAdd = (props: Props) => {
                                     renderInput={(params) => (
                                         <TextField
                                             {...params}
-                                            label={
-                                                <span>
-                                                    {t("text.EnableAutoEmpCredentials")} {""}
-
-                                                </span>
-                                            }
+                                            label={<CustomLabel text={t("text.EnableAutoEmpCredentials")} />}
                                         />
                                     )}
                                 />
@@ -1440,11 +1382,7 @@ const InstituteAdd = (props: Props) => {
                                     renderInput={(params) => (
                                         <TextField
                                             {...params}
-                                            label={
-                                                <span>
-                                                    {t("text.SelectEmployeeRoles")}
-                                                </span>
-                                            }
+                                            label={<CustomLabel text={t("text.SelectEmployeeRoles")} />}
                                         />
                                     )}
                                 />
@@ -1488,12 +1426,7 @@ const InstituteAdd = (props: Props) => {
                                     renderInput={(params) => (
                                         <TextField
                                             {...params}
-                                            label={
-                                                <span>
-                                                    {t("text.EnableBiometric")} {""}
-
-                                                </span>
-                                            }
+                                            label={<CustomLabel text={t("text.EnableBiometric")} />}
                                         />
                                     )}
                                 />
@@ -1522,12 +1455,7 @@ const InstituteAdd = (props: Props) => {
                                     renderInput={(params) => (
                                         <TextField
                                             {...params}
-                                            label={
-                                                <span>
-                                                    {t("text.EnableDualBiometric")} {""}
-
-                                                </span>
-                                            }
+                                            label={<CustomLabel text={t("text.EnableDualBiometric")} />}
                                         />
                                     )}
                                 />
@@ -1555,12 +1483,7 @@ const InstituteAdd = (props: Props) => {
                                     renderInput={(params) => (
                                         <TextField
                                             {...params}
-                                            label={
-                                                <span>
-                                                    {t("text.MenuType")} {""}
-
-                                                </span>
-                                            }
+                                            label={<CustomLabel text={t("text.MenuType")} />}
                                         />
                                     )}
                                 />
@@ -1589,12 +1512,7 @@ const InstituteAdd = (props: Props) => {
                                     renderInput={(params) => (
                                         <TextField
                                             {...params}
-                                            label={
-                                                <span>
-                                                    {t("text.SelectParentInstitute")} {""}
-
-                                                </span>
-                                            }
+                                            label={<CustomLabel text={t("text.SelectParentInstitute")} />}
                                         />
                                     )}
                                 />
@@ -1602,7 +1520,7 @@ const InstituteAdd = (props: Props) => {
 
                             <Grid item md={4}>
                                 <TextField
-                                    label={t("text.MenuBackColor")}
+                                    label={<CustomLabel text={t("text.MenuBackColor")} />}
                                     value={formik.values.mBackColor}
                                     placeholder={t("text.MenuBackColor")}
                                     size="small"
@@ -1643,7 +1561,7 @@ const InstituteAdd = (props: Props) => {
                             <Grid item md={4}>
                                 <TextField
 
-                                    label={t("text.MenuOverColor")}
+                                    label={<CustomLabel text={t("text.MenuOverColor")} />}
                                     value={formik.values.mOverColor}
                                     placeholder={t("text.MenuOverColor")}
                                     size="small"
@@ -1703,11 +1621,7 @@ const InstituteAdd = (props: Props) => {
                                     type="file"
                                     inputProps={{ accept: "image/*" }}
                                     InputLabelProps={{ shrink: true }}
-                                    label={
-                                        <strong style={{ color: "#000" }}>
-                                            {t("text.Attachedlogo")}
-                                        </strong>
-                                    }
+                                    label={<CustomLabel text={t("text.Attachedlogo")} />}
                                     size="small"
                                     fullWidth
                                     style={{ backgroundColor: "white" }}
@@ -1798,11 +1712,7 @@ const InstituteAdd = (props: Props) => {
                                     type="file"
                                     inputProps={{ accept: "image/*" }}
                                     InputLabelProps={{ shrink: true }}
-                                    label={
-                                        <strong style={{ color: "#000" }}>
-                                            {t("text.UploadImage")}
-                                        </strong>
-                                    }
+                                    label={<CustomLabel text={t("text.UploadImage")} />}
                                     size="small"
                                     fullWidth
                                     style={{ backgroundColor: "white" }}
@@ -1896,11 +1806,7 @@ const InstituteAdd = (props: Props) => {
                                     type="file"
                                     inputProps={{ accept: "image/*" }}
                                     InputLabelProps={{ shrink: true }}
-                                    label={
-                                        <strong style={{ color: "#000" }}>
-                                            {t("text.ReportHeaderImg")}
-                                        </strong>
-                                    }
+                                    label={<CustomLabel text={t("text.ReportHeaderImg")} />}
                                     size="small"
                                     fullWidth
                                     style={{ backgroundColor: "white" }}
@@ -1994,11 +1900,7 @@ const InstituteAdd = (props: Props) => {
                                     type="file"
                                     inputProps={{ accept: "image/*" }}
                                     InputLabelProps={{ shrink: true }}
-                                    label={
-                                        <strong style={{ color: "#000" }}>
-                                            {t("text.ReportFooterImg")}
-                                        </strong>
-                                    }
+                                    label={<CustomLabel text={t("text.ReportFooterImg")} />}
                                     size="small"
                                     fullWidth
                                     style={{ backgroundColor: "white" }}
@@ -2093,11 +1995,7 @@ const InstituteAdd = (props: Props) => {
                                     type="file"
                                     inputProps={{ accept: "image/*" }}
                                     InputLabelProps={{ shrink: true }}
-                                    label={
-                                        <strong style={{ color: "#000" }}>
-                                            {t("text.ReportHeader")}
-                                        </strong>
-                                    }
+                                    label={<CustomLabel text={t("text.ReportHeader")} />}
                                     size="small"
                                     fullWidth
                                     style={{ backgroundColor: "white" }}

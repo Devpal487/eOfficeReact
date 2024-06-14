@@ -4,8 +4,6 @@ import {
   GridColDef,
   GridToolbar,
 } from "@mui/x-data-grid";
-import axios from "axios";
-import HOST_URL from "../../../utils/Url";
 import Card from "@mui/material/Card";
 import {
   Box,
@@ -16,9 +14,7 @@ import {
   Typography,
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
-import Switch from "@mui/material/Switch";
 import { useNavigate, useLocation } from "react-router-dom";
-import Chip from "@mui/material/Chip";
 import { useTranslation } from "react-i18next";
 import Paper from "@mui/material/Paper";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
@@ -77,16 +73,6 @@ export default function CountryMaster() {
       }
   }, [isLoading]);
 
-
-  let ID: any = localStorage.getItem("useR_ID")
-  if (ID !== null) {
-    ID = ID.replace(/\D/g, '');
-    // console.log("useR_ID", parseInt(ID));
-  } else {
-    toast.error("User ID not Found");
-  }
-
-  
   const routeChangeEdit = (row: any) => {
     console.log("row " + row);
 
@@ -279,7 +265,7 @@ export default function CountryMaster() {
           width: "100%",
           // height: "100%",
           backgroundColor: "#E9FDEE",
-          // border: ".5px solid #FF7722 ",
+          border: ".5px solid #FF7722 ",
           marginTop:"3vh"
         }}
       >

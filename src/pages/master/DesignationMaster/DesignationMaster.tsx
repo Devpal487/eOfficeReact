@@ -242,13 +242,13 @@ export default function DesignationMaster() {
           },
           {
             field: "designationName",
-            headerName: "Designation Name",
+            headerName: t("text.DesignationName"),
             flex: 1,
             headerClassName: "MuiDataGrid-colCell",
           },
           {
             field: "designationCode",
-            headerName: "Designation Short",
+            headerName: t("text.DesignationShort"),
             flex: 1,
             headerClassName: "MuiDataGrid-colCell",
           },
@@ -323,7 +323,7 @@ export default function DesignationMaster() {
             sx={{ padding: "20px" }}
             align="left"
           >
-            {t("text.desName")}
+            {t("text.DesignationMaster")}
           </Typography>
           <Divider />
 

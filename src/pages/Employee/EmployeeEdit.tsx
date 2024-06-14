@@ -24,6 +24,7 @@ import nopdf from "../../assets/images/imagepreview.jpg";
 import { Console } from "console";
 import dayjs, { Dayjs } from "dayjs";
 import api from "../../utils/Url";
+import CustomLabel from "../../CustomLable";
 
 const style = {
   position: "absolute" as "absolute",

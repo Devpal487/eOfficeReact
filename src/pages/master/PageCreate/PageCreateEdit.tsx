@@ -1,4 +1,4 @@
-import { Button, CardContent, Grid, TextField, Typography, Divider, Autocomplete, Modal, Box, Select, MenuItem, FormControlLabel, Radio, IconButton, InputAdornment, Dialog, DialogTitle, DialogContent, RadioGroup, Table } from '@mui/material';
+import { Button, FormControl,FormLabel, CardContent, Grid, TextField, Typography, Divider, Autocomplete, Modal, Box, Select, MenuItem, FormControlLabel, Radio, IconButton, InputAdornment, Dialog, DialogTitle, DialogContent, RadioGroup, Table,Collapse } from '@mui/material';
 import ArrowBackSharpIcon from '@mui/icons-material/ArrowBackSharp';
 import React, { useState, useEffect } from 'react'
 import axios from 'axios';
@@ -17,6 +17,8 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import SwipeableDrawerRoute from "./SwipeableDrawerRoute";
 import VisibilityIcon from '@mui/icons-material/Visibility';
+import KeyboardArrowUpTwoToneIcon from '@mui/icons-material/KeyboardArrowUpTwoTone';
+import ExpandMoreTwoToneIcon from '@mui/icons-material/ExpandMoreTwoTone';
 
 
 const style = {
@@ -87,9 +89,29 @@ const PageCreateEdit = (props: Props) => {
     ]);
 
     const [tableData, setTableData] = useState<any>([]);
-    const [fileName, setfileName] = useState("");
+    const [pDate, setPDate] = useState("");
+    const [keywords, setKeywords] = useState("");
     const [pdf, setPDF] = useState("");
-    const [pdfView, setPdfView] = useState("");
+    const [fileName, setfileName] = useState("");
+
+    
+    const [tableData1, setTableData1] = useState<any>([]);
+    const [EmpCode, setEmpCode] = useState("");
+    const [Remark, setRemark] = useState("");
+    const [AuditNo, setAuditNo] = useState("");
+    const [SeniorityNo, setSeniorityNo] = useState("");
+    const [RetirementDate, setRetirementDate] = useState("");
+    const [DateOfApproval, setDateOfApproval] = useState("");
+    const [DateOfIssue, setDateOfIssue] = useState("");
+    const [DateOfCheck, setDateOfCheck] = useState("");
+    const [SentenceNo, setSentenceNo] = useState("");
+
+    const [openCollaps, setopenCollaps] = useState(false);
+
+    const handleCollapse = () => {
+        setopenCollaps(prevOpen => !prevOpen);
+    };
+
     const [Shows, setShows] = React.useState(false);
     const [Img, setImg] = useState<any>("");
 
@@ -147,6 +169,7 @@ const PageCreateEdit = (props: Props) => {
 
     const [open, setOpen] = useState(false);
     const [selectedValue, setSelectedValue] = useState('manual');
+    const [rootid, setRootid] = useState("");
 
     const handleClickOpen = () => {
         setOpen(true);
@@ -196,7 +219,6 @@ const PageCreateEdit = (props: Props) => {
             .post(`RouteMemberCycle/GetRouteMemberCycle`, collectData)
             .then((res) => {
                 const arr = res.data.data.map((item: any) => ({
-                    rootID: item.id,
                     label: item.routeName,
                     value: item.id,
                 }));
@@ -207,7 +229,7 @@ const PageCreateEdit = (props: Props) => {
 
 
     const getRootPreview = async () => {
-       
+
         const collectData = {
             "id": formik.values.rootID || -1,
             "authorityId": -1,
@@ -311,24 +333,31 @@ const PageCreateEdit = (props: Props) => {
     const getimgbyid = () => {
         const collectData = {
             rid: location.state.rid,
-            rlId: location.state.rlId,
-            inst_id: location.state.inst_id,
-            user_id: location.state.user_id,
-            refNo: location.state.refNo,
-            divisionid: location.state.divisionid,
+            rlId: -1,
+            inst_id: -1,
+            user_id: "",
+            refNo: -1,
+            divisionid: -1,
+            "rFileType": -1,
+            "fromdate": "2020-06-13T08:17:35.332Z",
+            "todate": "2024-06-13T08:17:35.332Z",
+            "type":1
 
         };
 
         api
             .post(`ReferenceDiary/GetReferenceDiary`, collectData)
             .then((res) => {
-                console.log("result" + JSON.stringify(res.data.data[0]["fileattach_name"]));
-
-                const Doc = res.data.data[0]["fileattach_name"];
-                formik.setFieldValue("fileattach_name", Doc);
+                const Doc = res.data.data[0]["pdfBase64"];
+                const routeIDs = res.data.data[0]["routeID"];
+                console.log("🚀 ~ .then ~ routeIDs:", routeIDs)
+                // console.log("🚀 ~ .then ~ Doc:", Doc)
+                formik.setFieldValue("pdfBase64", Doc);
+                formik.setFieldValue("routeID", routeIDs);
             });
     };
 
+    const [pdfView, setPdfView] = useState("");
 
     const [panOpens, setPanOpen] = React.useState(false);
     const [modalImg, setModalImg] = useState("");
@@ -337,8 +366,8 @@ const PageCreateEdit = (props: Props) => {
     };
     const modalOpenHandle = (event: any) => {
         setPanOpen(true);
-        if (event === "fileattach_name") {
-            setModalImg(formik.values.fileattach_name);
+        if (event === "pdfBase64") {
+            setModalImg(formik.values.pdfBase64);
         }
     };
     const ConvertBase64 = (file: Blob) => {
@@ -353,13 +382,7 @@ const PageCreateEdit = (props: Props) => {
             };
         });
     };
-    // const otherDocChangeHandler = async (event: any, params: any) => {
-    //   if (event.target.files && event.target.files[0]) {
-    //     const file = event.target.files[0];
-    //     const base64 = await ConvertBase64(file);
-    //     formik.setFieldValue(params, base64);
-    //   }
-    // }
+
 
     const otherDocChangeHandler = async (event: any, params: any) => {
         if (event.target.files && event.target.files[0]) {
@@ -383,28 +406,7 @@ const PageCreateEdit = (props: Props) => {
 
     let navigate = useNavigate();
 
-
     const back = useNavigate();
-
-    const requiredFields = ['pdfName,rPhone'];
-
-    const validationSchema = Yup.object({
-
-
-        rPhone: Yup.string()
-            // .test(
-            //     'required',
-            //     t('text.reqMobNo'),
-            //     function (value: any) {
-            //         return value && value.trim() !== '';
-            //     }
-            // )
-            .matches(/^[0-9]*$/, t('text.EnterNoOnly'))
-            .max(10, t('text.EnterMaxTenDigits'))
-
-
-    });
-
 
     const [toaster, setToaster] = useState(false);
 
@@ -437,13 +439,15 @@ const PageCreateEdit = (props: Props) => {
             fileattach_name: location.state.fileattach_name,
             divisionid: location.state.divisionid,
             pucPending: location.state.pucPending,
-            routeID: location.state.routeID,
+            routeID: location.state.routeID, 
             type: location.state.type,
-            FileType: 0,
-            rootID :-1
+            FileType: location.state.FileType,
+            pdfPath: location.state.pdfpath,
+            pdfBase64: location.state.pdfBase64,
+            fileOpenDate: dayjs(location.state.fileOpenDate).format("YYYY-MM-DD"),
+            types:location.state.types
 
         },
-        validationSchema: validationSchema,
         onSubmit: async (values: any) => {
 
             if (values.rFileType && (!values.rFileNumber || !values.rLetterNumber)) {
@@ -533,43 +537,64 @@ const PageCreateEdit = (props: Props) => {
         }
     };
 
-    const addMoreRow = () => {
+  
+    const addMoreRow1 = () => {
         const newRows = {
-            id: tableData.length + 1,
+            id: tableData1.length + 1,
             pdFid: -1,
-            pdfName: fileName,
-            docMid: -1,
 
-            subFtype: "",
+            docMid: -1,
+            keywords: keywords,
+            Remark: Remark,
+
+            EmpCode: EmpCode,
+            AuditNo: AuditNo,
+            SeniorityNo: SeniorityNo,
+            RetirementDate: RetirementDate,
+            DateOfApproval: DateOfApproval,
+            DateOfIssue: DateOfIssue,
+            DateOfCheck: DateOfCheck,
+            SentenceNo: SentenceNo,
 
             isMain: "",
 
             user_id: -1,
-            pdfPath: pdf,
-            pdfView: pdfView,
+
             srn: -1,
             isDelete: false,
         };
 
-        setTableData((prevTableData: any) => {
+        setTableData1((prevTableData: any) => {
             const updatedTableDataed = [...prevTableData, newRows];
             return updatedTableDataed;
         });
         console.log(newRows);
 
-        setfileName("");
-        setPDF("");
+
+
+        setKeywords("");
+        setEmpCode("");
+        setRemark("");
+        setAuditNo("");
+        setSeniorityNo("");
+        setRetirementDate("");
+        setDateOfApproval("");
+        setDateOfIssue("");
+        setDateOfCheck("");
+        setSentenceNo("");
+
 
     };
 
-    const removeExtraRow = (id: any) => {
-        setTableData((prevTableData: any) => {
+    const removeExtraRow1 = (id: any) => {
+        setTableData1((prevTableData: any) => {
             const updatedTableDataed = prevTableData.filter(
                 (row: any) => row.id !== id
             );
             return updatedTableDataed;
         });
     };
+
 
 
 
@@ -624,44 +649,91 @@ const PageCreateEdit = (props: Props) => {
                     <form onSubmit={formik.handleSubmit}>
                         {toaster === false ? "" : <ToastApp />}
                         <Grid item xs={12} container spacing={2}>
-
-                            <Grid md={12} item >
+                            <Grid sm={5} md={5} item>
                                 <Box display="flex" justifyContent="center" alignItems="center">
-
                                     <FormControlLabel
                                         value="received"
-                                        control={<Radio checked={selectedOption === 'received'} onChange={handleRadioChange} />}
+                                        control={
+                                            <Radio
+                                                checked={selectedOption === "received"}
+                                                onChange={handleRadioChange}
+                                            />
+                                        }
                                         label={t("text.Received")}
                                     />
                                     <FormControlLabel
                                         value="dispatch"
-                                        control={<Radio checked={selectedOption === 'dispatch'} onChange={handleRadioChange} />}
+                                        control={
+                                            <Radio
+                                                checked={selectedOption === "dispatch"}
+                                                onChange={handleRadioChange}
+                                            />
+                                        }
                                         label={t("text.Dispatch")}
                                     />
                                     <FormControlLabel
                                         value="received/dispatch"
-                                        control={<Radio checked={selectedOption === 'received/dispatch'} onChange={handleRadioChange} />}
+                                        control={
+                                            <Radio
+                                                checked={selectedOption === "received/dispatch"}
+                                                onChange={handleRadioChange}
+                                            />
+                                        }
                                         label={t("text.RecOrDisp")}
                                     />
-
                                 </Box>
-
                             </Grid>
 
+                            <Grid sm={5} md={5} xs={12}>
+                                <FormControl
+                                    style={{
+                                        display: "flex",
+                                        flexDirection: "row",
+                                        alignItems: "center",
+                                        gap: 20,
+                                        marginTop: "13px",
+                                        marginLeft: "12px",
+                                    }}
+                                >
+                                    <Grid>
+                                        <FormLabel>Submit Files For</FormLabel>
+                                    </Grid>
+                                    <Grid>
+                                        <RadioGroup
+                                            row
+                                            aria-labelledby="demo-row-radio-buttons-group-label"
+                                            name="row-radio-buttons-group"
+                                            defaultValue="A"
+                                            onChange={(event) => {
+                                                console.log("radio value check", event.target.value);
+                                                formik.setFieldValue("types", event.target.value);
+                                            }}
+                                        >
+                                            <FormControlLabel
+                                                value="A"
+                                                control={<Radio />}
+                                                label="Approval"
+                                            />
+                                            <FormControlLabel
+                                                value="G"
+                                                control={<Radio />}
+                                                label="General"
+                                            />
+                                        </RadioGroup>
+                                    </Grid>
+                                </FormControl>
+                            </Grid>
 
+                            <Grid sm={2} md={2} xs={12}></Grid>
 
                             <Grid item lg={4} xs={12}>
                                 <Autocomplete
                                     disablePortal
                                     id="combo-box-demo"
                                     options={LetterType}
-                                    value={
-                                        LetterType.find(
-                                            (option: any) => option.value === formik.values.rlId
-                                        ) || null
-                                    }
                                     fullWidth
                                     size="small"
+                                    value={LetterType.find((opt:any)=> opt.value == formik.values.rlId)|| null}
                                     onChange={(event, newValue: any) => {
                                         console.log(newValue?.value);
 
@@ -671,46 +743,19 @@ const PageCreateEdit = (props: Props) => {
                                         formik.setFieldTouched("rlId", false);
                                     }}
                                     renderInput={(params) => (
-                                        <TextField
-                                            {...params}
-                                            label={
-                                                <span>
-                                                    {t("text.SelectLetterType")} {""}
-                                                    {requiredFields.includes("rlId") && (
-                                                        <span
-                                                            style={{
-                                                                color: formik.values.rlId ? "green" : "red",
-                                                            }}
-                                                        >
-                                                            *
-                                                        </span>
-                                                    )}
-                                                </span>
-                                            }
-                                        />
+                                        <TextField {...params} label={t("text.SelectLetterType")} />
                                     )}
                                 />
-
-                                {formik.touched.rlId && formik.errors.rlId ? (
-                                    <div style={{ color: "red", margin: "5px" }}>
-                                        {String(formik.errors.rlId)}
-                                    </div>
-                                ) : null}
                             </Grid>
 
-                            {selectedOption !== 'dispatch' && (
-
+                            {selectedOption !== "dispatch" && (
                                 <Grid item lg={4} xs={12}>
                                     <Autocomplete
                                         disablePortal
                                         id="combo-box-demo"
                                         options={PriorityOps}
-                                        value={
-                                            PriorityOps.find(
-                                                (option: any) => option.value + "" === formik.values.rPriority
-                                            ) || null
-                                        }
                                         fullWidth
+                                        value={PriorityOps.find((opt:any)=> opt.value == formik.values.rPriority)|| null}
                                         size="small"
                                         onChange={(event, newValue: any) => {
                                             console.log(newValue?.value);
@@ -721,47 +766,19 @@ const PageCreateEdit = (props: Props) => {
                                             formik.setFieldTouched("rPriority", false);
                                         }}
                                         renderInput={(params) => (
-                                            <TextField
-                                                {...params}
-                                                label={
-                                                    <span>
-                                                        {t("text.SelectPriority")} {""}
-                                                        {requiredFields.includes("rPriority") && (
-                                                            <span
-                                                                style={{
-                                                                    color: formik.values.rPriority ? "green" : "red",
-                                                                }}
-                                                            >
-                                                                *
-                                                            </span>
-                                                        )}
-                                                    </span>
-                                                }
-                                            />
+                                            <TextField {...params} label={t("text.SelectPriority")} />
                                         )}
                                     />
-
-                                    {formik.touched.rPriority && formik.errors.rPriority ? (
-                                        <div style={{ color: "red", margin: "5px" }}>
-                                            {String(formik.errors.rPriority)}
-                                        </div>
-                                    ) : null}
                                 </Grid>
-
                             )}
-
 
                             <Grid item lg={4} xs={12}>
                                 <Autocomplete
                                     disablePortal
                                     id="combo-box-demo"
                                     options={LanguageOption}
-                                    value={
-                                        LanguageOption.find(
-                                            (option: any) => option.value + "" === formik.values.rLanguage
-                                        ) || null
-                                    }
                                     fullWidth
+                                    value={LanguageOption.find((opt:any)=> opt.value == formik.values.rLanguage)|| null}
                                     size="small"
                                     onChange={(event, newValue: any) => {
                                         console.log(newValue?.value);
@@ -772,45 +789,18 @@ const PageCreateEdit = (props: Props) => {
                                         formik.setFieldTouched("rLanguage", false);
                                     }}
                                     renderInput={(params) => (
-                                        <TextField
-                                            {...params}
-                                            label={
-                                                <span>
-                                                    {t("text.SelectLanguage")} {""}
-                                                    {requiredFields.includes("rLanguage") && (
-                                                        <span
-                                                            style={{
-                                                                color: formik.values.rLanguage ? "green" : "red",
-                                                            }}
-                                                        >
-                                                            *
-                                                        </span>
-                                                    )}
-                                                </span>
-                                            }
-                                        />
+                                        <TextField {...params} label={t("text.SelectLanguage")} />
                                     )}
                                 />
-
-                                {formik.touched.rLanguage && formik.errors.rLanguage ? (
-                                    <div style={{ color: "red", margin: "5px" }}>
-                                        {String(formik.errors.rLanguage)}
-                                    </div>
-                                ) : null}
                             </Grid>
-
 
                             <Grid item lg={4} xs={12}>
                                 <Autocomplete
                                     disablePortal
                                     id="combo-box-demo"
                                     options={FileOption}
-                                    value={
-                                        FileOption.find(
-                                            (option: any) => option.value === formik.values.rFileType
-                                        ) || null
-                                    }
                                     fullWidth
+                                    value={FileOption.find((opt:any)=> opt.value == formik.values.rFileType)|| null}
                                     size="small"
                                     onChange={(event, newValue: any) => {
                                         console.log(newValue?.value);
@@ -821,33 +811,10 @@ const PageCreateEdit = (props: Props) => {
                                         formik.setFieldTouched("rFileType", false);
                                     }}
                                     renderInput={(params) => (
-                                        <TextField
-                                            {...params}
-                                            label={
-                                                <span>
-                                                    {t("text.SelectFileType")} {""}
-                                                    {requiredFields.includes("rFileType") && (
-                                                        <span
-                                                            style={{
-                                                                color: formik.values.rFileType ? "green" : "red",
-                                                            }}
-                                                        >
-                                                            *
-                                                        </span>
-                                                    )}
-                                                </span>
-                                            }
-                                        />
+                                        <TextField {...params} label={t("text.SelectFileType")} />
                                     )}
                                 />
-
-                                {formik.touched.rFileType && formik.errors.rFileType ? (
-                                    <div style={{ color: "red", margin: "5px" }}>
-                                        {String(formik.errors.rFileType)}
-                                    </div>
-                                ) : null}
                             </Grid>
-
 
                             <Grid item lg={4} xs={12}>
                                 <Autocomplete
@@ -856,15 +823,14 @@ const PageCreateEdit = (props: Props) => {
                                     options={FileNoOps}
                                     value={
                                         FileNoOps.find(
-                                            (option: any) => option.value === formik.values.rFileNumber
+                                            (option: any) =>
+                                                option.value === formik.values.rFileNumber
                                         ) || null
                                     }
                                     fullWidth
                                     size="small"
                                     onChange={(event, newValue: any) => {
                                         console.log(newValue?.value);
-
-
 
                                         formik.setFieldValue("rFileNumber", newValue?.value);
 
@@ -874,26 +840,9 @@ const PageCreateEdit = (props: Props) => {
                                     renderInput={(params) => (
                                         <TextField
                                             {...params}
-
                                             id="rFileNumber"
                                             name="rFileNumber"
-
-
-                                            label={
-                                                <span>
-                                                    {t("text.SelectFileNo")} {""}
-                                                    {requiredFields.includes("rFileNumber") && (
-                                                        <span
-                                                            style={{
-                                                                color: formik.values.rFileNumber ? "green" : "red",
-                                                            }}
-                                                        >
-                                                            *
-                                                        </span>
-                                                    )}
-                                                </span>
-                                            }
-
+                                            label={t("text.SelectFileNo")}
                                             InputProps={{
                                                 ...params.InputProps,
                                                 endAdornment: (
@@ -902,20 +851,20 @@ const PageCreateEdit = (props: Props) => {
                                                             color="primary"
                                                             aria-label="add"
                                                             sx={{
-                                                                backgroundColor: '#77A979',
-                                                                '&:hover': { backgroundColor: '#B2EBF2' },
+                                                                backgroundColor: "#77A979",
+                                                                "&:hover": { backgroundColor: "#B2EBF2" },
                                                                 color: "#fff",
-                                                                marginLeft: '110%',
-                                                                padding: '4px',
-                                                                fontSize: '16px',
-                                                                width: '30px',
-                                                                height: '30px'
+                                                                marginLeft: "110%",
+                                                                padding: "4px",
+                                                                fontSize: "16px",
+                                                                width: "30px",
+                                                                height: "30px",
                                                             }}
                                                             onClick={() => {
                                                                 if (formik.values.rFileType) {
                                                                     handleClickOpen();
                                                                 } else {
-                                                                    alert("Please select file type");
+                                                                    toast.error("Please select file type");
                                                                 }
                                                             }}
                                                         >
@@ -924,123 +873,62 @@ const PageCreateEdit = (props: Props) => {
                                                     </InputAdornment>
                                                 ),
                                             }}
-
-
-
                                         />
                                     )}
                                 />
                             </Grid>
 
-
-
-
-
-                            {/* <Grid md={4} item>
-                                <TextField
-                                    label={t("text.FileNo")}
-                                    value={formik.values.rFileNumber}
-                                    placeholder={t("text.FileNo")}
-                                    size="small"
-                                    InputLabelProps={{ shrink: true }}
-                                    fullWidth
-                                    name="rFileNumber"
-                                    id="rFileNumber"
-                                    type="text"
-                                    style={{ backgroundColor: "white" }}
-                                    onChange={formik.handleChange}
-                                    onBlur={formik.handleBlur}
-
-                                    InputProps={{
-                                        endAdornment: (
-                                            <InputAdornment position="end">
-                                                <IconButton
-                                                    color="primary"
-                                                    aria-label="add"
-                                                    sx={{
-                                                        backgroundColor: '#77A979',
-                                                        '&:hover': { backgroundColor: '#B2EBF2' },
-                                                        color: "#fff",
-                                                        marginLeft: '8px',
-                                                        padding: '4px',
-                                                        fontSize: '16px',
-                                                        width: '30px',
-                                                        height: '30px'
-                                                    }}
-                                                    onClick={() => {
-                                                        if (formik.values.rFileType) {
-                                                            handleClickOpen();
-                                                        } else {
-                                                            alert("Please select file type");
-                                                        }
-                                                    }}
-                                                >
-                                                    <AddIcon />
-                                                </IconButton>
-                                            </InputAdornment>
-                                        ),
-                                    }}
-                                />
-                            </Grid> */}
-
-                            <Dialog open={open} onClose={handleClose} sx={{ width: '100%', height: '100%' }}>
-                                <DialogTitle>Select Option</DialogTitle>
-
+                            <Dialog
+                                open={open}
+                                onClose={handleClose}
+                                sx={{ width: "100%", height: "100%" }}
+                            >
+                                <DialogTitle>{t("text.GenerateFileNo")}</DialogTitle>
 
                                 <DialogContent>
-
-                                    <RadioGroup value={selectedValue} onChange={handleButtonChange}>
-                                        <FormControlLabel value="automatic" control={<Radio />} label="Automatic" />
-                                        <FormControlLabel value="manual" control={<Radio />} label="Manual" />
+                                    <RadioGroup
+                                        value={selectedValue}
+                                        onChange={handleButtonChange}
+                                    >
+                                        <FormControlLabel
+                                            value="automatic"
+                                            control={<Radio />}
+                                            label="Automatic"
+                                        />
+                                        <FormControlLabel
+                                            value="manual"
+                                            control={<Radio />}
+                                            label="Manual"
+                                        />
                                     </RadioGroup>
 
-
-                                    {selectedValue === 'automatic' && (
-                                        <Grid container spacing={2} alignItems="center" sx={{ marginTop: 2 }}>
-
+                                    {selectedValue === "automatic" && (
+                                        <Grid
+                                            container
+                                            spacing={2}
+                                            alignItems="center"
+                                            sx={{ marginTop: 2 }}
+                                        >
                                             <Grid item xs={6}>
                                                 <Autocomplete
                                                     disablePortal
                                                     id="combo-box-demo"
                                                     options={SectionOption}
-                                                    // value={
-                                                    //     ZoneOption.find(
-                                                    //         (option) => option.value === formik.values.fileTypeId
-                                                    //     ) || null
-                                                    // }
                                                     fullWidth
                                                     size="small"
                                                     onChange={(event, newValue: any) => {
                                                         console.log(newValue?.value);
-
-
-
-                                                        formik.setFieldValue("rlId", newValue?.value);
-
+                                                        formik.setFieldValue("rlId", newValue?.label);
                                                         formik.setFieldTouched("rlId", true);
                                                         formik.setFieldTouched("rlId", false);
                                                     }}
                                                     renderInput={(params) => (
                                                         <TextField
                                                             {...params}
-                                                            label={
-                                                                <span>
-                                                                    {t("text.SelectSection")} {""}
-                                                                    {requiredFields.includes("rlId") && (
-                                                                        <span
-                                                                            style={{
-                                                                                color: formik.values.rlId ? "green" : "red",
-                                                                            }}
-                                                                        >
-                                                                            *
-                                                                        </span>
-                                                                    )}
-                                                                </span>
-                                                            }
+                                                            label={t("text.SelectSection")}
                                                         />
                                                     )}
                                                 />
-
                                             </Grid>
 
                                             <Grid item xs={6}>
@@ -1048,11 +936,6 @@ const PageCreateEdit = (props: Props) => {
                                                     disablePortal
                                                     id="combo-box-demo"
                                                     options={FileOption}
-                                                    // value={
-                                                    //     ZoneOption.find(
-                                                    //         (option) => option.value === formik.values.fileTypeId
-                                                    //     ) || null
-                                                    // }
                                                     fullWidth
                                                     size="small"
                                                     onChange={(event, newValue: any) => {
@@ -1068,24 +951,10 @@ const PageCreateEdit = (props: Props) => {
                                                     renderInput={(params) => (
                                                         <TextField
                                                             {...params}
-                                                            label={
-                                                                <span>
-                                                                    {t("text.SelectFileType")} {""}
-                                                                    {requiredFields.includes("rFileType") && (
-                                                                        <span
-                                                                            style={{
-                                                                                color: formik.values.rFileType ? "green" : "red",
-                                                                            }}
-                                                                        >
-                                                                            *
-                                                                        </span>
-                                                                    )}
-                                                                </span>
-                                                            }
+                                                            label={t("text.SelectFileType")}
                                                         />
                                                     )}
                                                 />
-
                                             </Grid>
 
                                             <Grid item xs={6}>
@@ -1118,17 +987,17 @@ const PageCreateEdit = (props: Props) => {
                                             </Grid>
 
                                             <Grid item xs={6} sx={{ marginLeft: "40%" }}>
-                                                <Button variant="contained" color="primary" onClick={handleButtonClick} >
-                                                    Generate
+                                                <Button
+                                                    variant="contained"
+                                                    color="primary"
+                                                    onClick={handleButtonClick}
+                                                >
+                                                    {t("text.Generate")}
                                                 </Button>
                                             </Grid>
 
-
-
-
                                             <Grid item xs={8}>
                                                 <TextField
-
                                                     label={t("text.FileNo")}
                                                     value={mergedValue}
                                                     placeholder={t("text.FileNo")}
@@ -1143,22 +1012,29 @@ const PageCreateEdit = (props: Props) => {
                                                 />
                                             </Grid>
                                             <Grid item xs={4}>
-                                                <Button variant="contained" color="primary" onClick={() => {
-                                                    handleClose();
-                                                    fileSubmit();
-                                                }}>
+                                                <Button
+                                                    variant="contained"
+                                                    color="primary"
+                                                    onClick={() => {
+                                                        handleClose();
+                                                        fileSubmit();
+                                                    }}
+                                                >
                                                     Submit
                                                 </Button>
                                             </Grid>
                                         </Grid>
                                     )}
 
-
-                                    {selectedValue === 'manual' && (
-                                        <Grid container spacing={2} alignItems="center" sx={{ marginTop: 2 }}>
+                                    {selectedValue === "manual" && (
+                                        <Grid
+                                            container
+                                            spacing={2}
+                                            alignItems="center"
+                                            sx={{ marginTop: 2 }}
+                                        >
                                             <Grid item xs={8}>
                                                 <TextField
-
                                                     label={t("text.FileNo")}
                                                     value={formik.values.rFileNumber}
                                                     placeholder={t("text.FileNo")}
@@ -1173,7 +1049,14 @@ const PageCreateEdit = (props: Props) => {
                                                 />
                                             </Grid>
                                             <Grid item xs={4}>
-                                                <Button variant="contained" color="primary" onClick={handleClose}>
+                                                <Button
+                                                    variant="contained"
+                                                    color="primary"
+                                                    onClick={() => {
+                                                        handleClose();
+                                                        fileSubmit();
+                                                    }}
+                                                >
                                                     Submit
                                                 </Button>
                                             </Grid>
@@ -1182,19 +1065,9 @@ const PageCreateEdit = (props: Props) => {
                                 </DialogContent>
                             </Dialog>
 
-
-
-
-
                             <Grid md={4} item>
                                 <TextField
-                                    label={
-                                        <span>
-                                            {t("text.EnterLetterNumber")} {requiredFields.includes('rLetterNumber') && (
-                                                <span style={{ color: formik.values.rLetterNumber ? 'green' : 'red' }}>*</span>
-                                            )}
-                                        </span>
-                                    }
+                                    label={t("text.EnterLetterNumber")}
                                     value={formik.values.rLetterNumber}
                                     placeholder={t("text.EnterLetterNumber")}
                                     size="small"
@@ -1205,12 +1078,9 @@ const PageCreateEdit = (props: Props) => {
                                     onChange={formik.handleChange}
                                     onBlur={formik.handleBlur}
                                 />
-                                {formik.touched.rLetterNumber && formik.errors.rLetterNumber ? (
-                                    <div style={{ color: "red", margin: "5px" }}>{String(formik.errors.rLetterNumber)}</div>
-                                ) : null}
                             </Grid>
 
-                            {selectedOption !== 'dispatch' && (
+                            {selectedOption !== "dispatch" && (
                                 <Grid md={4} item>
                                     <TextField
                                         type="date"
@@ -1229,7 +1099,6 @@ const PageCreateEdit = (props: Props) => {
                                 </Grid>
                             )}
 
-
                             <Grid md={4} item>
                                 <TextField
                                     type="date"
@@ -1247,52 +1116,40 @@ const PageCreateEdit = (props: Props) => {
                                 />
                             </Grid>
 
-                            {selectedOption !== 'dispatch' && (
-                                <Grid md={4} item>
-                                    <TextField
-                                        id="rPhone"
-                                        name="rPhone"
-                                        label={
-                                            <span>
-                                                {t("text.EnterMobNo")}{" "}{requiredFields.includes('rPhone') && (
-                                                    <span style={{ color: formik.values.rPhone ? 'green' : 'red' }}>*</span>
-                                                )}
-                                            </span>
-                                        }
-                                        value={formik.values.rPhone}
-                                        placeholder={t("text.EnterMobNo")}
-                                        size="small"
-                                        fullWidth
-                                        style={{
-                                            backgroundColor: 'white',
-                                            borderColor: formik.touched.rPhone && formik.errors.rPhone ? 'red' : 'initial',
-                                        }}
-                                        onChange={formik.handleChange}
-                                        onBlur={formik.handleBlur}
-                                    />
-                                    {formik.touched.rPhone && formik.errors.rPhone ? (
-                                        <div style={{ color: "red", margin: "5px" }}>{String(formik.errors.rPhone)}</div>
-                                    ) : null}
-                                </Grid>
-
-                            )}
-
-                            {/* <Grid md={4} item>
+                            <Grid md={4} item>
                                 <TextField
-                                    label={t("text.EnterTc")}
-                                    value={formik.values.tcNo}
-                                    placeholder={t("text.EnterTc")}
+                                    type="date"
+                                    label={t("text.fileOpenDate")}
+                                    value={formik.values.fileOpenDate}
+                                    name="fileOpenDate"
+                                    id="fileOpenDate"
+                                    placeholder={t("text.fileOpenDate")}
                                     size="small"
                                     InputLabelProps={{ shrink: true }}
                                     fullWidth
-                                    name="tcNo"
-                                    id="tcNo"
-                                    type="text"
                                     style={{ backgroundColor: "white" }}
                                     onChange={formik.handleChange}
                                     onBlur={formik.handleBlur}
                                 />
-                            </Grid> */}
+                            </Grid>
+
+                            {selectedOption !== "dispatch" && (
+                                <Grid md={4} item>
+                                    <TextField
+                                        id="rPhone"
+                                        name="rPhone"
+                                        label={t("text.EnterMobNo")}
+                                        value={formik.values.rPhone}
+                                        placeholder={t("text.EnterMobNo")}
+                                        size="small"
+                                        fullWidth
+                                        style={{ backgroundColor: "white" }}
+                                        onChange={formik.handleChange}
+                                        onBlur={formik.handleBlur}
+                                        inputProps={{ maxLength: 10 }}
+                                    />
+                                </Grid>
+                            )}
 
                             <Grid md={4} item container alignItems="center">
                                 <TextField
@@ -1300,7 +1157,6 @@ const PageCreateEdit = (props: Props) => {
                                     value={formik.values.letterBy}
                                     placeholder={t("text.SendTo")}
                                     size="small"
-                                    InputLabelProps={{ shrink: true }}
                                     fullWidth
                                     name="letterBy"
                                     id="letterBy"
@@ -1309,20 +1165,20 @@ const PageCreateEdit = (props: Props) => {
                                     onChange={formik.handleChange}
                                     onBlur={formik.handleBlur}
                                     InputProps={{
-                                        endAdornment: selectedOption === 'dispatch' && (
+                                        endAdornment: selectedOption === "dispatch" && (
                                             <InputAdornment position="end">
                                                 <IconButton
                                                     color="primary"
                                                     aria-label="add"
                                                     sx={{
-                                                        backgroundColor: '#77A979',
-                                                        '&:hover': { backgroundColor: '#B2EBF2' },
+                                                        backgroundColor: "#77A979",
+                                                        "&:hover": { backgroundColor: "#B2EBF2" },
                                                         color: "#fff",
-                                                        marginLeft: '8px',
-                                                        padding: '4px',
-                                                        fontSize: '16px',
-                                                        width: '30px',
-                                                        height: '30px'
+                                                        marginLeft: "8px",
+                                                        padding: "4px",
+                                                        fontSize: "16px",
+                                                        width: "30px",
+                                                        height: "30px",
                                                     }}
                                                 >
                                                     <AddIcon />
@@ -1338,41 +1194,21 @@ const PageCreateEdit = (props: Props) => {
                                     disablePortal
                                     id="combo-box-demo"
                                     options={RootOps}
-                                    value={
-                                        RootOps.find(
-                                            (option: any) => option.value === formik.values.routeID
-                                        ) || null
-                                    }
                                     fullWidth
+                                    value={RootOps.find((opt:any)=> opt.value == formik.values.routeID)|| null}
                                     size="small"
                                     onChange={(event, newValue: any) => {
-                                        console.log(newValue?.value);
-
-                                        formik.setFieldValue("rootID", newValue?.rootID);
-
+                                        console.log("🚀 ~ PageCreateEdit ~ newValue:", newValue)
+                                        formik.setFieldValue("rootID", newValue?.value);
+                                        setRootid(newValue?.value);
                                         formik.setFieldValue("routeID", newValue?.value);
-
                                         formik.setFieldTouched("routeID", true);
                                         formik.setFieldTouched("routeID", false);
                                     }}
                                     renderInput={(params) => (
                                         <TextField
                                             {...params}
-                                            label={
-                                                <span>
-                                                    {t("text.SelectRoot")} {""}
-                                                    {requiredFields.includes("routeID") && (
-                                                        <span
-                                                            style={{
-                                                                color: formik.values.routeID ? "green" : "red",
-                                                            }}
-                                                        >
-                                                            *
-                                                        </span>
-                                                    )}
-                                                </span>
-                                            }
-
+                                            label={t("text.SelectRoot")}
                                             InputProps={{
                                                 ...params.InputProps,
                                                 endAdornment: (
@@ -1381,26 +1217,24 @@ const PageCreateEdit = (props: Props) => {
                                                             color="primary"
                                                             aria-label="add"
                                                             sx={{
-                                                                backgroundColor: '#5b6cde',
-                                                                '&:hover': { backgroundColor: '#B2EBF2' },
+                                                                backgroundColor: "#5b6cde",
+                                                                "&:hover": { backgroundColor: "#B2EBF2" },
                                                                 color: "#fff",
-                                                                marginLeft: '110%',
-                                                                padding: '4px',
-                                                                fontSize: '16px',
-                                                                width: '30px',
-                                                                height: '30px'
+                                                                marginLeft: "110%",
+                                                                padding: "4px",
+                                                                fontSize: "16px",
+                                                                width: "30px",
+                                                                height: "30px",
                                                             }}
                                                             onClick={() => {
-                                                                if (formik.values.routeID) {
+                                                                if (rootid != "") {
                                                                     getRootPreview();
                                                                 } else {
-                                                                    alert("Please select root");
+                                                                    toast.error("Please select root");
                                                                 }
                                                             }}
-                                                                
-                                                          
                                                         >
-                                                            <VisibilityIcon/>
+                                                            <VisibilityIcon />
                                                         </IconButton>
                                                     </InputAdornment>
                                                 ),
@@ -1408,11 +1242,7 @@ const PageCreateEdit = (props: Props) => {
                                         />
                                     )}
                                 />
-
                             </Grid>
-
-
-                           
 
                             <Grid md={12} item>
                                 <TextField
@@ -1420,7 +1250,6 @@ const PageCreateEdit = (props: Props) => {
                                     value={formik.values.rRemark}
                                     placeholder={t("text.LetterRemark")}
                                     size="small"
-                                    InputLabelProps={{ shrink: true }}
                                     fullWidth
                                     name="rRemark"
                                     id="rRemark"
@@ -1437,7 +1266,6 @@ const PageCreateEdit = (props: Props) => {
                                     value={formik.values.rSendAdrs}
                                     placeholder={t("text.SendFrom")}
                                     size="small"
-                                    InputLabelProps={{ shrink: true }}
                                     fullWidth
                                     name="rSendAdrs"
                                     id="rSendAdrs"
@@ -1454,7 +1282,6 @@ const PageCreateEdit = (props: Props) => {
                                     value={formik.values.rSubject}
                                     placeholder={t("text.Subject")}
                                     size="small"
-                                    InputLabelProps={{ shrink: true }}
                                     fullWidth
                                     name="rSubject"
                                     id="rSubject"
@@ -1464,8 +1291,6 @@ const PageCreateEdit = (props: Props) => {
                                     onBlur={formik.handleBlur}
                                 />
                             </Grid>
-
-
 
                             <Grid container spacing={1} item>
                                 <Grid
@@ -1484,16 +1309,13 @@ const PageCreateEdit = (props: Props) => {
                                                 {t("text.EnterDocUpload")}
                                             </strong>
                                         }
-
                                         size="small"
                                         fullWidth
                                         style={{ backgroundColor: "white" }}
-                                        onChange={(e) => otherDocChangeHandler(e, "fileattach_name")}
+                                        onChange={(e) => otherDocChangeHandler(e, "pdfBase64")}
                                     />
                                 </Grid>
                                 <Grid xs={12} md={4} sm={4} item></Grid>
-
-
 
                                 <Grid xs={12} md={4} sm={4} item>
                                     <Grid
@@ -1504,7 +1326,7 @@ const PageCreateEdit = (props: Props) => {
                                             margin: "10px",
                                         }}
                                     >
-                                        {formik.values.fileattach_name == "" ? (
+                                        {formik.values.pdfBase64 == "" ? (
                                             <img
                                                 src={nopdf}
                                                 style={{
@@ -1516,9 +1338,7 @@ const PageCreateEdit = (props: Props) => {
                                             />
                                         ) : (
                                             <embed
-                                                //alt="preview image"
-
-                                                src={formik.values.fileattach_name}
+                                                src={formik.values.pdfBase64}
                                                 style={{
                                                     width: 150,
                                                     height: 100,
@@ -1529,7 +1349,7 @@ const PageCreateEdit = (props: Props) => {
                                             />
                                         )}
                                         <Typography
-                                            onClick={() => modalOpenHandle("fileattach_name")}
+                                            onClick={() => modalOpenHandle("pdfBase64")}
                                             style={{
                                                 textDecorationColor: "blue",
                                                 textDecorationLine: "underline",
@@ -1555,7 +1375,7 @@ const PageCreateEdit = (props: Props) => {
                                         ) : (
                                             <embed
                                                 // alt="preview image"
-                                                src={modalImg}
+                                                src={formik.values.pdfBase64}
                                                 style={{
                                                     width: "170vh",
                                                     height: "75vh",
@@ -1567,12 +1387,10 @@ const PageCreateEdit = (props: Props) => {
                                 </Modal>
                             </Grid>
 
+                            <Divider />
+                            <br />
 
-
-                            <Grid item xs={12} container spacing={2}>
-
-
-
+                            {/* <Grid item xs={12} container spacing={2}>
                                 <Grid xs={12} lg={2.5} item>
                                     <TextField
                                         id="pdf"
@@ -1589,8 +1407,6 @@ const PageCreateEdit = (props: Props) => {
                                     />
                                 </Grid>
 
-
-
                                 <Grid xs={12} lg={2} item>
                                     <Button
                                         startIcon={<AddCircleIcon />}
@@ -1605,165 +1421,686 @@ const PageCreateEdit = (props: Props) => {
                                         {t("text.add")}
                                     </Button>
                                 </Grid>
+                            </Grid> */}
 
-                            </Grid>
+                            <Grid xs={12} sm={12} item sx={{ marginTop: "3px", overflow: "auto" }}>
+                                <div>
+                                    <IconButton onClick={handleCollapse} style={{ backgroundColor: "#2196f3", color: "#fff", marginBottom: "5px" }} >
+                                        {openCollaps ? <KeyboardArrowUpTwoToneIcon /> : <ExpandMoreTwoToneIcon />}
 
-
-
-
-
-                            {/* <Grid container spacing={2}> */}
-                            <Grid xs={12} sm={12} item sx={{ marginTop: "3px" }}>
-                                <Table
-                                    style={{
-                                        borderCollapse: "collapse",
-                                        width: "100%",
-                                        border: "1px solid black",
-                                    }}
-                                >
-                                    <thead
-                                        style={{ backgroundColor: "#2196f3", color: "#f5f5f5" }}
-                                    >
-                                        <tr>
-                                            <th
-                                                style={{
-                                                    borderLeft: "1px solid black",
-                                                    paddingBlock: "10",
-                                                    paddingTop: "5px",
-                                                    paddingBottom: "5px",
-                                                }}
+                                    </IconButton>
+                                    <strong style={{ textDecoration: 'underline' }}>{openCollaps ? 'Close' : 'Open'} Employee Table</strong>
+                                    <Collapse in={openCollaps}>
+                                        <Table
+                                            style={{
+                                                borderCollapse: "collapse",
+                                                width: "100%",
+                                                border: "1px solid black",
+                                            }}
+                                        >
+                                            <thead
+                                                style={{ backgroundColor: "#2196f3", color: "#f5f5f5" }}
                                             >
-                                                {t("text.Action")}
-                                            </th>
-
-                                            <th
-                                                style={{
-                                                    borderLeft: "1px solid black",
-                                                    paddingTop: "5px",
-                                                    paddingBottom: "5px",
-                                                }}
-                                            >
-                                                {t("text.FileName")}
-                                            </th>
-                                            <th
-                                                style={{
-                                                    borderLeft: "1px solid black",
-                                                    paddingTop: "5px",
-                                                    paddingBottom: "5px",
-                                                }}
-                                            >
-                                                {t("text.PdfFile")}
-                                            </th>
-                                        </tr>
-                                    </thead>
-                                    <tbody style={{ border: "1px solid black" }}>
-                                        {tableData?.map((row: any, index: any) => (
-                                            <tr key={row.id} style={{ border: "1px solid black" }}>
-                                                <td
-                                                    style={{
-                                                        borderLeft: "1px solid black",
-                                                        borderTop: "1px solid black",
-                                                        textAlign: "center",
-                                                    }}
-                                                >
-                                                    {" "}
-                                                    <DeleteIcon
+                                                <tr>
+                                                    <th
                                                         style={{
-                                                            fontSize: "20px",
-                                                            color: "darkred",
-                                                            cursor: "pointer",
-                                                        }}
-                                                        onClick={() => removeExtraRow(row.id)}
-                                                    />{" "}
-                                                    {/* <input type="checkbox" /> */}
-                                                </td>
+                                                            borderLeft: "1px solid black",
+                                                            paddingBlock: "10",
+                                                            paddingTop: "5px",
+                                                            paddingBottom: "5px",
 
-
-                                                <td
-                                                    style={{
-                                                        borderLeft: "1px solid black",
-                                                        borderTop: "1px solid black",
-                                                        textAlign: "center",
-                                                    }}
-                                                >
-                                                    {row.pdfName}
-                                                </td>
-                                                <td
-                                                    style={{
-                                                        borderLeft: "1px solid black",
-                                                        borderTop: "1px solid black",
-                                                        textAlign: "center",
-                                                    }}
-                                                >
-                                                    {row.pdfView == "" ? (
-                                                        ""
-                                                    ) : (
-                                                        <embed
-                                                            src={row.pdfView}
-                                                            style={{
-                                                                width: 150,
-                                                                height: 100,
-                                                                border: "1px solid grey",
-                                                                borderRadius: 10,
-                                                                padding: "2px",
-                                                            }}
-                                                        />
-                                                    )}
-
-                                                    <Typography
-                                                        onClick={() => modalOpenHandle1(row.pdfView)}
-                                                        style={{
-                                                            textDecorationColor: "blue",
-                                                            textDecorationLine: "underline",
-                                                            color: "blue",
-                                                            fontSize: "15px",
-                                                            cursor: "pointer",
                                                         }}
                                                     >
-                                                        {t("text.Preview")}
-                                                    </Typography>
+                                                        {t("text.Action")}
 
-                                                    <Modal open={Shows} onClose={handlePanClose1}>
-                                                        <Box sx={style}>
-                                                            {Img == "" ? (
-                                                                <img
-                                                                    src={nopdf}
-                                                                    style={{
-                                                                        width: "170vh",
-                                                                        height: "75vh",
-                                                                    }}
-                                                                />
-                                                            ) : (
-                                                                <embed
-                                                                    //alt="preview image"
-                                                                    src={Img}
-                                                                    style={{
-                                                                        width: "170vh",
-                                                                        height: "75vh",
-                                                                        borderRadius: 10,
-                                                                    }}
-                                                                />
-                                                            )}
-                                                        </Box>
-                                                    </Modal>
+                                                        <div style={{ display: 'flex', alignItems: 'center' }}>
+                                                            <IconButton
+                                                                color="primary"
+                                                                aria-label="add"
+                                                                sx={{
+                                                                    backgroundColor: '#47cc4c',
+                                                                    '&:hover': { backgroundColor: '#B2EBF2' },
+                                                                    color: "#fff",
+                                                                    marginLeft: '18%',
+                                                                    padding: '4px',
+                                                                    fontSize: '16px',
+                                                                    width: '30px',
+                                                                    height: '30px'
+                                                                }}
+                                                                onClick={addMoreRow1}
+                                                            >
+                                                                <AddIcon />
+                                                            </IconButton>
+                                                        </div>
+                                                    </th>
+
+                                                    <th
+                                                        style={{
+                                                            borderLeft: "1px solid black",
+                                                            padding: "5px",
+                                                            textAlign: "center",
+                                                            width: "200px",
+                                                            minWidth: "200px",
+                                                            maxWidth: "200px",
+                                                            display: "table-cell"
 
 
+                                                        }}
+                                                    >
+                                                        {t("text.EmpName")}
 
-                                                </td>
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </Table>
+                                                        <div style={{ display: 'flex', alignItems: 'center' }}>
+                                                            <TextField
+                                                                id="EmpName"
+                                                                name="EmpName"
+                                                                label={t("text.EmpName")}
+                                                                value={keywords}
+                                                                placeholder={t("text.EmpName")}
+
+                                                                size="small"
+                                                                type="text"
+                                                                fullWidth
+                                                                style={{ backgroundColor: "white", margin: "1%" }}
+                                                                onChange={(e: any) => setKeywords(e.target.value)}
+                                                            />
+                                                        </div>
+
+
+                                                    </th>
+                                                    <th
+                                                        style={{
+                                                            borderLeft: "1px solid black",
+                                                            padding: "5px",
+                                                            textAlign: "center",
+                                                            width: "200px",
+                                                            minWidth: "200px",
+                                                            maxWidth: "200px",
+                                                            display: "table-cell"
+                                                        }}
+                                                    >
+                                                        {t("text.EmpCode")}
+                                                        <div style={{ display: 'flex', alignItems: 'center' }}>
+                                                            <TextField
+                                                                id="EmpCode"
+                                                                name="EmpCode"
+                                                                label={t("text.EmpCode")}
+                                                                value={EmpCode}
+                                                                placeholder={t("text.EmpCode")}
+                                                                size="small"
+                                                                type="text"
+                                                                fullWidth
+                                                                style={{ backgroundColor: "white" }}
+                                                                onChange={(e: any) => setEmpCode(e.target.value)}
+                                                            />
+                                                        </div>
+
+
+                                                    </th>
+
+                                                    <th
+                                                        style={{
+                                                            borderLeft: "1px solid black",
+                                                            padding: "5px",
+                                                            textAlign: "center",
+                                                            width: "200px",
+                                                            minWidth: "200px",
+                                                            maxWidth: "200px",
+                                                            display: "table-cell"
+                                                        }}
+                                                    >
+                                                        {t("text.Remark")}
+                                                        <div style={{ display: 'flex', alignItems: 'center' }}>
+                                                            <TextField
+                                                                id="Remark"
+                                                                name="Remark"
+                                                                label={t("text.Remark")}
+                                                                value={Remark}
+                                                                placeholder={t("text.Remark")}
+                                                                size="small"
+                                                                type="text"
+                                                                fullWidth
+                                                                style={{ backgroundColor: "white" }}
+                                                                onChange={(e: any) => setRemark(e.target.value)}
+                                                            />
+                                                        </div>
+
+
+                                                    </th>
+                                                    <th
+                                                        style={{
+                                                            borderLeft: "1px solid black",
+                                                            padding: "5px",
+                                                            textAlign: "center",
+                                                            width: "200px",
+                                                            minWidth: "200px",
+                                                            maxWidth: "200px",
+                                                            display: "table-cell"
+                                                        }}
+                                                    >
+                                                        {t("text.AuditNo")}
+                                                        <div style={{ display: 'flex', alignItems: 'center' }}>
+                                                            <TextField
+                                                                id="AuditNo"
+                                                                name="AuditNo"
+                                                                label={t("text.AuditNo")}
+                                                                value={AuditNo}
+                                                                placeholder={t("text.AuditNo")}
+                                                                size="small"
+                                                                type="text"
+                                                                fullWidth
+                                                                style={{ backgroundColor: "white" }}
+                                                                onChange={(e: any) => setAuditNo(e.target.value)}
+                                                            />
+                                                        </div>
+
+
+                                                    </th>
+                                                    <th
+                                                        style={{
+                                                            borderLeft: "1px solid black",
+                                                            padding: "5px",
+                                                            textAlign: "center",
+                                                            width: "200px",
+                                                            minWidth: "200px",
+                                                            maxWidth: "200px",
+                                                            display: "table-cell"
+                                                        }}
+                                                    >
+                                                        {t("text.SeniorityNo")}
+                                                        <div style={{ display: 'flex', alignItems: 'center' }}>
+                                                            <TextField
+                                                                id="SeniorityNo"
+                                                                name="SeniorityNo"
+                                                                label={t("text.SeniorityNo")}
+                                                                value={SeniorityNo}
+                                                                placeholder={t("text.SeniorityNo")}
+                                                                size="small"
+                                                                type="text"
+                                                                fullWidth
+                                                                style={{ backgroundColor: "white" }}
+                                                                onChange={(e: any) => setSeniorityNo(e.target.value)}
+                                                            />
+                                                        </div>
+
+
+                                                    </th>
+                                                    <th
+                                                        style={{
+                                                            borderLeft: "1px solid black",
+                                                            padding: "5px",
+                                                            textAlign: "center",
+                                                            width: "200px",
+                                                            minWidth: "200px",
+                                                            maxWidth: "200px",
+                                                            display: "table-cell"
+                                                        }}
+                                                    >
+                                                        {t("text.RetirementDate")}
+                                                        <div style={{ display: 'flex', alignItems: 'center' }}>
+                                                            <TextField
+
+                                                                id="RetirementDate"
+                                                                name="RetirementDate"
+                                                                //label={t("text.RetirementDate")}
+                                                                value={RetirementDate}
+                                                                placeholder={t("text.RetirementDate")}
+                                                                size="small"
+                                                                type="date"
+                                                                InputLabelProps={{ shrink: true }}
+                                                                fullWidth
+                                                                style={{ backgroundColor: "white" }}
+                                                                onChange={(e: any) => setRetirementDate(e.target.value)}
+                                                            />
+                                                        </div>
+
+
+                                                    </th>
+                                                    <th
+                                                        style={{
+                                                            borderLeft: "1px solid black",
+                                                            padding: "5px",
+                                                            textAlign: "center",
+                                                            width: "200px",
+                                                            minWidth: "200px",
+                                                            maxWidth: "200px",
+                                                            display: "table-cell"
+                                                        }}
+                                                    >
+                                                        {t("text.DateOfApproval")}
+                                                        <div style={{ display: 'flex', alignItems: 'center' }}>
+                                                            <TextField
+                                                                id="DateOfApproval"
+                                                                name="DateOfApproval"
+                                                                // label={t("text.DateOfApproval")}
+                                                                value={DateOfApproval}
+                                                                placeholder={t("text.DateOfApproval")}
+                                                                size="small"
+                                                                type="date"
+                                                                fullWidth
+                                                                InputLabelProps={{ shrink: true }}
+                                                                style={{ backgroundColor: "white" }}
+                                                                onChange={(e: any) => setDateOfApproval(e.target.value)}
+                                                            />
+                                                        </div>
+
+
+                                                    </th>
+                                                    <th
+                                                        style={{
+                                                            borderLeft: "1px solid black",
+                                                            padding: "5px",
+                                                            textAlign: "center",
+                                                            width: "200px",
+                                                            minWidth: "200px",
+                                                            maxWidth: "200px",
+                                                            display: "table-cell"
+                                                        }}
+                                                    >
+                                                        {t("text.DateOfIssue")}
+                                                        <div style={{ display: 'flex', alignItems: 'center' }}>
+                                                            <TextField
+                                                                id="DateOfIssue"
+                                                                name="DateOfIssue"
+                                                                //  label={t("text.DateOfIssue")}
+                                                                value={DateOfIssue}
+                                                                placeholder={t("text.DateOfIssue")}
+                                                                size="small"
+                                                                type="date"
+                                                                InputLabelProps={{ shrink: true }}
+                                                                fullWidth
+                                                                style={{ backgroundColor: "white" }}
+                                                                onChange={(e: any) => setDateOfIssue(e.target.value)}
+                                                            />
+                                                        </div>
+
+
+                                                    </th>
+                                                    <th
+                                                        style={{
+                                                            borderLeft: "1px solid black",
+                                                            padding: "5px",
+                                                            textAlign: "center",
+                                                            width: "200px",
+                                                            minWidth: "200px",
+                                                            maxWidth: "200px",
+                                                            display: "table-cell"
+                                                        }}
+                                                    >
+                                                        {t("text.DateOfReceiptOfCheck")}
+                                                        <div style={{ display: 'flex', alignItems: 'center' }}>
+                                                            <TextField
+                                                                id="DateOfCheck"
+                                                                name="DateOfCheck"
+                                                                // label={t("text.DateOfReceiptOfCheck")}
+                                                                value={DateOfCheck}
+                                                                placeholder={t("text.DateOfReceiptOfCheck")}
+                                                                size="small"
+                                                                type="date"
+                                                                InputLabelProps={{ shrink: true }}
+                                                                fullWidth
+                                                                style={{ backgroundColor: "white" }}
+                                                                onChange={(e: any) => setDateOfCheck(e.target.value)}
+                                                            />
+                                                        </div>
+
+
+                                                    </th>
+
+                                                    <th
+                                                        style={{
+                                                            borderLeft: "1px solid black",
+                                                            padding: "5px",
+                                                            textAlign: "center",
+                                                            width: "200px",
+                                                            minWidth: "200px",
+                                                            maxWidth: "200px",
+                                                            display: "table-cell"
+                                                        }}
+                                                    >
+                                                        {t("text.SentenceNoOrDate")}
+                                                        <div style={{ display: 'flex', alignItems: 'center' }}>
+                                                            <TextField
+                                                                id="SentenceNo"
+                                                                name="SentenceNo"
+
+                                                                value={SentenceNo}
+                                                                placeholder={t("text.SentenceNo")}
+                                                                size="small"
+                                                                type="text"
+
+                                                                fullWidth
+                                                                style={{ backgroundColor: "white" }}
+                                                                onChange={(e: any) => setSentenceNo(e.target.value)}
+                                                            />
+                                                        </div>
+
+
+                                                    </th>
+
+
+                                                    <th
+                                                        style={{
+                                                            borderLeft: "1px solid black",
+                                                            padding: "5px",
+                                                            textAlign: "center",
+                                                            width: "200px",
+                                                            minWidth: "200px",
+                                                            maxWidth: "200px",
+                                                            display: "table-cell"
+                                                        }}
+                                                    >
+                                                        {t("text.Designation")}
+                                                        <div style={{ display: 'flex', alignItems: 'center' }}>
+
+                                                            <Autocomplete
+                                                                disablePortal
+                                                                id="combo-box-demo"
+                                                                style={{ backgroundColor: "white" }}
+                                                                options={LetterType}
+                                                                // value={
+                                                                //     ZoneOption.find(
+                                                                //         (option) => option.value === formik.values.fileTypeId
+                                                                //     ) || null
+                                                                // }
+                                                                fullWidth
+                                                                size="small"
+                                                                onChange={(event, newValue: any) => {
+                                                                    console.log(newValue?.value);
+
+                                                                    formik.setFieldValue("rlId", newValue?.value);
+
+                                                                    formik.setFieldTouched("rlId", true);
+                                                                    formik.setFieldTouched("rlId", false);
+                                                                }}
+                                                                renderInput={(params) => (
+                                                                    <TextField
+                                                                        {...params}
+                                                                        label={
+                                                                            <span>
+                                                                                {t("text.Designation")} {""}
+
+                                                                            </span>
+                                                                        }
+                                                                    />
+                                                                )}
+                                                            />
+
+                                                        </div>
+
+
+                                                    </th>
+
+                                                    <th
+                                                        style={{
+                                                            borderLeft: "1px solid black",
+                                                            padding: "5px",
+                                                            textAlign: "center",
+                                                            width: "200px",
+                                                            minWidth: "200px",
+                                                            maxWidth: "200px",
+                                                            display: "table-cell"
+                                                        }}
+                                                    >
+                                                        {t("text.UpdateStatus")}
+                                                        <div style={{ display: 'flex', alignItems: 'center' }}>
+
+                                                            <Autocomplete
+                                                                disablePortal
+                                                                id="combo-box-demo"
+                                                                style={{ backgroundColor: "white" }}
+                                                                options={LetterType}
+                                                                // value={
+                                                                //     ZoneOption.find(
+                                                                //         (option) => option.value === formik.values.fileTypeId
+                                                                //     ) || null
+                                                                // }
+                                                                fullWidth
+                                                                size="small"
+                                                                onChange={(event, newValue: any) => {
+                                                                    console.log(newValue?.value);
+
+                                                                    formik.setFieldValue("rlId", newValue?.value);
+
+                                                                    formik.setFieldTouched("rlId", true);
+                                                                    formik.setFieldTouched("rlId", false);
+                                                                }}
+                                                                renderInput={(params) => (
+                                                                    <TextField
+                                                                        {...params}
+                                                                        label={
+                                                                            <span>
+                                                                                {t("text.UpdateStatus")} {""}
+
+                                                                            </span>
+                                                                        }
+                                                                    />
+                                                                )}
+                                                            />
+
+                                                        </div>
+
+
+                                                    </th>
+                                                    <th
+                                                        style={{
+                                                            borderLeft: "1px solid black",
+                                                            padding: "5px",
+                                                            textAlign: "center",
+                                                            width: "200px",
+                                                            minWidth: "200px",
+                                                            maxWidth: "200px",
+                                                            display: "table-cell"
+                                                        }}
+                                                    >
+                                                        {t("text.Clarification")}
+                                                        <div style={{ display: 'flex', alignItems: 'center' }}>
+
+                                                            <Autocomplete
+                                                                disablePortal
+                                                                id="combo-box-demo"
+                                                                style={{ backgroundColor: "white" }}
+                                                                options={LetterType}
+                                                                // value={
+                                                                //     ZoneOption.find(
+                                                                //         (option) => option.value === formik.values.fileTypeId
+                                                                //     ) || null
+                                                                // }
+                                                                fullWidth
+                                                                size="small"
+                                                                onChange={(event, newValue: any) => {
+                                                                    console.log(newValue?.value);
+
+                                                                    formik.setFieldValue("rlId", newValue?.value);
+
+                                                                    formik.setFieldTouched("rlId", true);
+                                                                    formik.setFieldTouched("rlId", false);
+                                                                }}
+                                                                renderInput={(params) => (
+                                                                    <TextField
+                                                                        {...params}
+                                                                        label={
+                                                                            <span>
+                                                                                {t("text.SelectClarification")} {""}
+
+                                                                            </span>
+                                                                        }
+                                                                    />
+                                                                )}
+                                                            />
+
+                                                        </div>
+
+
+                                                    </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody style={{ border: "1px solid black" }}>
+                                                {tableData1?.map((row: any, index: any) => (
+                                                    <tr key={row.id} style={{ border: "1px solid black" }}>
+                                                        <td
+                                                            style={{
+                                                                borderLeft: "1px solid black",
+                                                                borderTop: "1px solid black",
+                                                                textAlign: "center",
+                                                            }}
+                                                        >
+                                                            {" "}
+                                                            <DeleteIcon
+                                                                style={{
+                                                                    fontSize: "20px",
+                                                                    color: "darkred",
+                                                                    cursor: "pointer",
+                                                                }}
+                                                                onClick={() => removeExtraRow1(row.id)}
+                                                            />{" "}
+                                                            {/* <input type="checkbox" /> */}
+                                                        </td>
+
+
+                                                        <td
+                                                            style={{
+                                                                borderLeft: "1px solid black",
+                                                                borderTop: "1px solid black",
+                                                                textAlign: "center",
+                                                            }}
+                                                        >
+                                                            {row.keywords}
+                                                        </td>
+                                                        <td
+                                                            style={{
+                                                                borderLeft: "1px solid black",
+                                                                borderTop: "1px solid black",
+                                                                textAlign: "center",
+                                                            }}
+                                                        >
+                                                            {row.EmpCode}
+
+                                                        </td>
+                                                        <td
+                                                            style={{
+                                                                borderLeft: "1px solid black",
+                                                                borderTop: "1px solid black",
+                                                                textAlign: "center",
+                                                            }}
+                                                        >
+                                                            {row.Remark}
+
+                                                        </td>
+                                                        <td
+                                                            style={{
+                                                                borderLeft: "1px solid black",
+                                                                borderTop: "1px solid black",
+                                                                textAlign: "center",
+                                                            }}
+                                                        >
+                                                            {row.AuditNo}
+
+                                                        </td>
+                                                        <td
+                                                            style={{
+                                                                borderLeft: "1px solid black",
+                                                                borderTop: "1px solid black",
+                                                                textAlign: "center",
+                                                            }}
+                                                        >
+                                                            {row.SeniorityNo}
+
+                                                        </td>
+                                                        <td
+                                                            style={{
+                                                                borderLeft: "1px solid black",
+                                                                borderTop: "1px solid black",
+                                                                textAlign: "center",
+                                                            }}
+                                                        >
+                                                            {row.RetirementDate}
+
+                                                        </td>
+                                                        <td
+                                                            style={{
+                                                                borderLeft: "1px solid black",
+                                                                borderTop: "1px solid black",
+                                                                textAlign: "center",
+                                                            }}
+                                                        >
+                                                            {row.DateOfApproval}
+
+                                                        </td>
+                                                        <td
+                                                            style={{
+                                                                borderLeft: "1px solid black",
+                                                                borderTop: "1px solid black",
+                                                                textAlign: "center",
+                                                            }}
+                                                        >
+                                                            {row.DateOfIssue}
+
+                                                        </td>
+                                                        <td
+                                                            style={{
+                                                                borderLeft: "1px solid black",
+                                                                borderTop: "1px solid black",
+                                                                textAlign: "center",
+                                                            }}
+                                                        >
+                                                            {row.DateOfCheck}
+
+                                                        </td>
+                                                        <td
+                                                            style={{
+                                                                borderLeft: "1px solid black",
+                                                                borderTop: "1px solid black",
+                                                                textAlign: "center",
+                                                            }}
+                                                        >
+                                                            {row.SentenceNo}
+
+                                                        </td>
+                                                        <td
+                                                            style={{
+                                                                borderLeft: "1px solid black",
+                                                                borderTop: "1px solid black",
+                                                                textAlign: "center",
+                                                            }}
+                                                        >
+                                                            {row.Designation}
+
+                                                        </td>
+                                                        <td
+                                                            style={{
+                                                                borderLeft: "1px solid black",
+                                                                borderTop: "1px solid black",
+                                                                textAlign: "center",
+                                                            }}
+                                                        >
+                                                            {row.UpdateStatus}
+
+                                                        </td>
+                                                        <td
+                                                            style={{
+                                                                borderLeft: "1px solid black",
+                                                                borderTop: "1px solid black",
+                                                                textAlign: "center",
+                                                            }}
+                                                        >
+                                                            {row.Clarification}
+
+                                                        </td>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </Table>
+                                    </Collapse>
+                                </div>
                             </Grid>
-                            {/* </asGrid> */}
 
-
-
-
-
-
-                            <Grid item xs={12} spacing={2} style={{ display: 'flex', justifyContent: 'center' }}>
-                                <Grid xs={6} style={{ margin: '6px' }}>
+                            <Grid
+                                item
+                                xs={12}
+                                spacing={2}
+                                style={{ display: "flex", justifyContent: "center" }}
+                            >
+                                <Grid xs={6} style={{ margin: "6px" }}>
                                     <Button
                                         type="submit"
                                         fullWidth
@@ -1777,7 +2114,7 @@ const PageCreateEdit = (props: Props) => {
                                     </Button>
                                 </Grid>
 
-                                <Grid xs={6} style={{ margin: '6px' }}>
+                                <Grid xs={6} style={{ margin: "6px" }}>
                                     <Button
                                         type="reset"
                                         fullWidth
@@ -1793,7 +2130,6 @@ const PageCreateEdit = (props: Props) => {
                                 </Grid>
                             </Grid>
                         </Grid>
-                        {/* </Card> */}
                     </form>
                 </CardContent>
             </div>

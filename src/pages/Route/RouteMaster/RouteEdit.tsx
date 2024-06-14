@@ -308,7 +308,7 @@ var tabindex=0;
       if (response.data.isSuccess) {
         setToaster(false);
         toast.success(response.data.mesg);
-        navigate('/Route/Route');
+        navigate('/Committee/Route');
         // formik.resetForm();
         //getList();
         //setEditId("-1");

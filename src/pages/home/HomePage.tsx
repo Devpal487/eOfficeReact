@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect,useRef, useState } from "react";
 import {
   Card,
   Grid,
@@ -32,6 +32,8 @@ import { useFormik } from "formik";
 import { getId } from "../../utils/Constant";
 import { CloseIcons } from "../../utils/icons";
 import ToastApp from "../../ToastApp";
+import ButtonWithLoader from "../../utils/ButtonWithLoader";
+// import { green } from '@mui/material/colors';
 
 export const options1 = {
   pieHole: 0.25,
@@ -50,45 +52,20 @@ export default function HomePage() {
   const [columns, setColumns] = useState<any>([]);
   const [totalFile, setTotalFile] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-
   const [refno, setRefNo]= useState("");
   const [refNoYr , setRefNoYr ]= useState("");
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
 
   var Division: any[];
  
-
-  const startrefrence = async () => {
-    const collectDatas = {
-      divid: parseInt(localStorage.getItem("id") + ""),
-      inst_id: 1,
-      pstart: parseInt(referenceNo),
-      refNoYr: parseInt(year),
-    };
-    // console.log(collectDatas);
-    let noticeFile: any = [];
-    await api
-      .post(`RefferenceNumber/GetRefferenceNo`, collectDatas)
-      .then((res) => {
-        if (res.data.isSuccess) {
-          // console.log("result", res.data.data);
-          const data = res.data.data;
-          const DocsWithIds = data.map((doc: any, index: any) => ({
-            ...doc,
-            serialNo: index + 1,
-            id: doc.rid,
-          }));
-
-          setTotalFile(DocsWithIds);
-          setIsLoading(false);
-          toast.success("Refference No genrate successFully ");
-        } else {
-          toast.error(" ");
-        }
-      });
-    try {
-    } catch (error) {
-      console.error("Error fetching PDF:", error);
-    }
+  const buttonSx = {
+    ...(success && {
+      bgcolor: "green",
+      '&:hover': {
+        bgcolor: "red",
+      },
+    }),
   };
 
   const handleCloseReviewModal = () => {
@@ -99,10 +76,7 @@ export default function HomePage() {
 
   useEffect(() => {
     getAuthDevision();
-    setTimeout(() => {
-      fetchTotalFile();
-    }, 5000);
-
+    fetchTotalFile();
     const tokenDataString: any = sessionStorage.getItem("token");
   }, []);
 
@@ -151,8 +125,8 @@ export default function HomePage() {
   });
   
 
-  const getSpMovement = () => {
-
+  const getSpMovement = async () => {
+    // setLoading(true);
     const value = {
       "eid": userid?.toString(),
       "hdnFileNumber": formik.values.rFileNumber.toString() || "",
@@ -162,7 +136,7 @@ export default function HomePage() {
       "i": "1",
       "fid": "",
     };
-    api
+    await api
       .post(`FileMovement/SP_Movefile`, value)
       .then((res) => {
         if (res.data.isSuccess) {
@@ -171,9 +145,12 @@ export default function HomePage() {
           handleCloseReviewModal();
           formik.setFieldValue("rRemark","");
           formik.resetForm();
+        //setLoading(false); 
         }else{
           toast.error(res.data.mesg);
+          //setLoading(false); 
         }
+      // setLoading(false); 
       });
   };
 
@@ -201,16 +178,9 @@ export default function HomePage() {
 
       setTotalFile(sortedData);
       setIsLoading(false);
-
+      
       if (data.length > 0) {
         const columns: GridColDef[] = [
-          // {
-          //   field: "serialNo",
-          //   headerName: t("text.SrNo"),
-          //   width: 100,
-          //   headerClassName: "MuiDataGrid-colCell",
-          // },
-
           {
             field: "rNumber",
             headerName: "R Number",
@@ -244,6 +214,23 @@ export default function HomePage() {
             headerName: "Priority",
             flex: 1,
             headerClassName: "MuiDataGrid-colCell",
+            renderCell:(params)=>{
+                let priorityText = "";
+                switch (params.value) {
+                  case "1":
+                    priorityText = "Most Immediate";
+                    break;
+                  case "2":
+                    priorityText = "Immediate";
+                    break;
+                  case "3":
+                    priorityText = "Ordinary";
+                    break;
+                  default:
+                    priorityText = "";
+                }
+                return <span>{priorityText}</span>;
+            }
           },
 
           {
@@ -259,45 +246,46 @@ export default function HomePage() {
             flex: 1,
             headerClassName: "MuiDataGrid-colCell",
           },
-
-          {
-            field: "rDealHands",
-            headerName: "Movement",
-            flex: 1,
-            headerClassName: "MuiDataGrid-colCell",
-          },
           {
             field: "rSendAdrs",
             headerName: "Moved To",
-            flex: 1,
+            flex: 2,
             headerClassName: "MuiDataGrid-colCell",
             renderCell: (params) => {
-              return [
-                <Select
+             
+                if (params.row.authorityType === null) {
+                  return ( <Select
                   onChange={(event) => {
-                    setReviewModalData(true);
-                    setRefNo(params.row.refNo);
-                    setRefNoYr(params.row.refNoYr);
-                    formik.setFieldValue("id", params.row.id);
-                    formik.setFieldValue("rFileNumber", params.row.rFileNumber);
-                    formik.setFieldValue("rid", params.row.rid);
-                    formik.setFieldValue("rDealHands", params.row.Division[0]["value"]);
-                    formik.setFieldValue("rDealHandlabel", params.row.Division[0]["label"]);
-                  }}
+                    if(!params.row.rFileNumber){
+                      toast.error("Please first assign File Number then proceed further....")
+                    }else{
+                      console.log("file number", params.row.rFileNumber)
+                      setReviewModalData(true);
+                      setRefNo(params.row.refNo);
+                      setRefNoYr(params.row.refNoYr);
+                      formik.setFieldValue("id", params.row.id);
+                      formik.setFieldValue("rFileNumber", params.row.rFileNumber);
+                      formik.setFieldValue("rid", params.row.rid);
+                      formik.setFieldValue("rDealHands", params.row.Division[0]["value"]);
+                      formik.setFieldValue("rDealHandlabel", params.row.Division[0]["label"]);
+                    }
+                    }}
                   fullWidth
                   size="small"
                 >
                   <MenuItem value="" >Select Division</MenuItem>
-                  {params.row.Division.map((item: any) => (
+                  {params?.row?.Division?.map((item: any) => (
                       <MenuItem key={item.value} value={item.value}>{item.label}</MenuItem>
                     ))}
-                </Select>
-              ]
+                </Select>)
+                }else{
+                  return params.row.authorityType;
+                }
             },
           },
           {
             field: "letterBy",
-            headerName: "Letter From/Letter To",
+            headerName: "Letter From/To",
             flex: 1,
             headerClassName: "MuiDataGrid-colCell",
           },
@@ -308,19 +296,19 @@ export default function HomePage() {
             flex: 1,
             headerClassName: "MuiDataGrid-colCell",
           },
-          {
-            field: "refNoYr",
-            headerName: "Refrence Number Year ",
-            flex: 1,
-            headerClassName: "MuiDataGrid-colCell",
-          },
+          // {
+          //   field: "refNoYr",
+          //   headerName: "Refrence Number Year ",
+          //   flex: 1,
+          //   headerClassName: "MuiDataGrid-colCell",
+          // },
 
-          {
-            field: "attachMentCount",
-            headerName: "Attachement Count ",
-            flex: 1,
-            headerClassName: "MuiDataGrid-colCell",
-          },
+          // {
+          //   field: "attachMentCount",
+          //   headerName: "Attachement Count ",
+          //   flex: 1,
+          //   headerClassName: "MuiDataGrid-colCell",
+          // },
         ];
         setColumns(columns as any);
       }
@@ -464,14 +452,14 @@ export default function HomePage() {
                           multiline
                           rows={4}
                         />
-                        <Box display="flex" justifyContent="flex-end" width="100%" >
+                        {/* <Box  sx={{ display: 'inline-block', position: 'relative' }} >
                           <Button
                             variant="contained"
 
                             size="large"
                             sx={{
                               borderRadius: '8px',
-                              backgroundColor: '#34a362',
+                              // backgroundColor: '#34a362',
 
                               width: "15%"
                             }}
@@ -479,10 +467,54 @@ export default function HomePage() {
                               startrefrence();
                               getSpMovement();
                             }}
+                            disabled={loading}
                           >
                             Move
                           </Button>
-                        </Box>
+                          {loading && (
+        <CircularProgress
+          size={24}
+          sx={{
+            color: 'white',
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            marginTop: '-12px',
+            marginLeft: '-12px',
+          }}
+        />
+      )}
+                        </Box> */}
+                        {/* <Box sx={{ display: 'flex', alignItems: 'center' }}>
+      
+      <Box sx={{ m: 1, position: 'relative' }}>
+        <Button
+          variant="contained"
+          sx={buttonSx}
+          disabled={loading}
+          onClick={() =>{
+            // startrefrence();
+            getSpMovement();
+          }}
+        >
+          Move
+        </Button>
+        {loading && (
+          <CircularProgress
+            size={24}
+            sx={{
+              color: "green",
+              position: 'absolute',
+              top: '50%',
+              left: '50%',
+              marginTop: '-12px',
+              marginLeft: '-12px',
+            }}
+          />
+        )}
+      </Box>
+    </Box> */}
+     <ButtonWithLoader buttonText="Move" onClickHandler={getSpMovement} />
                       </Stack>
                     </Paper>
                   </Card>
@@ -493,8 +525,10 @@ export default function HomePage() {
 
         {switchType === "1" && (
           <>
-                <Grid sm={6} md={6} xs={6} sx={{backgroundColor:"#f0f0f0", marginTop:"10px", padding:"10px", border: "1px solid #ccc", boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)", transition: "all 0.3s ease",borderRadius:"12px"}} display="flex" alignItems="center" justifyContent="space-around">
-                      <Grid xs={2}>
+               <Grid sm={6} md={6} xs={6} sx={{backgroundColor:"#f0f0f0", marginTop:"10px", padding:"10px", border: "1px solid #ccc", boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)", transition: "all 0.3s ease",borderRadius:"12px"}} 
+              //  display="flex" alignItems="center" justifyContent="space-around"
+               >
+                 {/*       <Grid xs={2}>
                       <Button
                       type="submit"
                       fullWidth
@@ -549,7 +583,7 @@ export default function HomePage() {
                       Misc. Docs
                     </Button>
                       </Grid>
-
+*/}
                       <form >
                     <Grid item xs={12} container spacing={3}>
 
@@ -583,13 +617,13 @@ export default function HomePage() {
                       </Grid>
 
                       <Grid item xs={2}>
-                        <Button type="submit" variant="contained" size="large">
+                        <Button variant="contained" size="large">
                           Start
                         </Button>
                       </Grid>
                     </Grid>
                       </form>
-                  </Grid>
+                  </Grid> 
                   <br/>
                   <Paper
           sx={{

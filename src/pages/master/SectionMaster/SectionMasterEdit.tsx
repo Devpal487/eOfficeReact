@@ -10,6 +10,7 @@ import { useTranslation } from "react-i18next";
 import { toast } from "react-toastify";
 import ToastApp from '../../../ToastApp';
 import { getISTDate } from "../../../utils/Constant";
+import CustomLabel from '../../../CustomLable';
 
 type Props = {};
 
@@ -146,12 +147,7 @@ const SectionMasterEdit = (props: Props) => {
                                     renderInput={(params) => (
                                         <TextField
                                             {...params}
-                                            label={
-                                                <span>
-                                                    {t("text.SelectDepartment")} {""}
-
-                                                </span>
-                                            }
+                                            label={<CustomLabel text={t("text.SelectDepartment")} />}
                                         />
                                     )}
                                 />
@@ -162,7 +158,7 @@ const SectionMasterEdit = (props: Props) => {
                                 <TextField
                                     id="section"
                                     name="section"
-                                    label={t("text.Section")}
+                                    label={<CustomLabel text={t("text.Section")} />}
                                     value={formik.values.section}
                                     placeholder={t("text.section")}
                                     size="small"

@@ -1,14 +1,9 @@
-import * as React from 'react';
-import Box from '@mui/material/Box';
-import CircularProgress from '@mui/material/CircularProgress';
-import { green } from '@mui/material/colors';
-import Button from '@mui/material/Button';
-import Fab from '@mui/material/Fab';
-import CheckIcon from '@mui/icons-material/Check';
-import SaveIcon from '@mui/icons-material/Save';
-import { useFormik } from 'formik';
-import * as Yup from 'yup';
-import axios from 'axios';
+import * as React from "react";
+import CircularProgress from "@mui/material/CircularProgress";
+import Button from "@mui/material/Button";
+import { useFormik } from "formik";
+import * as Yup from "yup";
+import axios from "axios";
 
 import "./index.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -16,8 +11,8 @@ import { faUser, faLock, faEnvelope } from "@fortawesome/free-solid-svg-icons";
 
 import { useNavigate } from "react-router-dom";
 import api, { HOST_URL } from "../utils/Url";
-import knn from '../assets/images/qq (1).png'
-import data1 from '../assets/images/wfm.webp'
+import knn from "../assets/images/qq (1).png";
+import data1 from "../assets/images/wfm.webp";
 
 import { toast } from "react-toastify";
 import ToastApp from "../ToastApp";
@@ -29,32 +24,40 @@ export default function LoginPage() {
 
   let navigate = useNavigate();
 
-
   React.useEffect(() => {
     return () => {
       clearTimeout(timer.current);
     };
   }, []);
 
-  
-  const getNodeData =async (id:any)=>{
+  const getNodeData = async (id: any) => {
     const collectData = {
-        "id": -1,
-        "nodeID": -1,
-        "titleID": -1,
-        "user_Id": id
-    }
-    const response = await api.post(`NewNodeMaster/GetNewNodeMasterHeirarical`, collectData)
-    console.log("data check", response.data.data)
+      id: -1,
+      nodeID: -1,
+      titleID: -1,
+      user_Id: id,
+    };
+    const response = await api.post(
+      `NewNodeMaster/GetNewNodeMasterHeirarical`,
+      collectData
+    );
     if (response.data.isSuccess) {
       localStorage.setItem("id", JSON.stringify(response.data.data[0]["id"]));
-      localStorage.setItem("nodeID", JSON.stringify(response.data.data[0]["nodeID"]));
-      localStorage.setItem("nodeName", JSON.stringify(response.data.data[0]["name"]));
+      localStorage.setItem(
+        "nodeID",
+        JSON.stringify(response.data.data[0]["nodeID"])
+      );
+      localStorage.setItem(
+        "nodeName",
+        JSON.stringify(response.data.data[0]["name"])
+      );
+      localStorage.setItem("inst_id", "1");
       toast.success(response.data.mesg);
     } else {
+      localStorage.setItem("inst_id", "1");
       toast.error(response.data.mesg);
     }
-  }
+  };
 
   const handleButtonClick = async () => {
     if (!loading) {
@@ -63,23 +66,28 @@ export default function LoginPage() {
       try {
         const response = await formik.submitForm();
         if (response.isSuccess) {
-          
-          if(response.data[0]["userPermission"] == null){
-            toast.error("User Permission is null")
-          }else{
+          if (response.data[0]["userPermission"] == null) {
+            toast.error("User Permission is null");
+          } else {
             localStorage.setItem("userdata", JSON.stringify(response.data));
-            localStorage.setItem("useR_ID", JSON.stringify(response.data[0]["userdetail"][0]["useR_ID"]));
-            sessionStorage.setItem("token", JSON.stringify(response.data[0]["token"]));
+            localStorage.setItem(
+              "useR_ID",
+              JSON.stringify(response.data[0]["userdetail"][0]["useR_ID"])
+            );
+            sessionStorage.setItem(
+              "token",
+              JSON.stringify(response.data[0]["token"])
+            );
+            formik.resetForm();
             navigate(`/home`);
             toast.success(response.data.mesg);
-            formik.resetForm();
           }
           timer.current = setTimeout(() => {
             setSuccess(true);
             setLoading(false);
           }, 1000);
         } else {
-            toast.error(response.data.mesg);
+          toast.error(response.data.mesg);
           setLoading(false);
         }
       } catch (error) {
@@ -88,7 +96,6 @@ export default function LoginPage() {
       }
     }
   };
-  
 
   const validationSchema = Yup.object({
     useR_ID: Yup.string().required("Username Required"),
@@ -107,16 +114,22 @@ export default function LoginPage() {
       const response = await axios.post(HOST_URL + `Auth/USERLOGIN`, values);
       if (response.data.isSuccess) {
         localStorage.setItem("userdata", JSON.stringify(response.data.data));
-        localStorage.setItem("useR_ID", JSON.stringify(response.data.data[0]["userdetail"][0]["useR_ID"]));
-        sessionStorage.setItem("token", JSON.stringify(response.data.data[0]["token"]));
+        localStorage.setItem(
+          "useR_ID",
+          JSON.stringify(response.data.data[0]["userdetail"][0]["useR_ID"])
+        );
+        sessionStorage.setItem(
+          "token",
+          JSON.stringify(response.data.data[0]["token"])
+        );
         getNodeData(response.data.data[0]["userdetail"][0]["useR_ID"]);
         toast.success(response.data.mesg);
         formik.resetForm();
         // let path = `/home`;
         // navigate(`/home`);
         console.log("Navigating to /home...");
-      navigate(`/home`);
-      console.log("Navigation should have occurred.");
+        navigate(`/home`);
+        console.log("Navigation should have occurred.");
       } else {
         toast.error(response.data.mesg);
       }
@@ -125,17 +138,35 @@ export default function LoginPage() {
 
   return (
     <>
-      <div className={`loginContainer`} style={{ backgroundColor: "rgba(245,245,245,0.7)" }}>
+      <div
+        className={`loginContainer`}
+        style={{ backgroundColor: "rgba(245,245,245,0.7)" }}
+      >
         <div className="forms-container">
           <div className="signin-signup">
-            <form action="#" onSubmit={formik.handleSubmit} className="sign-in-form loginForm">
-              <img alt="Active" src={knn} style={{ height: "15vh", width: "15vh", marginBottom: "20px" }} />
+            <form
+              action="#"
+              onSubmit={formik.handleSubmit}
+              className="sign-in-form loginForm"
+            >
+              <img
+                alt="Active"
+                src={knn}
+                style={{ height: "15vh", width: "15vh", marginBottom: "20px" }}
+              />
               <div>
-                <h3 className="loginh3" style={{ fontSize: "25px" }}> Workflow Management System</h3>
+                <h3 className="loginh3" style={{ fontSize: "25px" }}>
+                  {" "}
+                  Workflow Management System
+                </h3>
               </div>
               <br />
               <div className="input-field">
-                <FontAwesomeIcon icon={faUser} className="my-auto mx-auto" style={{ alignSelf: "center", paddingLeft: "12px" }} />
+                <FontAwesomeIcon
+                  icon={faUser}
+                  className="my-auto mx-auto"
+                  style={{ alignSelf: "center", paddingLeft: "12px" }}
+                />
                 <input
                   className="LoginInput"
                   type="text"
@@ -148,7 +179,11 @@ export default function LoginPage() {
                 />
               </div>
               <div className="input-field">
-                <FontAwesomeIcon icon={faLock} className="my-auto mx-auto" style={{ alignSelf: "center", paddingLeft: "12px" }} />
+                <FontAwesomeIcon
+                  icon={faLock}
+                  className="my-auto mx-auto"
+                  style={{ alignSelf: "center", paddingLeft: "12px" }}
+                />
                 <input
                   className="LoginInput"
                   type="password"
@@ -160,22 +195,32 @@ export default function LoginPage() {
                   onChange={formik.handleChange}
                 />
               </div>
-              <div className="input-field" style={{ display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "space-around", gap: 10, backgroundColor: "rgb(250 250 250)" }}>
+              <div
+                className="input-field"
+                style={{
+                  display: "flex",
+                  flexDirection: "row",
+                  alignItems: "center",
+                  justifyContent: "space-around",
+                  gap: 10,
+                  backgroundColor: "rgb(250 250 250)",
+                }}
+              >
                 <Button
-                 variant="contained"
-                 color="success"
-                 disabled={loading}
+                  variant="contained"
+                  color="success"
+                  disabled={loading}
                   onClick={handleButtonClick}
                 >
                   {loading ? (
-                    <CircularProgress size={24} style={{color:"green"}}/>
+                    <CircularProgress size={24} style={{ color: "green" }} />
                   ) : (
                     "Sign In"
                   )}
                 </Button>
                 <Button
                   variant="contained"
-                  color='error'
+                  color="error"
                   // sx={buttonSx}
                   disabled={loading}
                   onClick={(e) => formik.resetForm()}
@@ -189,8 +234,14 @@ export default function LoginPage() {
         <div className="panels-container">
           <div className="panel left-panel">
             <div className="content">
-              <div style={{ backgroundSize: "cover", mixBlendMode: "multiply" }}>
-                <img alt="Active" src={data1} style={{ height: "60vh", width: "80vh" }} />
+              <div
+                style={{ backgroundSize: "cover", mixBlendMode: "multiply" }}
+              >
+                <img
+                  alt="Active"
+                  src={data1}
+                  style={{ height: "60vh", width: "80vh" }}
+                />
               </div>
             </div>
           </div>
@@ -200,8 +251,6 @@ export default function LoginPage() {
     </>
   );
 }
-
-
 
 // import "./index.css";
 // import React, { useState } from "react";
@@ -218,7 +267,7 @@ export default function LoginPage() {
 // import ToastApp from "../ToastApp";
 
 // function LoginPage() {
- 
+
 //   let navigate = useNavigate();
 
 //   const validationSchema = Yup.object({

@@ -24,7 +24,8 @@ import { TextareaAutosize } from "@mui/base/TextareaAutosize";
 import axios from "axios";
 import api from "../../../utils/Url";
 import { toast } from "react-toastify";
-import nopdf from '../../../assets/images/imagepreview.jpg'
+import nopdf from '../../../assets/images/imagepreview.jpg';
+import CustomLabel from "../../../CustomLable";
 
 
 const style = {
@@ -247,11 +248,7 @@ const CommitteeAdd = (props: Props) => {
                 <TextField
                   id="committeeName"
                   name="committeeName"
-                  label={
-                    <span>
-                      {t("text.committeeName")}{" "}
-                    </span>
-                  }
+                  label={<CustomLabel text={t("text.committeeName")} />}
                   value={formik.values.committeeName}
                   placeholder={t("text.committeeName")}
                   size="small"
@@ -270,7 +267,7 @@ const CommitteeAdd = (props: Props) => {
                 <TextField
                   id="foundedDate"
                   name="foundedDate"
-                  label={t("text.foundedDate")}
+                  label={<CustomLabel text={t("text.foundedDate")} />}
                   value={formik.values.foundedDate}
                   placeholder={t("text.foundedDate")}
                   size="small"
@@ -296,11 +293,7 @@ const CommitteeAdd = (props: Props) => {
                     type="file"
                     //   inputProps={{ accept: "application/pdf" }}
                     InputLabelProps={{ shrink: true }}
-                    label={
-                      <strong style={{ color: "#000" }}>
-                        {t("text.AttachedFile")}
-                      </strong>
-                    }
+                    label={<CustomLabel text={t("text.AttachedFile")} />}
                     size="small"
                     fullWidth
                     style={{ backgroundColor: "white" }}

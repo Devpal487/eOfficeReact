@@ -36,6 +36,7 @@ import { useNavigate } from "react-router-dom";
 import CustomizedProgressBars from "../../../components/Loader";
 import { t } from "i18next";
 import api from "../../../utils/Url";
+import CustomLabel from "../../../CustomLable";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -969,7 +970,7 @@ export default function DocumentIndexing() {
                         formik.setFieldTouched("divisionid", false);
                       }}
                       renderInput={(params) => (
-                        <TextField {...params} label={t("text.SelectDevision")} />
+                        <TextField {...params} label={<CustomLabel text={t("text.SelectDevision")} />} />
                       )}
                     />
                   </Grid>
@@ -989,7 +990,7 @@ export default function DocumentIndexing() {
                         // formik.setFieldTouched("fileTypId", false);
                       }}
                       renderInput={(params) => (
-                        <TextField {...params} label={t("text.SelectFileType")} />
+                        <TextField {...params} label={<CustomLabel text={t("text.SelectFileType")} />} />
                       )}
                     />
                   </Grid>
@@ -1009,14 +1010,14 @@ export default function DocumentIndexing() {
                         formik.setFieldTouched("filestatus", false);
                       }}
                       renderInput={(params) => (
-                        <TextField {...params} label={t("text.SelectFileStatus")} />
+                        <TextField {...params} label={<CustomLabel text={t("text.SelectFileStatus")} />} />
                       )}
                     />
                   </Grid>
 
                   <Grid xs={11} sm={11} item>
                     <TextField
-                      label={t("text.PeriodFrom")}
+                      label={<CustomLabel text={t("text.PeriodFrom")} />}
                       size="small"
                       type="date"
                       fullWidth
@@ -1031,7 +1032,7 @@ export default function DocumentIndexing() {
 
                   <Grid xs={11} sm={11} item>
                     <TextField
-                      label={t("text.PeriodTo")}
+                      label={<CustomLabel text={t("text.PeriodTo")} />}
                       size="small"
                       type="date"
                       fullWidth
@@ -1046,7 +1047,7 @@ export default function DocumentIndexing() {
 
                   <Grid xs={11} sm={11} item>
                     <TextField
-                      label={t("text.Search")}
+                      label={<CustomLabel text={t("text.Search")} />}
                       size="small"
                       type="text"
                       fullWidth

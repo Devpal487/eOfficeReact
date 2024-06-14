@@ -16,6 +16,7 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import { toast } from "react-toastify";
 import ToastApp from "../../../ToastApp";
+import CustomLabel from "../../../CustomLable";
 
 
 type Props = {};
@@ -105,22 +106,9 @@ const[toaster,setToaster]=useState(false);
           <form onSubmit={formik.handleSubmit}>
             {toaster===false ?"":<ToastApp/>}
             <Grid item xs={12} container spacing={2}>
-              <Grid item lg={6} sm={6} xs={12}>
+            <Grid item lg={6} sm={6} xs={12}>
                 <TextField
-                  label={
-                    <span>
-                      {t("text.EnterGenderName")}{" "}
-                      {requiredFields.includes("genderName") && (
-                        <span
-                          style={{
-                            color: formik.values.genderName ? "green" : "red",
-                          }}
-                        >
-                          *
-                        </span>
-                      )}
-                    </span>
-                  }
+                  label={<CustomLabel text={t("text.EnterGenderName")} required={requiredFields.includes('genderName')}  />}
                   value={formik.values.genderName}
                   placeholder={t("text.EnterGenderName")}
                   size="small"
@@ -140,7 +128,7 @@ const[toaster,setToaster]=useState(false);
 
               <Grid item lg={6} sm={6} xs={12}>
                 <TextField
-                  label={t("text.EnterGenderCode")}
+                  label={<CustomLabel text={t("text.EnterGenderCode")} />}
                   value={formik.values.genderCode}
                   name="genderCode"
                   id="genderCode"

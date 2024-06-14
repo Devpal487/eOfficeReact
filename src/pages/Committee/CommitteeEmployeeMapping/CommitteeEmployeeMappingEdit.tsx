@@ -20,6 +20,7 @@ import { toast } from "react-toastify";
 import ToastApp from "../../../ToastApp";
 import dayjs, { Dayjs } from "dayjs";
 import api from "../../../utils/Url";
+import CustomLabel from "../../../CustomLable";
 
 type Props = {};
 
@@ -270,7 +271,7 @@ const CommitteeEmployeeMappingEdit= (props: Props) => {
                         textAlign="center"
                         style={{ marginTop: "10px", fontSize: "18px", fontWeight: 500 }}
                     >
-                        Edit Committee Employee Mapping
+                        {t("text.EditCommitteEmployeeMapping")}
                     </Typography>
                     <Grid xs={4} sm={12} item>
                         <Typography style={{ marginTop: "-75px" }}>
@@ -299,11 +300,11 @@ const CommitteeEmployeeMappingEdit= (props: Props) => {
                             <Grid xs={12} sm={4} item>
                             <TextField
                                     type="text"
-                                    label="Enter Committee/Group Name"
+                                    label={<CustomLabel text={t("text.EnterCommitteeOrGroupName")} />}
                                     value={formik.values.firsT_NAME}
                                     name="firsT_NAME"
                                     id="firsT_NAME"
-                                    placeholder="Enter Committee/Group Name"
+                                    placeholder={t("text.EnterCommitteeOrGroupName")}
                                     size="small"
                                     fullWidth
                                     style={{ backgroundColor: "white" }}
@@ -315,7 +316,7 @@ const CommitteeEmployeeMappingEdit= (props: Props) => {
 
                             <Grid xs={12} sm={4} item alignItems="center" sx={{}}>
                                 <input type="checkbox" aria-label="Head" placeholder="Head"/>
-                                <label>Head</label>
+                                <label>{t("text.Head")}</label>
                             </Grid>
 
                             <Grid xs={12} sm={4} item>
@@ -336,7 +337,7 @@ const CommitteeEmployeeMappingEdit= (props: Props) => {
                                     renderInput={(params) => (
                                         <TextField
                                             {...params}
-                                            label="Select Employee"
+                                            label={<CustomLabel text={t("text.SelectEmployee")} />}
                                         />
                                     )}
                                 />
@@ -358,7 +359,7 @@ const CommitteeEmployeeMappingEdit= (props: Props) => {
                                     renderInput={(params) => (
                                         <TextField
                                             {...params}
-                                            label="Select Authority"
+                                            label={<CustomLabel text={t("text.SelectAuthority")} />}
                                         />
                                     )}
                                 />
@@ -367,12 +368,12 @@ const CommitteeEmployeeMappingEdit= (props: Props) => {
                             <Grid xs={12} sm={4} item>
                             <TextField
                                     type="date"
-                                    label="Enter Date oif Joining"
+                                    label={<CustomLabel text={t("text.EnterDateOfJoining")} />}
                                     value={formik.values.firsT_NAME}
                                     name="firsT_NAME"
                                     InputLabelProps={{ shrink: true }}
                                     id="firsT_NAME"
-                                    placeholder="Enter Date of Joining"
+                                    placeholder={t("text.EnterDateOfJoining")}
                                     size="small"
                                     fullWidth
                                     style={{ backgroundColor: "white" }}
@@ -384,12 +385,12 @@ const CommitteeEmployeeMappingEdit= (props: Props) => {
                             <Grid xs={12} sm={4} item>
                             <TextField
                                      type="date"
-                                     label="Enter Date oif Leaving"
+                                     label={<CustomLabel text={t("text.EnterDateOfLeaving")} />}
                                      value={formik.values.firsT_NAME}
                                     InputLabelProps={{ shrink: true }}
                                     name="firsT_NAME"
                                      id="firsT_NAME"
-                                     placeholder="Enter Date of Leaving"
+                                     placeholder={t("text.EnterDateOfLeaving")}
                                      size="small"
                                      fullWidth
                                      style={{ backgroundColor: "white" }}

@@ -19,6 +19,7 @@ import * as Yup from "yup";
 import { toast } from "react-toastify";
 import ToastApp from "../../../ToastApp";
 import { getISTDate } from "../../../utils/Constant";
+import CustomLabel from "../../../CustomLable";
 
 
 type Props = {};
@@ -153,7 +154,7 @@ const CityMasterEdit = (props: Props) => {
           <form onSubmit={formik.handleSubmit}>
           {toaster === false ? "" : <ToastApp />}
             <Grid item xs={12} container spacing={2}>
-              <Grid lg={6} sm={6} xs={12} item>
+            <Grid lg={6} sm={6} xs={12} item>
                 <Autocomplete
                   disablePortal
                   id="combo-box-demo"
@@ -170,22 +171,7 @@ const CityMasterEdit = (props: Props) => {
                   renderInput={(params) => (
                     <TextField
                       {...params}
-                      label={
-                        <span>
-                          {t("text.SelectStateName")} {""}
-                          {requiredFields.includes("stateId") && (
-                            <span
-                              style={{
-                                color: formik.values.stateId
-                                  ? "green"
-                                  : "red",
-                              }}
-                            >
-                              *
-                            </span>
-                          )}
-                        </span>
-                      }
+                      label={<CustomLabel text={t("text.SelectStateName")} required={requiredFields.includes('stateId')}  />}
                     />
                   )}
                 />
@@ -198,20 +184,7 @@ const CityMasterEdit = (props: Props) => {
 
               <Grid lg={6} sm={6} xs={12} item>
                 <TextField
-                  label={
-                    <span>
-                      {t("text.EnterDistrictName")}{" "}
-                      {requiredFields.includes("cityName") && (
-                        <span
-                          style={{
-                            color: formik.values.cityName ? "green" : "red",
-                          }}
-                        >
-                          *
-                        </span>
-                      )}
-                    </span>
-                  }
+                  label={<CustomLabel text={t("text.EnterDistrictName")} required={requiredFields.includes('cityName')}  />}
                   value={formik.values.cityName}
                   name="cityName"
                   id="cityName"

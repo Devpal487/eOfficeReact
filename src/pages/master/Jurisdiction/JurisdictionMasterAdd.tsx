@@ -17,6 +17,7 @@ import * as Yup from "yup";
 import { useTranslation } from "react-i18next";
 import { toast } from "react-toastify";
 import api from "../../../utils/Url";
+import CustomLabel from "../../../CustomLable";
 type Props = {};
 
 const JurisdictionMasterAdd = (props: Props) => {
@@ -153,22 +154,7 @@ const JurisdictionMasterAdd = (props: Props) => {
                   renderInput={(params) => (
                     <TextField
                       {...params}
-                      label={
-                        <span>
-                          {t("text.SelectNode")} {""}
-                          {requiredFields.includes("nodeID") && (
-                            <span
-                              style={{
-                                color: formik.values.nodeID
-                                  ? "green"
-                                  : "red",
-                              }}
-                            >
-                              *
-                            </span>
-                          )}
-                        </span>
-                      }
+                      label={<CustomLabel text={t("text.SelectNode")} required={requiredFields.includes('nodeID')}  />}
                     />
                   )}
                 />
@@ -185,13 +171,7 @@ const JurisdictionMasterAdd = (props: Props) => {
                   type="text"
                   name="name"
                   id="name"
-                  label={
-                    <span>
-                      {t("text.EnterJurisdictionName")} {requiredFields.includes('name') && (
-                        <span style={{ color: formik.values.name ? 'green' : 'red' }}>*</span>
-                      )}
-                    </span>
-                  }
+                  label={<CustomLabel text={t("text.EnterJurisdictionName")} required={requiredFields.includes('name')}  />}
                   value={formik.values.name}
                   placeholder={t("text.EnterJurisdictionName")}
                   size="small"

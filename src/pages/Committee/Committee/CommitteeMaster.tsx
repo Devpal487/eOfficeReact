@@ -25,6 +25,7 @@ import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
 import CircularProgress from "@mui/material/CircularProgress";
 import api from "../../../utils/Url";
 import moment from "moment";
+import CustomLabel from "../../../CustomLable";
 
 
 interface MenuPermission {

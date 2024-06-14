@@ -22,6 +22,7 @@ import ToastApp from "../../ToastApp";
 import Autocomplete from "@mui/material/Autocomplete";
 import nopdf from "../../assets/images/imagepreview.jpg";
 import api from "../../utils/Url";
+import CustomLabel from "../../CustomLable";
 
 const style = {
   position: "absolute" as "absolute",
@@ -499,20 +500,7 @@ const EmployeeAdd = (props: Props) => {
                 <TextField
                   id="empName"
                   name="empName"
-                  label={
-                    <span>
-                      {t("text.EnterEmployeeName")} {" "}
-                      {requiredFields.includes("empName") && (
-                        <span
-                          style={{
-                            color: formik.values.empName ? "green" : "red",
-                          }}
-                        >
-                          *
-                        </span>
-                      )} 
-                    </span>
-                  }
+                  label={<CustomLabel text={t("text.EnterEmployeeName")} required={requiredFields.includes('empName')}  />}
                   value={formik.values.empName}
                   placeholder={t("text.EnterEmployeeName")}
                   size="small"
@@ -538,20 +526,7 @@ const EmployeeAdd = (props: Props) => {
                 <TextField
                   id="empCode"
                   name="empCode"
-                  label={
-                    <span>
-                     {t("text.EnterEmployeeCode")} {" "}
-                      {requiredFields.includes("empCode") && (
-                        <span
-                          style={{
-                            color: formik.values.empCode ? "green" : "red",
-                          }}
-                        >
-                          *
-                        </span>
-                      )}
-                    </span>
-                  }
+                  label={<CustomLabel text={t("text.EnterEmployeeCode")} required={requiredFields.includes('empCode')}  />}
                   value={formik.values.empCode}
                   placeholder={t("text.EnterEmployeeCode")}
                   size="small"
@@ -577,20 +552,7 @@ const EmployeeAdd = (props: Props) => {
                 <TextField
                   id="empFatherName"
                   name="empFatherName"
-                  label={
-                    <span>
-                      {t("text.EnterFatherName")} {" "}
-                      {requiredFields.includes("empFatherName") && (
-                        <span
-                          style={{
-                            color: formik.values.empFatherName ? "green" : "red",
-                          }}
-                        >
-                          *
-                        </span>
-                      )}
-                    </span>
-                  }
+                  label={<CustomLabel text={t("text.EnterFatherName")} required={requiredFields.includes('empFatherName')}  />}
                   value={formik.values.empFatherName}
                   placeholder={t("text.EnterFatherName")}
                   size="small"
@@ -613,7 +575,7 @@ const EmployeeAdd = (props: Props) => {
                 <TextField
                   id="empspauseName"
                   name="empspauseName"
-                  label={t("text.EnterSpauseName")}
+                  label={<CustomLabel text={t("text.EnterSpauseName")} required={requiredFields.includes('empspauseName')}  />}
                   value={formik.values.empspauseName}
                   placeholder={t("text.EnterSpauseName")}
                   size="small"
@@ -628,7 +590,7 @@ const EmployeeAdd = (props: Props) => {
                 <TextField
                   id="empMotherName"
                   name="empMotherName"
-                  label={t("text.EnterMotherName")}
+                  label={<CustomLabel text={t("text.EnterMotherName")} />}
                   value={formik.values.empMotherName}
                   placeholder={t("text.EnterMotherName")}
                   size="small"
@@ -644,20 +606,7 @@ const EmployeeAdd = (props: Props) => {
                   id="empMobileNo"
                   name="empMobileNo"
                   inputProps={{ maxLength: 10 }}
-                  label={
-                    <span>
-                     {t("text.EnterMobileNo")} {" "}
-                      {requiredFields.includes("empMobileNo") && (
-                        <span
-                          style={{
-                            color: formik.values.empMobileNo ? "green" : "red",
-                          }}
-                        >
-                          *
-                        </span>
-                      )}
-                    </span>
-                  }
+                  label={<CustomLabel text={t("text.EnterMobileNo")} required={requiredFields.includes('empMobileNo')}  />}
                   value={formik.values.empMobileNo}
                   placeholder={t("text.EnterMobileNo")}
                   size="small"
@@ -685,20 +634,7 @@ const EmployeeAdd = (props: Props) => {
                 <TextField
                   id="email"
                   name="email"
-                  label={
-                    <span>
-                      {t("text.EnterEmail")} {" "}
-                      {requiredFields.includes("email") && (
-                        <span
-                          style={{
-                            color: formik.values.email ? "green" : "red",
-                          }}
-                        >
-                          *
-                        </span>
-                      )}
-                    </span>
-                  }
+                  label={<CustomLabel text={t("text.EnterEmail")} required={requiredFields.includes('email')}  />}
                   value={formik.values.email}
                   placeholder={t("text.EnterEmail")}
                   inputProps={{}}
@@ -720,20 +656,7 @@ const EmployeeAdd = (props: Props) => {
                 <TextField
                   id="empPanNumber"
                   name="empPanNumber"
-                  label={
-                    <span>
-                      {t("text.EnterPanNo")} {" "}
-                      {requiredFields.includes("empPanNumber") && (
-                        <span
-                          style={{
-                            color: formik.values.empPanNumber ? "green" : "red",
-                          }}
-                        >
-                          *
-                        </span>
-                      )}
-                    </span>
-                  }
+                  label={<CustomLabel text={t("text.EnterPanNo")} required={requiredFields.includes('empPanNumber')}  />}
                   value={formik.values.empPanNumber}
                   placeholder={t("text.EnterPanNo")}
                   size="small"
@@ -759,20 +682,7 @@ const EmployeeAdd = (props: Props) => {
                 <TextField
                   id="empAddharNo"
                   name="empAddharNo"
-                  label={
-                    <span>
-                      {t("text.EnterAdharNumber")} {" "}
-                      {requiredFields.includes("empAddharNo") && (
-                        <span
-                          style={{
-                            color: formik.values.empAddharNo ? "green" : "red",
-                          }}
-                        >
-                          *
-                        </span>
-                      )}
-                    </span>
-                  }
+                  label={<CustomLabel text={t("text.EnterAdharNumber")} required={requiredFields.includes('empAddharNo')}  />}
                   value={formik.values.empAddharNo}
                   placeholder= {t("text.EnterAdharNumber")}
                   size="small"
@@ -794,20 +704,7 @@ const EmployeeAdd = (props: Props) => {
                   id="empDob"
                   type="date"
                   name="empDob"
-                  label={
-                    <span>
-                       {t("text.EnterDOB")} {" "}
-                      {requiredFields.includes("empDob") && (
-                        <span
-                          style={{
-                            color: formik.values.empDob ? "green" : "red",
-                          }}
-                        >
-                          *
-                        </span>
-                      )}
-                    </span>
-                  }
+                  label={<CustomLabel text={t("text.EnterDOB")} required={requiredFields.includes('empDob')}  />}
                   value={formik.values.empDob}
                   placeholder={t("text.EnterDOB")}
                   size="small"
@@ -836,22 +733,7 @@ const EmployeeAdd = (props: Props) => {
                   name="empJoiningDate"
                   type="date"
                   InputLabelProps={{ shrink: true }}
-                  label={
-                    <span>
-                      {t("text.EnterJoiningDate")} {" "}
-                      {requiredFields.includes("empJoiningDate") && (
-                        <span
-                          style={{
-                            color: formik.values.empJoiningDate
-                              ? "green"
-                              : "red",
-                          }}
-                        >
-                          *
-                        </span>
-                      )}
-                    </span>
-                  }
+                  label={<CustomLabel text={t("text.EnterJoiningDate")} required={requiredFields.includes('empJoiningDate')}  />}
                   value={formik.values.empJoiningDate}
                   placeholder={t("text.EnterJoiningDate")}
                   size="small"
@@ -879,7 +761,7 @@ const EmployeeAdd = (props: Props) => {
                 <TextField
                   id="empretirementDate"
                   name="empretirementDate"
-                  label={t("text.EnterRetirementDate")}
+                  label={<CustomLabel text={t("text.EnterRetirementDate")}  />}
                   value={formik.values.empretirementDate}
                   placeholder={t("text.EnterRetirementDate")}
                   InputLabelProps={{ shrink: true }}
@@ -915,22 +797,7 @@ const EmployeeAdd = (props: Props) => {
                   renderInput={(params) => (
                     <TextField
                       {...params}
-                      label={
-                        <span>
-                          {t("text.SelectDesignation")} {" "}
-                          {requiredFields.includes("empDesignationId") && (
-                            <span
-                              style={{
-                                color: formik.values.empDesignationId
-                                  ? "green"
-                                  : "red",
-                              }}
-                            >
-                              *
-                            </span>
-                          )}
-                        </span>
-                      }
+                      label={<CustomLabel text={t("text.SelectDesignation")} required={requiredFields.includes('empDesignationId')}  />}
                     />
                   )}
                 />
@@ -962,21 +829,7 @@ const EmployeeAdd = (props: Props) => {
                   renderInput={(params) => (
                     <TextField
                       {...params}
-                      label={
-                        <span>
-                          {t("text.SelectDepartment")} {" "}
-                          {requiredFields.includes("empDeptId") && (
-                            <span
-                              style={{
-                                color: formik.values.empDeptId
-                                  ? "green":"red",
-                              }}
-                            >
-                              *
-                            </span>
-                          )}
-                        </span>
-                      }
+                      label={<CustomLabel text={t("text.SelectDepartment")} required={requiredFields.includes('empDeptId')}  />}
                     />
                   )}
                 />
@@ -1007,22 +860,7 @@ const EmployeeAdd = (props: Props) => {
                   renderInput={(params) => (
                     <TextField
                       {...params}
-                      label={
-                        <span>
-                          {t("text.SelectCountry")}  {""}
-                          {requiredFields.includes("empCountryID") && (
-                            <span
-                              style={{
-                                color: formik.values.empCountryID
-                                  ? "green"
-                                  : "red",
-                              }}
-                            >
-                              *
-                            </span>
-                          )}
-                        </span>
-                      }
+                      label={<CustomLabel text={t("text.SelectCountry")} required={requiredFields.includes('empCountryID')}  />}
                     />
                   )}
                 />
@@ -1053,22 +891,7 @@ const EmployeeAdd = (props: Props) => {
                   renderInput={(params) => (
                     <TextField
                       {...params}
-                      label={
-                        <span>
-                          {t("text.SelectState")} {""}
-                          {requiredFields.includes("empStateId") && (
-                            <span
-                              style={{
-                                color: formik.values.empStateId
-                                  ? "green"
-                                  : "red",
-                              }}
-                            >
-                              *
-                            </span>
-                          )}
-                        </span>
-                      }
+                      label={<CustomLabel text={t("text.SelectState")} required={requiredFields.includes('empStateId')}  />}
                     />
                   )}
                 />
@@ -1099,22 +922,7 @@ const EmployeeAdd = (props: Props) => {
                   renderInput={(params) => (
                     <TextField
                       {...params}
-                      label={
-                        <span>
-                          {t("text.SelectCity")} {""}
-                          {requiredFields.includes("cityId") && (
-                            <span
-                              style={{
-                                color: formik.values.empCityId
-                                  ? "green"
-                                  : "red",
-                              }}
-                            >
-                              *
-                            </span>
-                          )}
-                        </span>
-                      }
+                      label={<CustomLabel text={t("text.SelectCity")} required={requiredFields.includes('empCityId')}  />}
                     />
                   )}
                 />
@@ -1143,20 +951,7 @@ const EmployeeAdd = (props: Props) => {
                   renderInput={(params) => (
                     <TextField
                       {...params}
-                      label={
-                        <span>
-                          {t("text.SelectRole")} {""}
-                          {requiredFields.includes("roleId") && (
-                            <span
-                              style={{
-                                color: formik.values.roleId ? "green" : "red",
-                              }}
-                            >
-                              *
-                            </span>
-                          )}
-                        </span>
-                      }
+                      label={<CustomLabel text={t("text.SelectRole")} required={requiredFields.includes('roleId')}  />}
                     />
                   )}
                 />
@@ -1191,20 +986,7 @@ const EmployeeAdd = (props: Props) => {
                   renderInput={(params) => (
                     <TextField
                       {...params}
-                      label={
-                        <span>
-                          {t("text.SelectGender")} {""}
-                          {requiredFields.includes("gender") && (
-                            <span
-                              style={{
-                                color: formik.values.gender ? "green" : "red",
-                              }}
-                            >
-                              *
-                            </span>
-                          )}
-                        </span>
-                      }
+                      label={<CustomLabel text={t("text.SelectGender")} required={requiredFields.includes('gender')}  />}
                     />
                   )}
                 />
@@ -1219,7 +1001,7 @@ const EmployeeAdd = (props: Props) => {
                 <TextField
                   id="empLocalAddress"
                   name="empLocalAddress"
-                  label={t("text.EnterLocalAddress")}
+                  label={<CustomLabel text={t("text.EnterLocalAddress")} />}
                   value={formik.values.empLocalAddress}
                   placeholder={t("text.EnterLocalAddress")}
                   inputProps={{}}
@@ -1236,22 +1018,7 @@ const EmployeeAdd = (props: Props) => {
                 <TextField
                   id="empPerAddress"
                   name="empPerAddress"
-                  label={
-                    <span>
-                      {t("text.EnterPermanentAddress")} {" "}
-                      {requiredFields.includes("empPerAddress") && (
-                        <span
-                          style={{
-                            color: formik.values.empPerAddress
-                              ? "green"
-                              : "red",
-                          }}
-                        >
-                          *
-                        </span>
-                      )}
-                    </span>
-                  }
+                  label={<CustomLabel text={t("text.EnterPermanentAddress")} required={requiredFields.includes('empPerAddress')}  />}
                   value={formik.values.empPerAddress}
                   placeholder={t("text.EnterPermanentAddress")}
                   size="small"
@@ -1278,22 +1045,7 @@ const EmployeeAdd = (props: Props) => {
                 <TextField
                   id="empPincode"
                   name="empPincode"
-                  label={
-                    <span>
-                      {t("text.EnterPincode")} {" "}
-                      {requiredFields.includes("empPincode") && (
-                        <span
-                          style={{
-                            color: formik.values.empPincode
-                              ? "green"
-                              : "red",
-                          }}
-                        >
-                          *
-                        </span>
-                      )}
-                    </span>
-                  }
+                  label={<CustomLabel text={t("text.EnterPincode")} required={requiredFields.includes('empPincode')}  />}
                   value={formik.values.empPincode}
                   placeholder={t("text.EnterPincode")}
                   inputProps={{maxLength:6}}
@@ -1323,11 +1075,7 @@ const EmployeeAdd = (props: Props) => {
                     type="file"
                     inputProps={{ accept: "image/*" }}
                     InputLabelProps={{ shrink: true }}
-                    label={
-                      <strong style={{ color: "#000" }}>
-                        {t("text.AttachedImage")}
-                      </strong>
-                    }
+                    label={<CustomLabel text={t("text.AttachedImage")} />}
                     size="small"
                     fullWidth
                     style={{ backgroundColor: "white" }}
@@ -1418,11 +1166,7 @@ const EmployeeAdd = (props: Props) => {
                     type="file"
                     inputProps={{ accept: "image/*" }}
                     InputLabelProps={{ shrink: true }}
-                    label={
-                      <strong style={{ color: "#000" }}>
-                        {t("text.AttachedSignature")}
-                      </strong>
-                    }
+                    label={<CustomLabel text={t("text.AttachedSignature")} />}
                     size="small"
                     fullWidth
                     style={{ backgroundColor: "white" }}

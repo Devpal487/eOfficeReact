@@ -4,7 +4,6 @@ import {
   GridColDef,
   GridToolbar,
 } from "@mui/x-data-grid";
-import axios from "axios";
 import api from "../../../utils/Url";
 import Card from "@mui/material/Card";
 import {
@@ -15,6 +14,11 @@ import {
   Grid,
   TextField,
   Typography,
+  RadioGroup,
+  FormControlLabel,
+  FormControl,
+  Radio,
+  FormLabel
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import Switch from "@mui/material/Switch";
@@ -22,17 +26,17 @@ import { useNavigate, useLocation } from "react-router-dom";
 import Chip from "@mui/material/Chip";
 import { useTranslation } from "react-i18next";
 import Paper from "@mui/material/Paper";
-import AddCircleIcon from "@mui/icons-material/AddCircle";
 import { toast } from "react-toastify";
 import ToastApp from "../../../ToastApp";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
 import CircularProgress from "@mui/material/CircularProgress";
-import ZoneMasterAdd from "./ZoneMasterAdd";
-import {getId} from '../../../utils/Constant'; 
 import { useFormik } from "formik";
 import * as Yup from "yup";
-
+import { getId } from "../../../utils/Constant";
+import ButtonWithLoader from "../../../utils/ButtonWithLoader";
+import CustomLabel from "../../../CustomLable";
+import ReusableFormSection from "../../../ReusableFormSection";
 interface MenuPermission {
   isAdd: boolean;
   isEdit: boolean;
@@ -41,7 +45,7 @@ interface MenuPermission {
 }
 
 export default function ZoneMaster() {
-  // const ID = getId();
+  const Userid = getId();
   const [editId, setEditId] = useState(-1);
   const [zones, setZones] = useState([]);
   const [columns, setColumns] = useState<any>([]);
@@ -54,8 +58,26 @@ export default function ZoneMaster() {
     isDel: false,
   });
 
+  const [selectedLang, setSelectedLang] = useState<string>('English');
+  const [inputValue, setInputValue] = useState<string>('');
+
   let navigate = useNavigate();
   const { t } = useTranslation();
+
+
+  const handleLangChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSelectedLang(event.target.value);
+  };
+
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    // Update the input value based on the selected language
+    setInputValue(selectedLang.toLowerCase().startsWith('hi') ? convertToHindi(event.target.value) : event.target.value);
+  };
+
+  const convertToHindi = (text: string): string => {
+    // Your conversion logic from English to Hindi here
+    return text;
+  };
 
 
   useEffect(() => {
@@ -74,15 +96,15 @@ export default function ZoneMaster() {
     //           console.log("data", pathrow);
     //           if (pathrow) {
     //             setPermissionData(pathrow);
-                fetchZonesData();
-      //         }
-      //       }
-      //     }
-      //   }
-      // }
+    fetchZonesData();
+    //         }
+    //       }
+    //     }
+    //   }
+    // }
   }, [isLoading]);
 
-  
+
   const handleSwitchChange = (
     event: React.ChangeEvent<HTMLInputElement>,
     value: any
@@ -114,25 +136,19 @@ export default function ZoneMaster() {
     formik.setFieldValue("zoneCode", row.zoneCode);
 
     setEditId(row.id);
-};
-
-  const routeChangeAdd = () => {
-    let path = `/master/ZoneMasterAdd`;
-    navigate(path);
-    // setAddPageShow(true);
   };
 
   let delete_id = "";
 
   const accept = () => {
     const collectData = {
-      zoneID: delete_id,    
-      user_ID: ID,
+      zoneID: delete_id,
+      user_ID: Userid,
       "isActive": true
     };
     console.log("collectData " + JSON.stringify(collectData));
     api
-      .delete( `Zone/DeleteZonemaster`, {data:collectData})
+      .delete(`Zone/DeleteZonemaster`, { data: collectData })
       .then((response) => {
         if (response.data.isSuccess) {
           toast.success(response.data.mesg);
@@ -144,12 +160,10 @@ export default function ZoneMaster() {
   };
 
   const reject = () => {
-    // toast.warn({summary: 'Rejected', detail: 'You have rejected', life: 3000 });
     toast.warn("Rejected: You have rejected", { autoClose: 3000 });
   };
 
   const handledeleteClick = (del_id: any) => {
-    // console.log(del_id + " del_id ");
     delete_id = del_id;
     confirmDialog({
       message: "Do you want to delete this record ?",
@@ -165,17 +179,17 @@ export default function ZoneMaster() {
     try {
       const collectData = {
         zoneID: -1,
-        user_ID: ID,
+        user_ID: Userid,
         isActive: true
       };
       const response = await api.post(
-         `Zone/GetZonemaster`,
+        `Zone/GetZonemaster`,
         collectData
       );
       const data = response.data.data;
-      const zonesWithIds = data.map((zone: any, index:any) => ({
+      const zonesWithIds = data.map((zone: any, index: any) => ({
         ...zone,
-        serialNo:index+1,
+        serialNo: index + 1,
         id: zone.zoneID,
       }));
       setZones(zonesWithIds);
@@ -197,29 +211,29 @@ export default function ZoneMaster() {
                   sx={{ alignItems: "center", marginTop: "5px" }}
                 >
                   {/* {permissionData?.isEdit ? ( */}
-                    <EditIcon
-                      style={{
-                        fontSize: "20px",
-                        color: "blue",
-                        cursor: "pointer",
-                      }}
-                      className="cursor-pointer"
-                      onClick={() => routeChangeEdit(params.row)}
-                    />
+                  <EditIcon
+                    style={{
+                      fontSize: "20px",
+                      color: "blue",
+                      cursor: "pointer",
+                    }}
+                    className="cursor-pointer"
+                    onClick={() => routeChangeEdit(params.row)}
+                  />
                   {/* ) : (
                     ""
                   )}
                   {permissionData?.isDel ? ( */}
-                    <DeleteIcon
-                      style={{
-                        fontSize: "20px",
-                        color: "red",
-                        cursor: "pointer",
-                      }}
-                      onClick={() => {
-                        handledeleteClick(params.row.id);
-                      }}
-                    />
+                  <DeleteIcon
+                    style={{
+                      fontSize: "20px",
+                      color: "red",
+                      cursor: "pointer",
+                    }}
+                    onClick={() => {
+                      handledeleteClick(params.row.id);
+                    }}
+                  />
                   {/* ) : (
                     ""
                   )} */}
@@ -295,13 +309,6 @@ export default function ZoneMaster() {
     ...column,
   }));
 
-  let ID: any = localStorage.getItem("useR_ID")
-  if (ID !== null) {
-    ID = ID.replace(/\D/g, '');
-    // console.log("useR_ID", parseInt(ID));
-  } else {
-    toast.error("User ID not Found");
-  }
 
 
   const validationSchema = Yup.object({
@@ -324,7 +331,7 @@ export default function ZoneMaster() {
       zoneCode: "",
       sortOrder: 0,
       isActive: true,
-      user_ID: parseInt(ID),
+      user_ID: Userid,
     },
     validationSchema: validationSchema,
     onSubmit: async (values) => {
@@ -334,31 +341,30 @@ export default function ZoneMaster() {
         values
       );
       if (response.data.isSuccess) {
-        // setToaster(false);
         toast.success(response.data.mesg);
         formik.resetForm();
         fetchZonesData();
         setEditId(-1);
-
-        // navigate('/master/ZoneMaster');
       } else {
-        // setToaster(true);
         toast.error(response.data.mesg);
 
       }
 
     }
   });
-  
+
+  const handleSubmitWrapper = async () => {
+    await formik.handleSubmit();
+  };
+
   return (
     <>
       <Card
         style={{
           width: "100%",
-          // height: "100%",
           backgroundColor: "#E9FDEE",
           border: ".5px solid #FF7722 ",
-          marginTop:"3vh"
+          marginTop: "3vh"
         }}
       >
         <Paper
@@ -369,10 +375,10 @@ export default function ZoneMaster() {
               backgroundColor: "#2B4593",
               color: "#fff",
               fontSize: 17,
-              fontWeight:900 
+              fontWeight: 900
             },
           }}
-          style={{ padding: "10px",}}
+          style={{ padding: "10px", }}
         >
           <ConfirmDialog />
 
@@ -391,7 +397,7 @@ export default function ZoneMaster() {
 
           <Stack direction="row" spacing={2} classes="my-2 mb-2">
             {/* {permissionData?.isAdd == true && ( */}
-              {/* <Button
+            {/* <Button
                 onClick={routeChangeAdd}
                 variant="contained"
                 endIcon={<AddCircleIcon />}
@@ -409,20 +415,67 @@ export default function ZoneMaster() {
               ""
             )} */}
           </Stack>
-          <form onSubmit={formik.handleSubmit}>
-                                    <Grid item xs={12} container spacing={3}>
 
-                                        <Grid xs={5} sm={5} item>
-                                        <TextField
+          <ReusableFormSection
+        radioGroupId="langSelect"
+        defaultValue={selectedLang}
+        onLangChange={handleLangChange}
+      />
+       <input
+        type="text"
+        value={inputValue}
+        onChange={handleInputChange}
+      />
+
+          <Grid sm={4} md={4} xs={12}>
+                <FormControl
+                  style={{
+                    display: "flex",
+                    flexDirection: "row",
+                    alignItems: "center",
+                    gap: 20,
+                    marginTop: "13px",
+                    marginLeft: "12px",
+                  }}
+                >
+                  <Grid>
+                    <FormLabel>Type</FormLabel>
+                  </Grid>
+                  <Grid>
+                    <RadioGroup
+                      row
+                      id="rblLang"
+                      aria-labelledby="demo-row-radio-buttons-group-label"
+                      name="row-radio-buttons-group"
+                      defaultValue="English"
+                      // onChange={(event) => {
+                      //   console.log("radio value check", event.target.value);
+                      //   formik.setFieldValue("type",event.target.value);
+                      // }}
+                    >
+                      <FormControlLabel
+                        value="English"
+                        control={<Radio />}
+                        label="English"
+                      />
+                      <FormControlLabel
+                        value="Hindi"
+                        control={<Radio />}
+                        label="Hindi"
+                      />
+                    </RadioGroup>
+                  </Grid>
+                </FormControl>
+              </Grid>
+
+          <form onSubmit={formik.handleSubmit}>
+            <Grid item xs={12} container spacing={3}>
+
+            <Grid xs={5} sm={5} item>
+                <TextField
                   id="zoneName"
                   name="zoneName"
-                  label={
-                    <span>
-                      {t("text.enterZoneName")}{requiredFields.includes('zoneName') && (
-                        <span style={{ color: formik.values.zoneName ? 'green' : 'red' }}>*</span>
-                      )}
-                    </span>
-                  }
+                  label={<CustomLabel text={t("text.enterZoneName")} required={requiredFields.includes('zoneName')}  />}
                   value={formik.values.zoneName}
                   placeholder={t("text.enterZoneName")}
                   size="small"
@@ -437,14 +490,14 @@ export default function ZoneMaster() {
                 {formik.touched.zoneName && formik.errors.zoneName ? (
                   <div style={{ color: "red", margin: "5px" }}>{formik.errors.zoneName}</div>
                 ) : null}
-                                           
-                                        </Grid>
 
-                                        <Grid item xs={5} sm={5}>
-                                        <TextField
+              </Grid>
+
+              <Grid item xs={5} sm={5}>
+                <TextField
                   id="zoneCode"
                   name="zoneCode"
-                  label={t("text.enterZoneCode")}
+                  label={<CustomLabel text={t("text.enterZoneCode")}  />}
                   value={formik.values.zoneCode}
                   placeholder={t("text.enterZoneCode")}
                   size="small"
@@ -453,64 +506,65 @@ export default function ZoneMaster() {
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                 />
-                                            
-                                        </Grid>
 
-                                        <Grid item xs={2}>
-                                            {/*  {permissionData?.isAdd == true ? ( */}
-                                            <Button type="submit" variant="contained" size="large">
-                                                {editId == -1 ? t("text.save") : t("text.update")}
-                                            </Button>
-                                            {/* ) : ( */}
-                                            {/*   "" */}
-                                            {/* )} */}
-                                        </Grid>
-                                    </Grid>
-                                </form>
+              </Grid>
+
+
+              <Grid item xs={2} sx={{ m: -1 }}>
+                {/*  {permissionData?.isAdd == true ? ( */}
+
+                <ButtonWithLoader buttonText={editId == -1 ? t("text.save") : t("text.update")} onClickHandler={handleSubmitWrapper} />
+                {/* ) : ( */}
+                {/*   "" */}
+                {/* )} */}
+              </Grid>
+            </Grid>
+          </form>
+
           {isLoading ? (
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <CircularProgress />
-              </div>
-            ) : (
-              <Box>
-          <br />
-          <div style={{ width: "100%", backgroundColor: "#FFFFFF" }}>
-            
-            <DataGrid
-              rows={zones}
-              columns={adjustedColumns}
-              autoHeight
-              slots={{
-                toolbar: GridToolbar,
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
               }}
-              rowSpacingType="border"
-              pagination={true}
-              pageSizeOptions={[5, 10, 25, 50, 100].map((size) => ({
-                value: size,
-                label: `${size}`,
-              }))}
-              initialState={{
-                pagination: { paginationModel: { pageSize: 5 } },
-              }}
-              slotProps={{
-                toolbar: {
-                  showQuickFilter: true,
-                },
-              }}
-            />
-          </div>
+            >
+              <CircularProgress />
+            </div>
+          ) : (
+            <Box>
+              <br />
+              <div style={{ width: "100%", backgroundColor: "#FFFFFF" }}>
 
-          </Box>)}
+                <DataGrid
+                  rows={zones}
+                  columns={adjustedColumns}
+                  autoHeight
+                  slots={{
+                    toolbar: GridToolbar,
+                  }}
+                  rowSpacingType="border"
+                  pagination={true}
+                  pageSizeOptions={[5, 10, 25, 50, 100].map((size) => ({
+                    value: size,
+                    label: `${size}`,
+                  }))}
+                  initialState={{
+                    pagination: { paginationModel: { pageSize: 5 } },
+                  }}
+                  slotProps={{
+                    toolbar: {
+                      showQuickFilter: true,
+                    },
+                  }}
+                />
+              </div>
+
+            </Box>)}
         </Paper>
       </Card>
       <ToastApp />
-      
+
     </>
   );
 }

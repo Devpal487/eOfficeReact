@@ -187,10 +187,8 @@ export default function EmployeeMaster() {
         userId: "-1",
         empName: "",
         empMobileNo: "",
-
         empPincode: 0,
-        roleId: "-1",
-
+        roleId: "",
         empDesignationId: -1,
         empDeptId: -1,
         empStateId: -1,

@@ -4,8 +4,6 @@ import {
   GridColDef,
   GridToolbar,
 } from "@mui/x-data-grid";
-import axios from "axios";
-import HOST_URL from "../../../utils/Url";
 import Card from "@mui/material/Card";
 import {
   Box,
@@ -17,12 +15,9 @@ import {
   Typography,
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
-import Switch from "@mui/material/Switch";
 import { useNavigate, useLocation } from "react-router-dom";
-import Chip from "@mui/material/Chip";
 import { useTranslation } from "react-i18next";
 import Paper from "@mui/material/Paper";
-import AddCircleIcon from "@mui/icons-material/AddCircle";
 import { toast } from "react-toastify";
 import ToastApp from "../../../ToastApp";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -33,6 +28,8 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import Autocomplete from "@mui/material/Autocomplete";
 import { getISTDate } from "../../../utils/Constant";
+import CustomLabel from "../../../CustomLable";
+import ButtonWithLoader from "../../../utils/ButtonWithLoader";
 interface MenuPermission {
   isAdd: boolean;
   isEdit: boolean;
@@ -41,12 +38,11 @@ interface MenuPermission {
 }
 
 export default function StateMaster() {
-  const{t}=useTranslation();
-  const {defaultValuestime} = getISTDate();
+  const { t } = useTranslation();
+  const { defaultValuestime } = getISTDate();
   const [zones, setZones] = useState([]);
   const [columns, setColumns] = useState<any>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [addPageShow, setAddPageShow] = useState(false);
   const location = useLocation();
   const [editId, setEditId] = useState(-1);
   const [option, setOption] = useState([
@@ -63,36 +59,36 @@ export default function StateMaster() {
 
   useEffect(() => {
     const dataString = localStorage.getItem("userdata");
-      if (dataString) {
-        const data = JSON.parse(dataString);
-        if (data && data.length > 0) {
-          const userPermissionData = data[0]?.userPermission;
-          if (userPermissionData && userPermissionData.length > 0) {
-            const menudata = userPermissionData[0]?.parentMenu;
-            for (let index = 0; index < menudata.length; index++) {
-              const childMenudata = menudata[index]?.childMenu;
-              const pathrow = childMenudata.find(
-                (x: any) => x.path === location.pathname
-              );
-              console.log("data", pathrow);
-              if (pathrow) {
-                setPermissionData(pathrow);
-                fetchZonesData();
-              }
+    if (dataString) {
+      const data = JSON.parse(dataString);
+      if (data && data.length > 0) {
+        const userPermissionData = data[0]?.userPermission;
+        if (userPermissionData && userPermissionData.length > 0) {
+          const menudata = userPermissionData[0]?.parentMenu;
+          for (let index = 0; index < menudata.length; index++) {
+            const childMenudata = menudata[index]?.childMenu;
+            const pathrow = childMenudata.find(
+              (x: any) => x.path === location.pathname
+            );
+            console.log("data", pathrow);
+            if (pathrow) {
+              setPermissionData(pathrow);
+              fetchZonesData();
             }
           }
         }
       }
-      getCountryName();
+    }
+    getCountryName();
   }, [isLoading]);
 
 
-const getCountryName = () => {
+  const getCountryName = () => {
     const collectData = {
       countryId: -1,
     };
     api
-      .post( `Country/GetCountryMaster`, collectData)
+      .post(`Country/GetCountryMaster`, collectData)
       .then((res) => {
         const arr = [];
         //console.log("result" + JSON.stringify(res.data.data));
@@ -107,53 +103,45 @@ const getCountryName = () => {
   };
 
   const validationSchema = Yup.object({
-    countryName:  Yup.string().test(
-      'required', 
-      t('text.reqcountryName'), 
-      function (value:any) {
-        return value && value.trim() !== ''; 
-      }  ),
+    countryName: Yup.string().test(
+      'required',
+      t('text.reqcountryName'),
+      function (value: any) {
+        return value && value.trim() !== '';
+      }),
     stateName: Yup.string().test(
-      'required', 
+      'required',
       t('text.reqstateName'),
-      function (value:any) {
-        return value && value.trim() !== ''; 
+      function (value: any) {
+        return value && value.trim() !== '';
       }
     ),
   });
 
-  let ID: any = localStorage.getItem("useR_ID")
-  if (ID !== null) {
-    ID = ID.replace(/\D/g, '');
-    // console.log("useR_ID", parseInt(ID));
-  } else {
-    toast.error("User ID not Found");
-  }
-
 
   const formik = useFormik({
     initialValues: {
-      stateId : -1,
-      stateName : "",
-      stateCode : "",
-      countryId : "",
-      countryName : "",
-      createdBy : "",
-      updatedBy : "",
-      createdOn : defaultValuestime,
-      updatedOn : defaultValuestime
+      stateId: -1,
+      stateName: "",
+      stateCode: "",
+      countryId: "",
+      countryName: "",
+      createdBy: "",
+      updatedBy: "",
+      createdOn: defaultValuestime,
+      updatedOn: defaultValuestime
     },
     validationSchema: validationSchema,
     onSubmit: async (values) => {
       values.stateId = editId;
-      
+
       const response = await api.post(
         `State/AddUpdateStateMaster`,
         values
-        );
-  try {
-    toast.success(response.data.mesg);
-    // setToaster(false);
+      );
+      try {
+        toast.success(response.data.mesg);
+        // setToaster(false);
         // navigate('/master/StateMaster');
         fetchZonesData();
         formik.resetForm();
@@ -165,9 +153,9 @@ const getCountryName = () => {
     },
   });
 
-  const requiredFields = ['stateName', "countryName"]; 
+  const requiredFields = ['stateName', "countryName"];
 
-  
+
   const routeChangeEdit = (row: any) => {
     formik.setFieldValue("stateName", row.stateName);
     formik.setFieldValue("stateCode", row.stateCode);
@@ -190,7 +178,7 @@ const getCountryName = () => {
     };
     console.log("collectData " + JSON.stringify(collectData));
     api
-      .delete( `State/DeleteState`, {data : collectData})
+      .delete(`State/DeleteState`, { data: collectData })
       .then((response) => {
         if (response.data.isSuccess) {
           toast.success(response.data.mesg);
@@ -221,16 +209,16 @@ const getCountryName = () => {
     try {
       const collectData = {
         stateId: -1,
-        countryId:-1
+        countryId: -1
       };
       const response = await api.post(
-         `State/GetStateMaster`,
+        `State/GetStateMaster`,
         collectData
       );
       const data = response.data.data;
-      const zonesWithIds = data.map((zone: any, index:any) => ({
+      const zonesWithIds = data.map((zone: any, index: any) => ({
         ...zone,
-        serialNo:index+1,
+        serialNo: index + 1,
         id: zone.stateId,
       }));
       setZones(zonesWithIds);
@@ -356,16 +344,20 @@ const getCountryName = () => {
     ...column,
   }));
 
-  
+  const handleSubmitWrapper = async () => {
+    await formik.handleSubmit();
+  };
+
+
+
   return (
     <>
       <Card
         style={{
           width: "100%",
-          // height: "100%",
           backgroundColor: "#E9FDEE",
-          // border: ".5px solid #FF7722 ",
-          marginTop:"3vh"
+          border: ".5px solid #FF7722 ",
+          marginTop: "3vh"
         }}
       >
         <Paper
@@ -376,10 +368,10 @@ const getCountryName = () => {
               backgroundColor: "#2B4593",
               color: "#fff",
               fontSize: 17,
-              fontWeight:900 
+              fontWeight: 900
             },
           }}
-          style={{ padding: "10px",}}
+          style={{ padding: "10px", }}
         >
           <ConfirmDialog />
 
@@ -416,146 +408,134 @@ const getCountryName = () => {
               ""
             )} */}
 
-<form onSubmit={formik.handleSubmit}>
-                <Grid item xs={12} container spacing={3}>
+            <form onSubmit={formik.handleSubmit}>
+              <Grid item xs={12} container spacing={3}>
 
-                  <Grid xs={3.5} sm={3.5} item>
+              <Grid xs={3.5} sm={3.5} item>
                   <Autocomplete
-                  disablePortal
-                  id="combo-box-demo"
-                  options={option}
-                  fullWidth
-                  size="small"
-                  value={
-                    option.find(
-                      (option: any) => option.value === formik.values.countryId
-                    ) || null
-                  }
-                  onChange={(event, newValue) => {
-                    console.log(newValue);
-                    
-                    formik.setFieldValue("countryId", newValue?.value);
-                    formik.setFieldValue("countryName", newValue?.label);
-                    // formik.setFieldTouched("zoneID", true); 
-                  }}
-                  renderInput={(params) => (
-                    <TextField {...params} 
-                    label={
-                      <span>
-                        {t("text.SelectCountryName")} {""}
-                        {requiredFields.includes('countryName') && (
-                          <span style={{ color: formik.values.countryName ? 'green' : 'red' }}>*</span>
-                        )}
-                      </span>
-                  }/>)}
-                />
-                {formik.touched.countryName && formik.errors.countryName ? (
-                  <div style={{ color: "red", margin: "5px" }}>
-                    {formik.errors.countryName}
-                  </div>
-                ) : null}
+                    disablePortal
+                    id="combo-box-demo"
+                    options={option}
+                    fullWidth
+                    size="small"
+                    value={
+                      option.find(
+                        (option: any) => option.value === formik.values.countryId
+                      ) || null
+                    }
+                    onChange={(event, newValue) => {
+                      console.log(newValue);
 
-                  </Grid>
+                      formik.setFieldValue("countryId", newValue?.value);
+                      formik.setFieldValue("countryName", newValue?.label);
+                      // formik.setFieldTouched("zoneID", true); 
+                    }}
+                    renderInput={(params) => (
+                      <TextField {...params}
+                        label={<CustomLabel text={t("text.SelectCountryName")} required={requiredFields.includes('countryName')}  />} />)}
+                  />
+                  {formik.touched.countryName && formik.errors.countryName ? (
+                    <div style={{ color: "red", margin: "5px" }}>
+                      {formik.errors.countryName}
+                    </div>
+                  ) : null}
 
-                  <Grid item xs={3.5} sm={3.5}>
-                  <TextField
-                label={
-                  <span>
-                        {t("text.EnterStateName")} {requiredFields.includes('stateName') && (
-                      <span style={{ color: formik.values.stateName ? 'green' : 'red' }}>*</span>
-                    )}
-                  </span>
-                }
-                  value={formik.values.stateName}
-                  name="stateName"
-                  id="stateName"
-                  placeholder=  {t("text.EnterStateName")}
-                  size="small"
-                  fullWidth
-                  style={{ backgroundColor: "white" }}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                />
-                {formik.touched.stateName && formik.errors.stateName ? (
-                  <div style={{ color: "red", margin: "5px" }}>
-                    {formik.errors.stateName}
-                  </div>
-                ) : null}
-
-                  </Grid>
-                  
-                  <Grid xs={3.5} sm={3.5} item>
-                  <TextField
-                  label={t("text.EnterStateCode")}
-                  value={formik.values.stateCode}
-                  name="stateCode"
-                  id="stateCode"
-                  placeholder={t("text.EnterStateCode")}
-                  size="small"
-                  fullWidth
-                  style={{ backgroundColor: "white" }}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                />
-                  </Grid>
-
-                  <Grid item xs={1.5}>
-                    {/*  {permissionData?.isAdd == true ? ( */}
-                    <Button type="submit" variant="contained" size="large">
-                      {editId == -1 ? t("text.save") : t("text.update")}
-                    </Button>
-                    {/* ) : ( */}
-                    {/*   "" */}
-                    {/* )} */}
-                  </Grid>
                 </Grid>
-              </form>
+
+                <Grid item xs={3.5} sm={3.5}>
+                  <TextField
+                    label={<CustomLabel text={t("text.EnterStateName")} required={requiredFields.includes('stateName')}  />}
+                    value={formik.values.stateName}
+                    name="stateName"
+                    id="stateName"
+                    placeholder={t("text.EnterStateName")}
+                    size="small"
+                    fullWidth
+                    style={{ backgroundColor: "white" }}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                  />
+                  {formik.touched.stateName && formik.errors.stateName ? (
+                    <div style={{ color: "red", margin: "5px" }}>
+                      {formik.errors.stateName}
+                    </div>
+                  ) : null}
+
+                </Grid>
+
+                <Grid xs={3.5} sm={3.5} item>
+                  <TextField
+                    label={<CustomLabel text={t("text.EnterStateCode")}   />}
+                    value={formik.values.stateCode}
+                    name="stateCode"
+                    id="stateCode"
+                    placeholder={t("text.EnterStateCode")}
+                    size="small"
+                    fullWidth
+                    style={{ backgroundColor: "white" }}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                  />
+                </Grid>
+
+
+                <Grid item xs={2} sx={{ m: -1 }}>
+                  {/*  {permissionData?.isAdd == true ? ( */}
+
+                  <ButtonWithLoader buttonText={editId == -1 ? t("text.save") : t("text.update")} onClickHandler={handleSubmitWrapper} />
+                  {/* ) : ( */}
+                  {/*   "" */}
+                  {/* )} */}
+                </Grid>
+
+              </Grid>
+            </form>
           </Stack>
 
           {isLoading ? (
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <CircularProgress />
-              </div>
-            ) : (
-              <Box>
-          <br />
-          <div style={{ width: "100%", backgroundColor: "#FFFFFF" }}>
-        
-            <DataGrid
-              rows={zones}
-              columns={adjustedColumns}
-              autoHeight
-              slots={{
-                toolbar: GridToolbar,
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
               }}
-              rowSpacingType="border"
-              pagination={true}
-              pageSizeOptions={[5, 10, 25, 50, 100].map((size) => ({
-                value: size,
-                label: `${size}`,
-              }))}
-              initialState={{
-                pagination: { paginationModel: { pageSize: 5 } },
-              }}
-              slotProps={{
-                toolbar: {
-                  showQuickFilter: true,
-                },
-              }}
-            />
-          </div>
+            >
+              <CircularProgress />
+            </div>
+          ) : (
+            <Box>
+              <br />
+              <div style={{ width: "100%", backgroundColor: "#FFFFFF" }}>
 
-          </Box>)}
+                <DataGrid
+                  rows={zones}
+                  columns={adjustedColumns}
+                  autoHeight
+                  slots={{
+                    toolbar: GridToolbar,
+                  }}
+                  rowSpacingType="border"
+                  pagination={true}
+                  pageSizeOptions={[5, 10, 25, 50, 100].map((size) => ({
+                    value: size,
+                    label: `${size}`,
+                  }))}
+                  initialState={{
+                    pagination: { paginationModel: { pageSize: 5 } },
+                  }}
+                  slotProps={{
+                    toolbar: {
+                      showQuickFilter: true,
+                    },
+                  }}
+                />
+              </div>
+
+            </Box>)}
         </Paper>
       </Card>
       <ToastApp />
-      
+
     </>
   );
 };

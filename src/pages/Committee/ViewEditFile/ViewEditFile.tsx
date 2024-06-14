@@ -36,7 +36,10 @@ import { toast } from "react-toastify";
 import { getISTDate } from "../../../utils/Constant";
 import Dialog, { DialogProps } from '@mui/material/Dialog';
 import ToastApp from "../../../ToastApp";
-import { EditIcons, UploadIcons, PasteIcons, PrintIcons, PendingIcons,UpgradeIcons,FileCopyIcons,FilemoveIcons,HighlightIcons,SmsIcons,MakeIcons, ArchiveIcons } from "../../../utils/icons";
+import { EditIcons, UploadIcons, PasteIcons, PrintIcons, PendingIcons, UpgradeIcons, FileCopyIcons, FilemoveIcons, HighlightIcons, SmsIcons, MakeIcons, ArchiveIcons } from "../../../utils/icons";
+import CustomLabel from "../../../CustomLable";
+import FindInPageIcon from '@mui/icons-material/FindInPage';
+
 
 const Transition = React.forwardRef(function Transition(
     props: TransitionProps & {
@@ -46,10 +49,6 @@ const Transition = React.forwardRef(function Transition(
 ) {
     return <Slide direction="up" ref={ref} {...props} />;
 });
-
-
-
-
 
 const style = {
     position: "absolute" as "absolute",
@@ -87,6 +86,7 @@ const ViewEditFile = (props: Props) => {
     const [isHover1, setIsHover1] = useState(false);
     const [pdfData, setPDFData] = useState("");
     const [isLoading, setIsLoading] = useState(false);
+    const [tableLoading, setIsTableLoading] = useState(false);
     const [openModals, setOpenModals] = useState(false);
     const [activeItem, setActiveItem] = useState(null);
     const [fileMovementDetailopen, setFileMovementDetailOpen] = useState(false);
@@ -190,10 +190,11 @@ const ViewEditFile = (props: Props) => {
     };
 
     const getTableData = () => {
+        setIsTableLoading(true);
         const collectData = {
             "fileNo": formik.values.fileNo,
             "cDocsFlag": "C",
-            "type": 1
+            "type": 2
 
 
         };
@@ -204,19 +205,20 @@ const ViewEditFile = (props: Props) => {
                 console.log("result" + JSON.stringify(res.data.data));
                 for (let index = 0; index < res.data.data.length; index++) {
                     arr.push({
-                        id: res.data.data[index]["pdFid"],
+                        id: res.data.data[index]["rid"],
+                        rid: res.data.data[index]["rid"],
+                        fileNo: res.data.data[index]["fileNo"],
+                        fileNm: res.data.data[index]["fileNm"],
+                        cFileNm: res.data.data[index]["cFileNm"],
+                        date: res.data.data[index]["date"],
 
-                        synopsis: res.data.data[index]["synopsis"],
-                        fileType: res.data.data[index]["fileType"],
-                        subject: res.data.data[index]["subject"],
-                        fDate: res.data.data[index]["fDate"],
-                        perUt: res.data.data[index]["perUt"],
 
 
 
                     });
                 }
                 setMovementTableData(arr);
+                setIsTableLoading(false);
             });
     };
 
@@ -226,23 +228,7 @@ const ViewEditFile = (props: Props) => {
         type: number;
     } | undefined;
 
-    const getFilemovementDetails = (id: any) => {
 
-        if (id === "") {
-            toast.error("First Select File Number then proceed further process...");
-        } else {
-            collectData = {
-                "fileNo": id,
-                "cDocsFlag": "C",
-                "type": 1
-            }
-        };
-
-        api.post(`FileNumber/GetViewEditFileNo`, collectData)
-            .then((res) => {
-                console.log(res.data.data)
-            })
-    }
 
     let navigate = useNavigate();
 
@@ -318,7 +304,7 @@ const ViewEditFile = (props: Props) => {
                     // getFileNo();
                     // formik.setFieldValue('rFileNumber', res.data.insertedId);  
                     toast.success(res.data.mesg);
-                    
+
 
 
                 }
@@ -343,17 +329,25 @@ const ViewEditFile = (props: Props) => {
         },
     };
 
-    const getFileData = (docMid: any) => {
+    const getFileData = (rid: any) => {
+        console.log("RID", rid)
         setIsLoading(true);
         const collectData = {
-            "fileNo": docMid,
-            "cDocsFlag": "C",
+            "rid": rid,
+            "rlId": -1,
+            "rFileType": -1,
+            "inst_id": -1,
+            "user_id": "",
+            "fromdate": "1900-06-13T14:09:45.560Z",
+            "todate": defaultValuestime,
+            "refNo": -1,
+            "divisionid": -1,
             "type": 1
         };
 
         console.log("collectData " + JSON.stringify(collectData));
         api
-            .post(`FileNumber/GetViewEditFileNo`, collectData)
+            .post(`ReferenceDiary/GetReferenceDiary`, collectData)
             .then((response) => {
                 console.log(
                     "check pdf",
@@ -376,8 +370,8 @@ const ViewEditFile = (props: Props) => {
         setIsHover1(false);
     };
 
-    const handleAddCommentClicks = (docMid: any) => {
-        getFileData(docMid);
+    const handleAddCommentClicks = (row: any) => {
+        getFileData(row.rid);
         setOpenModals(true);
     };
 
@@ -421,27 +415,27 @@ const ViewEditFile = (props: Props) => {
     };
 
     const items = [
-        { text: " Split Pdf",icon:<EditIcons/>, onClick: () => { navigate("/Committee/SplitPDF"); console.log("Clicked SplitPdf"); } },
-        { text: " Upload Letters",icon:<UploadIcons/>, onClick: () => { toggleRight(); console.log("Clicked UploadLetters"); } },
-        { text: " Make Correspondence",icon:<MakeIcons/>,  onClick: () => { navigate("/Committee/Correspondence"); console.log("Clicked MakeCorrespondence"); } },
-        { text: " FLRD",icon:<PasteIcons/>,  },
-        { text: " Print",icon:<PrintIcons/>,  },
-        { text: " Update Remark",icon:<UpgradeIcons/>,  onClick: () => { console.log("Clicked UpdateRemark"); } },
-        { text: " Pending PUC", icon:<PendingIcons/>, onClick: () => { console.log("Clicked PendingPUC"); } },
-        { text: " File Movement Details",icon:<FilemoveIcons/>,  onClick: handlefileMovementDetailOpen },
-        { text: " Moved To Awaited List",icon:<FileCopyIcons/>,  onClick: () => { console.log("Clicked MovedToAwaitedList"); } },
-        { text: " Moved To Parked Or Archived List",icon:<ArchiveIcons/>,  onClick: () => { console.log("Clicked MovedToParkedOrAchiveList"); } },
-        { text: " Close The File",icon:<HighlightIcons/>,  onClick: () => { console.log("Clicked MovedToParkedOrAchiveList"); } },
-        { text: " File Summary",icon:<SmsIcons/>,  onClick: () => { console.log("Clicked FileSummery"); } },
+        { text: " Split Pdf", icon: <EditIcons />, onClick: () => { navigate("/Committee/SplitPDF"); console.log("Clicked SplitPdf"); } },
+        { text: " Upload Letters", icon: <UploadIcons />, onClick: () => { toggleRight(); console.log("Clicked UploadLetters"); } },
+        { text: " Make Correspondence", icon: <MakeIcons />, onClick: () => { navigate("/Committee/Correspondence"); console.log("Clicked MakeCorrespondence"); } },
+        { text: " FLRD", icon: <PasteIcons />, },
+        { text: " Print", icon: <PrintIcons />, },
+        { text: " Update Remark", icon: <UpgradeIcons />, onClick: () => { console.log("Clicked UpdateRemark"); } },
+        { text: " Pending PUC", icon: <PendingIcons />, onClick: () => { console.log("Clicked PendingPUC"); } },
+        { text: " File Movement Details", icon: <FilemoveIcons />, onClick: handlefileMovementDetailOpen },
+        { text: " Moved To Awaited List", icon: <FileCopyIcons />, onClick: () => { console.log("Clicked MovedToAwaitedList"); } },
+        { text: " Moved To Parked Or Archived List", icon: <ArchiveIcons />, onClick: () => { console.log("Clicked MovedToParkedOrAchiveList"); } },
+        { text: " Close The File", icon: <HighlightIcons />, onClick: () => { console.log("Clicked MovedToParkedOrAchiveList"); } },
+        { text: " File Summary", icon: <SmsIcons />, onClick: () => { console.log("Clicked FileSummery"); } },
     ];
 
     // console.log("Drawer Items:", items);
     // console.log("Drawer Items:");
 
- 
+
     const back = useNavigate();
 
-    const handleForwardData= async ()=>{
+    const handleForwardData = async () => {
         toast.success("forward clicked");
         // const collectData = {
         //         "eid": 0,
@@ -453,7 +447,7 @@ const ViewEditFile = (props: Props) => {
         //         "status": ""
         // }
         // const response = await api.post(`FileMovement/SP_ForwardFileApi`, collectData)
-        
+
         // if(response.data.isSuccess){
         //     toast.success(response.data.mesg)
         // }else{
@@ -514,29 +508,49 @@ const ViewEditFile = (props: Props) => {
                                     fullWidth
                                     size="small"
                                     onChange={(event, newValue: any) => {
-                                        if (newValue != null) {
-                                            console.log(newValue?.value);
-                                            setFileID(newValue?.value);
-                                            formik.setFieldValue("fileNo", newValue?.value);
-                                            getFilemovementDetails(newValue?.value)
-                                            formik.setFieldTouched("fileNo", true);
-                                            formik.setFieldTouched("fileNo", false);
-                                        } else {
-                                            toast.error("Invalid Id")
-                                        }
+                                        console.log(newValue?.value);
+
+                                        formik.setFieldValue("fileNo", newValue?.value);
+
+                                        formik.setFieldTouched("fileNo", true);
+                                        formik.setFieldTouched("fileNo", false);
                                     }}
                                     renderInput={(params) => (
                                         <TextField
                                             {...params}
-                                            label={
-                                                <span>
-                                                    {t("text.SelectFileNo")} {""}
-                                                </span>
-                                            }
+                                            label={<CustomLabel text={t("text.SelectFileNo")} />}
                                         />
                                     )}
                                 />
                             </Grid>
+
+                            <Grid item lg={2} xs={12} >
+                                <Button
+                                    onClick={getTableData}
+
+                                    style={{
+                                        backgroundColor: "#059669",
+                                        color: "white",
+                                        width: "85%"
+
+                                    }}
+
+                                >
+                                    {t("text.Search")}
+                                </Button>
+
+                                {/* <FindInPageIcon onClick={getTableData}
+
+                                    style={{
+                                        backgroundColor: "#059669",
+                                        color: "white",
+
+                                    }}
+                                /> */}
+
+
+                            </Grid>
+
 
                             <Grid item lg={6} xs={12}>
                                 <FormControlLabel
@@ -576,6 +590,7 @@ const ViewEditFile = (props: Props) => {
                                 </Dialog>
                             </Grid>
 
+
                             <Grid item lg={12} xs={12}>
                                 <Tabs
                                     value={value}
@@ -584,8 +599,8 @@ const ViewEditFile = (props: Props) => {
                                     textColor="primary"
                                     centered
                                     variant="fullWidth"
-                                >   
-                                    
+                                >
+
                                     <Tab
                                         label="Notesheet"
                                         sx={value === 0 ? tabStyle.selected : tabStyle.default}
@@ -633,13 +648,13 @@ const ViewEditFile = (props: Props) => {
                                 >
 
                                     <div style={{
-                                        backgroundColor: "#00009c", 
+                                        backgroundColor: "#00009c",
                                         display: "flex",
                                         alignItems: "center",
                                         justifyContent: "space-between",
                                         height: "50px"
                                     }}>
-                                        <Typography fontWeight="600" align="center" color="#fff" sx={{margin:6}}>Menu </Typography>
+                                        <Typography fontWeight="600" align="center" color="#fff" sx={{ margin: 6 }}>Menu </Typography>
                                         <IconButton
                                             edge="end"
                                             onClick={toggleDrawer(false)}
@@ -672,7 +687,7 @@ const ViewEditFile = (props: Props) => {
                                                     onMouseOut={handleMouseOut}
                                                     onClick={item.onClick}
                                                 >
-                                                      {item.icon}{" "}
+                                                    {item.icon}{" "}
                                                     <ListItemText primary={item.text} />
                                                 </ListItem>
                                             ))}
@@ -873,17 +888,7 @@ const ViewEditFile = (props: Props) => {
                                         }}
                                     >
                                         <tr>
-                                            <th
-                                                style={{
-                                                    borderLeft: "1px solid black",
-                                                    paddingBlock: "10",
-                                                    paddingTop: "5px",
-                                                    paddingBottom: "5px",
-                                                    width: "100px",
-                                                }}
-                                            >
-                                                {t("text.SrNo")}
-                                            </th>
+
 
                                             <th
                                                 style={{
@@ -925,137 +930,144 @@ const ViewEditFile = (props: Props) => {
                                             </th>
                                         </tr>
                                     </thead>
-                                    <tbody style={{ border: "1px solid black" }}>
-                                        {MovementTableData.map((row: any, index: any) => (
-                                            <tr key={row.id} style={{ border: "1px solid black" }}>
-                                                <td
-                                                    style={{
-                                                        borderLeft: "1px solid black",
-                                                        borderTop: "1px solid black",
-                                                        // textAlign: "center",
-                                                        padding: "2px",
-                                                    }}
-                                                >
-                                                    {row.RefrenceNo}
-                                                </td>
+                                    {tableLoading ? (
+                                        <div
+                                            style={{
+                                                display: "flex",
+                                                justifyContent: "center",
+                                                alignItems: "center",
+                                                margin: 10,
+                                            }}
+                                        >
+                                            <CustomizedProgressBars />
+                                        </div>
+                                    ) : (
+                                        <tbody style={{ border: "1px solid black" }}>
 
-                                                <td
-                                                    style={{
-                                                        borderLeft: "1px solid black",
-                                                        borderTop: "1px solid black",
-                                                        textAlign: "center",
-                                                    }}
-                                                >
-                                                    {row.FileNo}
-                                                </td>
+                                            {MovementTableData.map((row: any, index: any) => (
+                                                <tr key={row.id} style={{ border: "1px solid black" }}>
+                                                    <td
+                                                        style={{
+                                                            borderLeft: "1px solid black",
+                                                            borderTop: "1px solid black",
+                                                            // textAlign: "center",
+                                                            padding: "2px",
+                                                        }}
+                                                    >
+                                                        {row.fileNo}
+                                                    </td>
 
-                                                <td
-                                                    style={{
-                                                        borderLeft: "1px solid black",
-                                                        borderTop: "1px solid black",
-                                                        textAlign: "center",
-                                                    }}
-                                                >
-                                                    {row.FileName}
-                                                </td>
+                                                    <td
+                                                        style={{
+                                                            borderLeft: "1px solid black",
+                                                            borderTop: "1px solid black",
+                                                            textAlign: "center",
+                                                        }}
+                                                    >
+                                                        {row.fileNm}
+                                                    </td>
 
-                                                <td
-                                                    style={{
-                                                        borderLeft: "1px solid black",
-                                                        borderTop: "1px solid black",
-                                                        textAlign: "center",
-                                                        cursor: "pointer",
-                                                        color: isHover1 ? "blue" : "black",
-                                                        textDecoration: isHover1 ? "underline" : "none",
-                                                    }}
-                                                    onMouseEnter={handleMouseEntered}
-                                                    onMouseLeave={handleMouseLeaveed}
-                                                    onClick={() => handleAddCommentClicks(row.fileNo)}
-                                                >
-                                                    {row.File}
-                                                </td>
 
-                                                <Dialog
-                                                    open={openModals}
-                                                    keepMounted
-                                                    aria-describedby="alert-dialog-slide-description"
-                                                    TransitionComponent={Transition}
-                                                    maxWidth="xl"
-                                                >
-                                                    <DialogTitle sx={{}}>
-                                                        <div
-                                                            style={{
-                                                                display: "flex",
-                                                                alignItems: "center",
-                                                                justifyContent: "space-between",
-                                                            }}
-                                                        >
+
+                                                    <td
+                                                        style={{
+                                                            borderLeft: "1px solid black",
+                                                            borderTop: "1px solid black",
+                                                            textAlign: "center",
+                                                            cursor: "pointer",
+                                                            color: "blue" ,
+                                                            textDecoration:"underline",
+                                                        }}
+                                                       
+                                                    >
+                                                       <a  onMouseEnter={handleMouseEntered}
+                                                        onMouseLeave={handleMouseLeaveed}
+                                                        onClick={() => handleAddCommentClicks(row)}> {row.cFileNm}</a>
+                                                    </td>
+
+                                                    <Dialog
+                                                        open={openModals}
+                                                        keepMounted
+                                                        aria-describedby="alert-dialog-slide-description"
+                                                        TransitionComponent={Transition}
+                                                        maxWidth="xl"
+                                                    >
+                                                        <DialogTitle sx={{}}>
+                                                            <div
+                                                                style={{
+                                                                    display: "flex",
+                                                                    alignItems: "center",
+                                                                    justifyContent: "space-between",
+                                                                }}
+                                                            >
+                                                                <>
+                                                                    <Typography fontWeight="600">
+                                                                        {row.cFileNm}
+                                                                    </Typography>
+                                                                </>
+                                                                <>
+                                                                    <IconButton
+                                                                        aria-label="close"
+                                                                        onClick={handleCloseModals}
+                                                                    >
+                                                                        <CloseIcon />
+                                                                    </IconButton>{" "}
+                                                                </>
+                                                            </div>
+                                                        </DialogTitle>
+                                                        {isLoading ? (
+                                                            <div
+                                                                style={{
+                                                                    display: "flex",
+                                                                    justifyContent: "center",
+                                                                    alignItems: "center",
+                                                                    margin: 10,
+                                                                }}
+                                                            >
+                                                                <CustomizedProgressBars />
+                                                            </div>
+                                                        ) : (
                                                             <>
-                                                                <Typography fontWeight="600">
-                                                                    {row.pdfName}
-                                                                </Typography>
+                                                                {pdfData ? (
+                                                                    <embed
+                                                                        src={pdfData}
+                                                                        style={{
+                                                                            height: "90vh",
+                                                                            width: "100vh",
+                                                                            border: "1px solid gray",
+                                                                        }}
+                                                                    />
+                                                                ) : (
+                                                                    <div
+                                                                        style={{
+                                                                            display: "flex",
+                                                                            justifyContent: "center",
+                                                                            alignItems: "center",
+                                                                            margin: 10,
+                                                                        }}
+                                                                    >
+                                                                        No PDF Available
+                                                                    </div>
+                                                                )}
                                                             </>
-                                                            <>
-                                                                <IconButton
-                                                                    aria-label="close"
-                                                                    onClick={handleCloseModals}
-                                                                >
-                                                                    <CloseIcon />
-                                                                </IconButton>{" "}
-                                                            </>
-                                                        </div>
-                                                    </DialogTitle>
-                                                    {isLoading ? (
-                                                        <div
-                                                            style={{
-                                                                display: "flex",
-                                                                justifyContent: "center",
-                                                                alignItems: "center",
-                                                                margin: 10,
-                                                            }}
-                                                        >
-                                                            <CustomizedProgressBars />
-                                                        </div>
-                                                    ) : (
-                                                        <>
-                                                            {pdfData ? (
-                                                                <embed
-                                                                    src={pdfData}
-                                                                    style={{
-                                                                        height: "90vh",
-                                                                        width: "100vh",
-                                                                        border: "1px solid gray",
-                                                                    }}
-                                                                />
-                                                            ) : (
-                                                                <div
-                                                                    style={{
-                                                                        display: "flex",
-                                                                        justifyContent: "center",
-                                                                        alignItems: "center",
-                                                                        margin: 10,
-                                                                    }}
-                                                                >
-                                                                    No PDF Available
-                                                                </div>
-                                                            )}
-                                                        </>
-                                                    )}
-                                                </Dialog>
+                                                        )}
+                                                    </Dialog>
 
-                                                <td
-                                                    style={{
-                                                        borderLeft: "1px solid black",
-                                                        borderTop: "1px solid black",
-                                                        textAlign: "center",
-                                                    }}
-                                                >
-                                                    {row.Date}
-                                                    {/* <p onClick={handleReceiveData}>{row.receiver}</p> */}
-                                                </td>
-                                            </tr>
-                                        ))}
-                                    </tbody>
+                                                    <td
+                                                        style={{
+                                                            borderLeft: "1px solid black",
+                                                            borderTop: "1px solid black",
+                                                            textAlign: "center",
+                                                        }}
+                                                    >
+                                                        {row.date}
+                                                        {/* <p onClick={handleReceiveData}>{row.receiver}</p> */}
+                                                    </td>
+                                                </tr>
+                                            ))}
+
+                                        </tbody>
+                                    )}
                                 </Table>
 
                                 <Drawer
@@ -1065,13 +1077,13 @@ const ViewEditFile = (props: Props) => {
                                     style={{ zIndex: 1300, }}
                                 >
                                     <div style={{
-                                        backgroundColor: "#00009c", 
+                                        backgroundColor: "#00009c",
                                         display: "flex",
                                         alignItems: "center",
                                         justifyContent: "space-between",
                                         height: "50px"
                                     }}>
-                                        <Typography fontWeight="600" align="center" color="#fff" sx={{margin:6}}>Upload Letter </Typography>
+                                        <Typography fontWeight="600" align="center" color="#fff" sx={{ margin: 6 }}>Upload Letter </Typography>
                                         <IconButton
                                             edge="end"
                                             onClick={toggleRightDrawer}
@@ -1089,18 +1101,14 @@ const ViewEditFile = (props: Props) => {
                                         onKeyDown={(e) => e.stopPropagation()}
                                         style={{ width: "400px", padding: "20px" }}
                                     >
-                                      
+
                                         <Grid item lg={12} xs={12}>
                                             <TextField
                                                 type="file"
                                                 // value={formik.values.fileattach_name}
                                                 inputProps={{ accept: "application/pdf" }}
                                                 InputLabelProps={{ shrink: true }}
-                                                label={
-                                                    <strong style={{ color: "#000" }}>
-                                                        {t("text.EnterDocUpload")}
-                                                    </strong>
-                                                }
+                                                label={<CustomLabel text={t("text.EnterDocUpload")} />}
                                                 size="small"
                                                 fullWidth
                                                 style={{ backgroundColor: "white" }}
@@ -1112,7 +1120,7 @@ const ViewEditFile = (props: Props) => {
 
                                         <Grid item lg={12} xs={12} style={{ marginTop: "10%" }}>
                                             <TextField
-                                                label={t("text.EnterFileDescription")}
+                                                label={<CustomLabel text={t("text.EnterFileDescription")} />}
                                                 value={formik.values.FileDesc}
                                                 placeholder={t("text.EnterFileDescription")}
                                                 size="small"

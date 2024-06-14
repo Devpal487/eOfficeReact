@@ -30,7 +30,9 @@ import api from "../../../utils/Url";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import Autocomplete from "@mui/material/Autocomplete";
-
+import { getId, getISTDate } from "../../../utils/Constant";
+import CustomLabel from "../../../CustomLable";
+import ButtonWithLoader from "../../../utils/ButtonWithLoader";
 
 interface MenuPermission {
   isAdd: boolean;
@@ -40,6 +42,8 @@ interface MenuPermission {
 }
 
 export default function WardMaster() {
+  const UserId = getId();
+  const defaultValuestime = getISTDate();
   const { t } = useTranslation();
   const [rows, setRows] = useState<any>([]);
   const [columns, setColumns] = useState<any>([]);
@@ -82,15 +86,6 @@ export default function WardMaster() {
     getVehicleZone();
   }, []);
 
-  let ID: any = localStorage.getItem("useR_ID")
-  if (ID !== null) {
-    ID = ID.replace(/\D/g, '');
-    // console.log("useR_ID", parseInt(ID));
-  } else {
-    toast.error("User ID not Found");
-  }
-
-
 
   const handleSwitchChange = (
     event: React.ChangeEvent<HTMLInputElement>,
@@ -104,8 +99,8 @@ export default function WardMaster() {
       isActive: event.target.checked,
       user_ID: value.user_ID,
       sortOrder: value.sortOrder,
-      createdDt: value.createdDt,
-      modifyDt: value.modifyDt,
+      createdDt: defaultValuestime,
+      modifyDt: defaultValuestime,
       zoneName: value.zoneName,
     };
     api
@@ -127,7 +122,7 @@ export default function WardMaster() {
   const accept = () => {
     const collectData = {
       wardID: delete_id,
-      user_ID: parseInt(ID),
+      user_ID: UserId,
     };
     console.log("collectData " + JSON.stringify(collectData));
     api
@@ -162,7 +157,7 @@ export default function WardMaster() {
     const collectData = {
       "wardID": -1,
       "zoneID": -1,
-      "user_ID": parseInt(ID),
+      "user_ID": UserId,
       // "isActive": true,
     };
     try {
@@ -308,20 +303,10 @@ export default function WardMaster() {
     setEditId(row.id);
   };
 
-  /// NEXT PAGE
-
-  let navigate = useNavigate();
-  const routeChangeAdd = () => {
-    let path = `/master/WardMasterAdd`;
-    navigate(path);
-  };
-
-
-
   const getVehicleZone = () => {
     const collectData = {
       zoneID: -1,
-      user_ID: parseInt(ID),
+      user_ID: UserId,
       isActive: true
     };
     api
@@ -368,9 +353,9 @@ export default function WardMaster() {
       "zoneID": 0,
       "isActive": true,
       "sortOrder": 0,
-      "createdDt": "2024-05-15T13:09:13.523Z",
-      "modifyDt": "2024-05-15T13:09:13.523Z",
-      "user_ID": parseInt(ID),
+      "createdDt": defaultValuestime,
+      "modifyDt": defaultValuestime,
+      "user_ID": UserId,
       "zoneName": ""
     },
     validationSchema: validationSchema,
@@ -386,8 +371,8 @@ export default function WardMaster() {
         // setToaster(false);
         toast.success(response.data.mesg);
         formik.resetForm();
-        getList();
         setEditId(-1);
+        getList();
 
         // navigate("/master/WardMaster");
       } else {
@@ -397,6 +382,11 @@ export default function WardMaster() {
     }
   });
 
+  const handleSubmitWrapper = async () => {
+    await formik.handleSubmit();
+  };
+
+
   return (
     <>
       <Grid item lg={6} sm={6} xs={12} sx={{ marginTop: "3vh" }}>
@@ -405,7 +395,7 @@ export default function WardMaster() {
             width: "100%",
             height: "50%",
             backgroundColor: "#E9FDEE",
-            border: ".5px solid green ",
+            border: ".5px solid #ff7722 ",
           }}
         >
           <Paper
@@ -461,7 +451,8 @@ export default function WardMaster() {
               <form onSubmit={formik.handleSubmit}>
                 <Grid item xs={12} container spacing={3}>
 
-                  <Grid xs={3.5} sm={3.5} item>
+                 
+                <Grid xs={3.5} sm={3.5} item>
                     <Autocomplete
                       disablePortal
                       id="combo-box-demo"
@@ -482,14 +473,7 @@ export default function WardMaster() {
                         formik.setFieldTouched("zoneID", false);
                       }}
                       renderInput={(params) => (
-                        <TextField {...params} label={
-                          <span>
-                            {t("text.SelectZoneName")} {""}
-                            {requiredFields.includes('zoneName') && (
-                              <span style={{ color: formik.values.zoneName ? 'green' : 'red' }}>*</span>
-                            )}
-                          </span>
-                        } />
+                        <TextField {...params} label={<CustomLabel text={t("text.SelectZoneName")} required={requiredFields.includes('zoneName')}  />}/>
                       )}
                     />
 
@@ -506,13 +490,7 @@ export default function WardMaster() {
                       type="text"
                       name="wardName"
                       id="wardName"
-                      label={
-                        <span>
-                          {t("text.enterWardName")} {requiredFields.includes('wardName') && (
-                            <span style={{ color: formik.values.wardName ? 'green' : 'red' }}>*</span>
-                          )}
-                        </span>
-                      }
+                      label={<CustomLabel text={t("text.enterWardName")} required={requiredFields.includes('enterWardName')}  />}
                       value={formik.values.wardName}
                       placeholder={t("text.enterWardName")}
                       size="small"
@@ -528,14 +506,14 @@ export default function WardMaster() {
                     ) : null}
 
                   </Grid>
-                  
+
                   <Grid xs={3.5} sm={3.5} item>
                     <TextField
                       type="text"
                       value={formik.values.wardCode}
                       name="wardCode"
                       id="wardCode"
-                      label={t("text.enterWardCode")}
+                      label={<CustomLabel text={t("text.enterWardCode")}   />}
                       placeholder={t("text.enterWardCode")}
                       size="small"
                       fullWidth
@@ -545,11 +523,11 @@ export default function WardMaster() {
                     />
                   </Grid>
 
-                  <Grid item xs={1.5}>
+
+                  <Grid item xs={2} sx={{ m: -1 }}>
                     {/*  {permissionData?.isAdd == true ? ( */}
-                    <Button type="submit" variant="contained" size="large">
-                      {editId == -1 ? t("text.save") : t("text.update")}
-                    </Button>
+
+                    <ButtonWithLoader buttonText={editId == -1 ? t("text.save") : t("text.update")} onClickHandler={handleSubmitWrapper} />
                     {/* ) : ( */}
                     {/*   "" */}
                     {/* )} */}

@@ -17,6 +17,8 @@ import * as Yup from "yup";
 import { toast } from "react-toastify";
 import api from "../../../utils/Url";
 import ToastApp from "../../../ToastApp";
+import CustomLabel from "../../../CustomLable";
+import ButtonWithLoader from "../../../utils/ButtonWithLoader";
 
 type Props = {};
 
@@ -81,6 +83,11 @@ const CountryMasterAdd = (props: Props) => {
 
   const back = useNavigate();
 
+  const handleSubmitWrapper = async () => {
+    await formik.handleSubmit();
+  };
+
+
   return (
     <div>
       <div
@@ -123,15 +130,9 @@ const CountryMasterAdd = (props: Props) => {
           <form onSubmit={formik.handleSubmit}>
           {toaster === false ? "" : <ToastApp />}
             <Grid item xs={12} container spacing={2}>
-              <Grid lg={6} sm={6} xs={12} item>
+            <Grid lg={6} sm={6} xs={12} item>
                 <TextField
-                  label={
-                    <span>
-                      {t("text.EnterCountryName")}{requiredFields.includes('countryName') && (
-                        <span style={{ color: formik.values.countryName ? 'green' : 'red' }}>*</span>
-                      )}
-                    </span>
-                  }
+                  label={<CustomLabel text={t("text.EnterCountryName")} required={requiredFields.includes('countryName')}  />}
                   value={formik.values.countryName}
                   placeholder={t("text.EnterCountryName")}
                   size="small"
@@ -149,7 +150,7 @@ const CountryMasterAdd = (props: Props) => {
 
               <Grid lg={6} sm={6} xs={12} item>
                 <TextField
-                  label={t("text.EnterCountryCode")}
+                  label={<CustomLabel text={t("text.EnterCountryCode")}   />}
                   value={formik.values.countryCode}
                   placeholder={t("text.EnterCountryCode")}
                   size="small"
@@ -164,19 +165,8 @@ const CountryMasterAdd = (props: Props) => {
              
 
               <Grid item lg={6} sm={6} xs={12}>
-                <Grid>
-                  <Button
-                    type="submit"
-                    fullWidth
-                    style={{
-                      backgroundColor: "#059669",
-                      color: "white",
-                      marginTop: "10px",
-                    }}
-                  >
-                      {t("text.save")}
-                  </Button>
-                </Grid>
+                <ButtonWithLoader  fullWidth={true} buttonText={t("text.save") } onClickHandler={handleSubmitWrapper} />
+                
               </Grid>
               <Grid item lg={6} sm={6} xs={12}>
                 <Button

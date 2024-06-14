@@ -380,27 +380,6 @@ export default function MiniDrawer({ items }: any) {
     // handleSave(id, name);
   };
 
-  
-  
-
-  // const handleToggle = (id: number, name: string) => () => {
-  //   const currentIndex = check.indexOf(id);
-  //   const newChecked = currentIndex === -1 ? [id] : [];
-
-  //   const updatedChecked = newChecked.length === 1 ? [id] : [];
-  //   console.log("Checked data:", { id, name });
-  //   setCheck(updatedChecked);
-
-  //   setExpandedItems((prevExpanded) =>
-  //     prevExpanded.includes(id.toString())
-  //       ? prevExpanded.filter(item => item !== id.toString())
-  //       : [...prevExpanded, id.toString()]
-  //   );
-
-
-  //   handleSave(id, name);
-  // };
-
   const handleSave = () => {
     console.log("handleSave function called");
 
@@ -617,7 +596,7 @@ export default function MiniDrawer({ items }: any) {
   };
 
   return (
-    <Box sx={{ display: "flex" }}>
+    <Box sx={{ display: "flex", }}>
       {/* <CssBaseline /> */}
       <AppBar position="fixed" open={open} style={{}}>
         <Toolbar

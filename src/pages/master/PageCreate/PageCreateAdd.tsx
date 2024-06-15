@@ -42,7 +42,7 @@ import ToastApp from "../../../ToastApp";
 import { getISTDate } from "../../../utils/Constant";
 import SwipeableDrawerRoute from "./SwipeableDrawerRoute";
 import VisibilityIcon from "@mui/icons-material/Visibility";
-import { getinstId, getId } from "../../../utils/Constant";
+import { getinstId, getId, getdivisionId } from "../../../utils/Constant";
 import KeyboardArrowUpTwoToneIcon from '@mui/icons-material/KeyboardArrowUpTwoTone';
 import ExpandMoreTwoToneIcon from '@mui/icons-material/ExpandMoreTwoTone';
 
@@ -78,8 +78,10 @@ const PageCreateAdd = (props: Props) => {
     const location = useLocation();
     console.log("location", location.state);
     const userid = getId();
-    console.log("🚀 ~ PageCreateAdd ~ userid:", userid)
+    // console.log("🚀 ~ PageCreateAdd ~ userid:", userid)
     const instid = getinstId();
+    const divId = getdivisionId();
+
     const { t } = useTranslation();
     const { defaultValuestime } = getISTDate();
     const [pdfView, setPdfView] = useState("");
@@ -194,10 +196,8 @@ const PageCreateAdd = (props: Props) => {
 
     useEffect(() => {
         getLetterType();
-
         getFileType();
         getFileNo();
-
         getSection();
         getRoot();
     }, []);
@@ -360,7 +360,6 @@ const PageCreateAdd = (props: Props) => {
 
     let navigate = useNavigate();
 
-    const requiredFields = ["rPhone"];
 
     const [toaster, setToaster] = useState(false);
 
@@ -430,15 +429,17 @@ const PageCreateAdd = (props: Props) => {
         },
     });
 
+    const [fids , setFids] = useState("");
+
     const fileSubmit = () => {
         const value = {
             fnId: -1,
-            fId: formik.values.FileType || "",
+            fId: fids || "",
             fileNm: formik.values.rFileNumber.toString() || "",
-            inst_id: 0,
-            user_id: 0,
+            inst_id: instid,
+            user_id: userid,
             createdDate: "2024-05-27T11:34:42.443Z",
-            divisionId: 0,
+            divisionId: divId,
         };
         api.post(`FileNumber/AddUpdateFileNumber`, value).then((res) => {
             if (res.data.isSuccess === true) {
@@ -451,6 +452,8 @@ const PageCreateAdd = (props: Props) => {
             }
         });
     };
+    console.log("🚀 ~ api.post ~ formik.values.FileType:", formik.values.FileType)
+    
 
     const convertBase64 = (file: Blob) => {
         return new Promise((resolve, reject) => {
@@ -742,9 +745,8 @@ const PageCreateAdd = (props: Props) => {
                                     size="small"
                                     onChange={(event, newValue: any) => {
                                         console.log(newValue?.value);
-
                                         formik.setFieldValue("rFileType", newValue?.value);
-
+                                        setFids(newValue?.value);
                                         formik.setFieldTouched("rFileType", true);
                                         formik.setFieldTouched("rFileType", false);
                                     }}

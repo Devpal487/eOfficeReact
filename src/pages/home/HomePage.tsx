@@ -29,12 +29,11 @@ import { ConfirmDialog } from "primereact/confirmdialog";
 import { toast } from "react-toastify";
 import ReviewOficer from "./ReviewOficer";
 import { useFormik } from "formik";
-import { getId } from "../../utils/Constant";
 import { CloseIcons } from "../../utils/icons";
 import ToastApp from "../../ToastApp";
 import ButtonWithLoader from "../../utils/ButtonWithLoader";
 // import { green } from '@mui/material/colors';
-
+import { getinstId, getdivisionId,getId } from "../../utils/Constant";
 export const options1 = {
   pieHole: 0.25,
   is3D: false,
@@ -45,6 +44,9 @@ export const options1 = {
 export default function HomePage() {
   const { t } = useTranslation();
   const userid = getId();
+  const divId:any = getdivisionId();
+  const instId:any = getinstId();
+
   const[switchType, setSwitchType] = useState("1");
   const [ReviewModalData, setReviewModalData] = useState(false);
   const [referenceNo, setReferenceNo] = useState("");
@@ -157,10 +159,10 @@ export default function HomePage() {
   const fetchTotalFile = async () => {
     try {
       const collectData = {
-        inst_id: 1,
-        divid: parseInt(localStorage.getItem("id") + ""),
-        refNoYr: parseInt(new Date().getFullYear() + ""),
-        pstart: 0,
+        inst_id: parseInt(instId),
+        divid: parseInt(divId),
+        refNoYr: newrefNoYr,
+        pstart: newrefNo || 0,
       };
       const response = await api.post(
         `RefferenceNumber/GetRefferenceNo`,
@@ -320,6 +322,28 @@ export default function HomePage() {
   const adjustedColumns = columns.map((column: any) => ({
     ...column,
   }));
+
+  const[newrefNoYr , setNewrefNoYr] = useState(2024);
+  const[newrefNo , setNewrefNo] = useState("");
+
+  const getReferencesave =async()=>{
+    let collectData;
+    if (newrefNo !== null && newrefNo !== "" && newrefNoYr !== null ) {
+    collectData={
+      "inst_id": parseInt(instId),
+      "divid": parseInt(divId),
+      "refNoYr": newrefNoYr,
+      "pstart": newrefNo
+    };}else{
+      toast.error("Please fill Ref. No and Year before proceed further...")
+    }
+    console.log("🚀 ~ getReferencesave ~ collectData:", collectData)
+
+    await api.post(`RefferenceNumber/GetRefferenceNo`, collectData)
+    .then((res) => {
+      console.log("🚀 ~ .then ~ res:", res)
+    })
+  };
 
   return (
     <div  style={{
@@ -590,13 +614,14 @@ export default function HomePage() {
                       <Grid xs={5} sm={5} item>
                         <TextField
                           label="Enter Ref. No."
-                          // value={formik.values.zoneName}
+                          value={newrefNo}
                           placeholder="Enter Ref. No."
                           size="small"
                           fullWidth
                           style={{backgroundColor: 'white'}}
-                          // onChange={formik.handleChange}
-                          // onBlur={formik.handleBlur}
+                          onChange={(e:any)=>{
+                            setNewrefNo(e.target.value)
+                          }}
                         />
                       </Grid>
 
@@ -605,19 +630,20 @@ export default function HomePage() {
                           // id="zoneCode"
                           // name="zoneCode"
                           label="Enter Year"
-                          // value={formik.values.zoneCode}
+                          value={newrefNoYr}
                           placeholder="Enter Year"
                           size="small"
                           fullWidth
                           style={{ backgroundColor: "white" }}
-                          // onChange={formik.handleChange}
-                          // onBlur={formik.handleBlur}
+                          onChange={(e:any)=>{
+                            setNewrefNoYr(parseInt(e.target.value))
+                          }}
                         />
 
                       </Grid>
 
                       <Grid item xs={2}>
-                        <Button variant="contained" size="large">
+                        <Button variant="contained" size="large" onClick={fetchTotalFile}>
                           Start
                         </Button>
                       </Grid>

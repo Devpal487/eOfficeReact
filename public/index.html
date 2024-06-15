@@ -15,17 +15,18 @@
       href="https://cdn.jsdelivr.net/npm/@marqueefy/marqueefy@1.0.3/dist/css/marqueefy.min.css" 
       integrity="sha384-wADgvhAqbORDLWCl6LHRmwaldDxcsCZJ9EfC4tyLmlqRSrxK8SQSmUprPJYdtCZb" 
       crossorigin="anonymous">
-    <title>Document Management System</title>
+    <title>Workflow Management System </title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.11.338/pdf.min.js"></script>
-    <script async
-            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDxp8MamOh_0gBNHBq4m3bgCIgksc4YYgQ&libraries=drawing&callback=initMap">
-    </script>
-        <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
         <script src="https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js"></script>
-        <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script> -->
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root"></div>
+        <script type="text/javascript">
+          $(function () {
+              $("[id$='rblLang']").on('click', radioBVal);
+              $("textarea[id*='txt'],input[type=text]").on('keyup', KruToUniC);
+          });              
+      </script>
   </body>
 </html>

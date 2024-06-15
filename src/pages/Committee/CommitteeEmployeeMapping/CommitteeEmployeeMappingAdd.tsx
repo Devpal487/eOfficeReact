@@ -2,6 +2,8 @@ import {
     Button,
     Card,
     CardContent,
+    Checkbox,
+    FormControlLabel,
     Grid,
     TextField,
     Typography,
@@ -28,7 +30,9 @@ type Props = {};
 
 const CommitteeEmployeeMappingAdd = (props: Props) => {
     const { t } = useTranslation();
-    const {defaultValuestime} = getISTDate();
+
+    const { defaultValuestime } = getISTDate();
+
 
     const [option, setOption] = useState([
         {
@@ -36,10 +40,15 @@ const CommitteeEmployeeMappingAdd = (props: Props) => {
             label: t("text.SelectAuthority"),
         },
     ]);
-    
+
     const [UserName, setUserName] = useState([
         { value: "-1", label: t("text.SelectEmployee") },
     ]);
+
+    const [CommitteeName, setCommitteeName] = useState([
+        { value: "-1", label: t("text.selectCommGroupname") },
+    ]);
+
 
     let navigate = useNavigate();
 
@@ -87,18 +96,7 @@ const CommitteeEmployeeMappingAdd = (props: Props) => {
             console.log("result" + JSON.stringify(res.data.data));
             for (let index = 0; index < res.data.data.length; index++) {
                 arr.push({
-                    firsT_NAME: res.data.data[index]["empName"],
-                    //middlE_NAME: res.data.data[index]["middlE_NAME"],
 
-                    // logiN_NAME: res.data.data[index]["empName"],
-                    // password: res.data.data[index]["password"],
-                    useR_CODE: res.data.data[index]["empCode"],
-                    cuR_MOBILE: res.data.data[index]["empMobileNo"],
-                    email: res.data.data[index]["email"],
-                    dob: res.data.data[index]["empDob"],
-                    gendeR_ID: res.data.data[index]["gender"],
-                    roleId: res.data.data[index]["roleId"],
-                    // useR_TYPE_ID: res.data.data[index]["useR_TYPE_ID"],
                     label: res.data.data[index]["empName"],
                     value: res.data.data[index]["empid"],
                 });
@@ -107,11 +105,36 @@ const CommitteeEmployeeMappingAdd = (props: Props) => {
         });
     };
 
+
+    const getCommittee = () => {
+        const collectData = {
+            "id": -1,
+            "committeeName": "",
+            "officeId": -1,
+            "userId": "",
+            "ipAddress": "",
+            "type": ""
+        };
+        api.post(`CommitteeMaster/GetCommitteeMaster`, collectData).then((res) => {
+            const arr = [];
+            console.log("result" + JSON.stringify(res.data.data));
+            for (let index = 0; index < res.data.data.length; index++) {
+                arr.push({
+
+                    label: res.data.data[index]["committeeName"],
+                    value: res.data.data[index]["id"],
+                });
+            }
+            setCommitteeName(arr);
+        });
+    };
+
     const [toaster, setToaster] = useState(false);
 
     useEffect(() => {
         getGender();
         getUserName();
+        getCommittee();
     }, []);
 
     const formik = useFormik({
@@ -123,10 +146,16 @@ const CommitteeEmployeeMappingAdd = (props: Props) => {
             "dol": "",
             "priority": 0,
             "committeeId": 0,
+
             "officeId": 1,
             "userId": "",
             "ipAddress": "",
-            "uploadDate": defaultValuestime
+            "uploadDate": defaultValuestime,
+            "head": "",
+            "divisionid": parseInt(localStorage.getItem('id') + ""),
+
+            "empName": "",
+            "authorityName": ""
         },
         onSubmit: async (values) => {
 
@@ -138,7 +167,7 @@ const CommitteeEmployeeMappingAdd = (props: Props) => {
                 setToaster(true);
                 toast.error(response.data.mesg);
             }
-            navigate("/UserManagement/UserManagement");
+            navigate("/Committee/CommitteeEmployeeMapping");
         },
     });
 
@@ -186,21 +215,36 @@ const CommitteeEmployeeMappingAdd = (props: Props) => {
                         {toaster === false ? "" : <ToastApp />}
                         <Grid item xs={12} container spacing={2}>
                             <Grid xs={12} sm={4} item alignItems="center" justifyContent="center" >
-                                <input type="checkbox" aria-label="Head" placeholder="Head"/>
-                                <label>Head</label>
+
+                                <FormControlLabel
+                                    control={
+                                        <Checkbox
+                                            id="head"
+                                            name="head"
+                                            checked={formik.values.head === 'Y'}
+                                            onChange={(e) => {
+                                                const newValue = e.target.checked ? 'Y' : 'N';
+                                                formik.setFieldValue('head', newValue);
+                                            }}
+                                            color="primary"
+                                        />
+                                    }
+                                    label="Head"
+                                    labelPlacement="end"
+                                />
                             </Grid>
 
                             <Grid xs={12} sm={4} item>
-                            <Autocomplete
+                                <Autocomplete
                                     disablePortal
                                     id="combo-box-demo"
-                                    options={UserName}
+                                    options={CommitteeName}
                                     fullWidth
                                     size="small"
                                     onChange={(event, newValue) => {
-                                        formik.setFieldValue("empId", newValue?.value);
-                                        formik.setFieldTouched("empId", true);
-                                        formik.setFieldTouched("empId", false);
+                                        formik.setFieldValue("committeeId", newValue?.value);
+                                        formik.setFieldTouched("committeeId", true);
+                                        formik.setFieldTouched("committeeId", false);
                                     }}
                                     renderInput={(params) => (
                                         <TextField
@@ -212,7 +256,7 @@ const CommitteeEmployeeMappingAdd = (props: Props) => {
                             </Grid>
 
                             <Grid xs={12} sm={4} item>
-                            <Autocomplete
+                                <Autocomplete
                                     disablePortal
                                     id="combo-box-demo"
                                     options={UserName}
@@ -233,17 +277,17 @@ const CommitteeEmployeeMappingAdd = (props: Props) => {
                             </Grid>
 
                             <Grid xs={12} sm={4} item>
-                            <Autocomplete
+                                <Autocomplete
                                     disablePortal
                                     id="combo-box-demo"
                                     options={option}
                                     fullWidth
                                     size="small"
-                                    
+
                                     onChange={(event, newValue) => {
-                                        formik.setFieldValue("gendeR_ID", newValue?.value);
-                                        formik.setFieldTouched("gendeR_ID", true);
-                                        formik.setFieldTouched("gendeR_ID", false);
+                                        formik.setFieldValue("designationInCommittee", newValue?.value);
+                                        formik.setFieldTouched("designationInCommittee", true);
+                                        formik.setFieldTouched("designationInCommittee", false);
                                     }}
                                     renderInput={(params) => (
                                         <TextField
@@ -255,13 +299,15 @@ const CommitteeEmployeeMappingAdd = (props: Props) => {
                             </Grid>
 
                             <Grid xs={12} sm={4} item>
-                            <TextField
+                                <TextField
                                     type="date"
                                     label={<CustomLabel text={t("text.EnterDateOfJoining")} />}
                                     value={formik.values.doj}
-                                    name="firsT_NAME"
+
+                                    name="doj"
+
                                     InputLabelProps={{ shrink: true }}
-                                    id="firsT_NAME"
+                                    id="doj"
                                     placeholder={t("text.EnterDateOfJoining")}
                                     size="small"
                                     fullWidth
@@ -272,22 +318,25 @@ const CommitteeEmployeeMappingAdd = (props: Props) => {
                             </Grid>
 
                             <Grid xs={12} sm={4} item>
-                            <TextField
-                                     type="date"
-                                     label={<CustomLabel text={t("text.EnterDateOfLeaving")} />}
-                                     value={formik.values.dol}
+
+
+                                <TextField
+                                    type="date"
+                                    label={<CustomLabel text={t("text.EnterDateOfLeaving")} />}
+                                    value={formik.values.dol}
+
                                     InputLabelProps={{ shrink: true }}
-                                    name="firsT_NAME"
-                                     id="firsT_NAME"
-                                     placeholder="Enter Date of Leaving"
-                                     size="small"
-                                     fullWidth
-                                     style={{ backgroundColor: "white" }}
-                                     onChange={formik.handleChange}
-                                     onBlur={formik.handleBlur}
+                                    name="dol"
+                                    id="dol"
+                                    placeholder={t("text.EnterDateOfLeaving")}
+                                    size="small"
+                                    fullWidth
+                                    style={{ backgroundColor: "white" }}
+                                    onChange={formik.handleChange}
+                                    onBlur={formik.handleBlur}
                                 />
                             </Grid>
-                           
+
                             <Grid xs={12} item>
                                 <div style={{ justifyContent: "space-between", flex: 2 }}>
                                     <Button

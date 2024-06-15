@@ -52,6 +52,7 @@ import {
 } from "../../../utils/icons";
 import CustomLabel from "../../../CustomLable";
 import moment from "moment";
+
 import { getinstId, getId, getdivisionId } from "../../../utils/Constant";
 
 const Transition = React.forwardRef(function Transition(
@@ -68,10 +69,12 @@ type Props = {};
 const ViewEditFile = (props: Props) => {
     const { t } = useTranslation();
     const userId = getId();
+
     const instId = getinstId();
     // console.log("🚀 ~ ViewEditFile ~ userId:", userId);
     const divId = getdivisionId();
     // console.log("🚀 ~ ViewEditFile ~ divId:", divId);
+
     const [getFileNumber, setGetFileNumber] = useState(false);
     const [value, setValue] = useState(0);
     const [MovementTableData, setMovementTableData] = useState<any>([]);
@@ -103,6 +106,7 @@ const ViewEditFile = (props: Props) => {
     const [lastStatus, setLastStatus] = useState("");
 
     const [nodeId, setNodeId] = useState("");
+
 
     const handlefileMovementDetailOpen = () => {
         setFileMovementDetailOpen(true);
@@ -252,6 +256,7 @@ const ViewEditFile = (props: Props) => {
 
     const farwordData = () => {
         const value = {
+
             eid: userId,
             fileNo: fileName,
             remark: 0,
@@ -283,6 +288,7 @@ const ViewEditFile = (props: Props) => {
             .then((res: any) => {
                 setNodeId(res.data.data);
             });
+
     };
 
     let navigate = useNavigate();
@@ -960,9 +966,11 @@ const ViewEditFile = (props: Props) => {
                                             <Button autoFocus onClick={handleForwardData}>
                                                 Forward
                                             </Button>
+
                                             <Button autoFocus onClick={() => getRouteView(nodeId)}>
+
                                                 View Routes
-                                            </Button>
+                                            </Button> */}
                                         </DialogActions>
                                     </Dialog>
                                 </>

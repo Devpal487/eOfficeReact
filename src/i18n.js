@@ -571,7 +571,13 @@ const resources = {
         selectAuthority :"Select Authority",
         selectStatus :"Select Status",
         SelectDepartment :"Select Department ",
-        selectCommGroupname:"Select Committee/Group name"
+
+        selectCommGroupname:"Select Committee/Group Name",
+        DateOfJoining:"Date Of Joining",
+        SelectStatus:"Select Status",
+        FromTo:"From To",
+        AthorityMail:"Authority Mail",
+
 
 
 
@@ -1143,8 +1149,14 @@ const resources = {
         FileDef:"फ़ाइल परिभाषा",
         selectAuthority :"प्राधिकरण का चयन करें",
         selectStatus :"स्थिति चुनें",
-        SelectDepartment :"विभाग का चयन करें",
-        selectCommGroupname:"समिति/समूह का नाम चुनें"
+        SelectDepartment :"Select Department",
+        selectCommGroupname:"चयन समिति/समूह का नाम",
+        DateOfJoining:"शामिल होने की तिथि",
+        SelectStatus:"स्थिति का चयन करें",
+        FromTo:"यहा से",
+        AthorityMail:"प्राधिकरण मेल",
+
+
         
  
 

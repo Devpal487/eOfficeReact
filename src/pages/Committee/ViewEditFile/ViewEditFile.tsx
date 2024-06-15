@@ -28,19 +28,32 @@ import { Navigate, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useFormik } from "formik";
 import api from "../../../utils/Url";
-import MenuIcon from '@mui/icons-material/Menu';
+import MenuIcon from "@mui/icons-material/Menu";
 import { TransitionProps } from "@mui/material/transitions";
 import CloseIcon from "@mui/icons-material/Close";
 import CustomizedProgressBars from "../../../components/Loader";
 import { toast } from "react-toastify";
 import { getISTDate } from "../../../utils/Constant";
-import Dialog, { DialogProps } from '@mui/material/Dialog';
+import Dialog, { DialogProps } from "@mui/material/Dialog";
 import ToastApp from "../../../ToastApp";
-import { EditIcons, UploadIcons, PasteIcons, PrintIcons, PendingIcons, UpgradeIcons, FileCopyIcons, FilemoveIcons, HighlightIcons, SmsIcons, MakeIcons, ArchiveIcons } from "../../../utils/icons";
+import {
+    EditIcons,
+    UploadIcons,
+    PasteIcons,
+    PrintIcons,
+    PendingIcons,
+    UpgradeIcons,
+    FileCopyIcons,
+    FilemoveIcons,
+    HighlightIcons,
+    SmsIcons,
+    MakeIcons,
+    ArchiveIcons,
+} from "../../../utils/icons";
 import CustomLabel from "../../../CustomLable";
 import moment from "moment";
-import { getId, getdivisionId} from "../../../utils/Constant";
 
+import { getinstId, getId, getdivisionId } from "../../../utils/Constant";
 
 const Transition = React.forwardRef(function Transition(
     props: TransitionProps & {
@@ -51,16 +64,17 @@ const Transition = React.forwardRef(function Transition(
     return <Slide direction="up" ref={ref} {...props} />;
 });
 
-
 type Props = {};
 
 const ViewEditFile = (props: Props) => {
-
     const { t } = useTranslation();
     const userId = getId();
-    console.log("🚀 ~ ViewEditFile ~ userId:", userId)
+
+    const instId = getinstId();
+    // console.log("🚀 ~ ViewEditFile ~ userId:", userId);
     const divId = getdivisionId();
-    console.log("🚀 ~ ViewEditFile ~ divId:", divId)
+    // console.log("🚀 ~ ViewEditFile ~ divId:", divId);
+
     const [getFileNumber, setGetFileNumber] = useState(false);
     const [value, setValue] = useState(0);
     const [MovementTableData, setMovementTableData] = useState<any>([]);
@@ -82,7 +96,7 @@ const ViewEditFile = (props: Props) => {
     const [activeItem, setActiveItem] = useState(null);
     const [fileMovementDetailopen, setFileMovementDetailOpen] = useState(false);
     const [fullWidth, setFullWidth] = useState(true);
-    const [maxWidth, setMaxWidth] = useState<DialogProps['maxWidth']>('md');
+    const [maxWidth, setMaxWidth] = useState<DialogProps["maxWidth"]>("md");
 
     //dialog entry
     const [fileID, setFileID] = useState("");
@@ -113,35 +127,37 @@ const ViewEditFile = (props: Props) => {
     };
 
     const listItemStyle = (index: any) => ({
-        cursor: 'pointer',
-        padding: '5px 15px',
+        cursor: "pointer",
+        padding: "5px 15px",
         margin: "1%",
-        color: 'black',
-        borderRadius: '10px',
-        border: '1px solid #dcdcdc',
-        transition: 'all 0.3s ease',
-        backgroundColor: index % 2 === 0 ? '#f5f5f5' : 'white',
-        '&:hover': {
-            backgroundColor: '#f5f5f5',
+        color: "black",
+        borderRadius: "10px",
+        border: "1px solid #dcdcdc",
+        transition: "all 0.3s ease",
+        backgroundColor: index % 2 === 0 ? "#f5f5f5" : "white",
+        "&:hover": {
+            backgroundColor: "#f5f5f5",
         },
-        justifyContent: 'space-between',
-        borderTopRightRadius: '10px',
-        borderBottomRightRadius: '10px',
-        borderRightStyle: 'solid',
+        justifyContent: "space-between",
+        borderTopRightRadius: "10px",
+        borderBottomRightRadius: "10px",
+        borderRightStyle: "solid",
         activeStyle: {
-            backgroundColor: '#b3c7c4',
-            color: '#00009c',
-        }
+            backgroundColor: "#b3c7c4",
+            color: "#00009c",
+        },
     });
 
-
     const activeStyle = {
-        backgroundColor: '#b1ccc8',
-        color: '#00009c',
+        backgroundColor: "#b1ccc8",
+        color: "#00009c",
     };
 
     const toggleDrawer = (open: any) => (event: any) => {
-        if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
+        if (
+            event.type === "keydown" &&
+            (event.key === "Tab" || event.key === "Shift")
+        ) {
             return;
         }
         setIsDrawerOpen(open);
@@ -150,13 +166,11 @@ const ViewEditFile = (props: Props) => {
     const toggleRightDrawer = () => {
         setRightOpen(!rightOpen);
         setIsDrawerOpen(true);
-
     };
 
     const toggleRight = () => {
         setRightOpen(!rightOpen);
         setIsDrawerOpen(false);
-
     };
 
     const handleTab = (event: any, newValue: any) => {
@@ -169,123 +183,112 @@ const ViewEditFile = (props: Props) => {
 
     const getFileNo = () => {
         const collectData = {
-            "fnId": -1,
-            "fId": -1,
-            "inst_id": -1,
-            "user_id": -1,
-            "divisionId": -1
+            fnId: -1,
+            fId: -1,
+            inst_id: -1,
+            user_id: -1,
+            divisionId: -1,
         };
-        api
-            .post(`FileNumber/GetFileNumber`, collectData)
-            .then((res) => {
-                const arr = res.data.data.map((item: any) => ({
-                    label: item.fileNm,
-                    value: item.fnId,
-                }));
-                setParentInst(arr);
-            });
+        api.post(`FileNumber/GetFileNumber`, collectData).then((res) => {
+            const arr = res.data.data.map((item: any) => ({
+                label: item.fileNm,
+                value: item.fnId,
+            }));
+            setParentInst(arr);
+        });
     };
 
-    const getTableData = (id:any) => {
+    const getTableData = (id: any) => {
         setIsTableLoading(true);
         const collectData = {
-            "fileNo": id,
-            "cDocsFlag": "C",
-            "type": 2
-
-
+            fileNo: id,
+            cDocsFlag: "C",
+            type: 2,
         };
-        api
-            .post(`FileNumber/GetViewEditFileNo`, collectData)
-            .then((res) => {
-                const arr: any = [];
-                // console.log("result" + JSON.stringify(res.data.data));
-                for (let index = 0; index < res.data.data.length; index++) {
-                    arr.push({
-                        id: res.data.data[index]["rid"],
-                        rid: res.data.data[index]["rid"],
-                        fileNo: res.data.data[index]["fileNo"],
-                        fileNm: res.data.data[index]["fileNm"],
-                        cFileNm: res.data.data[index]["cFileNm"],
-                        date: res.data.data[index]["date"],
-                    });
-                    setFileOpenDates(res.data.data[index]["cFileOpenDate"])
-                    setFileTransfered(res.data.data[index]["cFileTranfer"])
-                    setLastStatus(res.data.data[index]["lastStaus"])
-                }
-                setMovementTableData(arr);
-                setIsTableLoading(false);
-            });
+        api.post(`FileNumber/GetViewEditFileNo`, collectData).then((res) => {
+            const arr: any = [];
+            // console.log("result" + JSON.stringify(res.data.data));
+            for (let index = 0; index < res.data.data.length; index++) {
+                arr.push({
+                    id: res.data.data[index]["rid"],
+                    rid: res.data.data[index]["rid"],
+                    fileNo: res.data.data[index]["fileNo"],
+                    fileNm: res.data.data[index]["fileNm"],
+                    cFileNm: res.data.data[index]["cFileNm"],
+                    date: res.data.data[index]["date"],
+                });
+                setFileOpenDates(res.data.data[index]["cFileOpenDate"]);
+                setFileTransfered(res.data.data[index]["cFileTranfer"]);
+                setLastStatus(res.data.data[index]["lastStaus"]);
+            }
+            setMovementTableData(arr);
+            setIsTableLoading(false);
+        });
     };
-
 
     const getMoveTableData = () => {
         // setIsTableLoading(true);
         const collectData = {
-            "fileNo": formik.values.fileNo,
-            "cDocsFlag": "C",
-            "type": 2
+            fileNo: formik.values.fileNo,
+            cDocsFlag: "C",
+            type: 2,
         };
-        api
-            .post(`FileNumber/GetFileMovementDetail`, collectData)
-            .then((res) => {
-                const arr: any = [];
-                console.log("result" + JSON.stringify(res.data.data));
-                for (let index = 0; index < res.data.data.length; index++) {
-                    arr.push({
-                        //id: res.data.data[index]["rid"],
-                        designation: res.data.data[index]["designation"],
-                        lastStatus: res.data.data[index]["lastStatus"],
-                        fileRdate: res.data.data[index]["fileRdate"],
-                        updateremark: res.data.data[index]["updateremark"],
-                        authorityLevel: res.data.data[index]["authorityLevel"],
-                        routeName: res.data.data[index]["routeName"],
-                        routeID: res.data.data[index]["routeID"],
-                    });
-                }
-                setFileMovementTableData(arr);
-                // setIsTableLoading(false);
-            });
+        api.post(`FileNumber/GetFileMovementDetail`, collectData).then((res) => {
+            const arr: any = [];
+            // console.log("result" + JSON.stringify(res.data.data));
+            for (let index = 0; index < res.data.data.length; index++) {
+                arr.push({
+                    //id: res.data.data[index]["rid"],
+                    designation: res.data.data[index]["designation"],
+                    lastStatus: res.data.data[index]["lastStatus"],
+                    fileRdate: res.data.data[index]["fileRdate"],
+                    updateremark: res.data.data[index]["updateremark"],
+                    authorityLevel: res.data.data[index]["authorityLevel"],
+                    routeName: res.data.data[index]["routeName"],
+                    routeID: res.data.data[index]["routeID"],
+                });
+                setNodeId(res.data.data[index]["routeID"]);
+            }
+            setFileMovementTableData(arr);
+            // setIsTableLoading(false);
+        });
     };
-
 
     const farwordData = () => {
-
         const value = {
-            "eid": userId,
-            "fileNo":fileName,
-            "remark": 0,
-            "hdnjurisdiction":divId,
-            "hdnFilNu":fileID,
-            "hdnAuthMail": userId,
-            "status": ""
+
+            eid: userId,
+            fileNo: fileName,
+            remark: 0,
+            hdnjurisdiction: divId,
+            hdnFilNu: fileID,
+            hdnAuthMail: userId,
+            status: "",
         };
-        console.log("🚀 ~ farwordData ~ value:", value)
-        api
-            .post(`FileMovement/SP_ForwardFileApi`, value)
-            .then((res) => {
-                if (res.data.isSuccess) {
-                    toast.success(res.data.mesg);
-                    handlefileMovementDetailClose();
-                }else{
-                    toast.error(res.data.mesg);
-                }
-            });
+        // console.log("🚀 ~ farwordData ~ value:", value);
+        api.post(`FileMovement/SP_ForwardFileApi`, value).then((res) => {
+            if (res.data.isSuccess) {
+                toast.success(res.data.mesg);
+                handlefileMovementDetailClose();
+            } else {
+                toast.error(res.data.mesg);
+            }
+        });
     };
 
-    const getRouteView =async(id:any)=>{
-        const collectData ={
-            "id": id,
-            "nodeID": -1,
-            "titleID": -1,
-            "user_Id": ""
-          };
-          await api.post(``, collectData)
-          .then((res:any) => {
-              console.log("🚀 ~ .then ~ res:", res)
-              setNodeId(res.data.data);
-          	
-          })
+    const getRouteView = async (id: any) => {
+        const collectData = {
+            id: id,
+            nodeID: -1,
+            titleID: -1,
+            user_Id: "",
+        };
+        await api
+            .post(`NewNodeMaster/GetNewNodeMaster`, collectData)
+            .then((res: any) => {
+                setNodeId(res.data.data);
+            });
+
     };
 
     let navigate = useNavigate();
@@ -320,7 +323,7 @@ const ViewEditFile = (props: Props) => {
             fileNo: "",
             FileDesc: "",
             fileattach_name: "",
-            fileLable:""
+            fileLable: "",
         },
 
         onSubmit: async (values) => {
@@ -337,28 +340,39 @@ const ViewEditFile = (props: Props) => {
         },
     });
 
+    const [filenos, setFilenos] = useState("");
+    const [cfileNm, setCfileNm] = useState("");
+    const [cFileDesc, setCFileDesc] = useState("");
+    const [filebase64, setFilebase64] = useState("");
 
     const LetterSubmit = () => {
+        let value;
 
-        const value = {
-            "caId": -1,
-            "cId": 0,
-            "fileNo": 0,
-            "cFileNm": "",
-            "cFileDesc": formik.values.FileDesc.toString() || "",
-            "cDocsFlag": formik.values.fileattach_name.toString() || "",
-            "inst_id": 0,
-            "user_id": 0,
-            "createdDate": defaultValuestime,
-            "rId": 0,
-            "divisionid": parseInt(localStorage.getItem('id') + ""),
-        };
+        if (fileID != "" ){
+            value = {
+                caId: -1,
+                cId: 0,
+                fileNo: fileID,
+                cFileNm: cfileNm,
+                cFileDesc: cFileDesc,
+                cDocsFlag: "",
+                inst_id: instId,
+                user_id: userId,
+                createdDate: defaultValuestime,
+                rId: 0,
+                divisionid: divId,
+                pdfPath: "",
+                pdfBase64: filebase64,
+            };
+            }else{
+                toast.error("Please select file number...")
+            }
         api
             .post(`CreateNewFileAttach/AddUpdateCreateNewFileAttach`, value)
             .then((res) => {
                 if (res.data.isSuccess) {
                     // getFileNo();
-                    // formik.setFieldValue('rFileNumber', res.data.insertedId);  
+                    // formik.setFieldValue('rFileNumber', res.data.insertedId);
                     toast.success(res.data.mesg);
                 }
             });
@@ -366,49 +380,46 @@ const ViewEditFile = (props: Props) => {
 
     const tabStyle = {
         default: {
-            backgroundColor: '#00009c',
-            color: '#fff',
-            fontWeight: 'normal',
+            backgroundColor: "#00009c",
+            color: "#fff",
+            fontWeight: "normal",
             // '&:hover': {
             //   backgroundColor: '#f0f0f0',
             // },
-            },
-            selected: {
-                backgroundColor: '#f0f0f0',
-                // color: '#00009c',
-                fontWeight: 'bold',
-            },
-        };
+        },
+        selected: {
+            backgroundColor: "#f0f0f0",
+            // color: '#00009c',
+            fontWeight: "bold",
+        },
+    };
 
     const getFileData = (rid: any) => {
-        console.log("RID", rid)
+        // console.log("RID", rid);
         setIsLoading(true);
         const collectData = {
-            "rid": rid,
-            "rlId": -1,
-            "rFileType": -1,
-            "inst_id": -1,
-            "user_id": "",
-            "fromdate": "1900-06-13T14:09:45.560Z",
-            "todate": defaultValuestime,
-            "refNo": -1,
-            "divisionid": -1,
-            "type": 1
+            rid: rid,
+            rlId: -1,
+            rFileType: -1,
+            inst_id: -1,
+            user_id: "",
+            fromdate: "1900-06-13T14:09:45.560Z",
+            todate: defaultValuestime,
+            refNo: -1,
+            divisionid: -1,
+            type: 1,
         };
 
-        console.log("collectData " + JSON.stringify(collectData));
+        // console.log("collectData " + JSON.stringify(collectData));
         api
             .post(`ReferenceDiary/GetReferenceDiary`, collectData)
             .then((response) => {
-                console.log(
-                    "check pdf",
-                    response?.data?.data[0]["pdfBase64"]
-                );
+                console.log("check pdf", response?.data?.data[0]["pdfBase64"]);
                 setPDFData(response?.data?.data[0]["pdfBase64"]);
                 setIsLoading(false);
             })
             .catch((error) => {
-                console.error('Error fetching data:', error);
+                console.error("Error fetching data:", error);
                 setIsLoading(false);
             });
     };
@@ -430,12 +441,12 @@ const ViewEditFile = (props: Props) => {
         setOpenModals(false);
     };
 
-    const ConvertBase64 = (file: Blob) => {
+    const ConvertBase64 = (file: Blob):  Promise<string> => {
         return new Promise((resolve, reject) => {
             const fileReader = new FileReader();
             fileReader.readAsDataURL(file);
             fileReader.onload = () => {
-                resolve(fileReader.result);
+                resolve(fileReader.result  as string);
             };
             fileReader.onerror = (error) => {
                 reject(error);
@@ -444,36 +455,52 @@ const ViewEditFile = (props: Props) => {
     };
 
     const otherDocChangeHandler = async (event: any, params: any) => {
-        if (event.target.files && event.target.files[0]) {
-            const file = event.target.files[0];
-            console.log(file);
-            const fileNameParts = file.name.split(".");
-            const fileExtension = fileNameParts[fileNameParts.length - 1];
+        // if (event.target.files && event.target.files[0]) {
+        //     const file = event.target.files[0];
+        //     const fileNameParts = file.name.split(".");
+        //     const fileExtension = fileNameParts[fileNameParts.length - 1];
 
-            if (fileExtension.toLowerCase() === "pdf") {
-                const fileURL = URL.createObjectURL(file);
-                console.log("file check", fileURL);
-                setPdfView(fileURL);
-                const base64 = await ConvertBase64(file);
-                formik.setFieldValue(params, base64);
-
-
-            } else {
-                alert("Only PDF files are allowed to be uploaded.");
-                event.target.value = null;
-            }
-        }
+        //     if (fileExtension.toLowerCase() === "pdf") {
+        //         const fileURL = URL.createObjectURL(file);
+        //         setPdfView(fileURL);
+        //         const base64 = await ConvertBase64(file);
+        //         setFilebase64(base64);
+        //     } else {
+        //         alert("Only PDF files are allowed to be uploaded.");
+        //         event.target.value = null;
+        //     }
+        // }
     };
 
     const items = [
-        { text: " Split Pdf", icon: <EditIcons />, onClick: () => { navigate("/Committee/SplitPDF");} },
-        { text: " Upload Letters", icon: <UploadIcons />, onClick: () => { toggleRight(); } },
-        { text: " Make Correspondence", icon: <MakeIcons />, onClick: () => { navigate("/Committee/Correspondence"); } },
-        { text: " FLRD", icon: <PasteIcons />},
-        { text: " Print", icon: <PrintIcons />},
-        { text: " Update Remark", icon: <UpgradeIcons />},
-        { text: " Pending PUC", icon: <PendingIcons />},
-        { text: " File Movement Details", icon: <FilemoveIcons />,
+        {
+            text: " Split Pdf",
+            icon: <EditIcons />,
+            onClick: () => {
+                navigate("/Committee/SplitPDF");
+            },
+        },
+        {
+            text: " Upload Letters",
+            icon: <UploadIcons />,
+            onClick: () => {
+                toggleRight();
+            },
+        },
+        {
+            text: " Make Correspondence",
+            icon: <MakeIcons />,
+            onClick: () => {
+                navigate("/Committee/Correspondence");
+            },
+        },
+        { text: " FLRD", icon: <PasteIcons /> },
+        { text: " Print", icon: <PrintIcons /> },
+        { text: " Update Remark", icon: <UpgradeIcons /> },
+        { text: " Pending PUC", icon: <PendingIcons /> },
+        {
+            text: " File Movement Details",
+            icon: <FilemoveIcons />,
             onClick: () => {
                 if (formik.values.fileNo) {
                     handlefileMovementDetailOpen();
@@ -481,20 +508,19 @@ const ViewEditFile = (props: Props) => {
                 } else {
                     toast.error("Please select file Number");
                 }
-            }
+            },
         },
-        { text: " Moved To Awaited List", icon: <FileCopyIcons />},
-        { text: " Moved To Parked Or Archived List", icon: <ArchiveIcons />},
-        { text: " Close The File", icon: <HighlightIcons />},
-        { text: " File Summary", icon: <SmsIcons />},
+        { text: " Moved To Awaited List", icon: <FileCopyIcons /> },
+        { text: " Moved To Parked Or Archived List", icon: <ArchiveIcons /> },
+        { text: " Close The File", icon: <HighlightIcons /> },
+        { text: " File Summary", icon: <SmsIcons /> },
     ];
 
     const back = useNavigate();
 
     const handleForwardData = async () => {
         farwordData();
-       
-    }
+    };
     return (
         <div>
             <div
@@ -546,7 +572,7 @@ const ViewEditFile = (props: Props) => {
                                     onChange={(event, newValue: any) => {
                                         console.log(newValue);
                                         formik.setFieldValue("fileNo", newValue?.value);
-                                        if(newValue?.value != null){
+                                        if (newValue?.value != null) {
                                             getTableData(newValue?.value);
                                         }
                                         setFileID(newValue?.value);
@@ -564,16 +590,40 @@ const ViewEditFile = (props: Props) => {
                                 />
                             </Grid>
 
-                            <Grid item lg={3} md={4} xs={12} display="flex" alignItems="center">
-                                <Typography fontWeight={600}>File Open Date:{" "}</Typography> <p>{" "}{fileOpenDates}</p>
+                            <Grid
+                                item
+                                lg={3}
+                                md={4}
+                                xs={12}
+                                display="flex"
+                                alignItems="center"
+                            >
+                                <Typography fontWeight={600}>File Open Date: </Typography>{" "}
+                                <p> {fileOpenDates}</p>
                             </Grid>
 
-                            <Grid item lg={3} md={4} xs={12} display="flex" alignItems="center">
-                            <Typography fontWeight={600}>File Transfer:{" "}</Typography> <p>{" "}{fileTransfered}</p>
+                            <Grid
+                                item
+                                lg={3}
+                                md={4}
+                                xs={12}
+                                display="flex"
+                                alignItems="center"
+                            >
+                                <Typography fontWeight={600}>File Transfer: </Typography>{" "}
+                                <p> {fileTransfered}</p>
                             </Grid>
 
-                            <Grid item lg={3} md={4} xs={12} display="flex" alignItems="center">
-                            <Typography fontWeight={600}>Status:{" "}</Typography> <p>{" "}{lastStatus}</p>
+                            <Grid
+                                item
+                                lg={3}
+                                md={4}
+                                xs={12}
+                                display="flex"
+                                alignItems="center"
+                            >
+                                <Typography fontWeight={600}>Status: </Typography>{" "}
+                                <p> {lastStatus}</p>
                             </Grid>
 
                             <Grid item lg={3} md={4} xs={12}>
@@ -613,7 +663,6 @@ const ViewEditFile = (props: Props) => {
                                 </Dialog>
                             </Grid>
 
-
                             <Grid item lg={12} xs={12}>
                                 <Tabs
                                     value={value}
@@ -626,7 +675,6 @@ const ViewEditFile = (props: Props) => {
                                     <Tab
                                         label="Notesheet"
                                         sx={value === 0 ? tabStyle.selected : tabStyle.default}
-
                                     />
                                     <Tab
                                         label="Correspondence"
@@ -659,32 +707,44 @@ const ViewEditFile = (props: Props) => {
                             <Grid xs={1} sm={1} item>
                                 <IconButton
                                     onClick={toggleDrawer(true)}
-                                    style={{ marginBottom: "10px", }}
+                                    style={{ marginBottom: "10px" }}
                                 >
                                     <MenuIcon />
                                 </IconButton>
                             </Grid>
                             <Grid xs={11} sm={11} item>
-                               
                                 <Drawer
                                     anchor="left"
                                     open={isDrawerOpen}
                                     style={{ zIndex: 1300 }}
                                 >
-
-                                    <div style={{
-                                        backgroundColor: "#00009c",
-                                        display: "flex",
-                                        alignItems: "center",
-                                        justifyContent: "space-between",
-                                        height: "50px"
-                                    }}>
-                                        <Typography fontWeight="600" align="center" color="#fff" sx={{ margin: 6 }}>Menu </Typography>
+                                    <div
+                                        style={{
+                                            backgroundColor: "#00009c",
+                                            display: "flex",
+                                            alignItems: "center",
+                                            justifyContent: "space-between",
+                                            height: "50px",
+                                        }}
+                                    >
+                                        <Typography
+                                            fontWeight="600"
+                                            align="center"
+                                            color="#fff"
+                                            sx={{ margin: 6 }}
+                                        >
+                                            Menu{" "}
+                                        </Typography>
                                         <IconButton
                                             edge="end"
                                             onClick={toggleDrawer(false)}
                                             aria-label="close"
-                                            sx={{ color: "#fff", position: "absolute", right: 20, top: 5 }}
+                                            sx={{
+                                                color: "#fff",
+                                                position: "absolute",
+                                                right: 20,
+                                                top: 5,
+                                            }}
                                         >
                                             <CloseIcon />
                                         </IconButton>
@@ -712,8 +772,7 @@ const ViewEditFile = (props: Props) => {
                                                     onMouseOut={handleMouseOut}
                                                     onClick={item.onClick}
                                                 >
-                                                    {item.icon}{" "}
-                                                    <ListItemText primary={item.text} />
+                                                    {item.icon} <ListItemText primary={item.text} />
                                                 </ListItem>
                                             ))}
                                         </List>
@@ -731,25 +790,34 @@ const ViewEditFile = (props: Props) => {
                                             // style={{ cursor: "move" }}
                                             // id="draggable-dialog-title"
                                             sx={{
-                                                backgroundColor: "#f4f4f5", display: "flex",
+                                                backgroundColor: "#f4f4f5",
+                                                display: "flex",
                                                 alignItems: "center",
                                                 justifyContent: "space-between",
                                             }}
                                         >
-                                            <Typography fontWeight="600" fontSize={20}>File Movement Details for :- <i>#{fileID}-{fileName}</i> </Typography>
+                                            <Typography fontWeight="600" fontSize={20}>
+                                                File Movement Details for :-{" "}
+                                                <i>
+                                                    #{fileID}-{fileName}
+                                                </i>{" "}
+                                            </Typography>
                                             <IconButton
                                                 edge="end"
                                                 onClick={handlefileMovementDetailClose}
                                                 aria-label="close"
-                                                sx={{ color: "#000", position: "absolute", right: 17, top: 3 }}
+                                                sx={{
+                                                    color: "#000",
+                                                    position: "absolute",
+                                                    right: 17,
+                                                    top: 3,
+                                                }}
                                             >
                                                 <CloseIcon />
                                             </IconButton>
                                         </DialogTitle>
                                         <Divider />
-                                        <DialogContent
-                                            sx={{ backgroundColor: "#f4f4f5" }}
-                                        >
+                                        <DialogContent sx={{ backgroundColor: "#f4f4f5" }}>
                                             <DialogContentText>
                                                 <Table
                                                     style={{
@@ -818,72 +886,79 @@ const ViewEditFile = (props: Props) => {
                                                         </tr>
                                                     </thead>
                                                     <tbody style={{ border: "1px solid black" }}>
-                                                        {fileMovementTableData.map((row: any, index: any) => (
-                                                            <tr key={row.id} style={{ border: "1px solid black" }}>
-                                                                <td
-                                                                    style={{
-                                                                        borderLeft: "1px solid black",
-                                                                        borderTop: "1px solid black",
-                                                                        textAlign: "center",
-                                                                        padding: "2px",
-                                                                        color:"#000"
-                                                                    }}
+                                                        {fileMovementTableData.map(
+                                                            (row: any, index: any) => (
+                                                                <tr
+                                                                    key={row.id}
+                                                                    style={{ border: "1px solid black" }}
                                                                 >
-                                                                    {index+1}
-                                                                </td>
+                                                                    <td
+                                                                        style={{
+                                                                            borderLeft: "1px solid black",
+                                                                            borderTop: "1px solid black",
+                                                                            textAlign: "center",
+                                                                            padding: "2px",
+                                                                            color: "#000",
+                                                                        }}
+                                                                    >
+                                                                        {index + 1}
+                                                                    </td>
 
-                                                                <td
-                                                                    style={{
-                                                                        borderLeft: "1px solid black",
-                                                                        borderTop: "1px solid black",
-                                                                        textAlign: "center",
-                                                                        color:"#000"
-                                                                    }}
-                                                                >
-                                                                    {row.designation}
-                                                                </td>
+                                                                    <td
+                                                                        style={{
+                                                                            borderLeft: "1px solid black",
+                                                                            borderTop: "1px solid black",
+                                                                            textAlign: "center",
+                                                                            color: "#000",
+                                                                        }}
+                                                                    >
+                                                                        {row.designation}
+                                                                    </td>
 
-                                                                <td
-                                                                    style={{
-                                                                        borderLeft: "1px solid black",
-                                                                        borderTop: "1px solid black",
-                                                                        textAlign: "center",
-                                                                        color:"#000"
-                                                                    }}
-                                                                >
-                                                                    {row.routeName}
-                                                                </td>
+                                                                    <td
+                                                                        style={{
+                                                                            borderLeft: "1px solid black",
+                                                                            borderTop: "1px solid black",
+                                                                            textAlign: "center",
+                                                                            color: "#000",
+                                                                        }}
+                                                                    >
+                                                                        {row.routeName}
+                                                                    </td>
 
-                                                                <td
-                                                                    style={{
-                                                                        borderLeft: "1px solid black",
-                                                                        borderTop: "1px solid black",
-                                                                        textAlign: "center",
-                                                                        color:"#000"
-                                                                    }}
-                                                                >
-                                                                    {moment(row.fileRdate).format("DD-MM-YYYY")}
-                                                                </td>
-                                                                <td
-                                                                    style={{
-                                                                        borderLeft: "1px solid black",
-                                                                        borderTop: "1px solid black",
-                                                                        textAlign: "center",
-                                                                        color:"#000"
-                                                                    }}
-                                                                >
-                                                                    {row.updateremark}
-                                                                </td>
-                                                            </tr>
-                                                        ))}
+                                                                    <td
+                                                                        style={{
+                                                                            borderLeft: "1px solid black",
+                                                                            borderTop: "1px solid black",
+                                                                            textAlign: "center",
+                                                                            color: "#000",
+                                                                        }}
+                                                                    >
+                                                                        {moment(row.fileRdate).format("DD-MM-YYYY")}
+                                                                    </td>
+                                                                    <td
+                                                                        style={{
+                                                                            borderLeft: "1px solid black",
+                                                                            borderTop: "1px solid black",
+                                                                            textAlign: "center",
+                                                                            color: "#000",
+                                                                        }}
+                                                                    >
+                                                                        {row.updateremark}
+                                                                    </td>
+                                                                </tr>
+                                                            )
+                                                        )}
                                                     </tbody>
                                                 </Table>
                                             </DialogContentText>
                                         </DialogContent>
 
                                         <DialogActions
-                                            sx={{ backgroundColor: "#f4f4f5", justifyContent: 'center' }}
-
+                                            sx={{
+                                                backgroundColor: "#f4f4f5",
+                                                justifyContent: "center",
+                                            }}
                                         >
                                             <Button autoFocus onClick={handleClose}>
                                                 Backward
@@ -891,7 +966,9 @@ const ViewEditFile = (props: Props) => {
                                             <Button autoFocus onClick={handleForwardData}>
                                                 Forward
                                             </Button>
-                                            {/* <Button autoFocus onClick={}>
+
+                                            <Button autoFocus onClick={() => getRouteView(nodeId)}>
+
                                                 View Routes
                                             </Button> */}
                                         </DialogActions>
@@ -913,8 +990,6 @@ const ViewEditFile = (props: Props) => {
                                         }}
                                     >
                                         <tr>
-
-
                                             <th
                                                 style={{
                                                     borderLeft: "1px solid black",
@@ -968,7 +1043,6 @@ const ViewEditFile = (props: Props) => {
                                         </div>
                                     ) : (
                                         <tbody style={{ border: "1px solid black" }}>
-
                                             {MovementTableData.map((row: any, index: any) => (
                                                 <tr key={row.id} style={{ border: "1px solid black" }}>
                                                     <td
@@ -992,8 +1066,6 @@ const ViewEditFile = (props: Props) => {
                                                         {row.fileNm}
                                                     </td>
 
-
-
                                                     <td
                                                         style={{
                                                             borderLeft: "1px solid black",
@@ -1003,11 +1075,15 @@ const ViewEditFile = (props: Props) => {
                                                             color: "blue",
                                                             textDecoration: "underline",
                                                         }}
-
                                                     >
-                                                        <a onMouseEnter={handleMouseEntered}
+                                                        <a
+                                                            onMouseEnter={handleMouseEntered}
                                                             onMouseLeave={handleMouseLeaveed}
-                                                            onClick={() => handleAddCommentClicks(row)}> {row.cFileNm}</a>
+                                                            onClick={() => handleAddCommentClicks(row)}
+                                                        >
+                                                            {" "}
+                                                            {row.cFileNm}
+                                                        </a>
                                                     </td>
 
                                                     <Dialog
@@ -1089,7 +1165,6 @@ const ViewEditFile = (props: Props) => {
                                                     </td>
                                                 </tr>
                                             ))}
-
                                         </tbody>
                                     )}
                                 </Table>
@@ -1098,21 +1173,35 @@ const ViewEditFile = (props: Props) => {
                                     anchor="right"
                                     open={rightOpen}
                                     //onClose={() => setRightOpen(false)}
-                                    style={{ zIndex: 1300, }}
+                                    style={{ zIndex: 1300 }}
                                 >
-                                    <div style={{
-                                        backgroundColor: "#00009c",
-                                        display: "flex",
-                                        alignItems: "center",
-                                        justifyContent: "space-between",
-                                        height: "50px"
-                                    }}>
-                                        <Typography fontWeight="600" align="center" color="#fff" sx={{ margin: 6 }}>Upload Letter </Typography>
+                                    <div
+                                        style={{
+                                            backgroundColor: "#00009c",
+                                            display: "flex",
+                                            alignItems: "center",
+                                            justifyContent: "space-between",
+                                            height: "50px",
+                                        }}
+                                    >
+                                        <Typography
+                                            fontWeight="600"
+                                            align="center"
+                                            color="#fff"
+                                            sx={{ margin: 6 }}
+                                        >
+                                            Upload Letter{" "}
+                                        </Typography>
                                         <IconButton
                                             edge="end"
                                             onClick={toggleRightDrawer}
                                             aria-label="close"
-                                            sx={{ color: "#fff", position: "absolute", right: 20, top: 5 }}
+                                            sx={{
+                                                color: "#fff",
+                                                position: "absolute",
+                                                right: 20,
+                                                top: 5,
+                                            }}
                                         >
                                             <CloseIcon />
                                         </IconButton>
@@ -1125,39 +1214,72 @@ const ViewEditFile = (props: Props) => {
                                         onKeyDown={(e) => e.stopPropagation()}
                                         style={{ width: "400px", padding: "20px" }}
                                     >
-
                                         <Grid item lg={12} xs={12}>
                                             <TextField
                                                 type="file"
-                                                // value={formik.values.fileattach_name}
                                                 inputProps={{ accept: "application/pdf" }}
                                                 InputLabelProps={{ shrink: true }}
                                                 label={<CustomLabel text={t("text.EnterDocUpload")} />}
                                                 size="small"
                                                 fullWidth
                                                 style={{ backgroundColor: "white" }}
-                                                onChange={(e) =>
-                                                    otherDocChangeHandler(e, "fileattach_name")
-                                                }
+                                                onChange={async (event: any) => {
+                                                    if (event.target.files && event.target.files[0]) {
+                                                        const file = event.target.files[0];
+                                                        setCfileNm(file.name);
+                                                        const fileNameParts = file.name.split(".");
+                                                        const fileExtension =
+                                                            fileNameParts[fileNameParts.length - 1];
+
+                                                        if (fileExtension.toLowerCase() === "pdf") {
+                                                            const fileURL = URL.createObjectURL(file);
+                                                            setPdfView(fileURL);
+                                                            const base64 = await ConvertBase64(file);
+                                                            // console.log(
+                                                            //     "🚀 ~ ViewEditFile ~ base64:",
+                                                            //     base64
+                                                            // );
+                                                            setFilebase64(base64);
+                                                        } else {
+                                                            alert(
+                                                                "Only PDF files are allowed to be uploaded."
+                                                            );
+                                                            event.target.value = null;
+                                                        }
+                                                    }
+                                                }}
                                             />
                                         </Grid>
 
                                         <Grid item lg={12} xs={12} style={{ marginTop: "10%" }}>
                                             <TextField
-                                                label={<CustomLabel text={t("text.EnterFileDescription")} />}
-                                                value={formik.values.FileDesc}
+                                                label={
+                                                    <CustomLabel text={t("text.EnterFileDescription")} />
+                                                }
                                                 placeholder={t("text.EnterFileDescription")}
                                                 size="small"
                                                 InputLabelProps={{ shrink: true }}
                                                 fullWidth
-                                                name="FileDesc"
-                                                id="FileDesc"
                                                 type="text"
                                                 style={{ backgroundColor: "white" }}
-                                                onChange={formik.handleChange}
-                                                onBlur={formik.handleBlur}
+                                                onChange={(e: any) => {
+                                                    setCFileDesc(e.target.value);
+                                                }}
                                             />
                                         </Grid>
+                                        <br></br>
+                                        <br></br>
+                                        {filebase64 && (
+                                        <Grid item lg={12} xs={12}>
+                                                                    <embed
+                                                                        src={filebase64}
+                                                                        style={{
+                                                                            height: "70vh",
+                                                                            width: "100%",
+                                                                            border: "1px solid gray",
+                                                                        }}
+                                                                    />
+                                        </Grid>)}
 
                                         <Grid
                                             item

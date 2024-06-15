@@ -153,6 +153,8 @@ const CommitteeEmployeeMappingAdd = (props: Props) => {
             "uploadDate": location.state.uploadDate,
             "head": location.state.head,
             "divisionid": parseInt(localStorage.getItem('id') + ""),
+            "empName": location.state.empName,
+            "authorityName": location.state.authorityName,
         },
         onSubmit: async (values) => {
 
@@ -221,7 +223,7 @@ const CommitteeEmployeeMappingAdd = (props: Props) => {
                                                 value={formik.values.head}
                                                 checked={formik.values.head === 'Y'}
                                                 onChange={(e) => {
-                                                    const newValue = e.target.checked ? 'Y' : '';
+                                                    const newValue = e.target.checked ? 'Y' : 'N';
                                                     formik.setFieldValue('head', newValue);
                                                 }}
                                                 color="primary"

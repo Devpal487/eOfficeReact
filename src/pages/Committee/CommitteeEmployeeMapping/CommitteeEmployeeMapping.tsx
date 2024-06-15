@@ -220,8 +220,11 @@ export default function CommitteeEmployeeMapping() {
                         headerName: t("text.DateOfJoining"),
                         flex: 1,
                         headerClassName: "MuiDataGrid-colCell",
+                        renderCell: (params) => {
+                            return dayjs(params.row.doj).format("DD-MM-YYYY");
+                        }
                     },
-                  
+
                     // {
                     //     field: "empStatus",
                     //     headerName: "Emp status",

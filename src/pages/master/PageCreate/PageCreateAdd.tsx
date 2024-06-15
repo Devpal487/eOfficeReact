@@ -123,7 +123,7 @@ const PageCreateAdd = (props: Props) => {
     const [fileName, setfileName] = useState("");
     const [rootid, setRootid] = useState("");
 
-    
+
     const [tableData1, setTableData1] = useState<any>([]);
     const [EmpCode, setEmpCode] = useState("");
     const [Remark, setRemark] = useState("");
@@ -399,7 +399,7 @@ const PageCreateAdd = (props: Props) => {
             pdfPath: "",
             pdfBase64: "",
             fileOpenDate: "",
-            types:""
+            types: ""
         },
         onSubmit: async (values: any) => {
             if (values.rFileType && (!values.rFileNumber || !values.rLetterNumber)) {
@@ -429,7 +429,7 @@ const PageCreateAdd = (props: Props) => {
         },
     });
 
-    const [fids , setFids] = useState("");
+    const [fids, setFids] = useState("");
 
     const fileSubmit = () => {
         const value = {
@@ -453,7 +453,7 @@ const PageCreateAdd = (props: Props) => {
         });
     };
     console.log("🚀 ~ api.post ~ formik.values.FileType:", formik.values.FileType)
-    
+
 
     const convertBase64 = (file: Blob) => {
         return new Promise((resolve, reject) => {
@@ -540,6 +540,13 @@ const PageCreateAdd = (props: Props) => {
         });
     };
 
+    useEffect(() => {
+        if (!formik.values.letterBy) {
+            formik.setFieldValue('letterBy', 'received');
+        }
+    }, [formik.values.letterBy, formik.setFieldValue]);
+
+
 
 
 
@@ -600,8 +607,11 @@ const PageCreateAdd = (props: Props) => {
                                         value="received"
                                         control={
                                             <Radio
-                                                checked={selectedOption === "received"}
-                                                onChange={handleRadioChange}
+                                                id="letterBy"
+                                                name="letterBy"
+                                                checked={formik.values.letterBy === "received"}
+                                                onChange={formik.handleChange}
+                                                value="received"
                                             />
                                         }
                                         label={t("text.Received")}
@@ -610,8 +620,12 @@ const PageCreateAdd = (props: Props) => {
                                         value="dispatch"
                                         control={
                                             <Radio
-                                                checked={selectedOption === "dispatch"}
-                                                onChange={handleRadioChange}
+                                                id="letterBy"
+                                                name="letterBy"
+                                                checked={formik.values.letterBy === "dispatch"}
+
+                                                onChange={formik.handleChange}
+                                                value="dispatch"
                                             />
                                         }
                                         label={t("text.Dispatch")}
@@ -620,8 +634,11 @@ const PageCreateAdd = (props: Props) => {
                                         value="received/dispatch"
                                         control={
                                             <Radio
-                                                checked={selectedOption === "received/dispatch"}
-                                                onChange={handleRadioChange}
+                                                id="letterBy"
+                                                name="letterBy"
+                                                checked={formik.values.letterBy === "received/dispatch"}
+                                                onChange={formik.handleChange}
+                                                value="received/dispatch"
                                             />
                                         }
                                         label={t("text.RecOrDisp")}
@@ -1091,7 +1108,7 @@ const PageCreateAdd = (props: Props) => {
                                 </Grid>
                             )}
 
-                            <Grid md={4} item container alignItems="center">
+                            {/* <Grid md={4} item container alignItems="center">
                                 <TextField
                                     label={t("text.SendTo")}
                                     value={formik.values.letterBy}
@@ -1127,7 +1144,7 @@ const PageCreateAdd = (props: Props) => {
                                         ),
                                     }}
                                 />
-                            </Grid>
+                            </Grid> */}
 
                             <Grid item lg={4} xs={12}>
                                 <Autocomplete

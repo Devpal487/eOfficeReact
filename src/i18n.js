@@ -577,6 +577,10 @@ const resources = {
         SelectStatus:"Select Status",
         FromTo:"From To",
         AthorityMail:"Authority Mail",
+        Msg:"message",
+        SendBy:"Send By",
+        SendDate:"Send Date",
+        DSFName:"D.S.F Name",
 
 
 
@@ -1155,6 +1159,10 @@ const resources = {
         SelectStatus:"स्थिति का चयन करें",
         FromTo:"यहा से",
         AthorityMail:"प्राधिकरण मेल",
+        Msg:"संदेश",
+        SendBy:"द्वारा भेजें",
+        SendDate:"दिनांक भेजें",
+        DSFName:"डी.एस.एफ का नाम",
 
 
         

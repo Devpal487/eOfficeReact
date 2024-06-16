@@ -324,11 +324,11 @@ export default function WardMaster() {
       });
   };
 
-  const requiredFields = ["zoneName", "wardName"];
+  const requiredFields = ["zoneID", "wardName"];
 
 
   const validationSchema = Yup.object({
-    zoneName: Yup.string().test(
+    zoneID: Yup.string().test(
       'required',
       t('text.reqZoneName'),
       function (value: any) {
@@ -353,8 +353,8 @@ export default function WardMaster() {
       "zoneID": 0,
       "isActive": true,
       "sortOrder": 0,
-      "createdDt": defaultValuestime,
-      "modifyDt": defaultValuestime,
+      "createdDt":new Date().toISOString().slice(0, 10),
+      "modifyDt":new Date().toISOString().slice(0, 10),
       "user_ID": UserId,
       "zoneName": ""
     },
@@ -449,10 +449,10 @@ export default function WardMaster() {
               )} */}
 
               <form onSubmit={formik.handleSubmit}>
-                <Grid item xs={12} container spacing={3}>
+                <Grid item xs={12} container spacing={2}>
 
                  
-                <Grid xs={3.5} sm={3.5} item>
+                <Grid xs={3} sm={3} item>
                     <Autocomplete
                       disablePortal
                       id="combo-box-demo"
@@ -485,7 +485,7 @@ export default function WardMaster() {
 
                   </Grid>
 
-                  <Grid item xs={3.5} sm={3.5}>
+                  <Grid item xs={3} sm={3}>
                     <TextField
                       type="text"
                       name="wardName"
@@ -507,7 +507,7 @@ export default function WardMaster() {
 
                   </Grid>
 
-                  <Grid xs={3.5} sm={3.5} item>
+                  <Grid xs={3} sm={3} item>
                     <TextField
                       type="text"
                       value={formik.values.wardCode}
@@ -524,7 +524,7 @@ export default function WardMaster() {
                   </Grid>
 
 
-                  <Grid item xs={2} sx={{ m: -1 }}>
+                  <Grid item xs={3} sx={{ m: -1 }}>
                     {/*  {permissionData?.isAdd == true ? ( */}
 
                     <ButtonWithLoader buttonText={editId == -1 ? t("text.save") : t("text.update")} onClickHandler={handleSubmitWrapper} />

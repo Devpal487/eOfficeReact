@@ -324,7 +324,7 @@ const UserManagementEdit = (props: Props) => {
             textAlign="center"
             style={{ marginTop: "10px", fontSize: "18px", fontWeight: 500 }}
           >
-            {t("text.CreateUserManegment")}
+            {t("text.EditUserManegment")}
           </Typography>
           <Grid xs={4} sm={12} item>
             <Typography style={{ marginTop: "-75px" }}>
@@ -353,7 +353,15 @@ const UserManagementEdit = (props: Props) => {
                   disablePortal
                   id="combo-box-demo"
                   options={UserName}
+                  
+
                   fullWidth
+
+                  value={
+                    UserName.find(
+                      (option:any) => option.value === formik.values.employeeID
+                    ) || null
+                  }
                   // value={CheckMode}
                   size="small"
                   onChange={(event: any, newValue: any) => {

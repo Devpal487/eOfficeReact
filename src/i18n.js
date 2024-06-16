@@ -262,6 +262,7 @@ const resources = {
         UserManegment: "User Management",
         DOB: "Date Of Birth",
         CreateUserManegment: "Create User Management",
+        EditUserManegment:"Edit User Manegment",
         EnterFirstName: "Enter Frist Name",
         EnterLastName: "Enter Last Name",
         EnterMiddleName: "Enter Middle Name",
@@ -1163,6 +1164,7 @@ const resources = {
         SendBy:"द्वारा भेजें",
         SendDate:"दिनांक भेजें",
         DSFName:"डी.एस.एफ का नाम",
+        EditUserManegment:"उपयोगकर्ता प्रबंधन संपादित करें",
 
 
         

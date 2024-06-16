@@ -21,6 +21,8 @@ import {
     DialogContentText,
     DialogActions,
     Slide,
+    Modal,
+    Box,
 } from "@mui/material";
 import ArrowBackSharpIcon from "@mui/icons-material/ArrowBackSharp";
 import React, { useEffect, useState, useRef } from "react";
@@ -54,6 +56,10 @@ import CustomLabel from "../../../CustomLable";
 import moment from "moment";
 
 import { getinstId, getId, getdivisionId } from "../../../utils/Constant";
+import * as Yup from 'yup';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import MapIcon from '@mui/icons-material/Map';
 
 const Transition = React.forwardRef(function Transition(
     props: TransitionProps & {
@@ -63,6 +69,22 @@ const Transition = React.forwardRef(function Transition(
 ) {
     return <Slide direction="up" ref={ref} {...props} />;
 });
+
+
+
+const style = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: 600,
+    bgcolor: 'background.paper',
+    border: '2px solid #000',
+    boxShadow: 24,
+    p: 4,
+};
+
+
 
 type Props = {};
 
@@ -98,6 +120,32 @@ const ViewEditFile = (props: Props) => {
     const [fullWidth, setFullWidth] = useState(true);
     const [maxWidth, setMaxWidth] = useState<DialogProps["maxWidth"]>("md");
 
+    const [Awaitopen, setAwaitopen] = useState(false);
+    const [Parkopen, setParkopen] = useState(false);
+    const [Moveopen, setMoveopen] = useState(false);
+
+
+
+    const handleAWaitOpen = () => {
+        console.log("await is clicked")
+        setAwaitopen(true);
+    }
+    const handleAWaitClose = () => { setAwaitopen(false); }
+
+    const handleParkOpen = () => {
+
+        setParkopen(true);
+    }
+    const handleParkClose = () => { setParkopen(false); }
+
+
+    const handleMoveOpen = () => {
+
+        setMoveopen(true);
+    }
+    const handleMoveClose = () => { setMoveopen(false); }
+
+
     //dialog entry
     const [fileID, setFileID] = useState("");
     const [fileName, setFileName] = useState("");
@@ -106,6 +154,7 @@ const ViewEditFile = (props: Props) => {
     const [lastStatus, setLastStatus] = useState("");
 
     const [nodeId, setNodeId] = useState("");
+    const [minDueDate, setMinDueDate] = useState('');
 
 
     const handlefileMovementDetailOpen = () => {
@@ -276,6 +325,90 @@ const ViewEditFile = (props: Props) => {
         });
     };
 
+    const MoveAwait = () => {
+        const value = {
+
+            "hdnFilNu": formik.values.fileNo,
+            "inst_id": instId,
+            "userid": userId,
+            "moveddate": formik.values.moveDate.toString() || "",
+            "duedate": formik.values.dueDate.toString() || "",
+            "remark": "A",
+            "routeId": null,
+            "authorityLevel": null,
+            "workPlaceFlag": "awaited",
+            "remId": null,
+            "divisionId": divId,
+            "message": ""
+        };
+        // console.log("🚀 ~ farwordData ~ value:", value);
+        api.post(`FileMovement/sp_movetoawait`, value).then((res) => {
+            if (res.data.isSuccess) {
+                toast.success(res.data.mesg);
+                handleAWaitClose();
+            } else {
+                toast.error(res.data.mesg);
+            }
+        });
+    };
+
+
+    const MoveParked = () => {
+        const value = {
+
+            "hdnFilNu": fileID,
+            "inst_id": instId,
+            "userid": userId,
+            "moveddate": formik.values.moveDate.toString() || "",
+            "duedate": "",
+            "remark": "P",
+            "routeId": null,
+            "authorityLevel": null,
+            "workPlaceFlag": "Parked",
+            "remId": null,
+            "divisionId": divId,
+            "message": ""
+        };
+        // console.log("🚀 ~ farwordData ~ value:", value);
+        api.post(`FileMovement/sp_movetoawait`, value).then((res) => {
+            if (res.data.isSuccess) {
+                toast.success(res.data.mesg);
+                handleParkClose();
+            } else {
+                toast.error(res.data.mesg);
+            }
+        });
+    };
+
+    const MoveClose = () => {
+        const value = {
+
+            "hdnFilNu": fileID,
+            "inst_id": instId,
+            "userid": userId,
+            "moveddate": formik.values.moveDate.toString() || "",
+            "duedate": "",
+            "remark": "C",
+            "routeId": null,
+            "authorityLevel": null,
+            "workPlaceFlag": "Close the file",
+            "remId": null,
+            "divisionId": divId,
+            "message": ""
+        };
+
+        api.post(`FileMovement/sp_movetoawait`, value).then((res) => {
+            if (res.data.isSuccess) {
+                toast.success(res.data.mesg);
+                handleMoveClose();
+            } else {
+                toast.error(res.data.mesg);
+            }
+        });
+    };
+
+
+
     const getRouteView = async (id: any) => {
         const collectData = {
             id: id,
@@ -306,6 +439,17 @@ const ViewEditFile = (props: Props) => {
 
     const requiredFields = ["pdfName"];
 
+    const validationSchema = Yup.object().shape({
+        moveDate: Yup.date().required('Moved Date is required'),
+        dueDate: Yup.date()
+            .required('Due Date is required')
+            .min(
+                Yup.ref('moveDate'),
+                'Due Date must be after Moved Date'
+            ),
+    });
+
+
     const formik = useFormik({
         initialValues: {
             // pdFid: -1,
@@ -324,8 +468,12 @@ const ViewEditFile = (props: Props) => {
             FileDesc: "",
             fileattach_name: "",
             fileLable: "",
+            moveDate: new Date().toISOString().substring(0, 10),
+            dueDate: "",
+            parkDate: "",
+            closeDate: "",
         },
-
+        validationSchema: validationSchema,
         onSubmit: async (values) => {
             // const response = await api.post(
             //    `DocFiles/AddUpdateDocFiles`,
@@ -340,6 +488,14 @@ const ViewEditFile = (props: Props) => {
         },
     });
 
+    const handleMoveDateChange = (event: any) => {
+        const moveDate = event.target.value;
+        formik.setFieldValue('moveDate', moveDate);
+        formik.setFieldValue('dueDate', '');
+        setMinDueDate(moveDate);
+    };
+
+
     const [filenos, setFilenos] = useState("");
     const [cfileNm, setCfileNm] = useState("");
     const [cFileDesc, setCFileDesc] = useState("");
@@ -348,7 +504,7 @@ const ViewEditFile = (props: Props) => {
     const LetterSubmit = () => {
         let value;
 
-        if (fileID != "" ){
+        if (fileID != "") {
             value = {
                 caId: -1,
                 cId: 0,
@@ -364,9 +520,9 @@ const ViewEditFile = (props: Props) => {
                 pdfPath: "",
                 pdfBase64: filebase64,
             };
-            }else{
-                toast.error("Please select file number...")
-            }
+        } else {
+            toast.error("Please select file number...")
+        }
         api
             .post(`CreateNewFileAttach/AddUpdateCreateNewFileAttach`, value)
             .then((res) => {
@@ -441,12 +597,12 @@ const ViewEditFile = (props: Props) => {
         setOpenModals(false);
     };
 
-    const ConvertBase64 = (file: Blob):  Promise<string> => {
+    const ConvertBase64 = (file: Blob): Promise<string> => {
         return new Promise((resolve, reject) => {
             const fileReader = new FileReader();
             fileReader.readAsDataURL(file);
             fileReader.onload = () => {
-                resolve(fileReader.result  as string);
+                resolve(fileReader.result as string);
             };
             fileReader.onerror = (error) => {
                 reject(error);
@@ -510,9 +666,40 @@ const ViewEditFile = (props: Props) => {
                 }
             },
         },
-        { text: " Moved To Awaited List", icon: <FileCopyIcons /> },
-        { text: " Moved To Parked Or Archived List", icon: <ArchiveIcons /> },
-        { text: " Close The File", icon: <HighlightIcons /> },
+        {
+            text: " Moved To Awaited List", icon: <FileCopyIcons />,
+
+            onClick: () => {
+                if (formik.values.fileNo) {
+                    handleAWaitOpen();
+                } else {
+                    toast.error("Please select file Number");
+                }
+            },
+        },
+        {
+            text: " Moved To Parked Or Archived List", icon: <ArchiveIcons />,
+
+            onClick: () => {
+                if (formik.values.fileNo) {
+                    handleParkOpen();
+                } else {
+                    toast.error("Please select file Number");
+                }
+            },
+        },
+        {
+            text: " Close The File", icon: <HighlightIcons />,
+
+
+            onClick: () => {
+                if (formik.values.fileNo) {
+                    handleMoveOpen();
+                } else {
+                    toast.error("Please select file Number");
+                }
+            },
+        },
         { text: " File Summary", icon: <SmsIcons /> },
     ];
 
@@ -778,6 +965,192 @@ const ViewEditFile = (props: Props) => {
                                         </List>
                                     </div>
                                 </Drawer>
+
+                                <Modal
+                                    open={Awaitopen}
+                                    onClose={handleAWaitClose}
+                                    aria-labelledby="modal-modal-title"
+                                    aria-describedby="modal-modal-description"
+                                >
+                                    <Box sx={style}>
+                                        <Typography id="modal-modal-title" variant="h6" component="h2">
+                                            Moved To Awaited
+                                        </Typography>
+
+                                        <Grid
+                                            container
+                                            spacing={2}
+                                            alignItems="center"
+                                            sx={{ marginTop: 2 }}
+                                        >
+                                            <Grid item xs={4}>
+                                                <TextField
+                                                    type="date"
+                                                    label={<CustomLabel text="Moved Date" />}
+                                                    value={formik.values.moveDate}
+                                                    placeholder="Moved Date"
+                                                    size="small"
+                                                    InputLabelProps={{ shrink: true }}
+                                                    fullWidth
+                                                    name="moveDate"
+                                                    id="moveDate"
+                                                    style={{ backgroundColor: "white" }}
+                                                    onChange={handleMoveDateChange}
+                                                    onBlur={formik.handleBlur}
+                                                    error={formik.touched.moveDate && Boolean(formik.errors.moveDate)}
+                                                    helperText={formik.touched.moveDate && formik.errors.moveDate}
+                                                />
+                                            </Grid>
+
+                                            <Grid item xs={4}>
+                                                <TextField
+                                                    type="date"
+                                                    label={<CustomLabel text="Due Date" />}
+                                                    value={formik.values.dueDate}
+                                                    placeholder="Due Date"
+                                                    size="small"
+                                                    InputLabelProps={{ shrink: true }}
+                                                    fullWidth
+                                                    name="dueDate"
+                                                    id="dueDate"
+                                                    style={{ backgroundColor: "white" }}
+                                                    onChange={formik.handleChange}
+                                                    onBlur={formik.handleBlur}
+                                                    error={formik.touched.dueDate && Boolean(formik.errors.dueDate)}
+                                                    helperText={formik.touched.dueDate && formik.errors.dueDate}
+                                                    inputProps={{ min: minDueDate }}
+                                                />
+                                            </Grid>
+
+                                            <Grid item xs={4}>
+                                                <Button
+                                                    variant="contained"
+                                                    color="primary"
+
+                                                    onClick={MoveAwait}
+                                                    fullWidth
+                                                >
+                                                    Moved
+                                                </Button>
+
+                                            </Grid>
+                                        </Grid>
+
+
+                                    </Box>
+                                </Modal>
+
+
+                                <Modal
+                                    open={Parkopen}
+                                    onClose={handleParkClose}
+                                    aria-labelledby="modal-modal-title"
+                                    aria-describedby="modal-modal-description"
+                                >
+                                    <Box sx={style}>
+                                        <Typography id="modal-modal-title" variant="h6" component="h2">
+                                            Moved To Parked
+                                        </Typography>
+                                        <Grid
+                                            container
+                                            spacing={2}
+                                            alignItems="center"
+                                            sx={{ marginTop: 2 }}
+                                        >
+                                            <Grid item xs={6}>
+                                                <TextField
+                                                    type="date"
+                                                    label={<CustomLabel text="Moved Date" />}
+                                                    value={formik.values.parkDate}
+                                                    placeholder="Moved Date"
+                                                    size="small"
+                                                    InputLabelProps={{ shrink: true }}
+                                                    fullWidth
+                                                    name="parkDate"
+                                                    id="parkDate"
+                                                    style={{ backgroundColor: "white" }}
+                                                    onChange={formik.handleChange}
+                                                    onBlur={formik.handleBlur}
+                                                />
+
+                                            </Grid>
+
+
+
+                                            <Grid item xs={4}>
+                                                <Button
+                                                    variant="contained"
+                                                    color="primary"
+
+                                                    onClick={MoveParked}
+                                                    fullWidth
+                                                >
+                                                    Moved
+                                                </Button>
+
+                                            </Grid>
+                                        </Grid>
+
+                                    </Box>
+                                </Modal>
+
+
+                                <Modal
+                                    open={Moveopen}
+                                    onClose={handleMoveClose}
+                                    aria-labelledby="modal-modal-title"
+                                    aria-describedby="modal-modal-description"
+                                >
+                                    <Box sx={style}>
+                                        <Typography id="modal-modal-title" variant="h6" component="h2">
+                                            Close the file
+                                        </Typography>
+                                        <Grid
+                                            container
+                                            spacing={2}
+                                            alignItems="center"
+                                            sx={{ marginTop: 2 }}
+                                        >
+                                            <Grid item xs={6}>
+                                                <TextField
+                                                    type="date"
+                                                    label={<CustomLabel text="Moved Date" />}
+                                                    value={formik.values.closeDate}
+                                                    placeholder="Moved Date"
+                                                    size="small"
+                                                    InputLabelProps={{ shrink: true }}
+                                                    fullWidth
+                                                    name="closeDate"
+                                                    id="closeDate"
+                                                    style={{ backgroundColor: "white" }}
+                                                    onChange={formik.handleChange}
+                                                    onBlur={formik.handleBlur}
+                                                />
+
+                                            </Grid>
+
+
+
+                                            <Grid item xs={4}>
+                                                <Button
+                                                    variant="contained"
+                                                    color="primary"
+
+                                                    onClick={MoveClose}
+                                                    fullWidth
+                                                >
+                                                    Moved
+                                                </Button>
+
+                                            </Grid>
+                                        </Grid>
+                                    </Box>
+                                </Modal>
+
+
+
+
+
                                 {/* {fileID === "" ? <>{toast.error("First Select File Number then proceed further process...")}</> :  */}
                                 <>
                                     <Dialog
@@ -958,19 +1331,46 @@ const ViewEditFile = (props: Props) => {
                                             sx={{
                                                 backgroundColor: "#f4f4f5",
                                                 justifyContent: "center",
+                                                padding: "16px",
+                                                gap: "10px",
                                             }}
                                         >
-                                            <Button autoFocus onClick={handleClose}>
+                                            <Button
+                                                variant="contained"
+                                                color="primary"
+                                                startIcon={<ArrowBackIcon />}
+                                                onClick={handleClose}
+                                                sx={{
+                                                    textTransform: "none",
+                                                    borderRadius: "8px",
+                                                }}
+                                            >
                                                 Backward
                                             </Button>
-                                            <Button autoFocus onClick={handleForwardData}>
+                                            <Button
+                                                variant="contained"
+                                                color="primary"
+                                                endIcon={<ArrowForwardIcon />}
+                                                onClick={handleForwardData}
+                                                sx={{
+                                                    textTransform: "none",
+                                                    borderRadius: "8px",
+                                                }}
+                                            >
                                                 Forward
                                             </Button>
-
-                                            <Button autoFocus onClick={() => getRouteView(nodeId)}>
-
+                                            <Button
+                                                variant="contained"
+                                                color="primary"
+                                                startIcon={<MapIcon />}
+                                                onClick={() => getRouteView(nodeId)}
+                                                sx={{
+                                                    textTransform: "none",
+                                                    borderRadius: "8px",
+                                                }}
+                                            >
                                                 View Routes
-                                            </Button> */}
+                                            </Button>
                                         </DialogActions>
                                     </Dialog>
                                 </>
@@ -1270,16 +1670,17 @@ const ViewEditFile = (props: Props) => {
                                         <br></br>
                                         <br></br>
                                         {filebase64 && (
-                                        <Grid item lg={12} xs={12}>
-                                                                    <embed
-                                                                        src={filebase64}
-                                                                        style={{
-                                                                            height: "70vh",
-                                                                            width: "100%",
-                                                                            border: "1px solid gray",
-                                                                        }}
-                                                                    />
-                                        </Grid>)}
+                                            <Grid item lg={12} xs={12}>
+                                                <embed
+                                                    src={filebase64}
+                                                    style={{
+                                                        height: "70vh",
+                                                        width: "100%",
+                                                        border: "1px solid gray",
+                                                    }}
+                                                />
+                                            </Grid>
+                                        )}
 
                                         <Grid
                                             item

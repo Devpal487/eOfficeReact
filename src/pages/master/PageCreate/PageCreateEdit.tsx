@@ -1,4 +1,4 @@
-import { Button, FormControl,FormLabel, CardContent, Grid, TextField, Typography, Divider, Autocomplete, Modal, Box, Select, MenuItem, FormControlLabel, Radio, IconButton, InputAdornment, Dialog, DialogTitle, DialogContent, RadioGroup, Table,Collapse } from '@mui/material';
+import { Button, FormControl, FormLabel, CardContent, Grid, TextField, Typography, Divider, Autocomplete, Modal, Box, Select, MenuItem, FormControlLabel, Radio, IconButton, InputAdornment, Dialog, DialogTitle, DialogContent, RadioGroup, Table, Collapse } from '@mui/material';
 import ArrowBackSharpIcon from '@mui/icons-material/ArrowBackSharp';
 import React, { useState, useEffect } from 'react'
 import axios from 'axios';
@@ -94,7 +94,7 @@ const PageCreateEdit = (props: Props) => {
     const [pdf, setPDF] = useState("");
     const [fileName, setfileName] = useState("");
 
-    
+
     const [tableData1, setTableData1] = useState<any>([]);
     const [EmpCode, setEmpCode] = useState("");
     const [Remark, setRemark] = useState("");
@@ -341,7 +341,7 @@ const PageCreateEdit = (props: Props) => {
             "rFileType": -1,
             "fromdate": "2020-06-13T08:17:35.332Z",
             "todate": "2024-06-13T08:17:35.332Z",
-            "type":1
+            "type": 1
 
         };
 
@@ -439,13 +439,13 @@ const PageCreateEdit = (props: Props) => {
             fileattach_name: location.state.fileattach_name,
             divisionid: location.state.divisionid,
             pucPending: location.state.pucPending,
-            routeID: location.state.routeID, 
+            routeID: location.state.routeID,
             type: location.state.type,
             FileType: location.state.FileType,
             pdfPath: location.state.pdfpath,
             pdfBase64: location.state.pdfBase64,
             fileOpenDate: dayjs(location.state.fileOpenDate).format("YYYY-MM-DD"),
-            types:location.state.types
+            types: location.state.types
 
         },
         onSubmit: async (values: any) => {
@@ -537,7 +537,7 @@ const PageCreateEdit = (props: Props) => {
         }
     };
 
-  
+
     const addMoreRow1 = () => {
         const newRows = {
             id: tableData1.length + 1,
@@ -594,6 +594,13 @@ const PageCreateEdit = (props: Props) => {
             return updatedTableDataed;
         });
     };
+
+    useEffect(() => {
+        if (!formik.values.letterBy) {
+            formik.setFieldValue('letterBy', 'received');
+        }
+    }, [formik.values.letterBy, formik.setFieldValue]);
+
 
 
 
@@ -655,8 +662,11 @@ const PageCreateEdit = (props: Props) => {
                                         value="received"
                                         control={
                                             <Radio
-                                                checked={selectedOption === "received"}
-                                                onChange={handleRadioChange}
+                                                id="letterBy"
+                                                name="letterBy"
+                                                checked={formik.values.letterBy === "received"}
+                                                onChange={formik.handleChange}
+                                                value="received"
                                             />
                                         }
                                         label={t("text.Received")}
@@ -665,8 +675,12 @@ const PageCreateEdit = (props: Props) => {
                                         value="dispatch"
                                         control={
                                             <Radio
-                                                checked={selectedOption === "dispatch"}
-                                                onChange={handleRadioChange}
+                                                id="letterBy"
+                                                name="letterBy"
+                                                checked={formik.values.letterBy === "dispatch"}
+
+                                                onChange={formik.handleChange}
+                                                value="dispatch"
                                             />
                                         }
                                         label={t("text.Dispatch")}
@@ -675,8 +689,11 @@ const PageCreateEdit = (props: Props) => {
                                         value="received/dispatch"
                                         control={
                                             <Radio
-                                                checked={selectedOption === "received/dispatch"}
-                                                onChange={handleRadioChange}
+                                                id="letterBy"
+                                                name="letterBy"
+                                                checked={formik.values.letterBy === "received/dispatch"}
+                                                onChange={formik.handleChange}
+                                                value="received/dispatch"
                                             />
                                         }
                                         label={t("text.RecOrDisp")}
@@ -733,7 +750,7 @@ const PageCreateEdit = (props: Props) => {
                                     options={LetterType}
                                     fullWidth
                                     size="small"
-                                    value={LetterType.find((opt:any)=> opt.value == formik.values.rlId)|| null}
+                                    value={LetterType.find((opt: any) => opt.value == formik.values.rlId) || null}
                                     onChange={(event, newValue: any) => {
                                         console.log(newValue?.value);
 
@@ -755,7 +772,7 @@ const PageCreateEdit = (props: Props) => {
                                         id="combo-box-demo"
                                         options={PriorityOps}
                                         fullWidth
-                                        value={PriorityOps.find((opt:any)=> opt.value == formik.values.rPriority)|| null}
+                                        value={PriorityOps.find((opt: any) => opt.value == formik.values.rPriority) || null}
                                         size="small"
                                         onChange={(event, newValue: any) => {
                                             console.log(newValue?.value);
@@ -778,7 +795,7 @@ const PageCreateEdit = (props: Props) => {
                                     id="combo-box-demo"
                                     options={LanguageOption}
                                     fullWidth
-                                    value={LanguageOption.find((opt:any)=> opt.value == formik.values.rLanguage)|| null}
+                                    value={LanguageOption.find((opt: any) => opt.value == formik.values.rLanguage) || null}
                                     size="small"
                                     onChange={(event, newValue: any) => {
                                         console.log(newValue?.value);
@@ -800,7 +817,7 @@ const PageCreateEdit = (props: Props) => {
                                     id="combo-box-demo"
                                     options={FileOption}
                                     fullWidth
-                                    value={FileOption.find((opt:any)=> opt.value == formik.values.rFileType)|| null}
+                                    value={FileOption.find((opt: any) => opt.value == formik.values.rFileType) || null}
                                     size="small"
                                     onChange={(event, newValue: any) => {
                                         console.log(newValue?.value);
@@ -1151,7 +1168,7 @@ const PageCreateEdit = (props: Props) => {
                                 </Grid>
                             )}
 
-                            <Grid md={4} item container alignItems="center">
+                            {/* <Grid md={4} item container alignItems="center">
                                 <TextField
                                     label={t("text.SendTo")}
                                     value={formik.values.letterBy}
@@ -1187,7 +1204,7 @@ const PageCreateEdit = (props: Props) => {
                                         ),
                                     }}
                                 />
-                            </Grid>
+                            </Grid> */}
 
                             <Grid item lg={4} xs={12}>
                                 <Autocomplete
@@ -1195,7 +1212,7 @@ const PageCreateEdit = (props: Props) => {
                                     id="combo-box-demo"
                                     options={RootOps}
                                     fullWidth
-                                    value={RootOps.find((opt:any)=> opt.value == formik.values.routeID)|| null}
+                                    value={RootOps.find((opt: any) => opt.value == formik.values.routeID) || null}
                                     size="small"
                                     onChange={(event, newValue: any) => {
                                         console.log("🚀 ~ PageCreateEdit ~ newValue:", newValue)

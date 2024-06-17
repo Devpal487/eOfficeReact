@@ -48,6 +48,7 @@ import SaveAsIcon from '@mui/icons-material/SaveAs';
 import MessageIcon from '@mui/icons-material/Message';
 import MailIcon from '@mui/icons-material/Mail';
 import ArrowCircleRightIcon from '@mui/icons-material/ArrowCircleRight';
+import { getinstId, getId, getdivisionId } from "../../../utils/Constant";
 
 const Transition = React.forwardRef(function Transition(
     props: TransitionProps & {
@@ -96,7 +97,7 @@ const AuthorityMail = (props: Props) => {
 
 
 
-
+    const userId = getId();
 
 
     const handleTab = (event: any, newValue: any) => {
@@ -104,56 +105,57 @@ const AuthorityMail = (props: Props) => {
     };
 
     useEffect(() => {
-        // getTableData();
+         getTableData(1);
         // getMoveTableData();
-        getFileNo();
+        //getFileNo();
     }, []);
 
-    const getFileNo = () => {
-        const collectData = {
-            "fnId": -1,
-            "fId": -1,
-            "inst_id": -1,
-            "user_id": -1,
-            "divisionId": -1
-        };
-        api
-            .post(`FileNumber/GetFileNumber`, collectData)
-            .then((res) => {
-                const arr = res.data.data.map((item: any) => ({
-                    label: item.fileNm,
-                    value: item.fnId,
-                }));
-                setParentInst(arr);
-            });
-    };
+    // const getFileNo = () => {
+    //     const collectData = {
+    //         "fnId": -1,
+    //         "fId": -1,
+    //         "inst_id": -1,
+    //         "user_id": -1,
+    //         "divisionId": -1
+    //     };
+    //     api
+    //         .post(`FileNumber/GetFileNumber`, collectData)
+    //         .then((res) => {
+    //             const arr = res.data.data.map((item: any) => ({
+    //                 label: item.fileNm,
+    //                 value: item.fnId,
+    //             }));
+    //             setParentInst(arr);
+    //         });
+    // };
 
-    const getTableData = () => {
+    const getTableData = (type:any) => {
         setIsTableLoading(true);
         const collectData = {
-            "fileNo": formik.values.fileNo,
-            "cDocsFlag": "C",
-            "type": 2
+            "hdnAuthMail": userId,
+            "Type": type+""
 
 
         };
         api
-            .post(`FileNumber/GetViewEditFileNo`, collectData)
+            .post(`FileMovement/Getsp_AuthortyMail`, collectData)
             .then((res) => {
                 const arr: any = [];
                 console.log("result" + JSON.stringify(res.data.data));
                 for (let index = 0; index < res.data.data.length; index++) {
                     arr.push({
-                        id: res.data.data[index]["rid"],
-                        rid: res.data.data[index]["rid"],
-                        fileNo: res.data.data[index]["fileNo"],
-                        fileNm: res.data.data[index]["fileNm"],
-                        cFileNm: res.data.data[index]["cFileNm"],
-                        date: res.data.data[index]["date"],
-
-
-
-
+                        FMRId: res.data.data[index]["fmrId"],
+                        FNId: res.data.data[index]["fnId"],
+                        SId: res.data.data[index]["sId"],
+                        AuthorityType: res.data.data[index]["authorityType"],
+                        Csubject: res.data.data[index]["csubject"],
+                        SendByAuth: res.data.data[index]["sendByAuth"],
+                        CreatedDate: res.data.data[index]["createdDate"],
+                        Message: res.data.data[index]["Message"],
+                        SendBy: res.data.data[index]["SendBy"],
+                        SendDate: res.data.data[index]["SendDate"],
+                        DSFNAme: res.data.data[index]["SendDate"]
+                        
                     });
                 }
                 setMovementTableData(arr);
@@ -219,9 +221,6 @@ const AuthorityMail = (props: Props) => {
                         fileNm: res.data.data[index]["fileNm"],
                         cFileNm: res.data.data[index]["cFileNm"],
                         date: res.data.data[index]["date"],
-
-
-
 
                     });
                 }
@@ -386,7 +385,11 @@ const AuthorityMail = (props: Props) => {
                                             </Box>
                                         }
                                         sx={value === 0 ? tabStyle.selected : tabStyle.default}
-                                        onClick={getTableData}
+                                     
+                                        onClick={(event) => {
+                                            getTableData("1");
+                                            
+                                        }}
                                     />
 
                                     <Tab
@@ -399,7 +402,10 @@ const AuthorityMail = (props: Props) => {
                                             </Box>
                                         }
                                         sx={value === 1 ? tabStyle.selected : tabStyle.default}
-                                    // onClick={getTableData}
+                                        onClick={(event) => {
+                                            getTableData("S");
+                                            
+                                        }}
                                     />
 
 
@@ -413,7 +419,10 @@ const AuthorityMail = (props: Props) => {
                                             </Box>
                                         }
                                         sx={value === 2 ? tabStyle.selected : tabStyle.default}
-                                    // onClick={getTableData}
+                                        onClick={(event) => {
+                                            getTableData("I");
+                                            
+                                        }}
                                     />
 
                                     <Tab
@@ -426,7 +435,10 @@ const AuthorityMail = (props: Props) => {
                                             </Box>
                                         }
                                         sx={value === 3 ? tabStyle.selected : tabStyle.default}
-                                    // onClick={getTableData}
+                                        onClick={(event) => {
+                                            getTableData("D");
+                                            
+                                        }}
                                     />
 
                                     <Tab
@@ -439,7 +451,10 @@ const AuthorityMail = (props: Props) => {
                                             </Box>
                                         }
                                         sx={value === 4 ? tabStyle.selected : tabStyle.default}
-                                        onClick={getMsgTableData}
+                                        onClick={(event) => {
+                                            getTableData("M");
+                                            
+                                        }}
                                     />
 
                                     <Tab
@@ -452,7 +467,10 @@ const AuthorityMail = (props: Props) => {
                                             </Box>
                                         }
                                         sx={value === 5 ? tabStyle.selected : tabStyle.default}
-                                        onClick={getLetterTableData}
+                                        onClick={(event) => {
+                                            getTableData("L");
+                                            
+                                        }}
                                     />
 
 
@@ -466,7 +484,10 @@ const AuthorityMail = (props: Props) => {
                                             </Box>
                                         }
                                         sx={value === 6 ? tabStyle.selected : tabStyle.default}
-                                    // onClick={getTableData}
+                                        onClick={(event) => {
+                                            getTableData("T");
+                                            
+                                        }}
                                     />
 
                                 </Tabs>
@@ -522,7 +543,7 @@ const AuthorityMail = (props: Props) => {
 
                         <Grid item xs={12} container spacing={2}>
 
-                            {value === 0 && (
+                            {value <=3  && (
                                 <Grid xs={12} sm={12} item>
 
 
@@ -542,13 +563,22 @@ const AuthorityMail = (props: Props) => {
                                         >
                                             <tr>
 
-
-                                                <th
+                                            <th
                                                     style={{
                                                         borderLeft: "1px solid black",
                                                         paddingTop: "5px",
                                                         paddingBottom: "5px",
                                                         width: "100px",
+                                                    }}
+                                                >
+                                                    {t("text.SrNo")}
+                                                </th>
+                                                <th
+                                                    style={{
+                                                        borderLeft: "1px solid black",
+                                                        paddingTop: "5px",
+                                                        paddingBottom: "5px",
+                                                      
                                                     }}
                                                 >
                                                     {t("text.FromTo")}
@@ -607,7 +637,7 @@ const AuthorityMail = (props: Props) => {
                                                                 padding: "2px",
                                                             }}
                                                         >
-                                                            {row.fileNo}
+                                                            {index+1}
                                                         </td>
 
                                                         <td
@@ -617,7 +647,7 @@ const AuthorityMail = (props: Props) => {
                                                                 textAlign: "center",
                                                             }}
                                                         >
-                                                            {row.fileNm}
+                                                            {row.AuthorityType}
                                                         </td>
 
 
@@ -633,7 +663,7 @@ const AuthorityMail = (props: Props) => {
                                                             }}
 
                                                         >
-                                                            {row.cFileNm}
+                                                            {row.FNId}
                                                         </td>
 
 
@@ -644,8 +674,18 @@ const AuthorityMail = (props: Props) => {
                                                                 textAlign: "center",
                                                             }}
                                                         >
-                                                            {row.date}
-                                                            {/* <p onClick={handleReceiveData}>{row.receiver}</p> */}
+                                                            {row.Csubject}
+                                                           
+                                                        </td>
+                                                        <td
+                                                            style={{
+                                                                borderLeft: "1px solid black",
+                                                                borderTop: "1px solid black",
+                                                                textAlign: "center",
+                                                            }}
+                                                        >
+                                                            {row.CreatedDate}
+                                                           
                                                         </td>
                                                     </tr>
                                                 ))}
@@ -735,7 +775,7 @@ const AuthorityMail = (props: Props) => {
                                         ) : (
                                             <tbody style={{ border: "1px solid black" }}>
 
-                                                {MsgTableData.map((row: any, index: any) => (
+                                                {MovementTableData.map((row: any, index: any) => (
                                                     <tr key={row.id} style={{ border: "1px solid black" }}>
                                                         <td
                                                             style={{
@@ -745,7 +785,7 @@ const AuthorityMail = (props: Props) => {
                                                                 padding: "2px",
                                                             }}
                                                         >
-                                                            {row.fileNo}
+                                                            {row.Csubject}
                                                         </td>
 
                                                         <td
@@ -755,7 +795,7 @@ const AuthorityMail = (props: Props) => {
                                                                 textAlign: "center",
                                                             }}
                                                         >
-                                                            {row.fileNm}
+                                                            {row.Message}
                                                         </td>
 
 
@@ -769,12 +809,9 @@ const AuthorityMail = (props: Props) => {
                                                                 color: "blue",
                                                                 textDecoration: "underline",
                                                             }}
-
                                                         >
-                                                            {row.cFileNm}
+                                                            {row.SendBy}
                                                         </td>
-
-
                                                         <td
                                                             style={{
                                                                 borderLeft: "1px solid black",
@@ -782,7 +819,7 @@ const AuthorityMail = (props: Props) => {
                                                                 textAlign: "center",
                                                             }}
                                                         >
-                                                            {row.date}
+                                                            {row.SendDate}
                                                             {/* <p onClick={handleReceiveData}>{row.receiver}</p> */}
                                                         </td>
                                                     </tr>
@@ -882,7 +919,7 @@ const AuthorityMail = (props: Props) => {
                                         ) : (
                                             <tbody style={{ border: "1px solid black" }}>
 
-                                                {LetterTableData.map((row: any, index: any) => (
+                                                {MovementTableData.map((row: any, index: any) => (
                                                     <tr key={row.id} style={{ border: "1px solid black" }}>
                                                         <td
                                                             style={{
@@ -892,7 +929,7 @@ const AuthorityMail = (props: Props) => {
                                                                 padding: "2px",
                                                             }}
                                                         >
-                                                            {row.fileNo}
+                                                            {row.Csubject}
                                                         </td>
 
                                                         <td
@@ -902,7 +939,7 @@ const AuthorityMail = (props: Props) => {
                                                                 textAlign: "center",
                                                             }}
                                                         >
-                                                            {row.fileNm}
+                                                            {row.Message}
                                                         </td>
 
 
@@ -918,7 +955,7 @@ const AuthorityMail = (props: Props) => {
                                                             }}
 
                                                         >
-                                                            {row.cFileNm}
+                                                            {row.SendBy}
                                                         </td>
 
 
@@ -929,7 +966,7 @@ const AuthorityMail = (props: Props) => {
                                                                 textAlign: "center",
                                                             }}
                                                         >
-                                                            {row.date}
+                                                            {row.SendDate}
                                                             {/* <p onClick={handleReceiveData}>{row.receiver}</p> */}
                                                         </td>
 
@@ -940,7 +977,7 @@ const AuthorityMail = (props: Props) => {
                                                                 textAlign: "center",
                                                             }}
                                                         >
-                                                            {row.Dsf}
+                                                            {row.DSFNAme}
                                                             {/* <p onClick={handleReceiveData}>{row.receiver}</p> */}
                                                         </td>
                                                     </tr>

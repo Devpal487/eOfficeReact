@@ -231,7 +231,7 @@ const PageCreateEdit = (props: Props) => {
     const getRootPreview = async () => {
 
         const collectData = {
-            "id": formik.values.rootID || -1,
+            "id": rootid || -1,
             "authorityId": -1,
             "routeId": -1,
             "officeId": -1,

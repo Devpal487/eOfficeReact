@@ -42,13 +42,11 @@ api.interceptors.response.use(
 
 function Logout() {
   
-  
   localStorage.clear();
   sessionStorage.clear();
   toast.success("Token expired. Logging out...");
   const navigate=useNavigate();
   navigate("/");
-
 }
 
 

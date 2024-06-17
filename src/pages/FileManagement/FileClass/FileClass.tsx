@@ -28,6 +28,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
 import CircularProgress from "@mui/material/CircularProgress";
 import api from "../../../utils/Url";
+import CustomDataGrid from "../../../utils/CustomDatagrid";
 
 
 interface MenuPermission {
@@ -100,7 +101,7 @@ export default function FileClass() {
         };
         console.log("collectData " + JSON.stringify(collectData));
         api
-            .delete( `FileClass/DeleteFileClass`, {data:collectData})
+            .delete(`FileClass/DeleteFileClass`, { data: collectData })
             .then((response) => {
                 if (response.data.isSuccess) {
                     toast.success(response.data.mesg);
@@ -133,7 +134,7 @@ export default function FileClass() {
         try {
             const collectData = {
                 fileClassid: -1,
-                
+
             };
             console.log("collectData", collectData)
             const response = await api.post(
@@ -220,7 +221,7 @@ export default function FileClass() {
 
                     {
                         field: "serialNo",
-                        headerName:  t("text.SrNo"),
+                        headerName: t("text.SrNo"),
                         flex: 1,
                         headerClassName: "MuiDataGrid-colCell",
                     },
@@ -238,7 +239,7 @@ export default function FileClass() {
                     },
                     {
                         field: "weedingOutAuthority",
-                        headerName:t("text.WeedingOutAuthority"),
+                        headerName: t("text.WeedingOutAuthority"),
                         flex: 1,
                         headerClassName: "MuiDataGrid-colCell",
                     },
@@ -351,34 +352,13 @@ export default function FileClass() {
                             <CircularProgress />
                         </div>
                     ) : (
-                        <Box>
-                            <br />
-                            <div style={{ width: "100%", backgroundColor: "#FFFFFF" }}>
-                                <DataGrid
-                                    rows={zones}
-                                    columns={adjustedColumns}
-                                    autoHeight
-                                    slots={{
-                                        toolbar: GridToolbar,
-                                    }}
-                                    rowSpacingType="border"
-                                    pagination={true}
-                                    pageSizeOptions={[5, 10, 25, 50, 100].map((size) => ({
-                                        value: size,
-                                        label: `${size}`,
-                                    }))}
-                                    initialState={{
-                                        pagination: { paginationModel: { pageSize: 5 } },
-                                    }}
-                                    slotProps={{
-                                        toolbar: {
-                                            showQuickFilter: true,
-                                        },
-                                    }}
-                                />
-                            </div>
-
-                        </Box>)}
+                        <CustomDataGrid
+                            isLoading={isLoading}
+                            rows={zones}
+                            columns={adjustedColumns}
+                            pageSizeOptions={[5, 10, 25, 50, 100]}
+                            initialPageSize={5}
+                        />)}
                 </Paper>
             </Card>
             <ToastApp />

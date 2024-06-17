@@ -1,6 +1,6 @@
 import * as React from "react";
 import Paper from "@mui/material/Paper";
-import {useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Box,
   Button,
@@ -32,6 +32,7 @@ import {
 import Switch from "@mui/material/Switch";
 import Chip from "@mui/material/Chip";
 import CircularProgress from "@mui/material/CircularProgress";
+import CustomDataGrid from "../../../utils/CustomDatagrid";
 
 interface MenuPermission {
   isAdd: boolean;
@@ -76,8 +77,8 @@ export default function SectionMaster() {
     //       }
     //     }
     //   }
-      fetchZonesData();
-    }, [isLoading]);
+    fetchZonesData();
+  }, [isLoading]);
 
   const handleSwitchChange = (
     event: React.ChangeEvent<HTMLInputElement>,
@@ -124,11 +125,11 @@ export default function SectionMaster() {
 
   const accept = () => {
     const collectData = {
-        id: delete_id
+      id: delete_id
     };
     console.log("collectData " + JSON.stringify(collectData));
     api
-      .delete(`SectionMaster/DeleteDesignationmaster`, {data:collectData})
+      .delete(`SectionMaster/DeleteDesignationmaster`, { data: collectData })
       .then((response) => {
         if (response.data.isSuccess) {
           toast.success(response.data.mesg);
@@ -161,15 +162,15 @@ export default function SectionMaster() {
     try {
       const collectData = {
         "id": -1,
-        
+
       };
-      const response = await api.post( `SectionMaster/GetDesignationmaster`,
+      const response = await api.post(`SectionMaster/GetDesignationmaster`,
         collectData
       );
       const data = response.data.data;
-      const designationWithIds = data.map((dept: any, index:any) => ({
+      const designationWithIds = data.map((dept: any, index: any) => ({
         ...dept,
-        serialNo: index+1,
+        serialNo: index + 1,
         id: dept.id,
       }));
       setDept(designationWithIds);
@@ -191,29 +192,29 @@ export default function SectionMaster() {
                   sx={{ alignItems: "center", marginTop: "5px" }}
                 >
                   {/* {permissionData?.isEdit ? ( */}
-                    <EditIcon
-                      style={{
-                        fontSize: "20px",
-                        color: "blue",
-                        cursor: "pointer",
-                      }}
-                      className="cursor-pointer"
-                      onClick={() => routeChangeEdit(params.row)}
-                    />
+                  <EditIcon
+                    style={{
+                      fontSize: "20px",
+                      color: "blue",
+                      cursor: "pointer",
+                    }}
+                    className="cursor-pointer"
+                    onClick={() => routeChangeEdit(params.row)}
+                  />
                   {/* // ) : (
                   //   ""
                   // )} */}
                   {/* {permissionData?.isDel ? ( */}
-                    <DeleteIcon
-                      style={{
-                        fontSize: "20px",
-                        color: "red",
-                        cursor: "pointer",
-                      }}
-                      onClick={() => {
-                        handledeleteClick(params.row.id);
-                      }}
-                    />
+                  <DeleteIcon
+                    style={{
+                      fontSize: "20px",
+                      color: "red",
+                      cursor: "pointer",
+                    }}
+                    onClick={() => {
+                      handledeleteClick(params.row.id);
+                    }}
+                  />
                   {/* ) : (
                     ""
                   )} */}
@@ -248,7 +249,7 @@ export default function SectionMaster() {
           },
           {
             field: "section",
-            headerName:t("text.Section"),
+            headerName: t("text.Section"),
             flex: 1,
             headerClassName: "MuiDataGrid-colCell",
           },
@@ -289,7 +290,7 @@ export default function SectionMaster() {
     ...column,
   }));
 
-  
+
   return (
     <>
       <Card
@@ -298,7 +299,7 @@ export default function SectionMaster() {
           // height: "100%",
           backgroundColor: "#E9FDEE",
           border: ".5px solid #FF7722 ",
-          marginTop:"3vh"
+          marginTop: "3vh"
         }}
       >
         <Paper
@@ -309,10 +310,10 @@ export default function SectionMaster() {
               backgroundColor: "#00009C",
               color: "#fff",
               fontSize: 17,
-              fontWeight:900 
+              fontWeight: 900
             },
           }}
-          style={{ padding: "10px",}}
+          style={{ padding: "10px", }}
         >
           <ConfirmDialog />
 
@@ -331,14 +332,14 @@ export default function SectionMaster() {
 
           <Stack direction="row" spacing={2} classes="my-2 mb-2">
             {/* {permissionData?.isAdd == true && ( */}
-              <Button
-                onClick={routeChangeAdd}
-                variant="contained"
-                endIcon={<AddCircleIcon />}
-                size="large"
-              >
-                {t("text.add")}
-              </Button>
+            <Button
+              onClick={routeChangeAdd}
+              variant="contained"
+              endIcon={<AddCircleIcon />}
+              size="large"
+            >
+              {t("text.add")}
+            </Button>
             {/* ) } */}
 
             {/* {permissionData?.isPrint == true ? (
@@ -351,48 +352,27 @@ export default function SectionMaster() {
           </Stack>
 
           {isLoading ? (
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <CircularProgress />
-              </div>
-            ) : (
-              <Box>
-          <br />
-          <div style={{ width: "100%", backgroundColor: "#FFFFFF" }}>
-            <DataGrid
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <CircularProgress />
+            </div>
+          ) : (
+            <CustomDataGrid
+              isLoading={isLoading}
               rows={dept}
               columns={adjustedColumns}
-              autoHeight
-              slots={{
-                toolbar: GridToolbar,
-              }}
-              rowSpacingType="border"
-              pagination={true}
-              pageSizeOptions={[5, 10, 25, 50, 100].map((size) => ({
-                value: size,
-                label: `${size}`,
-              }))}
-              initialState={{
-                pagination: { paginationModel: { pageSize: 5 } },
-              }}
-              slotProps={{
-                toolbar: {
-                  showQuickFilter: true,
-                },
-              }}
-            />
-          </div>
-
-          </Box>)}
+              pageSizeOptions={[5, 10, 25, 50, 100]}
+              initialPageSize={5}
+            />)}
         </Paper>
       </Card>
       <ToastApp />
-      
+
     </>
   );
 }

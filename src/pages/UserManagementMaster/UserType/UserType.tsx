@@ -27,6 +27,7 @@ import ToastApp from "../../../ToastApp";
 import { usePermissionData } from "../../../usePermissionData";
 import DeleteIcon from "@mui/icons-material/Delete";
 import api from "../../../utils/Url";
+import CustomDataGrid from "../../../utils/CustomDatagrid";
 
 interface MenuPermission {
   isAdd: boolean;
@@ -80,7 +81,7 @@ export default function UserType() {
     };
     console.log("collectData " + JSON.stringify(collectData));
     api
-      .delete( `Auth/DeleteUSER_TYPE`, {data:collectData})
+      .delete(`Auth/DeleteUSER_TYPE`, { data: collectData })
       .then((response) => {
         if (response.data.isSuccess) {
           toast.success(response.data.mesg);
@@ -118,9 +119,9 @@ export default function UserType() {
         .then((res) => {
           console.log("result" + JSON.stringify(res.data.data));
           const data = res.data.data;
-          const arr = data.map((item: any, index:any) => ({
+          const arr = data.map((item: any, index: any) => ({
             ...item,
-            serialNo:index+1,
+            serialNo: index + 1,
             id: item.useR_TYPE_ID,
           }));
           setRows(arr);
@@ -204,7 +205,7 @@ export default function UserType() {
       }
     ),
   });
-  const[toaster,setToaster]=useState(false);
+  const [toaster, setToaster] = useState(false);
   const formik = useFormik({
     initialValues: {
       useR_TYPE_ID: "",
@@ -230,7 +231,7 @@ export default function UserType() {
         setToaster(true);
         toast.error(response.data.mesg);
       }
-     
+
     },
   });
 
@@ -245,7 +246,7 @@ export default function UserType() {
 
   return (
     <>
-      <Grid item lg={6} sm={6} xs={12} sx={{marginTop:"3vh"}}>
+      <Grid item lg={6} sm={6} xs={12} sx={{ marginTop: "3vh" }}>
         <Card
           style={{
             width: "100%",
@@ -281,70 +282,70 @@ export default function UserType() {
             <Divider />
 
             <Box height={10} />
-            
-                <form onSubmit={formik.handleSubmit}>
-                  <Grid item xs={12} container spacing={2}>
-                    <Grid item xs={5}>
-                      <TextField
-                        id="useR_TYPE_NAME"
-                        type="text"
-                        label={
-                          <span>
-                            {t("text.EnterUserType")} {""}
-                            {requiredFields.includes("useR_TYPE_NAME") && (
-                              <span
-                                style={{
-                                  color: formik.values.useR_TYPE_NAME
-                                    ? "green"
-                                    : "red",
-                                }}
-                              >
-                                *
-                              </span>
-                            )}
+
+            <form onSubmit={formik.handleSubmit}>
+              <Grid item xs={12} container spacing={2}>
+                <Grid item xs={5}>
+                  <TextField
+                    id="useR_TYPE_NAME"
+                    type="text"
+                    label={
+                      <span>
+                        {t("text.EnterUserType")} {""}
+                        {requiredFields.includes("useR_TYPE_NAME") && (
+                          <span
+                            style={{
+                              color: formik.values.useR_TYPE_NAME
+                                ? "green"
+                                : "red",
+                            }}
+                          >
+                            *
                           </span>
-                        }
-                        placeholder={t("text.EnterUserType")}
-                        value={formik.values.useR_TYPE_NAME}
-                        size="small"
-                        name="useR_TYPE_NAME"
-                        fullWidth
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                      />
-                      {formik.touched.useR_TYPE_NAME &&
-                      formik.errors.useR_TYPE_NAME ? (
-                        <div style={{ color: "red", margin: "5px" }}>
-                          {formik.errors.useR_TYPE_NAME}
-                        </div>
-                      ) : null}
-                    </Grid>
-                    <Grid item xs={5}>
-                      <TextField
-                        id="useR_TYPE_CODE"
-                        type="text"
-                        label="Enter User Type Code"                           
-                        placeholder="Enter User Type Code"
-                        value={formik.values.useR_TYPE_CODE}
-                        size="small"
-                        name="useR_TYPE_CODE"
-                        fullWidth
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        inputProps={{maxLength : 5}}
-                      />
-                    </Grid>
-                    <Grid item xs={2}>
-                      {permissionData?.isAdd == true ? (
-                        <Button type="submit" variant="contained" size="large">
-                          {editId == -1 ? t("text.save") : t("text.update")}
-                        </Button>
-                      ) : (
-                        ""
-                      )}
-                    </Grid>
-                  </Grid>
-                </form>
+                        )}
+                      </span>
+                    }
+                    placeholder={t("text.EnterUserType")}
+                    value={formik.values.useR_TYPE_NAME}
+                    size="small"
+                    name="useR_TYPE_NAME"
+                    fullWidth
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                  />
+                  {formik.touched.useR_TYPE_NAME &&
+                    formik.errors.useR_TYPE_NAME ? (
+                    <div style={{ color: "red", margin: "5px" }}>
+                      {formik.errors.useR_TYPE_NAME}
+                    </div>
+                  ) : null}
+                </Grid>
+                <Grid item xs={5}>
+                  <TextField
+                    id="useR_TYPE_CODE"
+                    type="text"
+                    label="Enter User Type Code"
+                    placeholder="Enter User Type Code"
+                    value={formik.values.useR_TYPE_CODE}
+                    size="small"
+                    name="useR_TYPE_CODE"
+                    fullWidth
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    inputProps={{ maxLength: 5 }}
+                  />
+                </Grid>
+                <Grid item xs={2}>
+                  {permissionData?.isAdd == true ? (
+                    <Button type="submit" variant="contained" size="large">
+                      {editId == -1 ? t("text.save") : t("text.update")}
+                    </Button>
+                  ) : (
+                    ""
+                  )}
+                </Grid>
+              </Grid>
+            </form>
 
             {isLoading ? (
               <div
@@ -357,38 +358,18 @@ export default function UserType() {
                 <CircularProgress />
               </div>
             ) : (
-              <Box>
-                <br></br>
-                <div style={{ width: "100%", backgroundColor: "#FFFFFF" }}>
-                  <DataGrid
-                    rows={rows}
-                    columns={columns}
-                    autoHeight
-                    slots={{
-                      toolbar: GridToolbar,
-                    }}
-                    rowSpacingType="border"
-                    pagination={true}
-                    pageSizeOptions={[5, 10, 25, 50, 100].map((size) => ({
-                      value: size,
-                      label: `${size}`,
-                    }))}
-                    initialState={{
-                      pagination: { paginationModel: { pageSize: 5 } },
-                    }}
-                    slotProps={{
-                      toolbar: {
-                        showQuickFilter: true,
-                      },
-                    }}
-                  />
-                </div>
-              </Box>
+              <CustomDataGrid
+                isLoading={isLoading}
+                rows={rows}
+                columns={columns}
+                pageSizeOptions={[5, 10, 25, 50, 100]}
+                initialPageSize={5}
+              />
             )}
           </Paper>
         </Card>
       </Grid>
-      <ToastApp/>
+      <ToastApp />
     </>
   );
 }

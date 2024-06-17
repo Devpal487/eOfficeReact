@@ -32,6 +32,7 @@ import api from "../../utils/Url";
 import Box from "@mui/material/Box";
 import { getinstId, getId, getdivisionId } from "./../../utils/Constant";
 import { toast } from "react-toastify";
+import CustomDataGrid from "../../utils/CustomDatagrid";
 
 interface MenuPermission {
     isAdd: boolean;
@@ -63,22 +64,21 @@ export default function Inbox() {
 
     const handleMove = (row: any) => {
         const value = {
+           
+           
+            
+            "fnId":row.fnId,
+            "hdnAuth": 1,
+          
+            "movedDate":"1900-01-01",
+            "lastUpdatedDate ": "1900-01-01",
+            "type": 2,
+           
+            "divisionid": parseInt(localStorage.getItem("id") + ""),
 
-            "hdnFilNu":row.fnId,
-            "inst_id":instId,
-            "userid":userId,
-            "moveddate":"1900-01-01T07:47:27.349Z",
-            "duedate":"1900-01-01T07:47:27.349Z",
-            "remark": "",
-            "routeId": 0,
-            "authorityLevel": 0,
-            "workPlaceFlag": "Workplace Flag",
-            "remId":row.rem,
-            "divisionId": divId,
-            "message": ""
         };
 
-        api.post(`FileMovement/sp_movetoawait`, value).then((res) => {
+        api.post(`FileMovement/GetSp_movetoworkplace`, value).then((res) => {
             if (res.data.isSuccess) {
                 toast.success(res.data.mesg);
 
@@ -155,9 +155,10 @@ export default function Inbox() {
                         width: 120,
                         headerClassName: "MuiDataGrid-colCell",
                     },
+
                     {
                         field: "fileNm",
-                        headerName: "File Number",
+                        headerName: "File Name",
                         flex: 1,
                         headerClassName: "MuiDataGrid-colCell",
                     },
@@ -196,21 +197,18 @@ export default function Inbox() {
 
                     {
                         field: "sendWorkPlace",
-                        headerName: "Send To Work place",
+                        headerName: "Work Place",
                         flex: 1,
                         headerClassName: "MuiDataGrid-colCell",
                         renderCell: (params) => {
 
                             console.log('checkPrams', params)
                             return [
-
-
-
-
                                 <Button
                                     variant="contained"
                                     color="primary"
                                     onClick={() => handleMove(params.row)}
+                                    style={{ height: "80%" }}
                                 >
                                     Move
                                 </Button>
@@ -256,35 +254,13 @@ export default function Inbox() {
                     <CircularProgress />
                 </div>
             ) : (
-                <Box>
-                    <br />
-                    <div style={{ width: "100%", backgroundColor: "#FFFFFF" }}>
-
-                        <DataGrid
-                            rows={totalFile}
-                            columns={adjustedColumns}
-                            autoHeight
-                            slots={{
-                                toolbar: GridToolbar,
-                            }}
-                            rowSpacingType="border"
-                            pagination={true}
-                            pageSizeOptions={[5, 10, 25, 50, 100].map((size) => ({
-                                value: size,
-                                label: `${size}`,
-                            }))}
-                            initialState={{
-                                pagination: { paginationModel: { pageSize: 5 } },
-                            }}
-                            slotProps={{
-                                toolbar: {
-                                    showQuickFilter: true,
-                                },
-                            }}
-                        />
-                    </div>
-
-                </Box>)}
+                <CustomDataGrid
+                    isLoading={isLoading}
+                    rows={totalFile}
+                    columns={adjustedColumns}
+                    pageSizeOptions={[5, 10, 25, 50, 100]}
+                    initialPageSize={5}
+                />)}
 
         </Paper>
     );

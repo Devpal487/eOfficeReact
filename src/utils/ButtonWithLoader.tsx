@@ -25,7 +25,7 @@ interface ButtonWithLoaderProps {
     loadingColor = "green", 
     fullWidth = false
   }) => {
-    console.log("fullwidth", fullWidth)
+    console.log("Checkfullwidth", fullWidth)
 
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);

@@ -28,6 +28,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
 import CircularProgress from "@mui/material/CircularProgress";
 import api from "../../utils/Url";
+import CustomDataGrid from "../../utils/CustomDatagrid";
 
 
 interface MenuPermission {
@@ -86,7 +87,7 @@ export default function EmployeeMaster() {
     value: any
   ) => {
     console.log(value)
-    const updatedStatus =  event.target.checked ? "Active" : "InActive";
+    const updatedStatus = event.target.checked ? "Active" : "InActive";
     const collectData = {
       empid: value.id,
       empName: value.empName,
@@ -122,7 +123,7 @@ export default function EmployeeMaster() {
       // empStatus: updatedStatus,
     };
     api
-      .post( `EmpMaster/AddUpdateEmpmaster`, collectData)
+      .post(`EmpMaster/AddUpdateEmpmaster`, collectData)
       .then((response) => {
         if (response.data.isSuccess) {
           toast.success(response.data.mesg);
@@ -151,7 +152,7 @@ export default function EmployeeMaster() {
     };
 
     api
-      .delete( `EmpMaster/DeleteEmpmaster`, {data:collectData})
+      .delete(`EmpMaster/DeleteEmpmaster`, { data: collectData })
       .then((response) => {
         if (response.data.isSuccess) {
           toast.success(response.data.mesg);
@@ -198,7 +199,7 @@ export default function EmployeeMaster() {
       };
       console.log("collectData", collectData)
       const response = await api.post(
-         `EmpMaster/GetEmpmaster`,
+        `EmpMaster/GetEmpmaster`,
         collectData
       );
       console.log("result", response.data.data)
@@ -257,9 +258,9 @@ export default function EmployeeMaster() {
                   {/* )} */}
                   <Switch
                     // checked={(params.row.empStatus)}
-                    checked={params.row.empStatus === "Active"} 
+                    checked={params.row.empStatus === "Active"}
                     style={{
-                      color: params.row.empStatus === "Active" ?  "green" : "red",
+                      color: params.row.empStatus === "Active" ? "green" : "red",
                     }}
                     onChange={(value: any) =>
                       handleSwitchChange(value, params.row)
@@ -282,13 +283,13 @@ export default function EmployeeMaster() {
 
           {
             field: "serialNo",
-            headerName:t("text.SrNo"),
+            headerName: t("text.SrNo"),
             flex: 1,
             headerClassName: "MuiDataGrid-colCell",
           },
           {
             field: "empName",
-            headerName:t("text.EmpName"),
+            headerName: t("text.EmpName"),
             flex: 1,
             headerClassName: "MuiDataGrid-colCell",
           },
@@ -300,7 +301,7 @@ export default function EmployeeMaster() {
           },
           {
             field: "empStatus",
-            headerName:t("text.EmpStatus"),
+            headerName: t("text.EmpStatus"),
             flex: 1,
             headerClassName: "MuiDataGrid-colCell",
             renderCell: (params) => [
@@ -369,7 +370,7 @@ export default function EmployeeMaster() {
             sx={{ padding: "20px" }}
             align="left"
           >
-           {t("text.EmpMaster")}
+            {t("text.EmpMaster")}
           </Typography>
           <Divider />
 
@@ -407,34 +408,13 @@ export default function EmployeeMaster() {
               <CircularProgress />
             </div>
           ) : (
-            <Box>
-              <br />
-              <div style={{ width: "100%", backgroundColor: "#FFFFFF" }}>
-                <DataGrid
-                  rows={zones}
-                  columns={adjustedColumns}
-                  autoHeight
-                  slots={{
-                    toolbar: GridToolbar,
-                  }}
-                  rowSpacingType="border"
-                  pagination={true}
-                  pageSizeOptions={[5, 10, 25, 50, 100].map((size) => ({
-                    value: size,
-                    label: `${size}`,
-                  }))}
-                  initialState={{
-                    pagination: { paginationModel: { pageSize: 5 } },
-                  }}
-                  slotProps={{
-                    toolbar: {
-                      showQuickFilter: true,
-                    },
-                  }}
-                />
-              </div>
-
-            </Box>)}
+            <CustomDataGrid
+              isLoading={isLoading}
+              rows={zones}
+              columns={adjustedColumns}
+              pageSizeOptions={[5, 10, 25, 50, 100]}
+              initialPageSize={5}
+            />)}
         </Paper>
       </Card>
       <ToastApp />

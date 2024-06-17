@@ -34,7 +34,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import Autocomplete from "@mui/material/Autocomplete";
 // import TableContainer from '@mui/material/TableContainer';
 import CircularProgress from "@mui/material/CircularProgress";
-import {useTranslation} from "react-i18next";
+import { useTranslation } from "react-i18next";
 import { toast } from "react-toastify";
 import ToastApp from "../../../ToastApp";
 import {
@@ -45,6 +45,7 @@ import {
 import Switch from "@mui/material/Switch";
 import Chip from "@mui/material/Chip";
 import api from "../../../utils/Url";
+import CustomDataGrid from "../../../utils/CustomDatagrid";
 
 const style = {
   position: "absolute" as "absolute",
@@ -126,9 +127,9 @@ export default function UserPermissionMaster() {
   const [records, setRecords] = useState(rows);
 
   const [roleOption, setRoleOption] = useState([
-    { value: "-1", label: t("text.SelectRoleName")},
+    { value: "-1", label: t("text.SelectRoleName") },
   ]);
- 
+
   const [users, setUsers] = useState<any>([]);
   const [employeeId, setEmployeeId] = useState<string>("");
 
@@ -194,26 +195,26 @@ export default function UserPermissionMaster() {
     getEmployeeNamebyID(selectedRoleID);
     getEmployeeName();
     const dataString = localStorage.getItem("userdata");
-      if (dataString) {
-        const data = JSON.parse(dataString);
-        if (data && data.length > 0) {
-          const userPermissionData = data[0]?.userPermission;
-          if (userPermissionData && userPermissionData.length > 0) {
-            const menudata = userPermissionData[0]?.parentMenu;
-            for (let index = 0; index < menudata.length; index++) {
-              const childMenudata = menudata[index]?.childMenu;
-              const pathrow = childMenudata.find(
-                (x: any) => x.path === location.pathname
-              );
-              console.log("data", pathrow);
-              if (pathrow) {
-                setPermissionData(pathrow);
-                getList();
-              }
+    if (dataString) {
+      const data = JSON.parse(dataString);
+      if (data && data.length > 0) {
+        const userPermissionData = data[0]?.userPermission;
+        if (userPermissionData && userPermissionData.length > 0) {
+          const menudata = userPermissionData[0]?.parentMenu;
+          for (let index = 0; index < menudata.length; index++) {
+            const childMenudata = menudata[index]?.childMenu;
+            const pathrow = childMenudata.find(
+              (x: any) => x.path === location.pathname
+            );
+            console.log("data", pathrow);
+            if (pathrow) {
+              setPermissionData(pathrow);
+              getList();
             }
           }
         }
       }
+    }
   }, [isLoading]);
 
   interface FilmOptionType {
@@ -225,7 +226,7 @@ export default function UserPermissionMaster() {
     const collectData = {
       user_ID: String(id),
     };
-    api.post( `Auth/GetUSER`, collectData).then((res) => {
+    api.post(`Auth/GetUSER`, collectData).then((res) => {
       const arr = [];
       console.log("GetUSER result" + JSON.stringify(res.data.data));
       for (let index = 0; index < res.data.data.length; index++) {
@@ -239,7 +240,7 @@ export default function UserPermissionMaster() {
     const collectData = {
       user_ID: "-1",
     };
-    api.post( `Auth/GetUSER`, collectData).then(
+    api.post(`Auth/GetUSER`, collectData).then(
       (res) => {
         // const arr = [];
         console.log("GetUSER" + JSON.stringify(res.data.data));
@@ -254,7 +255,7 @@ export default function UserPermissionMaster() {
       roleId: "-1",
     };
     api
-      .post( `Auth/GetRoleMaster`, collectData)
+      .post(`Auth/GetRoleMaster`, collectData)
       .then((res) => {
         const arr = [];
         console.log("GetRoleMaster" + JSON.stringify(res.data.data));
@@ -273,7 +274,7 @@ export default function UserPermissionMaster() {
       roleId: selectedRoleid,
     };
     api
-      .post( `Auth/GetRoleSelectMenu`, collectDatas)
+      .post(`Auth/GetRoleSelectMenu`, collectDatas)
       .then((res) => {
         const arr: any = [];
         // console.log(
@@ -352,68 +353,68 @@ export default function UserPermissionMaster() {
   };
 
   const fetchZonesData = async () => {
-  
-      const collectData = {
-        "userId": "-1"
-      };
-      const response = await api.post(
-         `Auth/GetUserPermissionList`,
-        collectData
-      );
-      console.log("data", response.data.data)
-      const data = response.data.data;
-      const zonesWithIds = data.map((item: any, index:any) => ({
-        ...item,
-        serialNo:index+1,
-        id: item.userId,
-      }));
-      setUserPermission(zonesWithIds);
-      setIsLoading(false);
 
-      if (data.length > 0) {
-        const columns: GridColDef[] = [
-          {
-            field: "actions",
-            headerClassName: "MuiDataGrid-colCell",
-            headerName: t("text.Action"),
-            width: 150,
+    const collectData = {
+      "userId": "-1"
+    };
+    const response = await api.post(
+      `Auth/GetUserPermissionList`,
+      collectData
+    );
+    console.log("data", response.data.data)
+    const data = response.data.data;
+    const zonesWithIds = data.map((item: any, index: any) => ({
+      ...item,
+      serialNo: index + 1,
+      id: item.userId,
+    }));
+    setUserPermission(zonesWithIds);
+    setIsLoading(false);
 
-            renderCell: (params) => {
-              return [
-                <Stack
-                  spacing={1}
-                  direction="row"
-                  sx={{ alignItems: "center", marginTop: "5px" }}
-                >
-                  {/* {permissionData?.isEdit ? ( */}
-                    <EditIcon
-                      style={{
-                        fontSize: "20px",
-                        color: "blue",
-                        cursor: "pointer",
-                      }}
-                      className="cursor-pointer"
-                      onClick={() => routeChangeEdit(params.row)}
-                    />
-                  {/* ) : (
+    if (data.length > 0) {
+      const columns: GridColDef[] = [
+        {
+          field: "actions",
+          headerClassName: "MuiDataGrid-colCell",
+          headerName: t("text.Action"),
+          width: 150,
+
+          renderCell: (params) => {
+            return [
+              <Stack
+                spacing={1}
+                direction="row"
+                sx={{ alignItems: "center", marginTop: "5px" }}
+              >
+                {/* {permissionData?.isEdit ? ( */}
+                <EditIcon
+                  style={{
+                    fontSize: "20px",
+                    color: "blue",
+                    cursor: "pointer",
+                  }}
+                  className="cursor-pointer"
+                  onClick={() => routeChangeEdit(params.row)}
+                />
+                {/* ) : (
                     ""
                   )} */}
-                  {/* {permissionData?.isDel ? ( */}
-                    <DeleteIcon
-                      style={{
-                        fontSize: "20px",
-                        color: "red",
-                        cursor: "pointer",
-                      }}
-                      onClick={() => {
-                        handledeleteClick(params.row.id);
-                      }}
-                    />
-                  {/* ) : (
+                {/* {permissionData?.isDel ? ( */}
+                <DeleteIcon
+                  style={{
+                    fontSize: "20px",
+                    color: "red",
+                    cursor: "pointer",
+                  }}
+                  onClick={() => {
+                    handledeleteClick(params.row.id);
+                  }}
+                />
+                {/* ) : (
                     ""
                   )} */}
-                  
-                  {/* <Switch
+
+                {/* <Switch
                     checked={Boolean(params.row.isActive)}
                     style={{
                       color: params.row.isActive ? "green" : "#FE0000",
@@ -425,35 +426,35 @@ export default function UserPermissionMaster() {
                       "aria-label": "Toggle Switch",
                     }}
                   /> */}
-                </Stack>,
-              ];
-            },
+              </Stack>,
+            ];
           },
+        },
 
-          {
-            field: "serialNo",
-            headerName: t("text.SrNo"),
-            flex: 1,
-            headerClassName: "MuiDataGrid-colCell",
-          },
-          {
-            field: "userName",
-            headerName: t("text.UserName"),
-            flex: 1,
-            headerClassName: "MuiDataGrid-colCell",
-          },
-          {
-            field: "roleName",
-            headerName: t("text.RoleName"),
-            flex: 1,
-            headerClassName: "MuiDataGrid-colCell",
-          },
-     
-        ];
-        setColumns(columns as any);
-      }
+        {
+          field: "serialNo",
+          headerName: t("text.SrNo"),
+          flex: 1,
+          headerClassName: "MuiDataGrid-colCell",
+        },
+        {
+          field: "userName",
+          headerName: t("text.UserName"),
+          flex: 1,
+          headerClassName: "MuiDataGrid-colCell",
+        },
+        {
+          field: "roleName",
+          headerName: t("text.RoleName"),
+          flex: 1,
+          headerClassName: "MuiDataGrid-colCell",
+        },
 
-    
+      ];
+      setColumns(columns as any);
+    }
+
+
   };
 
   const getList = () => {
@@ -729,7 +730,7 @@ export default function UserPermissionMaster() {
     // console.log(collectData);
     api
       .post(
-         "Auth/AddUpdateUserPermissionMaster",
+        "Auth/AddUpdateUserPermissionMaster",
         collectData
       )
       .then((res) => {
@@ -737,7 +738,7 @@ export default function UserPermissionMaster() {
           toast.success(res.data.mesg);
           setEnteredRoleName(null);
           setEnteredEployeeName(null);
-          
+
           setOpen(false);
           let path = `/UserManagement/UserPermissionMaster`;
           getList();
@@ -760,14 +761,16 @@ export default function UserPermissionMaster() {
           }}
         >
           <Paper
-            sx={{ width: "100%", overflow: "hidden", "& .MuiDataGrid-colCell": {
-              backgroundColor: "#2B4593",
-              color: "#fff",
-              fontSize: 17,
-              fontWeight: 900
-          }, }}
+            sx={{
+              width: "100%", overflow: "hidden", "& .MuiDataGrid-colCell": {
+                backgroundColor: "#2B4593",
+                color: "#fff",
+                fontSize: 17,
+                fontWeight: 900
+              },
+            }}
             style={{ padding: "10px" }}
-            
+
           >
             <ConfirmDialog />
             <Typography
@@ -777,7 +780,7 @@ export default function UserPermissionMaster() {
               sx={{ padding: "20px" }}
               align="left"
             >
-          {t("text.UserPermissionMaster")}
+              {t("text.UserPermissionMaster")}
             </Typography>
             <Divider />
             <Box height={10} />
@@ -788,7 +791,7 @@ export default function UserPermissionMaster() {
                   variant="contained"
                   endIcon={<AddCircleIcon />}
                 >
-                   {t("text.Add")}
+                  {t("text.Add")}
                 </Button>
               ) : (
                 ""
@@ -816,7 +819,7 @@ export default function UserPermissionMaster() {
               <Box sx={style}>
                 <form
                   onSubmit={selectedroleMasterSubmitHandler}
-                  // onReset={rolemasterResetHandler}
+                // onReset={rolemasterResetHandler}
                 >
                   <IconButton
                     aria-label="close"
@@ -868,7 +871,7 @@ export default function UserPermissionMaster() {
                             marginTop: "3px",
                           }}
                         >
-                          {edit == selectedRoleID? t("text.save") : t("text.update")}
+                          {edit == selectedRoleID ? t("text.save") : t("text.update")}
                         </Button>
                       </Grid>
                     </Grid>
@@ -914,7 +917,7 @@ export default function UserPermissionMaster() {
                                 <td>{t("text.MenuName")}</td>
                                 <td>{t("text.ParentName")}</td>
                                 <td>
-                                {t("text.Add")}
+                                  {t("text.Add")}
                                   <br />
                                   <input
                                     type="checkbox"
@@ -925,8 +928,8 @@ export default function UserPermissionMaster() {
                                     checked={
                                       selectedRoleData.length > 0
                                         ? selectedRoleData.every(
-                                            (item: any) => item.isAdd
-                                          )
+                                          (item: any) => item.isAdd
+                                        )
                                         : false
                                     }
                                     defaultChecked={false}
@@ -936,7 +939,7 @@ export default function UserPermissionMaster() {
                                   />
                                 </td>
                                 <td>
-                                {t("text.Edit")}
+                                  {t("text.Edit")}
                                   <br />
                                   <input
                                     type="checkbox"
@@ -947,8 +950,8 @@ export default function UserPermissionMaster() {
                                     checked={
                                       selectedRoleData.length > 0
                                         ? selectedRoleData.every(
-                                            (item: any) => item.isEdit
-                                          )
+                                          (item: any) => item.isEdit
+                                        )
                                         : false
                                     }
                                     onChange={(e) =>
@@ -960,7 +963,7 @@ export default function UserPermissionMaster() {
                                   />
                                 </td>
                                 <td>
-                                {t("text.delete")}
+                                  {t("text.delete")}
                                   <br />
                                   <input
                                     type="checkbox"
@@ -971,8 +974,8 @@ export default function UserPermissionMaster() {
                                     checked={
                                       selectedRoleData.length > 0
                                         ? selectedRoleData.every(
-                                            (item: any) => item.isDel
-                                          )
+                                          (item: any) => item.isDel
+                                        )
                                         : false
                                     }
                                     onChange={(e) =>
@@ -981,7 +984,7 @@ export default function UserPermissionMaster() {
                                   />
                                 </td>
                                 <td>
-                                {t("text.View")}
+                                  {t("text.View")}
                                   <br />
                                   <input
                                     type="checkbox"
@@ -992,8 +995,8 @@ export default function UserPermissionMaster() {
                                     checked={
                                       selectedRoleData.length > 0
                                         ? selectedRoleData.every(
-                                            (item: any) => item.isView
-                                          )
+                                          (item: any) => item.isView
+                                        )
                                         : false
                                     }
                                     onChange={(e) =>
@@ -1005,7 +1008,7 @@ export default function UserPermissionMaster() {
                                   />
                                 </td>
                                 <td>
-                                {t("text.Print")}
+                                  {t("text.Print")}
                                   <br />
                                   <input
                                     type="checkbox"
@@ -1016,8 +1019,8 @@ export default function UserPermissionMaster() {
                                     checked={
                                       selectedRoleData.length > 0
                                         ? selectedRoleData.every(
-                                            (item: any) => item.isPrint
-                                          )
+                                          (item: any) => item.isPrint
+                                        )
                                         : false
                                     }
                                     onChange={(e) =>
@@ -1029,7 +1032,7 @@ export default function UserPermissionMaster() {
                                   />
                                 </td>
                                 <td>
-                                {t("text.Export")}
+                                  {t("text.Export")}
                                   <br />
                                   <input
                                     type="checkbox"
@@ -1040,8 +1043,8 @@ export default function UserPermissionMaster() {
                                     checked={
                                       selectedRoleData.length > 0
                                         ? selectedRoleData.every(
-                                            (item: any) => item.isExport
-                                          )
+                                          (item: any) => item.isExport
+                                        )
                                         : false
                                     }
                                     onChange={(e) =>
@@ -1053,7 +1056,7 @@ export default function UserPermissionMaster() {
                                   />
                                 </td>
                                 <td>
-                                {t("text.Release")}
+                                  {t("text.Release")}
                                   <br />
                                   <input
                                     type="checkbox"
@@ -1064,8 +1067,8 @@ export default function UserPermissionMaster() {
                                     checked={
                                       selectedRoleData.length > 0
                                         ? selectedRoleData.every(
-                                            (item: any) => item.isRelease
-                                          )
+                                          (item: any) => item.isRelease
+                                        )
                                         : false
                                     }
                                     onChange={(e) =>
@@ -1077,7 +1080,7 @@ export default function UserPermissionMaster() {
                                   />
                                 </td>
                                 <td>
-                                {t("text.Post")}
+                                  {t("text.Post")}
                                   <br />
                                   <input
                                     type="checkbox"
@@ -1088,8 +1091,8 @@ export default function UserPermissionMaster() {
                                     checked={
                                       selectedRoleData.length > 0
                                         ? selectedRoleData.every(
-                                            (item: any) => item.isPost
-                                          )
+                                          (item: any) => item.isPost
+                                        )
                                         : false
                                     }
                                     onChange={(e) =>
@@ -1356,149 +1359,20 @@ export default function UserPermissionMaster() {
                 <CircularProgress />
               </div>
             ) : (
-                <>
-              <Box>
-                <br></br>
-                {/* <TableContainer sx={{ maxHeight: 440 }}>
-                  <Table stickyHeader aria-label="sticky table">
-                    <TableHead>
-                      <TableRow>
-                        <TableCell
-                          align="left"
-                          style={{
-                            minWidth: 100,
-                            backgroundColor: "lightblue",
-                            borderTopLeftRadius: "10px",
-                            fontWeight: "800",
-                            fontSize: "15px",
-                          }}
-                        >
-                         {t("text.Action")}
-                        </TableCell>
-                        <TableCell
-                          align="left"
-                          style={{
-                            minWidth: 100,
-                            backgroundColor: "lightblue",
-                            fontWeight: "800",
-                            fontSize: "15px",
-                          }}
-                        >
-                        {t("text.UserName")}
-                        </TableCell>
-                        <TableCell
-                          align="left"
-                          style={{
-                            minWidth: 100,
-                            backgroundColor: "lightblue",
-                            borderTopRightRadius: "10px",
-                            fontWeight: "800",
-                            fontSize: "15px",
-                          }}
-                        >
-                 {t("text.UserName")}
-                        </TableCell>
-                   
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      
-                      {records
-                        .slice(
-                          page * rowsPerPage,
-                          page * rowsPerPage + rowsPerPage
-                        )
-                        .map(
-                          (row: {
-                
-                            id:
-                            any;
-                            roleName:
-                            any;
-                            userName:
-                            any;
-                          }) => {
-                            return (
-                              <TableRow hover role="checkbox" tabIndex={-1}>
-                                <TableCell align="left">
-                                  <Stack spacing={2} direction="row">
-                                    {permissionData?.isEdit == true ? (
-                                      <EditIcon
-                                        style={{
-                                          fontSize: "20px",
-                                          color: "blue",
-                                          cursor: "pointer",
-                                        }}
-                                        className="cursor-pointer"
-                                        onClick={() => routeChangeEdit(row)}
-                                      />
-                                    ) : (
-                                      ""
-                                    )}
-                                    {permissionData?.isDel == true ? (
-                                    <DeleteIcon
-                                      style={{
-                                        fontSize: "20px",
-                                        color: "darkred",
-                                        cursor: "pointer",
-                                      }}
-                                      onClick={() => {
-                                        handledeleteClick(row.id);
-                                      }}
-                                    />):""}
-                                  </Stack>
-                                </TableCell>
-                                <TableCell align="left">{row.roleName}  </TableCell>
-                                   <TableCell align="left">{row.userName}</TableCell>
-                                  
- </TableRow>
-                            );
-                          }
-                        )}
-                    </TableBody>
-                  </Table>
-                </TableContainer>
-                <TablePagination
-                  rowsPerPageOptions={[5, 10, 25, 100]}
-                  component="div"
-                  count={records.length}
-                  rowsPerPage={rowsPerPage}
-                  page={page}
-                  onPageChange={handleChangePage}
-                  onRowsPerPageChange={handleChangeRowsPerPage}
-                /> */}
-              </Box>
-
-              <div>
-                 <DataGrid
-              rows={userPermission}
-              columns={adjustedColumns}
-              autoHeight
-              slots={{
-                toolbar: GridToolbar,
-              }}
-              rowSpacingType="border"
-              pagination={true}
-              pageSizeOptions={[5, 10, 25, 50, 100].map((size) => ({
-                value: size,
-                label: `${size}`,
-              }))}
-              initialState={{
-                pagination: { paginationModel: { pageSize: 5 } },
-              }}
-              slotProps={{
-                toolbar: {
-                  showQuickFilter: true,
-                },
-              }}
-            />
-              </div>
+              <>
+                <CustomDataGrid
+                  isLoading={isLoading}
+                  rows={userPermission}
+                  columns={adjustedColumns}
+                  pageSizeOptions={[5, 10, 25, 50, 100]}
+                  initialPageSize={5}
+                />
               </>
             )}
           </Paper>
         </Card>
       </Grid>
-      <ToastApp/>
+      <ToastApp />
     </div>
   );
 }

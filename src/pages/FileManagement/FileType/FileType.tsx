@@ -27,6 +27,7 @@ import ToastApp from "../../../ToastApp";
 import { usePermissionData } from "../../../usePermissionData";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { getISTDate } from "../../../utils/Constant";
+import CustomDataGrid from "../../../utils/CustomDatagrid";
 
 interface MenuPermission {
     isAdd: boolean;
@@ -84,7 +85,7 @@ export default function FileType() {
         };
         console.log("collectData " + JSON.stringify(collectData));
         api
-            .delete(`FileType/DeleteFileType`, {data:collectData})
+            .delete(`FileType/DeleteFileType`, { data: collectData })
             .then((response) => {
                 if (response.data.isSuccess) {
                     toast.success(response.data.mesg);
@@ -121,7 +122,7 @@ export default function FileType() {
         };
         try {
             api
-                .post( `FileType/GetFileType`, collectData)
+                .post(`FileType/GetFileType`, collectData)
                 .then((res) => {
                     console.log("result" + JSON.stringify(res.data.data));
                     const data = res.data.data;
@@ -148,33 +149,33 @@ export default function FileType() {
                                             direction="row"
                                             sx={{ alignItems: "center", marginTop: "5px" }}
                                         >
-                                          {/*  {permissionData?.isEdit ? ( */}
-                                                <EditIcon
-                                                    style={{
-                                                        fontSize: "20px",
-                                                        color: "blue",
-                                                        cursor: "pointer",
-                                                    }}
-                                                    className="cursor-pointer"
-                                                    onClick={() => routeChangeEdit(params.row)}
-                                                />
-                                          {/*  ) : ( */}
-                                             {/*   "" */}
-                                           {/* )} */}
-                                          {/*  {permissionData?.isDel ? ( */}
-                                                <DeleteIcon
-                                                    style={{
-                                                        fontSize: "20px",
-                                                        color: "red",
-                                                        cursor: "pointer",
-                                                    }}
-                                                    onClick={() => {
-                                                        handledeleteClick(params.row.id);
-                                                    }}
-                                                />
-                                          {/*  ) : ( */}
+                                            {/*  {permissionData?.isEdit ? ( */}
+                                            <EditIcon
+                                                style={{
+                                                    fontSize: "20px",
+                                                    color: "blue",
+                                                    cursor: "pointer",
+                                                }}
+                                                className="cursor-pointer"
+                                                onClick={() => routeChangeEdit(params.row)}
+                                            />
+                                            {/*  ) : ( */}
+                                            {/*   "" */}
+                                            {/* )} */}
+                                            {/*  {permissionData?.isDel ? ( */}
+                                            <DeleteIcon
+                                                style={{
+                                                    fontSize: "20px",
+                                                    color: "red",
+                                                    cursor: "pointer",
+                                                }}
+                                                onClick={() => {
+                                                    handledeleteClick(params.row.id);
+                                                }}
+                                            />
+                                            {/*  ) : ( */}
                                             {/*    "" */}
-                                          {/*  )} */}
+                                            {/*  )} */}
                                         </Stack>,
                                     ];
                                 },
@@ -298,7 +299,7 @@ export default function FileType() {
 
                         <Box height={10} />
                         {/* <Stack direction="row" spacing={2} classes="my-2 mb-2"> */}
-                            {/* <Grid
+                        {/* <Grid
                                 // style={{
                                 //     display: "flex",
                                 //     flexDirection: "row",
@@ -306,74 +307,74 @@ export default function FileType() {
                                 //     alignItems: "flex-start",
                                 // }}
                             > */}
-                                <form onSubmit={formik.handleSubmit}>
-                                    <Grid item xs={12} container spacing={2}>
-                                        <Grid item xs={4}>
-                                            <TextField
-                                                id="fName"
-                                                type="text"
-                                                label={
-                                                    <span>
-                                                        {t("text.EnterFileTypeName")} {""}
-                                                        {requiredFields.includes("fName") && (
-                                                            <span
-                                                                style={{
-                                                                    color: formik.values.fName
-                                                                        ? "green"
-                                                                        : "red",
-                                                                }}
-                                                            >
-                                                                *
-                                                            </span>
-                                                        )}
+                        <form onSubmit={formik.handleSubmit}>
+                            <Grid item xs={12} container spacing={2}>
+                                <Grid item xs={4}>
+                                    <TextField
+                                        id="fName"
+                                        type="text"
+                                        label={
+                                            <span>
+                                                {t("text.EnterFileTypeName")} {""}
+                                                {requiredFields.includes("fName") && (
+                                                    <span
+                                                        style={{
+                                                            color: formik.values.fName
+                                                                ? "green"
+                                                                : "red",
+                                                        }}
+                                                    >
+                                                        *
                                                     </span>
-                                                }
-                                                placeholder={t("text.EnterFileTypeName")}
-                                                value={formik.values.fName}
-                                                size="small"
-                                                name="fName"
-                                                fullWidth
-                                                onChange={formik.handleChange}
-                                                onBlur={formik.handleBlur}
-                                            />
-                                            {formik.touched.fName &&
-                                                formik.errors.fName ? (
-                                                <div style={{ color: "red", margin: "5px" }}>
-                                                    {formik.errors.fName}
-                                                </div>
-                                            ) : null}
-                                        </Grid>
-                                        <Grid item xs={4}>
-                                            <TextField
-                                                id="fShortNM"
-                                                type="text"
-                                                label="Enter File Type Short Name"
-                                                placeholder="Enter File Type Short Name"
-                                                value={formik.values.fShortNM}
-                                                size="small"
-                                                name="fShortNM"
-                                                fullWidth
-                                                onChange={formik.handleChange}
-                                                onBlur={formik.handleBlur}
-                                            />
-                                        </Grid>
-                                        <Grid item xs={2}>
-                                           {/* {permissionData?.isAdd == true ? ( */}
-                                                <Button type="submit" variant="contained" size="large">
-                                                    {editId == -1 ? t("text.save") : t("text.update")}
-                                                </Button>
-                                           {/* ) : ( */}
-                                            {/*    "" */ }
-                                           {/* )} */}
-                                        </Grid>
-                                    </Grid>
-                                </form>
-                            {/* </Grid> */}
-                            <Typography
-                                variant="h6"
-                                component="div"
-                                sx={{ flexGrow: 1 }}
-                            ></Typography>
+                                                )}
+                                            </span>
+                                        }
+                                        placeholder={t("text.EnterFileTypeName")}
+                                        value={formik.values.fName}
+                                        size="small"
+                                        name="fName"
+                                        fullWidth
+                                        onChange={formik.handleChange}
+                                        onBlur={formik.handleBlur}
+                                    />
+                                    {formik.touched.fName &&
+                                        formik.errors.fName ? (
+                                        <div style={{ color: "red", margin: "5px" }}>
+                                            {formik.errors.fName}
+                                        </div>
+                                    ) : null}
+                                </Grid>
+                                <Grid item xs={4}>
+                                    <TextField
+                                        id="fShortNM"
+                                        type="text"
+                                        label="Enter File Type Short Name"
+                                        placeholder="Enter File Type Short Name"
+                                        value={formik.values.fShortNM}
+                                        size="small"
+                                        name="fShortNM"
+                                        fullWidth
+                                        onChange={formik.handleChange}
+                                        onBlur={formik.handleBlur}
+                                    />
+                                </Grid>
+                                <Grid item xs={2}>
+                                    {/* {permissionData?.isAdd == true ? ( */}
+                                    <Button type="submit" variant="contained" size="large">
+                                        {editId == -1 ? t("text.save") : t("text.update")}
+                                    </Button>
+                                    {/* ) : ( */}
+                                    {/*    "" */}
+                                    {/* )} */}
+                                </Grid>
+                            </Grid>
+                        </form>
+                        {/* </Grid> */}
+                        <Typography
+                            variant="h6"
+                            component="div"
+                            sx={{ flexGrow: 1 }}
+                        ></Typography>
                         {/* </Stack> */}
                         {isLoading ? (
                             <div
@@ -386,33 +387,13 @@ export default function FileType() {
                                 <CircularProgress />
                             </div>
                         ) : (
-                            <Box>
-                                <br></br>
-                                <div style={{ width: "100%", backgroundColor: "#FFFFFF" }}>
-                                    <DataGrid
-                                        rows={rows}
-                                        columns={columns}
-                                        autoHeight
-                                        slots={{
-                                            toolbar: GridToolbar,
-                                        }}
-                                        rowSpacingType="border"
-                                        pagination={true}
-                                        pageSizeOptions={[5, 10, 25, 50, 100].map((size) => ({
-                                            value: size,
-                                            label: `${size}`,
-                                        }))}
-                                        initialState={{
-                                            pagination: { paginationModel: { pageSize: 5 } },
-                                        }}
-                                        slotProps={{
-                                            toolbar: {
-                                                showQuickFilter: true,
-                                            },
-                                        }}
-                                    />
-                                </div>
-                            </Box>
+                            <CustomDataGrid
+                                isLoading={isLoading}
+                                rows={rows}
+                                columns={columns}
+                                pageSizeOptions={[5, 10, 25, 50, 100]}
+                                initialPageSize={5}
+                            />
                         )}
                     </Paper>
                 </Card>

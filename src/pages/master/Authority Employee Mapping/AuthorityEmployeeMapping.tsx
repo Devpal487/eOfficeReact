@@ -29,6 +29,7 @@ import axios from "axios";
 import CustomLabel from "../../../CustomLable";
 import ButtonWithLoader from "../../../utils/ButtonWithLoader";
 import dayjs, { Dayjs } from "dayjs";
+import CustomDataGrid from "../../../utils/CustomDatagrid";
 
 
 const selectStatus = [
@@ -600,33 +601,13 @@ export default function AuthorityEmployeeMapping() {
                                 <CircularProgress />
                             </div>
                         ) : (
-                            <Box>
-                                <br></br>
-                                <div style={{ width: "100%", backgroundColor: "#FFFFFF" }}>
-                                    <DataGrid
-                                        rows={rows}
-                                        columns={columns}
-                                        autoHeight
-                                        slots={{
-                                            toolbar: GridToolbar,
-                                        }}
-                                        rowSpacingType="border"
-                                        pagination={true}
-                                        pageSizeOptions={[5, 10, 25, 50, 100].map((size) => ({
-                                            value: size,
-                                            label: `${size}`,
-                                        }))}
-                                        initialState={{
-                                            pagination: { paginationModel: { pageSize: 5 } },
-                                        }}
-                                        slotProps={{
-                                            toolbar: {
-                                                showQuickFilter: true,
-                                            },
-                                        }}
-                                    />
-                                </div>
-                            </Box>
+                            <CustomDataGrid
+                            isLoading={isLoading}
+                            rows={rows}
+                            columns={columns}
+                            pageSizeOptions={[5, 10, 25, 50, 100]}
+                            initialPageSize={5}
+                        />
                         )}
                     </Paper>
                 </Card>

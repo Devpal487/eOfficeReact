@@ -30,6 +30,7 @@ import Autocomplete from "@mui/material/Autocomplete";
 import { getISTDate } from "../../../utils/Constant";
 import CustomLabel from "../../../CustomLable";
 import ButtonWithLoader from "../../../utils/ButtonWithLoader";
+import CustomDataGrid from "../../../utils/CustomDatagrid";
 interface MenuPermission {
   isAdd: boolean;
   isEdit: boolean;
@@ -505,35 +506,13 @@ export default function StateMaster() {
               <CircularProgress />
             </div>
           ) : (
-            <Box>
-              <br />
-              <div style={{ width: "100%", backgroundColor: "#FFFFFF" }}>
-
-                <DataGrid
-                  rows={zones}
-                  columns={adjustedColumns}
-                  autoHeight
-                  slots={{
-                    toolbar: GridToolbar,
-                  }}
-                  rowSpacingType="border"
-                  pagination={true}
-                  pageSizeOptions={[5, 10, 25, 50, 100].map((size) => ({
-                    value: size,
-                    label: `${size}`,
-                  }))}
-                  initialState={{
-                    pagination: { paginationModel: { pageSize: 5 } },
-                  }}
-                  slotProps={{
-                    toolbar: {
-                      showQuickFilter: true,
-                    },
-                  }}
-                />
-              </div>
-
-            </Box>)}
+            <CustomDataGrid
+            isLoading={isLoading}
+            rows={zones}
+            columns={adjustedColumns}
+            pageSizeOptions={[5, 10, 25, 50, 100]}
+            initialPageSize={5}
+          />)}
         </Paper>
       </Card>
       <ToastApp />

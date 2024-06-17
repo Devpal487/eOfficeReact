@@ -9,7 +9,8 @@ import {
   TextField,
   Typography,
   Grid,
-  Card
+  Card,
+  CircularProgress
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -18,7 +19,7 @@ import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
 import Switch from "@mui/material/Switch";
 import Chip from "@mui/material/Chip";
 import { useTranslation } from "react-i18next";
-import {GridColDef} from "@mui/x-data-grid";
+import { DataGrid, GridColDef, GridToolbar } from "@mui/x-data-grid";
 import { toast } from "react-toastify";
 import ToastApp from "../../../ToastApp";
 import api from "../../../utils/Url";
@@ -39,7 +40,7 @@ interface MenuPermission {
 
 export default function WardMaster() {
   const UserId = getId();
-  const {defaultValuestime} = getISTDate();
+  const { defaultValuestime } = getISTDate();
   const { t } = useTranslation();
   const [rows, setRows] = useState<any>([]);
   const [columns, setColumns] = useState<any>([]);
@@ -88,7 +89,7 @@ export default function WardMaster() {
     value: any
   ) => {
 
-    console.log('checkvalue',value)
+    console.log('checkvalue', value)
 
     const collectData = {
       wardID: value.wardID,
@@ -224,7 +225,7 @@ export default function WardMaster() {
                           color: params.row.isActive ? "green" : "#FE0000",
                         }}
                         onChange={(value: any) =>
-                        
+
                           handleSwitchChange(value, params.row)
                         }
                         inputProps={{
@@ -529,7 +530,7 @@ export default function WardMaster() {
               <Grid item xs={3} sx={{ m: -1 }}>
                 {/*  {permissionData?.isAdd == true ? ( */}
 
-                <ButtonWithLoader  buttonText={editId == -1 ? t("text.save") : t("text.update")} onClickHandler={handleSubmitWrapper} />
+                <ButtonWithLoader buttonText={editId == -1 ? t("text.save") : t("text.update")} onClickHandler={handleSubmitWrapper} />
                 {/* ) : ( */}
                 {/*   "" */}
                 {/* )} */}
@@ -542,45 +543,14 @@ export default function WardMaster() {
             sx={{ flexGrow: 1 }}
           ></Typography>
 
+          <CustomDataGrid
+            isLoading={isLoading}
+            rows={rows}
+            columns={columns}
+            pageSizeOptions={[5, 10, 25, 50, 100]}
+            initialPageSize={5}
+          />
 
-          {isLoading ? (
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              <CircularProgress />
-            </div>
-          ) : (
-            <Box>
-              <br></br>
-              <div style={{ width: "100%", backgroundColor: "#FFFFFF" }}>
-                <DataGrid
-                  rows={rows}
-                  columns={columns}
-                  autoHeight
-                  slots={{
-                    toolbar: GridToolbar,
-                  }}
-                  rowSpacingType="border"
-                  pagination={true}
-                  pageSizeOptions={[5, 10, 25, 50, 100].map((size) => ({
-                    value: size,
-                    label: `${size}`,
-                  }))}
-                  initialState={{
-                    pagination: { paginationModel: { pageSize: 5 } },
-                  }}
-                  slotProps={{
-                    toolbar: {
-                      showQuickFilter: true,
-                    },
-                  }}
-                />
-              </div>
-            </Box>)}
         </Paper>
       </Card>
 

@@ -154,7 +154,8 @@ const AuthorityMail = (props: Props) => {
                         Message: res.data.data[index]["Message"],
                         SendBy: res.data.data[index]["SendBy"],
                         SendDate: res.data.data[index]["SendDate"],
-                        DSFNAme: res.data.data[index]["SendDate"]
+                        DSFNAme: res.data.data[index]["SendDate"],
+                        fileNm: res.data.data[index]["fileNm"]
                         
                     });
                 }
@@ -590,7 +591,7 @@ const AuthorityMail = (props: Props) => {
                                                         paddingBottom: "5px",
                                                     }}
                                                 >
-                                                    {t("text.FileNo")}
+                                                    {t("text.FileName")}
                                                 </th>
                                                 <th
                                                     style={{
@@ -637,7 +638,7 @@ const AuthorityMail = (props: Props) => {
                                                                 padding: "2px",
                                                             }}
                                                         >
-                                                            {index+1}
+                                                            {index +1}
                                                         </td>
 
                                                         <td
@@ -663,7 +664,7 @@ const AuthorityMail = (props: Props) => {
                                                             }}
 
                                                         >
-                                                            {row.FNId}
+                                                            {row.fileNm}
                                                         </td>
 
 

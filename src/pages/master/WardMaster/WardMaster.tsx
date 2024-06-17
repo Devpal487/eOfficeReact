@@ -17,13 +17,8 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
 import Switch from "@mui/material/Switch";
 import Chip from "@mui/material/Chip";
-import CircularProgress from "@mui/material/CircularProgress";
 import { useTranslation } from "react-i18next";
-import {
-  DataGrid,
-  GridColDef,
-  GridToolbar,
-} from "@mui/x-data-grid";
+import {GridColDef} from "@mui/x-data-grid";
 import { toast } from "react-toastify";
 import ToastApp from "../../../ToastApp";
 import api from "../../../utils/Url";
@@ -33,6 +28,7 @@ import Autocomplete from "@mui/material/Autocomplete";
 import { getId, getISTDate } from "../../../utils/Constant";
 import CustomLabel from "../../../CustomLable";
 import ButtonWithLoader from "../../../utils/ButtonWithLoader";
+import CustomDataGrid from "../../../utils/CustomDatagrid";
 
 interface MenuPermission {
   isAdd: boolean;
@@ -43,7 +39,7 @@ interface MenuPermission {
 
 export default function WardMaster() {
   const UserId = getId();
-  const defaultValuestime = getISTDate();
+  const {defaultValuestime} = getISTDate();
   const { t } = useTranslation();
   const [rows, setRows] = useState<any>([]);
   const [columns, setColumns] = useState<any>([]);
@@ -423,31 +419,9 @@ export default function WardMaster() {
             </Typography>
             <Divider />
 
-            {/* Search and ADD buttone Start */}
             <Box height={10} />
             <Stack direction="row" spacing={2} classes="my-2 mb-2">
-              {/* {permissionData?.isAdd == true ? (
-                <Button
-                  onClick={routeChangeAdd}
-                  variant="contained"
-                  endIcon={<AddCircleIcon />} 
-                  size="large"
-                >
-                  {t("text.add")}
-                </Button>
-              ) : (
-                ""
-              )} */}
-              {/* {permissionData?.isPrint == true ? (
-                <Button variant="contained" 
-                endIcon={<PrintIcon />}
-                size="large">
-                  {t("text.print")}
-                </Button>
-              ) : (
-                ""
-              )} */}
-
+              
               <form onSubmit={formik.handleSubmit}>
                 <Grid item xs={12} container spacing={2}>
 
@@ -541,44 +515,13 @@ export default function WardMaster() {
               ></Typography>
             </Stack>
 
-            {isLoading ? (
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <CircularProgress />
-              </div>
-            ) : (
-              <Box>
-                <br></br>
-                <div style={{ width: "100%", backgroundColor: "#FFFFFF" }}>
-                  <DataGrid
-                    rows={rows}
-                    columns={columns}
-                    autoHeight
-                    slots={{
-                      toolbar: GridToolbar,
-                    }}
-                    rowSpacingType="border"
-                    pagination={true}
-                    pageSizeOptions={[5, 10, 25, 50, 100].map((size) => ({
-                      value: size,
-                      label: `${size}`,
-                    }))}
-                    initialState={{
-                      pagination: { paginationModel: { pageSize: 5 } },
-                    }}
-                    slotProps={{
-                      toolbar: {
-                        showQuickFilter: true,
-                      },
-                    }}
-                  />
-                </div>
-              </Box>)}
+            <CustomDataGrid  
+            isLoading={isLoading}
+            rows={rows}
+            columns={columns}
+            pageSizeOptions={[5, 10, 25, 50, 100]}
+            initialPageSize={5}
+            />
           </Paper>
         </Card>
       </Grid>

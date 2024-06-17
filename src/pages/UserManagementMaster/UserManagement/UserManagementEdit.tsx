@@ -264,13 +264,13 @@ const UserManagementEdit = (props: Props) => {
       logiN_NAME: location.state.logiN_NAME,
       password: location.state.password,
       rolename: "",
-      employeeID:0,
+      employeeID:location.state.employeeID,
       user_Type_Name:location.state.user_Type_Name,
       subRole:[]
     },
     validationSchema: validationSchema,
     onSubmit: async (values) => {
-      values.doa = "1900-01-01T07:47:27.349Z";
+      values.doa = `"1900-01-01T07:47:27.349Z"`;
       values.doj = "1900-01-01T07:47:27.349Z";
       //values.subRole= roletype;
 

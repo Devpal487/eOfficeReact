@@ -170,7 +170,7 @@ export default function UserManagement() {
     };
     console.log("collectData " + JSON.stringify(collectData));
     api
-      .delete(`USER/DeleteUSER`, { data: collectData })
+      .delete(`Auth/DeleteUSER`, { data: collectData })
       .then((response) => {
         if (response.data.isSuccess) {
           toast.success(response.data.mesg);

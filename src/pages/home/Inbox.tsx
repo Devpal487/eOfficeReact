@@ -31,6 +31,7 @@ import { useTranslation } from "react-i18next";
 import api from "../../utils/Url";
 import Box from "@mui/material/Box";
 import { getinstId, getId, getdivisionId } from "./../../utils/Constant";
+import { toast } from "react-toastify";
 
 interface MenuPermission {
     isAdd: boolean;
@@ -59,6 +60,37 @@ export default function Inbox() {
         getAuthDevision();
         fetchTotalFile();
     }, []);
+
+    const handleMove = (row: any) => {
+        const value = {
+
+            "hdnFilNu":row.fnId,
+            "inst_id":instId,
+            "userid":userId,
+            "moveddate":"1900-01-01T07:47:27.349Z",
+            "duedate":"1900-01-01T07:47:27.349Z",
+            "remark": "",
+            "routeId": 0,
+            "authorityLevel": 0,
+            "workPlaceFlag": "Workplace Flag",
+            "remId":row.rem,
+            "divisionId": divId,
+            "message": ""
+        };
+
+        api.post(`FileMovement/sp_movetoawait`, value).then((res) => {
+            if (res.data.isSuccess) {
+                toast.success(res.data.mesg);
+
+            } else {
+                toast.error(res.data.mesg);
+            }
+        });
+
+    };
+
+
+
 
 
     const routeChangeAdd = (row: any) => {
@@ -130,39 +162,6 @@ export default function Inbox() {
                         headerClassName: "MuiDataGrid-colCell",
                     },
 
-                    // {
-                    //     field: "rNumber",
-                    //     headerName: "R Number",
-                    //     flex: 1,
-                    //     headerClassName: "MuiDataGrid-colCell",
-                    //     renderCell: (params) => {
-                    //     return [
-                    //         <a
-                    //         onClick={() => routeChangeAdd(params.row)}
-                    //         style={{
-                    //             color: "blue",
-                    //             cursor: "pointer",
-                    //             textDecoration: "underline",
-                    //         }}
-                    //         >
-                    //         {params.value}
-                    //         </a>,
-                    //     ];
-                    //     },
-                    // },
-
-                    // {
-                    //     field: "rReceivedDate",
-                    //     headerName: "Received/Dispatch",
-                    //     flex: 1,
-                    //     headerClassName: "MuiDataGrid-colCell",
-                    // },
-                    // {
-                    //     field: "rPriority",
-                    //     headerName: "Priority",
-                    //     flex: 1,
-                    //     headerClassName: "MuiDataGrid-colCell",
-                    // },
 
                     {
                         field: "cSubject",
@@ -172,39 +171,8 @@ export default function Inbox() {
                     },
 
 
-                    // {
-                    //     field: "rDealHands",
-                    //     headerName: "Movement",
-                    //     flex: 1,
-                    //     headerClassName: "MuiDataGrid-colCell",
-                    // },
 
-                    // {
-                    //     field: "rSendAdrs",
-                    //     headerName: "Moved To",
-                    //     flex: 1,
-                    //     headerClassName: "MuiDataGrid-colCell",
-                    //     renderCell: (params) => {
-                    //     return [
-                    //         <Select
-                    //         onChange={(event) => {
-                    //             setReviewModalData(true);
-                    //         }}
-                    //         fullWidth
-                    //         size="small"
-                    //         >
-                    //         <MenuItem value="">Select Division</MenuItem>
-                    //         {params.row.Division.map((item: any) => (
-                    //             <MenuItem key={item.value} value={item.value}>
-                    //             {item.label}
-                    //             </MenuItem>
-                    //         ))}
-                    //         </Select>,
-                    //     ];
-                    //     },
-                    // },
 
-                   
                     {
                         field: "dairyDate",
                         headerName: "Dairy Date",
@@ -223,6 +191,32 @@ export default function Inbox() {
                         headerName: "Created By",
                         flex: 1,
                         headerClassName: "MuiDataGrid-colCell",
+                    },
+
+
+                    {
+                        field: "sendWorkPlace",
+                        headerName: "Send To Work place",
+                        flex: 1,
+                        headerClassName: "MuiDataGrid-colCell",
+                        renderCell: (params) => {
+
+                            console.log('checkPrams', params)
+                            return [
+
+
+
+
+                                <Button
+                                    variant="contained"
+                                    color="primary"
+                                    onClick={() => handleMove(params.row)}
+                                >
+                                    Move
+                                </Button>
+
+                            ]
+                        },
                     },
                 ];
                 setColumns(columns as any);

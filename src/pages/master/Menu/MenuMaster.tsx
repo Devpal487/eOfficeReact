@@ -29,22 +29,23 @@ import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
 import axios from "axios";
 import api from "../../../utils/Url";
 import CircularProgress from "@mui/material/CircularProgress";
-import {useTranslation} from "react-i18next";
+import { useTranslation } from "react-i18next";
 import {
   DataGrid,
   GridColDef,
   GridToolbar,
 } from "@mui/x-data-grid";
+import CustomDataGrid from "../../../utils/CustomDatagrid";
 
 function createData(
   srno: number,
   id: string,
   menuName: string,
-  parentId:number,
-  parentName:string,
+  parentId: number,
+  parentName: string,
   pageUrl: string,
   icon: string,
- displayNo: number,
+  displayNo: number,
   // isMenu: boolean,
   isAdd: boolean,
   isEdit: boolean,
@@ -54,13 +55,13 @@ function createData(
   isExport: boolean,
   isRelease: boolean,
   isPost: boolean,
- 
+
 ): any {
   return {
-    srno,id,menuName,pageUrl,icon,
+    srno, id, menuName, pageUrl, icon,
     displayNo,
     // isMenu,
-    isAdd,isEdit,isDel,isView,isPrint,isExport,isRelease,isPost,parentId, parentName
+    isAdd, isEdit, isDel, isView, isPrint, isExport, isRelease, isPost, parentId, parentName
   };
 }
 
@@ -74,7 +75,7 @@ export default function MenuMaster() {
   const [isLoading, setIsLoading] = useState(true);
   const [menupermisiondata, setMenupermisiondata] = useState<any>();
 
-const{i18n,t}=useTranslation();
+  const { i18n, t } = useTranslation();
   const location = useLocation();
 
 
@@ -106,7 +107,7 @@ const{i18n,t}=useTranslation();
     //   var childMenudata = menudata[index]["childMenu"];
     //   var sas = childMenudata.find((x: any) => x.path == location.pathname);
     //   if (sas != "undefined") {
-        // setMenupermisiondata(sas);
+    // setMenupermisiondata(sas);
     //     break;
     //   }
     // }
@@ -136,13 +137,13 @@ const{i18n,t}=useTranslation();
         menuId: -1
       };
       const response = await api.post(
-       `Menu/GetMenuMaster`,
+        `Menu/GetMenuMaster`,
         collectData
       );
       const data = response.data.data;
-      const zonesWithIds = data.map((zone: any, index:any) => ({
+      const zonesWithIds = data.map((zone: any, index: any) => ({
         ...zone,
-        serialNo:index+1,
+        serialNo: index + 1,
         id: zone.menuId,
       }));
       setZones(zonesWithIds);
@@ -156,7 +157,7 @@ const{i18n,t}=useTranslation();
             headerName: t("text.Action"),
             width: 150,
 
-            renderCell: (params:any) => {
+            renderCell: (params: any) => {
               return [
                 <Stack
                   spacing={1}
@@ -164,20 +165,20 @@ const{i18n,t}=useTranslation();
                   sx={{ alignItems: "center", marginTop: "5px" }}
                 >
                   {/* {permissionData?.isEdit ? ( */}
-                    <EditIcon
-                      style={{
-                        fontSize: "20px",
-                        color: "blue",
-                        cursor: "pointer",
-                      }}
-                      className="cursor-pointer"
-                      onClick={() => routeChangeEdit(params.row)}
-                    />
+                  <EditIcon
+                    style={{
+                      fontSize: "20px",
+                      color: "blue",
+                      cursor: "pointer",
+                    }}
+                    className="cursor-pointer"
+                    onClick={() => routeChangeEdit(params.row)}
+                  />
                   {/* ) : (
                     ""
                   )}
                   {permissionData?.isDel ? ( */}
-                    {/* <DeleteIcon
+                  {/* <DeleteIcon
                       style={{
                         fontSize: "20px",
                         color: "red",
@@ -243,7 +244,7 @@ const{i18n,t}=useTranslation();
             flex: 1,
             headerClassName: "MuiDataGrid-colCell",
           },
-          
+
         ];
         setColumns(columns as any);
       }
@@ -270,14 +271,14 @@ const{i18n,t}=useTranslation();
           }}
         >
           <Paper
-             sx={{
+            sx={{
               width: "100%",
               overflow: "hidden",
               "& .MuiDataGrid-colCell": {
                 backgroundColor: "#00009C",
                 color: "#fff",
                 fontSize: 17,
-                fontWeight:900 
+                fontWeight: 900
               },
             }}
             style={{ padding: "10px" }}
@@ -290,27 +291,27 @@ const{i18n,t}=useTranslation();
               sx={{ padding: "20px" }}
               align="left"
             >
-             {t("text.MenuMaster")}
+              {t("text.MenuMaster")}
             </Typography>
             <Divider />
 
             {/* Search and ADD buttone Start */}
             <Box height={10} />
             <Stack direction="row" spacing={2} classes="my-2 mb-2">
-           {/* {menupermisiondata?.isAdd == true ?( */}
+              {/* {menupermisiondata?.isAdd == true ?( */}
               <Button
                 onClick={routeChangeAdd}
                 variant="contained"
                 endIcon={<AddCircleIcon />}
               >
                 {t("text.add")}
-              </Button> {/*):""} */ }
+              </Button> {/*):""} */}
               {/* {menupermisiondata?.isPrint == true ? (
               <Button variant="contained" endIcon={<PrintIcon />}>
                  {t("text.print")}
               </Button>):""}
               */}
-              
+
             </Stack>
 
             {/* Search END */}
@@ -321,38 +322,16 @@ const{i18n,t}=useTranslation();
                 justifyContent: "center",
                 alignItems: "center",
               }}>
-              <CircularProgress/>
+                <CircularProgress />
               </div>
             ) : (
-              <Box>
-                <br></br>
-                <div style={{ width: "100%", backgroundColor: "#FFFFFF" }}>
-            
-            <DataGrid
-              rows={zones}
-              columns={adjustedColumns}
-              autoHeight
-              slots={{
-                toolbar: GridToolbar,
-              }}
-              rowSpacingType="border"
-              pagination={true}
-              pageSizeOptions={[5, 10, 25, 50, 100].map((size) => ({
-                value: size,
-                label: `${size}`,
-              }))}
-              initialState={{
-                pagination: { paginationModel: { pageSize: 5 } },
-              }}
-              slotProps={{
-                toolbar: {
-                  showQuickFilter: true,
-                },
-              }}
-            />
-          </div>
-           
-            </Box>)}
+              <CustomDataGrid
+                isLoading={isLoading}
+                rows={zones}
+                columns={adjustedColumns}
+                pageSizeOptions={[5, 10, 25, 50, 100]}
+                initialPageSize={5}
+              />)}
           </Paper>
         </Card>
       </Grid>

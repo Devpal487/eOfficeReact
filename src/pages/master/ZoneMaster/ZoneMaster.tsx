@@ -39,6 +39,7 @@ import CustomLabel from "../../../CustomLable";
 import ReusableFormSection from "../../../ReusableFormSection";
 import LanguageSelector from "../../../LanguageSelector";
 import TextConverter from "../../../TextConverter";
+import CustomDataGrid from "../../../utils/CustomDatagrid";
 interface MenuPermission {
   isAdd: boolean;
   isEdit: boolean;
@@ -374,7 +375,7 @@ export default function ZoneMaster() {
           sx={{
             width: "100%",
             overflow: "hidden",
-            
+
           }}
           style={{ padding: "10px", }}
         >
@@ -395,68 +396,68 @@ export default function ZoneMaster() {
           <div>
             <LanguageSelector onLanguageChange={setLanguage} />
             <TextConverter selectedLanguage={language} />
-        </div>
+          </div>
 
           <Stack direction="row" spacing={2} classes="my-2 mb-2">
-           
+
           </Stack>
 
           <ReusableFormSection
-        radioGroupId="langSelect"
-        defaultValue={selectedLang}
-        onLangChange={handleLangChange}
-      />
-       <input
-        type="text"
-        value={inputValue}
-        onChange={handleInputChange}
-      />
+            radioGroupId="langSelect"
+            defaultValue={selectedLang}
+            onLangChange={handleLangChange}
+          />
+          <input
+            type="text"
+            value={inputValue}
+            onChange={handleInputChange}
+          />
 
           <Grid sm={4} md={4} xs={12}>
-                <FormControl
-                  style={{
-                    display: "flex",
-                    flexDirection: "row",
-                    alignItems: "center",
-                    gap: 20,
-                    marginTop: "13px",
-                    marginLeft: "12px",
-                  }}
-                >
-                  <Grid>
-                    <FormLabel>Type</FormLabel>
-                  </Grid>
-                  <Grid>
-                    <RadioGroup
-                      row
-                      id="rblLang"
-                      aria-labelledby="demo-row-radio-buttons-group-label"
-                      name="row-radio-buttons-group"
-                      defaultValue="English"
-                    >
-                      <FormControlLabel
-                        value="English"
-                        control={<Radio />}
-                        label="English"
-                      />
-                      <FormControlLabel
-                        value="Hindi"
-                        control={<Radio />}
-                        label="Hindi"
-                      />
-                    </RadioGroup>
-                  </Grid>
-                </FormControl>
+            <FormControl
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+                gap: 20,
+                marginTop: "13px",
+                marginLeft: "12px",
+              }}
+            >
+              <Grid>
+                <FormLabel>Type</FormLabel>
               </Grid>
+              <Grid>
+                <RadioGroup
+                  row
+                  id="rblLang"
+                  aria-labelledby="demo-row-radio-buttons-group-label"
+                  name="row-radio-buttons-group"
+                  defaultValue="English"
+                >
+                  <FormControlLabel
+                    value="English"
+                    control={<Radio />}
+                    label="English"
+                  />
+                  <FormControlLabel
+                    value="Hindi"
+                    control={<Radio />}
+                    label="Hindi"
+                  />
+                </RadioGroup>
+              </Grid>
+            </FormControl>
+          </Grid>
 
           <form onSubmit={formik.handleSubmit}>
             <Grid item xs={12} container spacing={3}>
 
-            <Grid xs={5} sm={5} item>
+              <Grid xs={5} sm={5} item>
                 <TextField
                   id="zoneName"
                   name="zoneName"
-                  label={<CustomLabel text={t("text.enterZoneName")} required={requiredFields.includes('zoneName')}  />}
+                  label={<CustomLabel text={t("text.enterZoneName")} required={requiredFields.includes('zoneName')} />}
                   value={formik.values.zoneName}
                   placeholder={t("text.enterZoneName")}
                   size="small"
@@ -478,7 +479,7 @@ export default function ZoneMaster() {
                 <TextField
                   id="zoneCode"
                   name="zoneCode"
-                  label={<CustomLabel text={t("text.enterZoneCode")}  />}
+                  label={<CustomLabel text={t("text.enterZoneCode")} />}
                   value={formik.values.zoneCode}
                   placeholder={t("text.enterZoneCode")}
                   size="small"
@@ -513,71 +514,13 @@ export default function ZoneMaster() {
               <CircularProgress />
             </div>
           ) : (
-            <Box>
-              <br />
-              <div style={{ width: "100%", backgroundColor: "#FFFFFF" }}>
-
-                <DataGrid
-                  rows={zones}
-                  columns={adjustedColumns}
-                  autoHeight
-                  rowHeight={35}
-                  slots={{
-                    toolbar: GridToolbar,
-                  }}
-                  rowSpacingType="border"
-                  pagination={true}
-                  pageSizeOptions={[5, 10, 25, 50, 100].map((size) => ({
-                    value: size,
-                    label: `${size}`,
-                  }))}
-                  initialState={{
-                    pagination: { paginationModel: { pageSize: 5 } },
-                  }}
-                  slotProps={{
-                    toolbar: {
-                      showQuickFilter: true,
-                    },
-                  }}
-                
-                  sx={{
-                    '& .MuiDataGrid-columnHeaders': {
-                      backgroundColor: '#2B4593',
-                      color: '#fff',
-                      fontSize: '17px',
-                      fontWeight: 900,
-                      height: '37px',
-                      minHeight: '37px',
-                      maxHeight: '37px',
-                      lineHeight: '37px',
-                    },
-                    '& .MuiDataGrid-columnHeader': {
-                      height: '37px !important',
-                      minHeight: '37px !important',
-                      maxHeight: '37px !important',
-                      lineHeight: '37px !important',
-                    },
-                    '& .MuiDataGrid-columnHeader--sortable': {
-                      height: '37px !important',
-                      minHeight: '37px !important',
-                      maxHeight: '37px !important',
-                      lineHeight: '37px !important',
-                    },
-                    '& .MuiDataGrid-withBorderColor': {
-                      height: '37px !important',
-                      minHeight: '37px !important',
-                      maxHeight: '37px !important',
-                      lineHeight: '37px !important',
-                    },
-                    '& .MuiDataGrid-columnHeaderTitle': {
-                      overflow: 'visible',
-                      whiteSpace: 'normal',
-                    },
-                  }}
-                />
-              </div>
-
-            </Box>)}
+            <CustomDataGrid
+              isLoading={isLoading}
+              rows={zones}
+              columns={adjustedColumns}
+              pageSizeOptions={[5, 10, 25, 50, 100]}
+              initialPageSize={5}
+            />)}
         </Paper>
       </Card>
       <ToastApp />

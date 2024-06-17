@@ -263,7 +263,7 @@ const resources = {
         DOB: "Date Of Birth",
         CreateUserManegment: "Create User Management",
         EditUserManegment:"Edit User Manegment",
-        EnterFirstName: "Enter Frist Name",
+        EnterFirstName: "Enter First Name",
         EnterLastName: "Enter Last Name",
         EnterMiddleName: "Enter Middle Name",
         EnterLoginName: "Enter Login Name",

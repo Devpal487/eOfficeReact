@@ -24,6 +24,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
 import CircularProgress from "@mui/material/CircularProgress";
 import api from "../../../utils/Url";
+import CustomDataGrid from "../../../utils/CustomDatagrid";
 
 
 interface MenuPermission {
@@ -51,26 +52,26 @@ export default function CountryMaster() {
 
   useEffect(() => {
     const dataString = localStorage.getItem("userdata");
-      if (dataString) {
-        const data = JSON.parse(dataString);
-        if (data && data.length > 0) {
-          const userPermissionData = data[0]?.userPermission;
-          if (userPermissionData && userPermissionData.length > 0) {
-            const menudata = userPermissionData[0]?.parentMenu;
-            for (let index = 0; index < menudata.length; index++) {
-              const childMenudata = menudata[index]?.childMenu;
-              const pathrow = childMenudata.find(
-                (x: any) => x.path === location.pathname
-              );
-              console.log("data", pathrow);
-              if (pathrow) {
-                setPermissionData(pathrow);
-                fetchZonesData();
-              }
+    if (dataString) {
+      const data = JSON.parse(dataString);
+      if (data && data.length > 0) {
+        const userPermissionData = data[0]?.userPermission;
+        if (userPermissionData && userPermissionData.length > 0) {
+          const menudata = userPermissionData[0]?.parentMenu;
+          for (let index = 0; index < menudata.length; index++) {
+            const childMenudata = menudata[index]?.childMenu;
+            const pathrow = childMenudata.find(
+              (x: any) => x.path === location.pathname
+            );
+            console.log("data", pathrow);
+            if (pathrow) {
+              setPermissionData(pathrow);
+              fetchZonesData();
             }
           }
         }
       }
+    }
   }, [isLoading]);
 
   const routeChangeEdit = (row: any) => {
@@ -92,11 +93,11 @@ export default function CountryMaster() {
   const accept = () => {
     const collectData = {
       countryId: delete_id,
-      
+
     };
     console.log("collectData " + JSON.stringify(collectData));
     api
-      .delete( `Country/DeleteCountry`, {data : collectData})
+      .delete(`Country/DeleteCountry`, { data: collectData })
       .then((response) => {
         if (response.data.isSuccess) {
           toast.success(response.data.mesg);
@@ -126,17 +127,17 @@ export default function CountryMaster() {
   const fetchZonesData = async () => {
     try {
       const collectData = {
-        
-        countryId:-1
+
+        countryId: -1
       };
       const response = await api.post(
-         `Country/GetCountryMaster`,
+        `Country/GetCountryMaster`,
         collectData
       );
       const data = response.data.data;
-      const zonesWithIds = data.map((zone: any, index:any) => ({
+      const zonesWithIds = data.map((zone: any, index: any) => ({
         ...zone,
-        serialNo:index+1,
+        serialNo: index + 1,
         id: zone.countryId,
       }));
       setZones(zonesWithIds);
@@ -219,7 +220,7 @@ export default function CountryMaster() {
             flex: 1,
             headerClassName: "MuiDataGrid-colCell",
           },
-         
+
           // {
           //   field: "isActive",
           //   headerName: t("text.Status"),
@@ -257,7 +258,7 @@ export default function CountryMaster() {
     ...column,
   }));
 
-  
+
   return (
     <>
       <Card
@@ -266,7 +267,7 @@ export default function CountryMaster() {
           // height: "100%",
           backgroundColor: "#E9FDEE",
           border: ".5px solid #FF7722 ",
-          marginTop:"3vh"
+          marginTop: "3vh"
         }}
       >
         <Paper
@@ -277,10 +278,10 @@ export default function CountryMaster() {
               backgroundColor: "#2B4593",
               color: "#fff",
               fontSize: 17,
-              fontWeight:900 
+              fontWeight: 900
             },
           }}
-          style={{ padding: "10px",}}
+          style={{ padding: "10px", }}
         >
           <ConfirmDialog />
 
@@ -307,7 +308,7 @@ export default function CountryMaster() {
               >
                 {t("text.add")}
               </Button>
-            ) }
+            )}
 
             {/* {permissionData?.isPrint == true ? (
               <Button variant="contained" endIcon={<PrintIcon />} size="large">
@@ -319,49 +320,27 @@ export default function CountryMaster() {
           </Stack>
 
           {isLoading ? (
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <CircularProgress />
-              </div>
-            ) : (
-              <Box>
-          <br />
-          <div style={{ width: "100%", backgroundColor: "#FFFFFF" }}>
-        
-            <DataGrid
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <CircularProgress />
+            </div>
+          ) : (
+            <CustomDataGrid
+              isLoading={isLoading}
               rows={zones}
               columns={adjustedColumns}
-              autoHeight
-              slots={{
-                toolbar: GridToolbar,
-              }}
-              rowSpacingType="border"
-              pagination={true}
-              pageSizeOptions={[5, 10, 25, 50, 100].map((size) => ({
-                value: size,
-                label: `${size}`,
-              }))}
-              initialState={{
-                pagination: { paginationModel: { pageSize: 5 } },
-              }}
-              slotProps={{
-                toolbar: {
-                  showQuickFilter: true,
-                },
-              }}
-            />
-          </div>
-
-          </Box>)}
+              pageSizeOptions={[5, 10, 25, 50, 100]}
+              initialPageSize={5}
+            />)}
         </Paper>
       </Card>
       <ToastApp />
-      
+
     </>
   );
 };

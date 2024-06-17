@@ -24,6 +24,7 @@ import {
 import CircularProgress from "@mui/material/CircularProgress";
 import api from "../../../utils/Url";
 import { getId } from "../../../utils/Constant";
+import CustomDataGrid from "../../../utils/CustomDatagrid";
 
 interface MenuPermission {
   isAdd: boolean;
@@ -95,7 +96,7 @@ export default function Jurisdiction() {
     };
     console.log("collectData " + JSON.stringify(collectData));
     api
-      .delete( `Master/DeleteNewNodeMaster`, {data:collectData})
+      .delete(`Master/DeleteNewNodeMaster`, { data: collectData })
       .then((response) => {
         if (response.data.isSuccess) {
           toast.success(response.data.mesg);
@@ -133,7 +134,7 @@ export default function Jurisdiction() {
         "user_Id": ID
       };
       const response = await api.post(
-         `NewNodeMaster/GetNewNodeMaster`,
+        `NewNodeMaster/GetNewNodeMaster`,
         collectData
       );
       const data = response.data.data;
@@ -326,34 +327,14 @@ export default function Jurisdiction() {
               <CircularProgress />
             </div>
           ) : (
-            <Box>
-              <br />
-              <div style={{ width: "100%", backgroundColor: "#FFFFFF" }}>
-                <DataGrid
-                  rows={dept}
-                  columns={adjustedColumns}
-                  autoHeight
-                  slots={{
-                    toolbar: GridToolbar,
-                  }}
-                  rowSpacingType="border"
-                  pagination={true}
-                  pageSizeOptions={[5, 10, 25, 50, 100].map((size) => ({
-                    value: size,
-                    label: `${size}`,
-                  }))}
-                  initialState={{
-                    pagination: { paginationModel: { pageSize: 5 } },
-                  }}
-                  slotProps={{
-                    toolbar: {
-                      showQuickFilter: true,
-                    },
-                  }}
-                />
-              </div>
-
-            </Box>)}
+            <CustomDataGrid
+              isLoading={isLoading}
+              rows={dept}
+              columns={adjustedColumns}
+              pageSizeOptions={[5, 10, 25, 50, 100]}
+              initialPageSize={5}
+            />
+          )}
         </Paper>
       </Card>
       <ToastApp />

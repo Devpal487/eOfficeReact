@@ -26,6 +26,7 @@ import {useTranslation} from "react-i18next";
 import { toast } from "react-toastify";
 import ToastApp from "../../../ToastApp";
 import api from "../../../utils/Url";
+import CustomDataGrid from "../../../utils/CustomDatagrid";
 
 
 export default function FileCategory() {
@@ -282,34 +283,13 @@ export default function FileCategory() {
                             <CircularProgress />
                         </div>
                     ) : (
-                        <Box>
-                            <br />
-                            <div style={{ width: "100%", backgroundColor: "#FFFFFF" }}>
-                                <DataGrid
-                                    rows={fileCategory}
-                                    columns={adjustedColumns}
-                                    autoHeight
-                                    slots={{
-                                        toolbar: GridToolbar,
-                                    }}
-                                    rowSpacingType="border"
-                                    pagination={true}
-                                    pageSizeOptions={[5, 10, 25, 50, 100].map((size) => ({
-                                        value: size,
-                                        label: `${size}`,
-                                    }))}
-                                    initialState={{
-                                        pagination: { paginationModel: { pageSize: 5 } },
-                                    }}
-                                    slotProps={{
-                                        toolbar: {
-                                            showQuickFilter: true,
-                                        },
-                                    }}
-                                />
-                            </div>
-
-                        </Box>)}
+                      <CustomDataGrid
+                      isLoading={isLoading}
+                      rows={fileCategory}
+                      columns={columns}
+                      pageSizeOptions={[5, 10, 25, 50, 100]}
+                      initialPageSize={5}
+                    />)}
             
           </Paper>
         </Card>

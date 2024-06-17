@@ -27,6 +27,7 @@ import ToastApp from "../../../ToastApp";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
 import CircularProgress from "@mui/material/CircularProgress";
+import CustomDataGrid from "../../../utils/CustomDatagrid";
 
 
 
@@ -331,35 +332,13 @@ export default function GenderMaster() {
                 <CircularProgress />
               </div>
             ) : (
-              <Box>
-          <br />
-          <div style={{ width: "100%", backgroundColor: "#FFFFFF" }}>
-            
-            <DataGrid
+              <CustomDataGrid
+              isLoading={isLoading}
               rows={zones}
               columns={adjustedColumns}
-              autoHeight
-              slots={{
-                toolbar: GridToolbar,
-              }}
-              rowSpacingType="border"
-              pagination={true}
-              pageSizeOptions={[5, 10, 25, 50, 100].map((size) => ({
-                value: size,
-                label: `${size}`,
-              }))}
-              initialState={{
-                pagination: { paginationModel: { pageSize: 5 } },
-              }}
-              slotProps={{
-                toolbar: {
-                  showQuickFilter: true,
-                },
-              }}
-            />
-          </div>
-
-          </Box>)}
+              pageSizeOptions={[5, 10, 25, 50, 100]}
+              initialPageSize={5}
+          />)}
         </Paper>
       </Card>
       <ToastApp />

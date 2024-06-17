@@ -26,6 +26,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 import api from "../../../utils/Url";
 import moment from "moment";
 import CustomLabel from "../../../CustomLable";
+import CustomDataGrid from "../../../utils/CustomDatagrid";
 
 
 interface MenuPermission {
@@ -47,7 +48,7 @@ export default function CommitteeMaster() {
         isDel: false,
     });
 
-    
+
     let navigate = useNavigate();
     const { t } = useTranslation();
 
@@ -95,7 +96,7 @@ export default function CommitteeMaster() {
         };
         console.log("collectData " + JSON.stringify(collectData));
         api
-            .delete( `CommitteeMaster/DeleteCommitteeMaster`, {data:collectData})
+            .delete(`CommitteeMaster/DeleteCommitteeMaster`, { data: collectData })
             .then((response) => {
                 if (response.data.isSuccess) {
                     toast.success(response.data.mesg);
@@ -136,7 +137,7 @@ export default function CommitteeMaster() {
                 "type": ""
             };
             console.log("collectData", collectData)
-            const response = await api.post(`CommitteeMaster/GetCommitteeMaster`,collectData);
+            const response = await api.post(`CommitteeMaster/GetCommitteeMaster`, collectData);
             console.log("result", response.data.data)
             const data = response.data.data;
             const zonesWithIds = data.map((emp: any, index: any) => ({
@@ -188,7 +189,7 @@ export default function CommitteeMaster() {
                                             handledeleteClick(params.row.id);
                                         }}
                                     />
-                                
+
 
                                 </Stack>,
                             ];
@@ -211,13 +212,13 @@ export default function CommitteeMaster() {
                         headerName: t("text.FileNo"),
                         flex: 1,
                         headerClassName: "MuiDataGrid-colCell",
-                        renderCell: (params)=>{
+                        renderCell: (params) => {
                             return moment(params.row.foundedDate).format("DD-MM-YYYY")
-                          }
+                        }
                     },
                     {
                         field: "committeeDesc",
-                        headerName:t("text.committeeDesc"),
+                        headerName: t("text.committeeDesc"),
                         flex: 1,
                         headerClassName: "MuiDataGrid-colCell",
                     }
@@ -269,7 +270,7 @@ export default function CommitteeMaster() {
                         sx={{ padding: "20px" }}
                         align="left"
                     >
-                       {t("text.Committee")}
+                        {t("text.Committee")}
                     </Typography>
                     <Divider />
 
@@ -283,7 +284,7 @@ export default function CommitteeMaster() {
                             endIcon={<AddCircleIcon />}
                             size="large"
                         >
-                          {t("text.Add")}
+                            {t("text.Add")}
                         </Button>
                         {/*)} */}
 
@@ -296,10 +297,10 @@ export default function CommitteeMaster() {
             )} */}
                     </Stack>
 
-                    
-          
 
-                    {isLoading ? ( 
+
+
+                    {isLoading ? (
                         <div
                             style={{
                                 display: "flex",
@@ -309,35 +310,14 @@ export default function CommitteeMaster() {
                         >
                             <CircularProgress />
                         </div>
-                    ) : ( 
-                        <Box>
-                            <br />
-                            <div style={{ width: "100%", backgroundColor: "#FFFFFF" }}>
-                                <DataGrid
-                                    rows={zones}
-                                    columns={adjustedColumns}
-                                    autoHeight
-                                    slots={{
-                                        toolbar: GridToolbar,
-                                    }}
-                                    rowSpacingType="border"
-                                    pagination={true}
-                                    pageSizeOptions={[5, 10, 25, 50, 100].map((size) => ({
-                                        value: size,
-                                        label: `${size}`,
-                                    }))}
-                                    initialState={{
-                                        pagination: { paginationModel: { pageSize: 5 } },
-                                    }}
-                                    slotProps={{
-                                        toolbar: {
-                                            showQuickFilter: true,
-                                        },
-                                    }}
-                                />
-                            </div>
-
-                        </Box> )} 
+                    ) : (
+                        <CustomDataGrid
+                            isLoading={isLoading}
+                            rows={zones}
+                            columns={adjustedColumns}
+                            pageSizeOptions={[5, 10, 25, 50, 100]}
+                            initialPageSize={5}
+                        />)}
                 </Paper>
             </Card>
             <ToastApp />

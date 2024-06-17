@@ -27,6 +27,7 @@ import ToastApp from "../../../ToastApp";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
 import CircularProgress from "@mui/material/CircularProgress";
+import CustomDataGrid from "../../../utils/CustomDatagrid";
 
 
 interface MenuPermission {
@@ -66,8 +67,8 @@ export default function CityMaster() {
         //                 );
         //                 console.log("data", pathrow);
         //                 if (pathrow) {
-                            // setPermissionData(pathrow);
-                            fetchZonesData();
+        // setPermissionData(pathrow);
+        fetchZonesData();
         //                 }
         //             }
         //         }
@@ -94,11 +95,11 @@ export default function CityMaster() {
 
     const accept = () => {
         const collectData = {
-          cityId: delete_id
+            cityId: delete_id
         };
         console.log("collectData " + JSON.stringify(collectData));
         api
-            .delete( `M10_District/DeleteDistrict`, { data: collectData })
+            .delete(`M10_District/DeleteDistrict`, { data: collectData })
             .then((response) => {
                 if (response.data.isSuccess) {
                     toast.success(response.data.mesg);
@@ -130,8 +131,8 @@ export default function CityMaster() {
     const fetchZonesData = async () => {
         try {
             const collectData = {
-              cityId: -1,
-              stateId: -1
+                cityId: -1,
+                stateId: -1
             };
             console.log("collectData", collectData)
             const response = await api.post(`M10_District/GetDistrictMaster`,
@@ -220,14 +221,14 @@ export default function CityMaster() {
                         flex: 1,
                         headerClassName: "MuiDataGrid-colCell",
                     },
-                    
+
                     {
                         field: "stateName",
-                        headerName:t("text.StateName"),
+                        headerName: t("text.StateName"),
                         flex: 1,
                         headerClassName: "MuiDataGrid-colCell",
                     },
-                    
+
                 ];
                 setColumns(columns as any);
             }
@@ -290,7 +291,7 @@ export default function CityMaster() {
                             endIcon={<AddCircleIcon />}
                             size="large"
                         >
-                           {t("text.add")}
+                            {t("text.add")}
                         </Button>
                         {/*)} */}
 
@@ -303,7 +304,7 @@ export default function CityMaster() {
             )} */}
                     </Stack>
 
-                    {isLoading ? ( 
+                    {isLoading ? (
                         <div
                             style={{
                                 display: "flex",
@@ -313,35 +314,15 @@ export default function CityMaster() {
                         >
                             <CircularProgress />
                         </div>
-                    ) : ( 
-                        <Box>
-                            <br />
-                            <div style={{ width: "100%", backgroundColor: "#FFFFFF" }}>
-                                <DataGrid
-                                    rows={zones}
-                                    columns={adjustedColumns}
-                                    autoHeight
-                                    slots={{
-                                        toolbar: GridToolbar,
-                                    }}
-                                    rowSpacingType="border"
-                                    pagination={true}
-                                    pageSizeOptions={[5, 10, 25, 50, 100].map((size) => ({
-                                        value: size,
-                                        label: `${size}`,
-                                    }))}
-                                    initialState={{
-                                        pagination: { paginationModel: { pageSize: 5 } },
-                                    }}
-                                    slotProps={{
-                                        toolbar: {
-                                            showQuickFilter: true,
-                                        },
-                                    }}
-                                />
-                            </div>
-
-                        </Box> )} 
+                    ) : (
+                        <CustomDataGrid
+                            isLoading={isLoading}
+                            rows={zones}
+                            columns={adjustedColumns}
+                            pageSizeOptions={[5, 10, 25, 50, 100]}
+                            initialPageSize={5}
+                        />
+                    )}
                 </Paper>
             </Card>
             <ToastApp />

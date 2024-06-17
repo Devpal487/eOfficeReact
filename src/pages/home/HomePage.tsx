@@ -34,6 +34,7 @@ import ToastApp from "../../ToastApp";
 import ButtonWithLoader from "../../utils/ButtonWithLoader";
 // import { green } from '@mui/material/colors';
 import { getinstId, getdivisionId,getId } from "../../utils/Constant";
+import CustomDataGrid from "../../utils/CustomDatagrid";
 export const options1 = {
   pieHole: 0.25,
   is3D: false,
@@ -44,8 +45,11 @@ export const options1 = {
 export default function HomePage() {
   const { t } = useTranslation();
   const userid = getId();
+  console.log("🚀 ~ HomePage ~ userid:", userid)
   const divId:any = getdivisionId();
+  console.log("🚀 ~ HomePage ~ divId:", divId)
   const instId:any = getinstId();
+  console.log("🚀 ~ HomePage ~ instId:", instId)
 
   const[switchType, setSwitchType] = useState("1");
   const [ReviewModalData, setReviewModalData] = useState(false);
@@ -77,9 +81,12 @@ export default function HomePage() {
   };
 
   useEffect(() => {
-    getAuthDevision();
-    fetchTotalFile();
-    const tokenDataString: any = sessionStorage.getItem("token");
+    // window.location.reload();
+    setTimeout(() => {
+      getAuthDevision(divId);
+      fetchTotalFile();
+    }, 1100);
+    // const tokenDataString: any = sessionStorage.getItem("token");
   }, []);
 
   const navigate = useNavigate();
@@ -99,9 +106,9 @@ export default function HomePage() {
     });
   };
 
-  const getAuthDevision = () => {
+  const getAuthDevision = (id:any) => {
     const collectData = {
-      divisionid: parseInt(localStorage.getItem("id") + ""),
+      divisionid: parseInt(id),
     };
     api.post(`AuthorityMaster/GetAuthorityDiv`, collectData).then((res) => {
       const arr = res.data.data.map((item: any) => ({
@@ -168,8 +175,8 @@ export default function HomePage() {
         `RefferenceNumber/GetRefferenceNo`,
         collectData
       );
-      const data = response.data.data;
-      const DocsWithIds = data.map((doc: any, index: any) => ({
+      const data = response?.data?.data;
+      const DocsWithIds = data?.map((doc: any, index: any) => ({
         ...doc,
         serialNo: index + 1,
         id: doc.rid,
@@ -287,14 +294,14 @@ export default function HomePage() {
           },
           {
             field: "letterBy",
-            headerName: "Letter From/To",
+            headerName: "Lttr From/To",
             flex: 1,
             headerClassName: "MuiDataGrid-colCell",
           },
 
           {
             field: "rLetterSentOn",
-            headerName: "Letter Send From",
+            headerName: "Lttr Send From",
             flex: 1,
             headerClassName: "MuiDataGrid-colCell",
           },
@@ -658,7 +665,7 @@ export default function HomePage() {
             "& .MuiDataGrid-colCell": {
               backgroundColor: "#2B4593",
               color: "#fff",
-              fontSize: 17,
+              fontSize: 15,
               fontWeight:900
             },
           }}
@@ -666,6 +673,14 @@ export default function HomePage() {
         >
           <ConfirmDialog />
 
+                      <CustomDataGrid 
+                      isLoading={isLoading}
+                      rows={totalFile}
+                      columns={adjustedColumns}
+                      pageSizeOptions={[5, 10, 25, 50, 100]}
+                      initialPageSize={5}
+                      />
+{/* 
                       {isLoading ? (
                         <div
                           style={{
@@ -713,7 +728,7 @@ export default function HomePage() {
                             />
                           </div>
                         </Box>
-                      )}
+                      )} */}
 
 
                   </Paper>

@@ -37,6 +37,8 @@ import { getId } from "../../../utils/Constant";
 import ButtonWithLoader from "../../../utils/ButtonWithLoader";
 import CustomLabel from "../../../CustomLable";
 import ReusableFormSection from "../../../ReusableFormSection";
+import LanguageSelector from "../../../LanguageSelector";
+import TextConverter from "../../../TextConverter";
 interface MenuPermission {
   isAdd: boolean;
   isEdit: boolean;
@@ -60,6 +62,8 @@ export default function ZoneMaster() {
 
   const [selectedLang, setSelectedLang] = useState<string>('English');
   const [inputValue, setInputValue] = useState<string>('');
+
+  const [language, setLanguage] = useState('English');
 
   let navigate = useNavigate();
   const { t } = useTranslation();
@@ -199,7 +203,7 @@ export default function ZoneMaster() {
         const columns: GridColDef[] = [
           {
             field: "actions",
-            headerClassName: "MuiDataGrid-colCell",
+            // headerClassName: "MuiDataGrid-colCell",
             headerName: t("text.Action"),
             width: 150,
 
@@ -258,19 +262,19 @@ export default function ZoneMaster() {
             field: "serialNo",
             headerName: t("text.SrNo"),
             flex: 1,
-            headerClassName: "MuiDataGrid-colCell",
+            // headerClassName: "MuiDataGrid-colCell",
           },
           {
             field: "zoneName",
             headerName: t("text.zoneName"),
             flex: 1,
-            headerClassName: "MuiDataGrid-colCell",
+            // headerClassName: "MuiDataGrid-colCell",
           },
           {
             field: "zoneCode",
             headerName: t("text.zoneCode"),
             flex: 1,
-            headerClassName: "MuiDataGrid-colCell",
+            // headerClassName: "MuiDataGrid-colCell",
           },
           {
             field: "isActive",
@@ -301,7 +305,6 @@ export default function ZoneMaster() {
 
     } catch (error) {
       console.error("Error fetching data:", error);
-      // setLoading(false);
     }
   };
 
@@ -371,12 +374,7 @@ export default function ZoneMaster() {
           sx={{
             width: "100%",
             overflow: "hidden",
-            "& .MuiDataGrid-colCell": {
-              backgroundColor: "#2B4593",
-              color: "#fff",
-              fontSize: 17,
-              fontWeight: 900
-            },
+            
           }}
           style={{ padding: "10px", }}
         >
@@ -394,26 +392,13 @@ export default function ZoneMaster() {
           <Divider />
 
           <Box height={10} />
+          <div>
+            <LanguageSelector onLanguageChange={setLanguage} />
+            <TextConverter selectedLanguage={language} />
+        </div>
 
           <Stack direction="row" spacing={2} classes="my-2 mb-2">
-            {/* {permissionData?.isAdd == true && ( */}
-            {/* <Button
-                onClick={routeChangeAdd}
-                variant="contained"
-                endIcon={<AddCircleIcon />}
-                size="large"
-              >
-                {t("text.add")}
-              </Button> */}
-            {/* ) } */}
-
-            {/* {permissionData?.isPrint == true ? (
-              <Button variant="contained" endIcon={<PrintIcon />} size="large">
-                {t("text.print")}
-              </Button>
-            ) : (
-              ""
-            )} */}
+           
           </Stack>
 
           <ReusableFormSection
@@ -448,10 +433,6 @@ export default function ZoneMaster() {
                       aria-labelledby="demo-row-radio-buttons-group-label"
                       name="row-radio-buttons-group"
                       defaultValue="English"
-                      // onChange={(event) => {
-                      //   console.log("radio value check", event.target.value);
-                      //   formik.setFieldValue("type",event.target.value);
-                      // }}
                     >
                       <FormControlLabel
                         value="English"
@@ -540,6 +521,7 @@ export default function ZoneMaster() {
                   rows={zones}
                   columns={adjustedColumns}
                   autoHeight
+                  rowHeight={35}
                   slots={{
                     toolbar: GridToolbar,
                   }}
@@ -555,6 +537,41 @@ export default function ZoneMaster() {
                   slotProps={{
                     toolbar: {
                       showQuickFilter: true,
+                    },
+                  }}
+                
+                  sx={{
+                    '& .MuiDataGrid-columnHeaders': {
+                      backgroundColor: '#2B4593',
+                      color: '#fff',
+                      fontSize: '17px',
+                      fontWeight: 900,
+                      height: '37px',
+                      minHeight: '37px',
+                      maxHeight: '37px',
+                      lineHeight: '37px',
+                    },
+                    '& .MuiDataGrid-columnHeader': {
+                      height: '37px !important',
+                      minHeight: '37px !important',
+                      maxHeight: '37px !important',
+                      lineHeight: '37px !important',
+                    },
+                    '& .MuiDataGrid-columnHeader--sortable': {
+                      height: '37px !important',
+                      minHeight: '37px !important',
+                      maxHeight: '37px !important',
+                      lineHeight: '37px !important',
+                    },
+                    '& .MuiDataGrid-withBorderColor': {
+                      height: '37px !important',
+                      minHeight: '37px !important',
+                      maxHeight: '37px !important',
+                      lineHeight: '37px !important',
+                    },
+                    '& .MuiDataGrid-columnHeaderTitle': {
+                      overflow: 'visible',
+                      whiteSpace: 'normal',
                     },
                   }}
                 />

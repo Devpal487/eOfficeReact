@@ -1,30 +1,5 @@
-﻿/** add this after Content.......
-   <script src="JavaScript/HindiUnicode.js" type="text/javascript" ></script>
- */
-/*
-declare radiobutton list as markup
-                                 <asp:RadioButtonList ID="rblLang" runat="server" RepeatDirection="Horizontal">
-                                     <asp:ListItem Text="English" Selected="True" Value="English"></asp:ListItem>
-                                     <asp:ListItem Text="Hindi" Value="Hindi"></asp:ListItem>
-                                 </asp:RadioButtonList>
+﻿console.log("🚀 ~ add:")
 
-javascript if in update panel then inside update panel 
-     <script type='javascript'>
-     $(document).ready(function () {
-                    Sys.WebForms.PageRequestManager.getInstance().add_pageLoaded(celClas);
-                });
-                function celClas() {
-                    $("[id$='rblLang']").on('click', radioBVal);
-                    $("textarea[id*='txt'],input[type=text]").on('keyup', KruToUniC);  //this will attach conversion scrip on all input and textarea containing txt
-                }
-     </script>
-if Not in update 
-$(function(){
-                    $("[id$='rblLang']").on('click', radioBVal);
-                    $("textarea[id*='txt'],input[type=text]").on('keyup', KruToUniC);
-
-});
-*/
 var langSel = 'English';
 function radioBVal() {
     var v = $("[id='" + $(this).attr('id') + "']  input[type=radio]:checked").val();
@@ -35,60 +10,45 @@ function KruToUniC(tbv) { //this is for single char
     var key = tbv.keyCode || tbv.charCode;
     if ((key == 8) || (key == 37) || (key == 39) || (key == 46))
         return;
-    //                    alert(key);
 
-/* local solution
-    var lsel = $("[id$='rbtnLang'] input:checked").val();
-    if (lsel != 'Hindi')
-        return;
-*/
     if (langSel.toLowerCase().indexOf('hi') < 0)
         return;
     var v = $(this).val();
-  //  v = v.replace('  ', ' ');
+
     var sp1 = '';
     var sp2 = '';
     var sp3 = '';
     var sr = '';
     var re = false;
-    //var pos = $(this).getCursorPosition(); //fails on 2nd time
-  //  var pos = v.slice(0, $(this).selectionStart).length;
-
+ 
     var v1 = $(this)[0].selectionStart;
     var v2 = $(this)[0].selectionEnd;
-//    pos = v1;
+
     var Cha = v[v1 - 1];
     if (Cha == ' ')
         return;
-//    alert(v[v1 - 1]);
     var res = convert_to_unicode2(Cha);
     var z1 = v.substring(v1);
-    //    if (z1 != 'undefined')
-    //      v = v + v.substring(v2);
     var z2 = v.substring(v1 + 1, v1 + 2);
-    v = v.substring(0, v1 - 1) + res + z1;// + v.substring(v1);
-    //    v = res;
-    
+    v = v.substring(0, v1 - 1) + res + z1;
+
     $(this).val(v);
-    //    $(this).select();
     $(this).selectRange(v1, v1);
     return;
 
 }
-/******** this is plugin taken to set cursor position ****/
 $.fn.selectRange = function (start, end) {
-    var e = document.getElementById($(this).attr('id')); // I don't know why... but $(this) don't want to work today :-/
+    var e = document.getElementById($(this).attr('id')); 
     if (!e) return;
     else if (e.setSelectionRange) { e.focus(); e.setSelectionRange(start, end); } /* WebKit */
     else if (e.createTextRange) { var range = e.createTextRange(); range.collapse(true); range.moveEnd('character', end); range.moveStart('character', start); range.select(); } /* IE */
     else if (e.selectionStart) { e.selectionStart = start; e.selectionEnd = end; }
 };
 
-function KruToUni(tbv) { //this is for full word and currently not in use
+function KruToUni(tbv) { 
     var key = tbv.keyCode || tbv.charCode;
     if ((key == 8) || (key == 37)  || (key == 39) || (key == 46))
-        return;
-//                    alert(key);
+        return;  
     var lsel = $("[id$='rbtnLang'] input:checked").val();
     if (lsel != 'Hindi')
         return;
@@ -99,7 +59,6 @@ function KruToUni(tbv) { //this is for full word and currently not in use
     var sp3 = '';
     var sr = '';
     var re = false;
-    //var pos = $(this).getCursorPosition(); //fails on 2nd time
     var pos = v.slice(0, $(this).selectionStart).length;
 
     var v1 = $(this)[0].selectionStart;
@@ -113,8 +72,7 @@ function KruToUni(tbv) { //this is for full word and currently not in use
     var a3 = v[pos + 1];
     if (v[pos - 1] != ' ') 
         return;
-    //            v = v.trim();
-    var le = v.length - 1;  //
+    var le = v.length - 1;
     if (pos == v.length) {
         while (le > -1) {
             if ((v[le] == ' ') && ((v.length - 1) != le))
@@ -139,20 +97,13 @@ function KruToUni(tbv) { //this is for full word and currently not in use
         po1 = po1 - 1;
     }
     sp2 = reverse(sp2);
-    //                alert('sp2:' + sp2);
     pos = pos - sp2.length;
     sp1 = v.substring(0, pos);
     if (sp2 == '')
         return;
-    //              alert(':'+sp1+':');
-    //            alert(':'+sp2+':');
     sp3 = v.substring(sp1.length + sp2.length);
-    //alert(':' + sp3 + ':');
-    // if (sp3 == '')
-    //   return;
     sp2 = convert_to_unicode2(sp2);
     var vf = sp1 + ' ' + sp2 + ' ' + sp3;
-    //          alert(vf);
     var a34 = vf.trim();
     a34 = a34.replace('  ', ' ');
     $(this).val(a34);

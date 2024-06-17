@@ -123,7 +123,6 @@ const PageCreateAdd = (props: Props) => {
     const [fileName, setfileName] = useState("");
     const [rootid, setRootid] = useState("");
 
-
     const [tableData1, setTableData1] = useState<any>([]);
     const [EmpCode, setEmpCode] = useState("");
     const [Remark, setRemark] = useState("");
@@ -417,13 +416,15 @@ const PageCreateAdd = (props: Props) => {
                 values
             );
             if (response.data.isSuccess) {
-                setToaster(false);
-
+                // console.log('Success message:', response.data.mesg);
+                alert(response.data.mesg);
                 toast.success(response.data.mesg);
-                navigate(-1);
+                setToaster(false);
+                setTimeout(() => {
+                    navigate(-1);
+                }, 2000);
             } else {
                 setToaster(true);
-
                 toast.error(response.data.mesg);
             }
         },
@@ -482,6 +483,48 @@ const PageCreateAdd = (props: Props) => {
             setPDF(base64 + "");
         }
     };
+
+    
+    const addMoreRow = () => {
+        const newRows = {
+            id: tableData.length + 1,
+            pdFid: -1,
+            pdfName: fileName,
+            docMid: -1,
+
+            subFtype: "",
+
+            isMain: "",
+
+            user_id: -1,
+            pdfPath: pdf,
+            pdfView: pdfView,
+            srn: -1,
+            isDelete: false,
+        };
+
+        setTableData((prevTableData: any) => {
+            const updatedTableDataed = [...prevTableData, newRows];
+            return updatedTableDataed;
+        });
+        console.log(newRows);
+
+        setfileName("");
+        setPDF("");
+
+
+    };
+
+    const removeExtraRow = (id: any) => {
+        setTableData((prevTableData: any) => {
+            const updatedTableDataed = prevTableData.filter(
+                (row: any) => row.id !== id
+            );
+            return updatedTableDataed;
+        });
+    };
+
+    
 
     const addMoreRow1 = () => {
         const newRows = {
@@ -573,7 +616,7 @@ const PageCreateAdd = (props: Props) => {
                         {t("text.PageCreateAdd")}
                     </Typography>
 
-                    <Grid item sm={4} xs={12}>
+                    <Grid item sm={4} xs={12}> 
                         <Typography style={{ marginTop: "-75px" }}>
                             <Button
                                 type="submit"
@@ -1346,6 +1389,178 @@ const PageCreateAdd = (props: Props) => {
                             <Divider />
                             <br />
 
+                            
+                            <Grid item xs={12} container spacing={2}>
+                                <Grid xs={12} lg={2.5} item>
+                                    <TextField
+                                        id="pdf"
+                                        name="pdf"
+                                        label={t("text.AttachedFile")}
+                                        // value={pdf}
+                                        placeholder={t("text.AttachedFile")}
+                                        size="small"
+                                        type="file"
+                                        fullWidth
+                                        style={{ backgroundColor: "white" }}
+                                        InputLabelProps={{ shrink: true }}
+                                        onChange={onTransctionChange}
+                                    />
+                                </Grid>
+
+                                <Grid xs={12} lg={2} item>
+                                    <Button
+                                        startIcon={<AddCircleIcon />}
+                                        variant="contained"
+                                        fullWidth
+                                        style={{
+                                            marginBottom: 15,
+                                            backgroundColor: "info",
+                                        }}
+                                        // onClick={addMoreRow}
+                                    >
+                                        {t("text.add")}
+                                    </Button>
+                                </Grid>
+                            </Grid>
+
+                            <Grid xs={12} sm={12} item sx={{ marginTop: "3px" }}>
+                                <Table
+                                    style={{
+                                        borderCollapse: "collapse",
+                                        width: "100%",
+                                        border: "1px solid black",
+                                    }}
+                                >
+                                    <thead
+                                        style={{ backgroundColor: "#2196f3", color: "#f5f5f5" }}
+                                    >
+                                        <tr>
+                                            <th
+                                                style={{
+                                                    borderLeft: "1px solid black",
+                                                    paddingBlock: "10",
+                                                    paddingTop: "5px",
+                                                    paddingBottom: "5px",
+                                                }}
+                                            >
+                                                {t("text.Action")}
+                                            </th>
+
+                                            <th
+                                                style={{
+                                                    borderLeft: "1px solid black",
+                                                    paddingTop: "5px",
+                                                    paddingBottom: "5px",
+                                                }}
+                                            >
+                                                {t("text.FileName")}
+                                            </th>
+                                            <th
+                                                style={{
+                                                    borderLeft: "1px solid black",
+                                                    paddingTop: "5px",
+                                                    paddingBottom: "5px",
+                                                }}
+                                            >
+                                                {t("text.PdfFile")}
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody style={{ border: "1px solid black" }}>
+                                        {tableData?.map((row: any, index: any) => (
+                                            <tr key={row.id} style={{ border: "1px solid black" }}>
+                                                <td
+                                                    style={{
+                                                        borderLeft: "1px solid black",
+                                                        borderTop: "1px solid black",
+                                                        textAlign: "center",
+                                                    }}
+                                                >
+                                                    {" "}
+                                                    <DeleteIcon
+                                                        style={{
+                                                            fontSize: "20px",
+                                                            color: "darkred",
+                                                            cursor: "pointer",
+                                                        }}
+                                                        onClick={() => removeExtraRow(row.id)}
+                                                    />{" "}
+                                                </td>
+
+                                                <td
+                                                    style={{
+                                                        borderLeft: "1px solid black",
+                                                        borderTop: "1px solid black",
+                                                        textAlign: "center",
+                                                    }}
+                                                >
+                                                    {row.pdfName}
+                                                </td>
+                                                <td
+                                                    style={{
+                                                        borderLeft: "1px solid black",
+                                                        borderTop: "1px solid black",
+                                                        textAlign: "center",
+                                                    }}
+                                                >
+                                                    {row.pdfView == "" ? (
+                                                        ""
+                                                    ) : (
+                                                        <embed
+                                                            src={row.pdfView}
+                                                            style={{
+                                                                width: 150,
+                                                                height: 100,
+                                                                border: "1px solid grey",
+                                                                borderRadius: 10,
+                                                                padding: "2px",
+                                                            }}
+                                                        />
+                                                    )}
+
+                                                    <Typography
+                                                        onClick={() => modalOpenHandle1(row.pdfView)}
+                                                        style={{
+                                                            textDecorationColor: "blue",
+                                                            textDecorationLine: "underline",
+                                                            color: "blue",
+                                                            fontSize: "15px",
+                                                            cursor: "pointer",
+                                                        }}
+                                                    >
+                                                        {t("text.Preview")}
+                                                    </Typography>
+
+                                                    <Modal open={Shows} onClose={handlePanClose1}>
+                                                        <Box sx={style}>
+                                                            {Img == "" ? (
+                                                                <img
+                                                                    src={nopdf}
+                                                                    style={{
+                                                                        width: "170vh",
+                                                                        height: "75vh",
+                                                                    }}
+                                                                />
+                                                            ) : (
+                                                                <embed
+                                                                    //alt="preview image"
+                                                                    src={Img}
+                                                                    style={{
+                                                                        width: "170vh",
+                                                                        height: "75vh",
+                                                                        borderRadius: 10,
+                                                                    }}
+                                                                />
+                                                            )}
+                                                        </Box>
+                                                    </Modal>
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </Table>
+                            </Grid>
+
                             <Grid xs={12} sm={12} item sx={{ marginTop: "3px", overflow: "auto" }}>
                                 <div>
                                     <IconButton onClick={handleCollapse} style={{ backgroundColor: "#2196f3", color: "#fff", marginBottom: "5px" }} >
@@ -2016,176 +2231,7 @@ const PageCreateAdd = (props: Props) => {
                                     </Collapse>
                                 </div>
                             </Grid>
-                            {/* <Grid item xs={12} container spacing={2}>
-                                <Grid xs={12} lg={2.5} item>
-                                    <TextField
-                                        id="pdf"
-                                        name="pdf"
-                                        label={t("text.AttachedFile")}
-                                        // value={pdf}
-                                        placeholder={t("text.AttachedFile")}
-                                        size="small"
-                                        type="file"
-                                        fullWidth
-                                        style={{ backgroundColor: "white" }}
-                                        InputLabelProps={{ shrink: true }}
-                                        onChange={onTransctionChange}
-                                    />
-                                </Grid>
 
-                                <Grid xs={12} lg={2} item>
-                                    <Button
-                                        startIcon={<AddCircleIcon />}
-                                        variant="contained"
-                                        fullWidth
-                                        style={{
-                                            marginBottom: 15,
-                                            backgroundColor: "info",
-                                        }}
-                                        onClick={addMoreRow}
-                                    >
-                                        {t("text.add")}
-                                    </Button>
-                                </Grid>
-                            </Grid>
-
-                            <Grid xs={12} sm={12} item sx={{ marginTop: "3px" }}>
-                                <Table
-                                    style={{
-                                        borderCollapse: "collapse",
-                                        width: "100%",
-                                        border: "1px solid black",
-                                    }}
-                                >
-                                    <thead
-                                        style={{ backgroundColor: "#2196f3", color: "#f5f5f5" }}
-                                    >
-                                        <tr>
-                                            <th
-                                                style={{
-                                                    borderLeft: "1px solid black",
-                                                    paddingBlock: "10",
-                                                    paddingTop: "5px",
-                                                    paddingBottom: "5px",
-                                                }}
-                                            >
-                                                {t("text.Action")}
-                                            </th>
-
-                                            <th
-                                                style={{
-                                                    borderLeft: "1px solid black",
-                                                    paddingTop: "5px",
-                                                    paddingBottom: "5px",
-                                                }}
-                                            >
-                                                {t("text.FileName")}
-                                            </th>
-                                            <th
-                                                style={{
-                                                    borderLeft: "1px solid black",
-                                                    paddingTop: "5px",
-                                                    paddingBottom: "5px",
-                                                }}
-                                            >
-                                                {t("text.PdfFile")}
-                                            </th>
-                                        </tr>
-                                    </thead>
-                                    <tbody style={{ border: "1px solid black" }}>
-                                        {tableData?.map((row: any, index: any) => (
-                                            <tr key={row.id} style={{ border: "1px solid black" }}>
-                                                <td
-                                                    style={{
-                                                        borderLeft: "1px solid black",
-                                                        borderTop: "1px solid black",
-                                                        textAlign: "center",
-                                                    }}
-                                                >
-                                                    {" "}
-                                                    <DeleteIcon
-                                                        style={{
-                                                            fontSize: "20px",
-                                                            color: "darkred",
-                                                            cursor: "pointer",
-                                                        }}
-                                                        onClick={() => removeExtraRow(row.id)}
-                                                    />{" "}
-                                                </td>
-
-                                                <td
-                                                    style={{
-                                                        borderLeft: "1px solid black",
-                                                        borderTop: "1px solid black",
-                                                        textAlign: "center",
-                                                    }}
-                                                >
-                                                    {row.pdfName}
-                                                </td>
-                                                <td
-                                                    style={{
-                                                        borderLeft: "1px solid black",
-                                                        borderTop: "1px solid black",
-                                                        textAlign: "center",
-                                                    }}
-                                                >
-                                                    {row.pdfView == "" ? (
-                                                        ""
-                                                    ) : (
-                                                        <embed
-                                                            src={row.pdfView}
-                                                            style={{
-                                                                width: 150,
-                                                                height: 100,
-                                                                border: "1px solid grey",
-                                                                borderRadius: 10,
-                                                                padding: "2px",
-                                                            }}
-                                                        />
-                                                    )}
-
-                                                    <Typography
-                                                        onClick={() => modalOpenHandle1(row.pdfView)}
-                                                        style={{
-                                                            textDecorationColor: "blue",
-                                                            textDecorationLine: "underline",
-                                                            color: "blue",
-                                                            fontSize: "15px",
-                                                            cursor: "pointer",
-                                                        }}
-                                                    >
-                                                        {t("text.Preview")}
-                                                    </Typography>
-
-                                                    <Modal open={Shows} onClose={handlePanClose1}>
-                                                        <Box sx={style}>
-                                                            {Img == "" ? (
-                                                                <img
-                                                                    src={nopdf}
-                                                                    style={{
-                                                                        width: "170vh",
-                                                                        height: "75vh",
-                                                                    }}
-                                                                />
-                                                            ) : (
-                                                                <embed
-                                                                    //alt="preview image"
-                                                                    src={Img}
-                                                                    style={{
-                                                                        width: "170vh",
-                                                                        height: "75vh",
-                                                                        borderRadius: 10,
-                                                                    }}
-                                                                />
-                                                            )}
-                                                        </Box>
-                                                    </Modal>
-                                                </td>
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </Table>
-                            </Grid> */}
 
                             <Grid
                                 item

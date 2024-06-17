@@ -17,13 +17,8 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
 import Switch from "@mui/material/Switch";
 import Chip from "@mui/material/Chip";
-import CircularProgress from "@mui/material/CircularProgress";
 import { useTranslation } from "react-i18next";
-import {
-  DataGrid,
-  GridColDef,
-  GridToolbar,
-} from "@mui/x-data-grid";
+import {GridColDef} from "@mui/x-data-grid";
 import { toast } from "react-toastify";
 import ToastApp from "../../../ToastApp";
 import api from "../../../utils/Url";
@@ -33,6 +28,7 @@ import Autocomplete from "@mui/material/Autocomplete";
 import { getId, getISTDate } from "../../../utils/Constant";
 import CustomLabel from "../../../CustomLable";
 import ButtonWithLoader from "../../../utils/ButtonWithLoader";
+import CustomDataGrid from "../../../utils/CustomDatagrid";
 
 interface MenuPermission {
   isAdd: boolean;
@@ -43,7 +39,7 @@ interface MenuPermission {
 
 export default function WardMaster() {
   const UserId = getId();
-  const defaultValuestime = getISTDate();
+  const {defaultValuestime} = getISTDate();
   const { t } = useTranslation();
   const [rows, setRows] = useState<any>([]);
   const [columns, setColumns] = useState<any>([]);
@@ -423,6 +419,7 @@ export default function WardMaster() {
             sx={{ padding: "20px" }}
             align="left"
           >
+
             {t("text.wardMaster")}
           </Typography>
           <Divider />
@@ -586,6 +583,7 @@ export default function WardMaster() {
             </Box>)}
         </Paper>
       </Card>
+
 
       <ToastApp />
     </>

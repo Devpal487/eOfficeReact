@@ -87,6 +87,9 @@ export default function WardMaster() {
     event: React.ChangeEvent<HTMLInputElement>,
     value: any
   ) => {
+
+    console.log('checkvalue',value)
+
     const collectData = {
       wardID: value.wardID,
       wardName: value.wardName,
@@ -221,6 +224,7 @@ export default function WardMaster() {
                           color: params.row.isActive ? "green" : "#FE0000",
                         }}
                         onChange={(value: any) =>
+                        
                           handleSwitchChange(value, params.row)
                         }
                         inputProps={{
@@ -349,8 +353,8 @@ export default function WardMaster() {
       "zoneID": 0,
       "isActive": true,
       "sortOrder": 0,
-      "createdDt":new Date().toISOString().slice(0, 10),
-      "modifyDt":new Date().toISOString().slice(0, 10),
+      "createdDt": new Date().toISOString().slice(0, 10),
+      "modifyDt": new Date().toISOString().slice(0, 10),
       "user_ID": UserId,
       "zoneName": ""
     },
@@ -385,146 +389,202 @@ export default function WardMaster() {
 
   return (
     <>
-      <Grid item lg={6} sm={6} xs={12} sx={{ marginTop: "3vh" }}>
-        <Card
-          style={{
+
+      <Card
+        style={{
+          width: "100%",
+          backgroundColor: "#E9FDEE",
+          border: ".5px solid #FF7722 ",
+          marginTop: "3vh"
+        }}
+      >
+        <Paper
+          sx={{
             width: "100%",
-            height: "50%",
-            backgroundColor: "#E9FDEE",
-            border: ".5px solid #ff7722 ",
+            overflow: "hidden",
+            "& .MuiDataGrid-colCell": {
+              backgroundColor: "#2B4593",
+              color: "#fff",
+              fontSize: 17,
+              fontWeight: 900
+            },
           }}
+          style={{ padding: "10px", }}
         >
-          <Paper
-            sx={{
-              width: "100%",
-              overflow: "hidden",
-              "& .MuiDataGrid-colCell": {
-                backgroundColor: "#2B4593",
-                color: "#fff",
-                fontSize: 17,
-                fontWeight: 800,
-              },
-            }}
-            style={{ padding: "10px" }}
+          <ConfirmDialog />
+          <Typography
+            gutterBottom
+            variant="h5"
+            component="div"
+            sx={{ padding: "20px" }}
+            align="left"
           >
-            <ConfirmDialog />
-            <Typography
-              gutterBottom
-              variant="h5"
-              component="div"
-              sx={{ padding: "20px" }}
-              align="left"
+
+            {t("text.wardMaster")}
+          </Typography>
+          <Divider />
+
+          {/* Search and ADD buttone Start */}
+          <Box height={10} />
+          <Stack direction="row" spacing={2} classes="my-2 mb-2">
+            {/* {permissionData?.isAdd == true ? (
+                <Button
+                  onClick={routeChangeAdd}
+                  variant="contained"
+                  endIcon={<AddCircleIcon />} 
+                  size="large"
+                >
+                  {t("text.add")}
+                </Button>
+              ) : (
+                ""
+              )} */}
+            {/* {permissionData?.isPrint == true ? (
+                <Button variant="contained" 
+                endIcon={<PrintIcon />}
+                size="large">
+                  {t("text.print")}
+                </Button>
+              ) : (
+                ""
+              )} */}
+          </Stack>
+
+          <form onSubmit={formik.handleSubmit}>
+            <Grid item xs={12} container spacing={3}>
+
+
+              <Grid xs={3} sm={3} item>
+                <Autocomplete
+                  disablePortal
+                  id="combo-box-demo"
+                  options={ZoneOption}
+                  value={
+                    ZoneOption.find(
+                      (option: any) => option.value === formik.values.zoneID
+                    ) || null
+                  }
+                  fullWidth
+                  size="small"
+                  onChange={(event: any, newValue: any) => {
+                    console.log(newValue?.value);
+
+                    formik.setFieldValue("zoneID", newValue?.value);
+                    formik.setFieldValue("zoneName", newValue?.label);
+                    formik.setFieldTouched("zoneID", true);
+                    formik.setFieldTouched("zoneID", false);
+                  }}
+                  renderInput={(params) => (
+                    <TextField {...params} label={<CustomLabel text={t("text.SelectZoneName")} required={requiredFields.includes('zoneName')} />} />
+                  )}
+                />
+
+                {formik.touched.zoneName && formik.errors.zoneName ? (
+                  <div style={{ color: "red", margin: "5px" }}>
+                    {formik.errors.zoneName}
+                  </div>
+                ) : null}
+
+              </Grid>
+
+              <Grid xs={3} sm={3} item>
+                <TextField
+                  type="text"
+                  name="wardName"
+                  id="wardName"
+                  label={<CustomLabel text={t("text.enterWardName")} required={requiredFields.includes('enterWardName')} />}
+                  value={formik.values.wardName}
+                  placeholder={t("text.enterWardName")}
+                  size="small"
+                  fullWidth
+                  style={{ backgroundColor: "white", borderColor: formik.touched.wardName && formik.errors.wardName ? 'red' : 'initial', }}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                />
+                {formik.touched.wardName && formik.errors.wardName ? (
+                  <div style={{ color: "red", margin: "5px" }}>
+                    {formik.errors.wardName}
+                  </div>
+                ) : null}
+
+              </Grid>
+
+              <Grid xs={3} sm={3} item>
+                <TextField
+                  type="text"
+                  value={formik.values.wardCode}
+                  name="wardCode"
+                  id="wardCode"
+                  label={<CustomLabel text={t("text.enterWardCode")} />}
+                  placeholder={t("text.enterWardCode")}
+                  size="small"
+                  fullWidth
+                  style={{ backgroundColor: "white", }}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                />
+              </Grid>
+
+
+              <Grid item xs={3} sx={{ m: -1 }}>
+                {/*  {permissionData?.isAdd == true ? ( */}
+
+                <ButtonWithLoader  buttonText={editId == -1 ? t("text.save") : t("text.update")} onClickHandler={handleSubmitWrapper} />
+                {/* ) : ( */}
+                {/*   "" */}
+                {/* )} */}
+              </Grid>
+            </Grid>
+          </form>
+          <Typography
+            variant="h6"
+            component="div"
+            sx={{ flexGrow: 1 }}
+          ></Typography>
+
+
+          {isLoading ? (
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
             >
-              {t("text.wardMaster")}
-            </Typography>
-            <Divider />
-
-            <Box height={10} />
-            <Stack direction="row" spacing={2} classes="my-2 mb-2">
-              
-              <form onSubmit={formik.handleSubmit}>
-                <Grid item xs={12} container spacing={2}>
-
-                 
-                <Grid xs={3} sm={3} item>
-                    <Autocomplete
-                      disablePortal
-                      id="combo-box-demo"
-                      options={ZoneOption}
-                      value={
-                        ZoneOption.find(
-                          (option: any) => option.value === formik.values.zoneID
-                        ) || null
-                      }
-                      fullWidth
-                      size="small"
-                      onChange={(event: any, newValue: any) => {
-                        console.log(newValue?.value);
-
-                        formik.setFieldValue("zoneID", newValue?.value);
-                        formik.setFieldValue("zoneName", newValue?.label);
-                        formik.setFieldTouched("zoneID", true);
-                        formik.setFieldTouched("zoneID", false);
-                      }}
-                      renderInput={(params) => (
-                        <TextField {...params} label={<CustomLabel text={t("text.SelectZoneName")} required={requiredFields.includes('zoneName')}  />}/>
-                      )}
-                    />
-
-                    {formik.touched.zoneName && formik.errors.zoneName ? (
-                      <div style={{ color: "red", margin: "5px" }}>
-                        {formik.errors.zoneName}
-                      </div>
-                    ) : null}
-
-                  </Grid>
-
-                  <Grid item xs={3} sm={3}>
-                    <TextField
-                      type="text"
-                      name="wardName"
-                      id="wardName"
-                      label={<CustomLabel text={t("text.enterWardName")} required={requiredFields.includes('enterWardName')}  />}
-                      value={formik.values.wardName}
-                      placeholder={t("text.enterWardName")}
-                      size="small"
-                      fullWidth
-                      style={{ backgroundColor: "white", borderColor: formik.touched.wardName && formik.errors.wardName ? 'red' : 'initial', }}
-                      onChange={formik.handleChange}
-                      onBlur={formik.handleBlur}
-                    />
-                    {formik.touched.wardName && formik.errors.wardName ? (
-                      <div style={{ color: "red", margin: "5px" }}>
-                        {formik.errors.wardName}
-                      </div>
-                    ) : null}
-
-                  </Grid>
-
-                  <Grid xs={3} sm={3} item>
-                    <TextField
-                      type="text"
-                      value={formik.values.wardCode}
-                      name="wardCode"
-                      id="wardCode"
-                      label={<CustomLabel text={t("text.enterWardCode")}   />}
-                      placeholder={t("text.enterWardCode")}
-                      size="small"
-                      fullWidth
-                      style={{ backgroundColor: "white", }}
-                      onChange={formik.handleChange}
-                      onBlur={formik.handleBlur}
-                    />
-                  </Grid>
+              <CircularProgress />
+            </div>
+          ) : (
+            <Box>
+              <br></br>
+              <div style={{ width: "100%", backgroundColor: "#FFFFFF" }}>
+                <DataGrid
+                  rows={rows}
+                  columns={columns}
+                  autoHeight
+                  slots={{
+                    toolbar: GridToolbar,
+                  }}
+                  rowSpacingType="border"
+                  pagination={true}
+                  pageSizeOptions={[5, 10, 25, 50, 100].map((size) => ({
+                    value: size,
+                    label: `${size}`,
+                  }))}
+                  initialState={{
+                    pagination: { paginationModel: { pageSize: 5 } },
+                  }}
+                  slotProps={{
+                    toolbar: {
+                      showQuickFilter: true,
+                    },
+                  }}
+                />
+              </div>
+            </Box>)}
+        </Paper>
+      </Card>
 
 
-                  <Grid item xs={3} sx={{ m: -1 }}>
-                    {/*  {permissionData?.isAdd == true ? ( */}
-
-                    <ButtonWithLoader buttonText={editId == -1 ? t("text.save") : t("text.update")} onClickHandler={handleSubmitWrapper} />
-                    {/* ) : ( */}
-                    {/*   "" */}
-                    {/* )} */}
-                  </Grid>
-                </Grid>
-              </form>
-              <Typography
-                variant="h6"
-                component="div"
-                sx={{ flexGrow: 1 }}
-              ></Typography>
-            </Stack>
-
-            <CustomDataGrid  
-            isLoading={isLoading}
-            rows={rows}
-            columns={columns}
-            pageSizeOptions={[5, 10, 25, 50, 100]}
-            initialPageSize={5}
-            />
-          </Paper>
-        </Card>
-      </Grid>
       <ToastApp />
     </>
   );

@@ -408,89 +408,91 @@ export default function StateMaster() {
               ""
             )} */}
 
-            <form onSubmit={formik.handleSubmit}>
-              <Grid item xs={12} container spacing={3}>
+          </Stack>
 
-              <Grid xs={3.5} sm={3.5} item>
-                  <Autocomplete
-                    disablePortal
-                    id="combo-box-demo"
-                    options={option}
-                    fullWidth
-                    size="small"
-                    value={
-                      option.find(
-                        (option: any) => option.value === formik.values.countryId
-                      ) || null
-                    }
-                    onChange={(event, newValue) => {
-                      console.log(newValue);
+          <form onSubmit={formik.handleSubmit}>
+            <Grid item xs={12} container spacing={3}>
 
-                      formik.setFieldValue("countryId", newValue?.value);
-                      formik.setFieldValue("countryName", newValue?.label);
-                      // formik.setFieldTouched("zoneID", true); 
-                    }}
-                    renderInput={(params) => (
-                      <TextField {...params}
-                        label={<CustomLabel text={t("text.SelectCountryName")} required={requiredFields.includes('countryName')}  />} />)}
-                  />
-                  {formik.touched.countryName && formik.errors.countryName ? (
-                    <div style={{ color: "red", margin: "5px" }}>
-                      {formik.errors.countryName}
-                    </div>
-                  ) : null}
+              <Grid xs={3} sm={3} item>
+                <Autocomplete
+                  disablePortal
+                  id="combo-box-demo"
+                  options={option}
+                  fullWidth
+                  size="small"
+                  value={
+                    option.find(
+                      (option: any) => option.value === formik.values.countryId
+                    ) || null
+                  }
+                  onChange={(event, newValue) => {
+                    console.log(newValue);
 
-                </Grid>
-
-                <Grid item xs={3.5} sm={3.5}>
-                  <TextField
-                    label={<CustomLabel text={t("text.EnterStateName")} required={requiredFields.includes('stateName')}  />}
-                    value={formik.values.stateName}
-                    name="stateName"
-                    id="stateName"
-                    placeholder={t("text.EnterStateName")}
-                    size="small"
-                    fullWidth
-                    style={{ backgroundColor: "white" }}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                  />
-                  {formik.touched.stateName && formik.errors.stateName ? (
-                    <div style={{ color: "red", margin: "5px" }}>
-                      {formik.errors.stateName}
-                    </div>
-                  ) : null}
-
-                </Grid>
-
-                <Grid xs={3.5} sm={3.5} item>
-                  <TextField
-                    label={<CustomLabel text={t("text.EnterStateCode")}   />}
-                    value={formik.values.stateCode}
-                    name="stateCode"
-                    id="stateCode"
-                    placeholder={t("text.EnterStateCode")}
-                    size="small"
-                    fullWidth
-                    style={{ backgroundColor: "white" }}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                  />
-                </Grid>
-
-
-                <Grid item xs={2} sx={{ m: -1 }}>
-                  {/*  {permissionData?.isAdd == true ? ( */}
-
-                  <ButtonWithLoader buttonText={editId == -1 ? t("text.save") : t("text.update")} onClickHandler={handleSubmitWrapper} />
-                  {/* ) : ( */}
-                  {/*   "" */}
-                  {/* )} */}
-                </Grid>
+                    formik.setFieldValue("countryId", newValue?.value);
+                    formik.setFieldValue("countryName", newValue?.label);
+                    // formik.setFieldTouched("zoneID", true); 
+                  }}
+                  renderInput={(params) => (
+                    <TextField {...params}
+                      label={<CustomLabel text={t("text.SelectCountryName")} required={requiredFields.includes('countryName')} />} />)}
+                />
+                {formik.touched.countryName && formik.errors.countryName ? (
+                  <div style={{ color: "red", margin: "5px" }}>
+                    {formik.errors.countryName}
+                  </div>
+                ) : null}
 
               </Grid>
-            </form>
-          </Stack>
+
+              <Grid item xs={3} sm={3}>
+                <TextField
+                  label={<CustomLabel text={t("text.EnterStateName")} required={requiredFields.includes('stateName')} />}
+                  value={formik.values.stateName}
+                  name="stateName"
+                  id="stateName"
+                  placeholder={t("text.EnterStateName")}
+                  size="small"
+                  fullWidth
+                  style={{ backgroundColor: "white" }}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                />
+                {formik.touched.stateName && formik.errors.stateName ? (
+                  <div style={{ color: "red", margin: "5px" }}>
+                    {formik.errors.stateName}
+                  </div>
+                ) : null}
+
+              </Grid>
+
+              <Grid xs={3} sm={3} item>
+                <TextField
+                  label={<CustomLabel text={t("text.EnterStateCode")} />}
+                  value={formik.values.stateCode}
+                  name="stateCode"
+                  id="stateCode"
+                  placeholder={t("text.EnterStateCode")}
+                  size="small"
+                  fullWidth
+                  style={{ backgroundColor: "white" }}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                />
+              </Grid>
+
+
+              <Grid item xs={3} sx={{ m: -1 }}>
+                {/*  {permissionData?.isAdd == true ? ( */}
+
+                <ButtonWithLoader buttonText={editId == -1 ? t("text.save") : t("text.update")} onClickHandler={handleSubmitWrapper} />
+                {/* ) : ( */}
+                {/*   "" */}
+                {/* )} */}
+              </Grid>
+
+            </Grid>
+          </form>
+
 
           {isLoading ? (
             <div

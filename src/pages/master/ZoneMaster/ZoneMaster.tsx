@@ -495,7 +495,7 @@ export default function ZoneMaster() {
               <Grid item xs={2} sx={{ m: -1 }}>
                 {/*  {permissionData?.isAdd == true ? ( */}
 
-                <ButtonWithLoader buttonText={editId == -1 ? t("text.save") : t("text.update")} onClickHandler={handleSubmitWrapper} />
+                <ButtonWithLoader buttonText={editId == -1 ? t("text.save") : t("text.update")} onClickHandler={handleSubmitWrapper} fullWidth={true}/>
                 {/* ) : ( */}
                 {/*   "" */}
                 {/* )} */}

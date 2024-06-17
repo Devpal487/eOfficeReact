@@ -35,6 +35,7 @@ import ButtonWithLoader from "../../utils/ButtonWithLoader";
 // import { green } from '@mui/material/colors';
 import { getinstId, getdivisionId,getId } from "../../utils/Constant";
 import CustomDataGrid from "../../utils/CustomDatagrid";
+import CustomLabel from "../../CustomLable";
 export const options1 = {
   pieHole: 0.25,
   is3D: false,
@@ -250,7 +251,7 @@ export default function HomePage() {
           },
 
           {
-            field: "rFileNumber",
+            field: "fileNm",
             headerName: "File Number",
             flex: 1,
             headerClassName: "MuiDataGrid-colCell",
@@ -275,8 +276,18 @@ export default function HomePage() {
                       formik.setFieldValue("id", params.row.id);
                       formik.setFieldValue("rFileNumber", params.row.rFileNumber);
                       formik.setFieldValue("rid", params.row.rid);
-                      formik.setFieldValue("rDealHands", params.row.Division[0]["value"]);
-                      formik.setFieldValue("rDealHandlabel", params.row.Division[0]["label"]);
+                     // formik.setFieldValue("rDealHands", params.row.Division[0]["value"]);
+                      //formik.setFieldValue("rDealHandlabel", params.row.Division[0]["label"]);
+                      const selectedDivision = params.row.Division.find(
+                        (item:any) => item.value === event.target.value
+                      );
+                      if (selectedDivision) {
+                        formik.setFieldValue("rDealHands", selectedDivision.value);
+                        formik.setFieldValue("rDealHandlabel", selectedDivision.label);
+                      }else {
+                        formik.setFieldValue("rDealHands", "");
+                        formik.setFieldValue("rDealHandlabel", "");
+                      }
                     }
                     }}
                   fullWidth
@@ -469,7 +480,7 @@ export default function HomePage() {
                       <Box height={10} />
                       <Stack direction="column" spacing={2} classes="my-2 mb-2" justifyContent={"center"}>
                         <TextField
-                          label={t("text.Remark")}
+                          label={<CustomLabel text={t("text.Remark")} required={false}  />}
                           value={formik.values.rRemark}
                           onChange={formik.handleChange}
                           onBlur={formik.handleBlur}
@@ -620,7 +631,8 @@ export default function HomePage() {
 
                       <Grid xs={5} sm={5} item>
                         <TextField
-                          label="Enter Ref. No."
+                          // label="Enter Ref. No."
+                          label={<CustomLabel text="Enter Ref. No." required={false}  />}
                           value={newrefNo}
                           placeholder="Enter Ref. No."
                           size="small"
@@ -636,7 +648,8 @@ export default function HomePage() {
                         <TextField
                           // id="zoneCode"
                           // name="zoneCode"
-                          label="Enter Year"
+                          // label="Enter Year"
+                          label={<CustomLabel text="Enter Year" required={false}  />}
                           value={newrefNoYr}
                           placeholder="Enter Year"
                           size="small"
@@ -680,56 +693,6 @@ export default function HomePage() {
                       pageSizeOptions={[5, 10, 25, 50, 100]}
                       initialPageSize={5}
                       />
-{/* 
-                      {isLoading ? (
-                        <div
-                          style={{
-                            display: "flex",
-                            justifyContent: "center",
-                            alignItems: "center",
-                          }}
-                        >
-                          <CircularProgress />
-                        </div>
-                      ) : (
-                        <Box>
-                          <div
-                            style={{
-                              width: "100%",
-                              backgroundColor: "#FFF",
-                            }}
-                          >
-                            <DataGrid
-                              rows={totalFile}
-                              columns={adjustedColumns}
-                              autoHeight
-                              slots={{
-                                toolbar: GridToolbar,
-                              }}
-                              rowSpacingType="border"
-                              pagination={true}
-                              pageSizeOptions={[5, 10, 25, 50, 100].map(
-                                (size) => ({
-                                  value: size,
-                                  label: `${size}`,
-                                })
-                              )}
-                              initialState={{
-                                pagination: {
-                                  paginationModel: { pageSize: 5 },
-                                },
-                              }}
-                              slotProps={{
-                                toolbar: {
-                                  showQuickFilter: true,
-                                },
-                              }}
-                              scrollbarSize={20} 
-                            />
-                          </div>
-                        </Box>
-                      )} */}
-
 
                   </Paper>
                 </>

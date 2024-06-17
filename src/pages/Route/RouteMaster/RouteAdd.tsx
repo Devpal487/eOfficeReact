@@ -698,7 +698,7 @@ export default function RouteAdd() {
                           justifyContent="center"
                         >
                           <Grid
-                            xs={6}
+                            xs={4}
                             item
                             container
                             alignItems="center"
@@ -706,7 +706,7 @@ export default function RouteAdd() {
                           >
                             <img src={auth} alt="Authority" height="100px" />
                           </Grid>
-                          <Grid item xs={6} container spacing={1}>
+                          <Grid item xs={8} container spacing={1}>
                             <Grid item lg={12} xs={12}>
                               <Autocomplete
                                 disablePortal

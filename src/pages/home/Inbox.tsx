@@ -64,16 +64,16 @@ export default function Inbox() {
 
     const handleMove = (row: any) => {
         const value = {
-           
-           
-            
-            "fnId":row.fnId,
+
+
+
+            "fnId": row.fnId,
             "hdnAuth": 1,
-          
-            "movedDate":"1900-01-01",
+
+            "movedDate": "1900-01-01",
             "lastUpdatedDate ": "1900-01-01",
             "type": 2,
-           
+
             "divisionid": parseInt(localStorage.getItem("id") + ""),
 
         };
@@ -170,9 +170,6 @@ export default function Inbox() {
                         flex: 1,
                         headerClassName: "MuiDataGrid-colCell",
                     },
-
-
-
 
                     {
                         field: "dairyDate",

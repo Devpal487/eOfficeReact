@@ -25,12 +25,23 @@ import {
     Select,
     MenuItem,
     Radio,
-    FormLabel
+    FormLabel,
+    Modal,
+    IconButton
 } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import api from "../../utils/Url";
 import Box from "@mui/material/Box";
 import CustomDataGrid from "../../utils/CustomDatagrid";
+import { useFormik } from "formik";
+import { toast } from "react-toastify";
+import ButtonWithLoader from "../../utils/ButtonWithLoader";
+import { CloseIcons } from "../../utils/icons";
+import { ConfirmDialog } from "primereact/confirmdialog";
+import CustomLabel from "../../CustomLable";
+import { getId, getdivisionId, getinstId } from "../../utils/Constant";
+import * as Yup from "yup";
+
 
 interface MenuPermission {
     isAdd: boolean;
@@ -44,14 +55,104 @@ export default function WorkPlace() {
     const [columns, setColumns] = useState<any>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [ReviewModalData, setReviewModalData] = useState(false);
+    const [minDueDate, setMinDueDate] = useState("");
+
+
+    const userId = getId();
+
+    const instId = getinstId();
+    // console.log("🚀 ~ ViewEditFile ~ userId:", userId);
+    const divId = getdivisionId();
+    // console.log("🚀 ~ ViewEditFile ~ divId:", divId);
+
+
+
     const { t } = useTranslation();
 
     const navigate = useNavigate();
 
     useEffect(() => {
-        getAuthDevision();
+        // getAuthDevision();
         fetchTotalFile();
     }, []);
+
+    const validationSchema = Yup.object().shape({
+        moveDate: Yup.date().required("Moved Date is required"),
+        dueDate: Yup.date()
+            .required("Due Date is required")
+            .min(Yup.ref("moveDate"), "Due Date must be after Moved Date"),
+    });
+
+
+    const formik = useFormik({
+        initialValues: {
+            rSendAdrs: '',
+            id: "",
+            rRemark: "",
+            rFileNumber: "",
+            rid: "",
+            rDealHands: "",
+            rDealHandlabel: "",
+            fileNo: 0,
+            dueDate:"",
+            moveDate:new Date().toISOString().substring(0, 10),
+
+
+        },
+        validationSchema: validationSchema,
+        onSubmit: async (values) => { },
+    });
+
+
+    const handleMoveDateChange = (event: any) => {
+        const moveDate = event.target.value;
+        formik.setFieldValue("moveDate", moveDate);
+        formik.setFieldValue("dueDate", "");
+        setMinDueDate(moveDate);
+    };
+
+
+    const handleCloseReviewModal = () => {
+        setReviewModalData(false);
+        formik.setFieldValue("rDealHands", "");
+        formik.setFieldValue("rDealHandlabel", "");
+    };
+
+
+    const getSpMovement = async () => {
+        // setLoading(true);
+        const value = {
+
+            "hdnFilNu": formik.values.fileNo,
+            "inst_id": instId,
+            "userid": userId,
+            "moveddate":formik.values.moveDate.toString() || "",
+            "duedate":formik.values.dueDate.toString() || "",
+            "remark": formik.values.rRemark.toString() || "",
+            "routeId": 0,
+            "authorityLevel": 0,
+            "workPlaceFlag":formik.values.rDealHandlabel.toString(),
+            "remId": 0,
+            "divisionId": divId,
+            "message": ""
+        };
+        await api
+            .post(`FileMovement/sp_movetoawait`, value)
+            .then((res) => {
+                if (res.data.isSuccess) {
+                    toast.success(res.data.mesg);
+                    fetchTotalFile();
+                    handleCloseReviewModal();
+                    formik.setFieldValue("rRemark", "");
+                    formik.resetForm();
+                    //setLoading(false); 
+                } else {
+                    toast.error(res.data.mesg);
+                    //setLoading(false); 
+                }
+                // setLoading(false); 
+            });
+    };
 
 
     const routeChangeAdd = (row: any) => {
@@ -67,18 +168,30 @@ export default function WorkPlace() {
         });
     };
 
-    const getAuthDevision = () => {
-        const collectData = {
-            divisionid: parseInt(localStorage.getItem("id") + ""),
-        };
-        api.post(`AuthorityMaster/GetAuthorityDiv`, collectData).then((res) => {
-            const arr = res.data.data.map((item: any) => ({
-                label: item.authorityType,
-                value: item.id,
-            }));
-            Division = arr;
-        });
-    };
+
+
+
+
+    // const getAuthDevision = () => {
+    //     const collectData = {
+    //         divisionid: parseInt(localStorage.getItem("id") + ""),
+    //     };
+    //     api.post(`AuthorityMaster/GetAuthorityDiv`, collectData).then((res) => {
+    //         const arr = res.data.data.map((item: any) => ({
+    //             label: item.authorityType,
+    //             value: item.id,
+    //         }));
+    //         Division = arr;
+    //     });
+    // };
+
+    const arr = [
+        { label: "Awaited", value: "1" },
+        { label: "Closed", value: "2" },
+        { label: "Park/Archive", value: "3" },
+    ];
+
+    Division = arr;
 
     var Division: any[];
 
@@ -86,14 +199,13 @@ export default function WorkPlace() {
         try {
             console.log("Division", Division);
             const collectData = {
-                inst_id: 1,
-                divid: parseInt(localStorage.getItem("id") + ""),
-                refNoYr: parseInt(new Date().getFullYear() + ""),
-                pstart: 0,
+                "userid": userId,
+                "divisionId": divId,
+                "type": "WP"
             };
             console.log("collectData", collectData);
             const response = await api.post(
-                `RefferenceNumber/GetRefferenceNo`,
+                `FileMovement/Getsp_FileRoInbox`,
                 collectData
             );
 
@@ -102,7 +214,7 @@ export default function WorkPlace() {
             const DocsWithIds = data.map((doc: any, index: any) => ({
                 ...doc,
                 serialNo: index + 1,
-                id: doc.rid,
+                id: doc.fnId,
                 Division: Division,
             }));
 
@@ -118,20 +230,20 @@ export default function WorkPlace() {
                         headerClassName: "MuiDataGrid-colCell",
                     },
                     {
-                        field: "rFileNumber",
-                        headerName: "File Number",
+                        field: "fileNm",
+                        headerName: "File Name",
                         flex: 1,
                         headerClassName: "MuiDataGrid-colCell",
                     },
                     {
-                        field: "letterBy",
-                        headerName: " Updated Remark[File]",
+                        field: "cSubject",
+                        headerName: "Subject",
                         flex: 1,
                         headerClassName: "MuiDataGrid-colCell",
                     },
                     {
-                        field: "Current Status",
-                        headerName: "Current Status ",
+                        field: "fileStatus",
+                        headerName: "File Status ",
                         flex: 1,
                         headerClassName: "MuiDataGrid-colCell",
                     },
@@ -143,17 +255,80 @@ export default function WorkPlace() {
                     },
 
                     {
+                        field: "updatedRemark",
+                        headerName: "Update Remark",
+                        flex: 1,
+                        headerClassName: "MuiDataGrid-colCell",
+                    },
+
+                    {
                         field: "rLetterSentOn",
                         headerName: "Sent To",
                         flex: 1,
                         headerClassName: "MuiDataGrid-colCell",
+                        renderCell: (params) => {
+
+
+                            return (
+                                <Select
+                                    onChange={(event: any) => {
+                                        if (!params.row.fileNm) {
+                                            toast.error("Please first assign File Name then proceed further....")
+                                        } else {
+                                            console.log("file number", params.row.fnId)
+                                            setReviewModalData(true);
+
+                                            // formik.setFieldValue("id", params.row.fnId);
+                                            formik.setFieldValue("fileNo", params.row.fnId);
+                                            //formik.setFieldValue("rid", params.row.rid);
+                                            // formik.setFieldValue("rDealHands", params.row.Division[0]["value"]);
+                                            //formik.setFieldValue("rDealHandlabel", params.row.Division[0]["label"]);
+                                            const selectedDivision = params.row.Division.find(
+                                                (item: any) => item.value === event.target.value
+                                            );
+                                            if (selectedDivision) {
+                                                formik.setFieldValue("rDealHands", selectedDivision.value);
+                                                formik.setFieldValue("rDealHandlabel", selectedDivision.label);
+                                            } else {
+                                                formik.setFieldValue("rDealHands", "");
+                                                formik.setFieldValue("rDealHandlabel", "");
+                                            }
+                                        }
+                                    }}
+                                    fullWidth
+                                    size="small"
+                                >
+                                    <MenuItem value="" >Select Division</MenuItem>
+                                    {params?.row?.Division?.map((item: any) => (
+                                        <MenuItem key={item.value} value={item.value}>{item.label}</MenuItem>
+                                    ))}
+                                </Select>
+                            )
+
+                        },
                     },
                     {
                         field: "Review File",
                         headerName: "Review File",
                         flex: 1,
                         headerClassName: "MuiDataGrid-colCell",
-                    }
+                        renderCell: (params) => {
+
+                            console.log('checkPrams', params)
+                            return [
+                                <Button
+                                    variant="contained"
+                                    color="primary"
+                                    onClick={() => navigate('/Committee/ViewEditFile')}
+                                    style={{ height: "80%" }}
+                                >
+                                    View/Edit
+                                </Button>
+
+                            ]
+                        },
+
+                    },
 
                 ];
                 setColumns(columns as any);
@@ -182,6 +357,7 @@ export default function WorkPlace() {
             style={{ padding: "10px", }}
         >
 
+
             {isLoading ? (
                 <div
                     style={{
@@ -199,7 +375,138 @@ export default function WorkPlace() {
                     columns={adjustedColumns}
                     pageSizeOptions={[5, 10, 25, 50, 100]}
                     initialPageSize={5}
-                />)}
+                />
+            )}
+
+
+
+
+
+            {ReviewModalData && (
+                <Modal open={true} >
+                    <Card
+                        style={{
+                            width: "80%",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            backgroundColor: "#E9FDEE",
+                            border: ".5px solid #42AEEE",
+                            marginTop: "35vh",
+                            marginLeft: "10%"
+                        }}
+                    >
+                        <Paper
+                            sx={{
+                                width: "100%",
+                                overflow: "hidden",
+                                "& .MuiDataGrid-colCell": {
+                                    backgroundColor: "#42AEEE",
+                                    color: "#fff",
+                                    fontSize: 17,
+                                    fontWeight: 900
+                                }
+                            }}
+                            style={{ padding: "10px", justifyContent: "center" }}
+                        >
+                            <Grid xs={12} display="flex" alignItems="center" justifyContent="space-between" >
+
+                                <Typography fontWeight={600} color="#000" fontSize="20px">Remark to {formik.values.rDealHandlabel} for the Letter </Typography>
+                                {/* <Typography color="#000" ><CloseIcons/></Typography> */}
+                                <IconButton
+                                    // edge="end"
+                                    onClick={handleCloseReviewModal}
+                                    aria-label="close"
+                                // sx={{ color: "#fff", position: "absolute", right: 20, top: 5 }}
+                                >
+                                    <CloseIcons />
+                                </IconButton>
+                            </Grid>
+
+                            <ConfirmDialog />
+                            <Divider />
+                            <Box height={10} />
+                            <Stack direction="column" spacing={2} classes="my-2 mb-2" justifyContent={"center"}>
+                                <Grid
+                                    container
+                                    spacing={2}
+                                    alignItems="center"
+                                    sx={{ marginTop: 2 }}
+                                >
+                                    <Grid item xs={5}>
+                                        <TextField
+                                            type="date"
+                                            label={<CustomLabel text="Moved Date" />}
+                                            value={formik.values.moveDate}
+                                            placeholder="Moved Date"
+                                            size="small"
+                                            InputLabelProps={{ shrink: true }}
+                                            fullWidth
+                                            name="moveDate"
+                                            id="moveDate"
+                                            style={{ backgroundColor: "white" }}
+                                            onChange={handleMoveDateChange}
+                                            onBlur={formik.handleBlur}
+                                            error={
+                                                formik.touched.moveDate &&
+                                                Boolean(formik.errors.moveDate)
+                                            }
+                                            helperText={
+                                                formik.touched.moveDate && formik.errors.moveDate
+                                            }
+                                        />
+                                    </Grid>
+
+                                    <Grid item xs={5}>
+                                        <TextField
+                                            type="date"
+                                            label={<CustomLabel text="Due Date" />}
+                                            value={formik.values.dueDate}
+                                            placeholder="Due Date"
+                                            size="small"
+                                            InputLabelProps={{ shrink: true }}
+                                            fullWidth
+                                            name="dueDate"
+                                            id="dueDate"
+                                            style={{ backgroundColor: "white" }}
+                                            onChange={formik.handleChange}
+                                            onBlur={formik.handleBlur}
+                                            error={
+                                                formik.touched.dueDate &&
+                                                Boolean(formik.errors.dueDate)
+                                            }
+                                            helperText={
+                                                formik.touched.dueDate && formik.errors.dueDate
+                                            }
+                                            inputProps={{ min: minDueDate }}
+                                        />
+                                    </Grid>
+
+                                </Grid>
+
+                                <TextField
+                                    label={<CustomLabel text={t("text.Remark")} required={false} />}
+                                    value={formik.values.rRemark}
+                                    onChange={formik.handleChange}
+                                    onBlur={formik.handleBlur}
+                                    placeholder={t("text.Remark")}
+                                    name="rRemark"
+                                    id="rRemark"
+
+                                    size="medium"
+                                    style={{ backgroundColor: "white", width: '100%' }}
+                                    fullWidth
+                                    multiline
+                                    rows={4}
+                                />
+
+                                <ButtonWithLoader buttonText="Move"
+                                    onClickHandler={getSpMovement}
+                                />
+                            </Stack>
+                        </Paper>
+                    </Card>
+                </Modal>
+            )}
 
         </Paper>
     );

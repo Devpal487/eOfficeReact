@@ -428,12 +428,11 @@ export default function ZoneMaster() {
                  {permissionData?.isAdd == true ? (
 
 
-                <ButtonWithLoader buttonText={editId == -1 ? t("text.save") : t("text.update")} onClickHandler={handleSubmitWrapper} />
-                 ) : (
-                   "" 
-                )} 
 
-
+                <ButtonWithLoader buttonText={editId == -1 ? t("text.save") : t("text.update")} onClickHandler={handleSubmitWrapper} fullWidth={true}/>
+                {/* ) : ( */}
+                {/*   "" */}
+                {/* )} */}
 
               </Grid>
             </Grid>

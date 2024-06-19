@@ -31,6 +31,7 @@ import { useTranslation } from "react-i18next";
 import api from "../../utils/Url";
 import Box from "@mui/material/Box";
 import CustomDataGrid from "../../utils/CustomDatagrid";
+import { getId, getdivisionId, getinstId } from "../../utils/Constant";
 
 interface MenuPermission {
     isAdd: boolean;
@@ -44,6 +45,15 @@ export default function Awaited() {
     const [columns, setColumns] = useState<any>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [ReviewModalData, setReviewModalData] = useState(false);
+
+    
+    const userId = getId();
+
+    const instId = getinstId();
+    // console.log("🚀 ~ ViewEditFile ~ userId:", userId);
+    const divId = getdivisionId();
+    // console.log("🚀 ~ ViewEditFile ~ divId:", divId);
+
     const { t } = useTranslation();
 
     const navigate = useNavigate();
@@ -86,14 +96,13 @@ export default function Awaited() {
         try {
             console.log("Division", Division);
             const collectData = {
-                inst_id: 1,
-                divid: parseInt(localStorage.getItem("id") + ""),
-                refNoYr: parseInt(new Date().getFullYear() + ""),
-                pstart: 0,
+                "userid": userId,
+                "divisionId": divId,
+                "type": "A"
             };
             console.log("collectData", collectData);
             const response = await api.post(
-                `RefferenceNumber/GetRefferenceNo`,
+                `FileMovement/Getsp_FileRoInbox`,
                 collectData
             );
 
@@ -102,7 +111,7 @@ export default function Awaited() {
             const DocsWithIds = data.map((doc: any, index: any) => ({
                 ...doc,
                 serialNo: index + 1,
-                id: doc.rid,
+                id: doc.cFileNo,
                 Division: Division,
             }));
 
@@ -118,42 +127,49 @@ export default function Awaited() {
                         headerClassName: "MuiDataGrid-colCell",
                     },
                     {
-                        field: "rFileNumber",
-                        headerName: "File Number",
+                        field: "fileNm",
+                        headerName: "File Name",
                         flex: 1,
                         headerClassName: "MuiDataGrid-colCell",
                     },
                     {
-                        field: "rSubject",
-                        headerName: "Subject ",
+                        field: "cSubject",
+                        headerName: "Subject",
                         flex: 1,
                         headerClassName: "MuiDataGrid-colCell",
                     },
                     {
-                        field: "letterBy",
-                        headerName: " Updated Remark[File]",
+                        field: "lastStaus",
+                        headerName: "Last Status",
                         flex: 1,
                         headerClassName: "MuiDataGrid-colCell",
                     },
 
                     {
-                        field: "rSubject",
+                        field: "createdby",
                         headerName: "File Created By",
                         flex: 1,
                         headerClassName: "MuiDataGrid-colCell",
                     },
                     {
-                        field: "rSubject",
-                        headerName: "Date on Which File Kept in Awaited List",
+                        field: "mdate",
+                        headerName: "Move date",
                         flex: 1,
                         headerClassName: "MuiDataGrid-colCell",
                     },
                     {
-                        field: "rLetterSentOn",
+                        field: "dDate",
                         headerName: "Due Date",
                         flex: 1,
                         headerClassName: "MuiDataGrid-colCell",
+                    },
+                    {
+                        field: "updatedRemark",
+                        headerName: "Updated Remark",
+                        flex: 1,
+                        headerClassName: "MuiDataGrid-colCell",
                     }
+
                 ];
                 setColumns(columns as any);
             }

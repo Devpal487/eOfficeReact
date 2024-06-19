@@ -27,7 +27,7 @@ import { useTranslation } from "react-i18next";
 import { DataGrid, GridColDef, GridToolbar } from "@mui/x-data-grid";
 import { toast } from "react-toastify";
 import ToastApp from "../../../ToastApp";
-import { getISTDate } from "../../../utils/Constant";
+import { getISTDate, getdivisionId } from "../../../utils/Constant";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { Avatar, Stack } from "@mui/material";
@@ -38,6 +38,7 @@ import 'react-quill/dist/quill.snow.css';
 import nopdf from '../../../assets/images/imagepreview.jpg';
 import CustomLabel from "../../../CustomLable";
 import CustomDataGrid from "../../../utils/CustomDatagrid";
+
 
 
 const style = {
@@ -76,6 +77,8 @@ export default function Correspondence() {
     };
     // console.log("editorContent", editorContent)
 
+    const divid = getdivisionId();
+
     useEffect(() => {
         const dataString = localStorage.getItem("userdata");
 
@@ -84,34 +87,56 @@ export default function Correspondence() {
 
     }, []);
 
-    const getFileTypeData = async () => {
+    // const getFileTypeData = async () => {
+    //     const collectData = {
+    //         "fnId": -1,
+    //         "fId": -1,
+    //         "inst_id": -1,
+    //         "user_id": -1,
+    //         "divisionId": -1
+    //     }
+    //     const res = await api.post(`FileNumber/GetFileNumber`, collectData)
+    //     // console.log("check file type", res?.data?.data)
+    //     const arr = [];
+    //     for (let index = 0; index < res.data.data.length; index++) {
+    //         arr.push({
+    //             value: res.data.data[index]["fnId"],
+    //             label: res.data.data[index]["fileNm"],
+    //         })
+    //         setFileTypeOption(arr);
+    //     }
+    // }
+
+
+    const getFileTypeData = () => {
         const collectData = {
             "fnId": -1,
             "fId": -1,
             "inst_id": -1,
             "user_id": -1,
             "divisionId": -1
-        }
-        const res = await api.post(`FileNumber/GetFileNumber`, collectData)
-        // console.log("check file type", res?.data?.data)
-        const arr = [];
-        for (let index = 0; index < res.data.data.length; index++) {
-            arr.push({
-                value: res.data.data[index]["fnId"],
-                label: res.data.data[index]["fileNm"],
-            })
-            setFileTypeOption(arr);
-        }
-    }
+        };
+        api
+            .post(`FileNumber/GetFileNumber`, collectData)
+            .then((res) => {
+                const arr = res.data.data.map((item: any) => ({
+                    label: item.fileNm,
+                    value: item.fnId,
+                }));
+                setFileTypeOption(arr);
+            });
+    };
+
+
 
     let delete_id = "";
     const accept = () => {
         const collectData = {
-            fnId: delete_id,
+            fileId: delete_id,
         };
         console.log("collectData " + JSON.stringify(collectData));
         api
-            .delete(`FileNumber/DeleteFileNumber`, { data: collectData })
+            .delete(`Correspondance/DeleteCorrespondance`, { data: collectData })
             .then((response) => {
                 if (response.data.isSuccess) {
                     toast.success(response.data.mesg);
@@ -139,18 +164,19 @@ export default function Correspondence() {
         });
     };
 
-    const getListbyid = (id:any) => {
+    const getListbyid = (id: any) => {
         const collectData = {
             "fileId": id,
             "fNid": -1,
             "nodeId": -1
         };
-            api
-                .post(`Correspondance/GetCorrespondance`, collectData)
-                .then((res) => {
-                    console.log(res.data.data[0]['uploading'])
-                    formik.setFieldValue("uploading",res.data.data[0]['uploading'])})
-};
+        api
+            .post(`Correspondance/GetCorrespondance`, collectData)
+            .then((res) => {
+                console.log(res.data.data[0]['uploading'])
+                formik.setFieldValue("uploading", res.data.data[0]['uploading'])
+            })
+    };
 
     const getList = () => {
         const collectData = {
@@ -227,13 +253,13 @@ export default function Correspondence() {
                             },
                             {
                                 field: "fileNo",
-                                headerName:t("text.FileNo"),
+                                headerName: t("text.FileNo"),
                                 flex: 1,
                                 headerClassName: "MuiDataGrid-colCell",
                             },
                             {
                                 field: "reviewFlag",
-                                headerName:t("text.Type"),
+                                headerName: t("text.Type"),
                                 flex: 1,
                                 headerClassName: "MuiDataGrid-colCell",
                                 renderCell: (params) => {
@@ -272,7 +298,7 @@ export default function Correspondence() {
         initialValues: {
             "fileId": -1,
             "fileNo": "",
-            "fNid": 0,
+            "fNid":divid,
             "fileType": "",
             "fileCont": "",
             "nodeId": 0,
@@ -353,6 +379,16 @@ export default function Correspondence() {
 
         }
     };
+
+
+    useEffect(() => {
+        if (!formik.values.reviewFlag) {
+            formik.setFieldValue('reviewFlag', 'N');
+        }
+    }, [formik.values.reviewFlag, formik.setFieldValue]);
+
+
+
     return (
         <>
             <Grid item lg={6} sm={6} xs={12} sx={{ marginTop: "3vh" }}>
@@ -386,7 +422,7 @@ export default function Correspondence() {
                             sx={{ padding: "20px" }}
                             align="left"
                         >
-                           {t("text.Correspondence")}
+                            {t("text.Correspondence")}
                         </Typography>
                         <Divider />
 
@@ -396,6 +432,7 @@ export default function Correspondence() {
                             <Grid item xs={12} container spacing={3}>
 
                                 <Grid xs={12} sm={4} item>
+
 
                                     <Autocomplete
                                         disablePortal
@@ -408,23 +445,24 @@ export default function Correspondence() {
                                         }
                                         fullWidth
                                         size="small"
-                                        onChange={(event: any, newValue: any) => {
+                                        onChange={(event, newValue: any) => {
                                             console.log(newValue?.value);
 
-                                            formik.setFieldValue("fNid", newValue?.value?.toString());
+                                            formik.setFieldValue("fNid", newValue?.value);
+                                            formik.setFieldValue("fileNo", newValue?.label);
+
                                             formik.setFieldTouched("fNid", true);
                                             formik.setFieldTouched("fNid", false);
                                         }}
                                         renderInput={(params) => (
-                                            <TextField {...params} label={<CustomLabel text={t("text.SelectFileNo")} />} />
+                                            <TextField
+                                                {...params}
+                                                label={<CustomLabel text={t("text.SelectFileNo")} />}
+                                            />
                                         )}
                                     />
-                                    {formik.touched.fNid &&
-                                        formik.errors.fNid ? (
-                                        <div style={{ color: "red", margin: "5px" }}>
-                                            {formik.errors.fNid}
-                                        </div>
-                                    ) : null}
+
+
                                 </Grid>
 
                                 {/* <Grid item xs={6} sm={6}>
@@ -484,16 +522,19 @@ export default function Correspondence() {
                                                     control={<Radio />}
                                                     label={t("text.Report")}
                                                 />
-                                                <FormControlLabel
-                                                    value="1"
+                                                  <FormControlLabel
+                                                    value="D"
                                                     control={<Radio />}
-                                                    label={t("text.Ofer")}
+                                                    label={t("text.Draft")}
                                                 />
+
                                                 <FormControlLabel
-                                                    value="2"
+                                                    value="O"
                                                     control={<Radio />}
                                                     label={t("text.Other")}
                                                 />
+
+                                                
                                             </RadioGroup>
                                         </Grid>
                                     </FormControl>
@@ -511,7 +552,7 @@ export default function Correspondence() {
                                     >
                                         <TextField
                                             type="file"
-                                            //   inputProps={{ accept: "application/pdf" }}
+                                               inputProps={{ accept: "application/pdf" }}
                                             InputLabelProps={{ shrink: true }}
                                             label={<CustomLabel text={t("text.AttachedFile")} />}
                                             size="small"
@@ -542,7 +583,7 @@ export default function Correspondence() {
                                                     }}
                                                 />
                                             ) : (
-                                                <img
+                                                <embed
                                                     src={formik.values.uploading}
                                                     style={{
                                                         width: 150,
@@ -579,7 +620,7 @@ export default function Correspondence() {
                                                 />
                                             ) : (
                                                 <div style={{ width: "100%", height: "100%" }}>
-                                                    <img
+                                                    <embed
                                                         src={modalImg}
                                                         // type="application/pdf"
                                                         width="100%"
@@ -616,8 +657,8 @@ export default function Correspondence() {
                                             padding: "8px 12px",
                                             borderRadius: "4px",
                                         }}
-                                        //value={formik.values.fileCont}
-                                        // onChange={formik.handleChange}
+                                    //value={formik.values.fileCont}
+                                    // onChange={formik.handleChange}
                                     //   onBlur={formik.handleBlur}
                                     />
                                 </Grid>
@@ -643,12 +684,12 @@ export default function Correspondence() {
                             </div>
                         ) : (
                             <CustomDataGrid
-                            isLoading={isLoading}
-                            rows={rows}
-                            columns={columns}
-                            pageSizeOptions={[5, 10, 25, 50, 100]}
-                            initialPageSize={5}
-                        />
+                                isLoading={isLoading}
+                                rows={rows}
+                                columns={columns}
+                                pageSizeOptions={[5, 10, 25, 50, 100]}
+                                initialPageSize={5}
+                            />
                         )}
                     </Paper>
                 </Card>

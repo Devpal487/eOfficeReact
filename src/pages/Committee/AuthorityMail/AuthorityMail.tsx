@@ -23,6 +23,8 @@ import {
     Slide,
     colors,
     Box,
+    Modal,
+    Radio,
 } from "@mui/material";
 import ArrowBackSharpIcon from "@mui/icons-material/ArrowBackSharp";
 import React, { useEffect, useState, useRef } from "react";
@@ -38,7 +40,7 @@ import { toast } from "react-toastify";
 import { getISTDate } from "../../../utils/Constant";
 import Dialog, { DialogProps } from '@mui/material/Dialog';
 import ToastApp from "../../../ToastApp";
-import { EditIcons, UploadIcons, PasteIcons, PrintIcons, PendingIcons, UpgradeIcons, FileCopyIcons, FilemoveIcons, HighlightIcons, SmsIcons, MakeIcons, ArchiveIcons } from "../../../utils/icons";
+import { EditIcons, UploadIcons, PasteIcons, PrintIcons, PendingIcons, UpgradeIcons, FileCopyIcons, FilemoveIcons, HighlightIcons, SmsIcons, MakeIcons, ArchiveIcons, CloseIcons } from "../../../utils/icons";
 import CustomLabel from "../../../CustomLable";
 import FindInPageIcon from '@mui/icons-material/FindInPage';
 import InboxIcon from '@mui/icons-material/Inbox';
@@ -49,6 +51,7 @@ import MessageIcon from '@mui/icons-material/Message';
 import MailIcon from '@mui/icons-material/Mail';
 import ArrowCircleRightIcon from '@mui/icons-material/ArrowCircleRight';
 import { getinstId, getId, getdivisionId } from "../../../utils/Constant";
+import ReactQuill from "react-quill";
 
 const Transition = React.forwardRef(function Transition(
     props: TransitionProps & {
@@ -59,18 +62,50 @@ const Transition = React.forwardRef(function Transition(
     return <Slide direction="up" ref={ref} {...props} />;
 });
 
+// const style = {
+//     position: "absolute" as "absolute",
+//     top: "50%",
+//     left: "50%",
+//     transform: "translate(-50%, -50%)",
+//     width: "120vh",
+//     height: "85vh",
+//     bgcolor: "#f5f5f5",
+//     border: "1px solid #000",
+//     boxShadow: 24,
+//     p: 4,
+//     borderRadius: 10,
+// };
+
+
+const modules = {
+    toolbar: [
+        [{ 'header': '1' }, { 'header': '2' }, { 'font': [] }],
+        [{ size: [] }],
+        ['bold', 'italic', 'underline', 'strike', 'blockquote'],
+        [{ 'list': 'ordered' }, { 'list': 'bullet' }, { 'indent': '-1' }, { 'indent': '+1' }],
+        ['link', 'image', 'video'],
+        ['clean']
+    ],
+};
+
+const formats = [
+    'header', 'font', 'size',
+    'bold', 'italic', 'underline', 'strike', 'blockquote',
+    'list', 'bullet', 'indent',
+    'link', 'image', 'video'
+];
+
+
 const style = {
-    position: "absolute" as "absolute",
+    position: "absolute",
     top: "50%",
     left: "50%",
     transform: "translate(-50%, -50%)",
-    width: "120vh",
-    height: "85vh",
-    bgcolor: "#f5f5f5",
-    border: "1px solid #000",
+    width: 800,
+    bgcolor: "background.paper",
+    border: "2px solid #000",
     boxShadow: 24,
     p: 4,
-    borderRadius: 10,
 };
 
 type Props = {};
@@ -91,6 +126,16 @@ const AuthorityMail = (props: Props) => {
     ]);
 
     const [tableLoading, setIsTableLoading] = useState(false);
+    const [Awaitopen, setAwaitopen] = useState(false);
+    const [pdfView, setPdfView] = useState("");
+    const [editorContent, setEditorContent] = useState<string>('');
+
+    const handleEditorChange = (content: any) => {
+        const textWithoutTags = content.replace(/<[^>]*>/g, '').trim(); // Remove HTML tags
+        console.log("textWithoutTags", textWithoutTags);
+        setEditorContent(textWithoutTags);
+    };
+
 
     //dialog entry
     const [fileID, setFileID] = useState("");
@@ -105,7 +150,7 @@ const AuthorityMail = (props: Props) => {
     };
 
     useEffect(() => {
-         getTableData(1);
+        getTableData(1);
         // getMoveTableData();
         //getFileNo();
     }, []);
@@ -129,11 +174,19 @@ const AuthorityMail = (props: Props) => {
     //         });
     // };
 
-    const getTableData = (type:any) => {
+    const handleAWaitOpen = () => {
+        console.log("await is clicked");
+        setAwaitopen(true);
+    };
+    const handleAWaitClose = () => {
+        setAwaitopen(false);
+    };
+
+    const getTableData = (type: any) => {
         setIsTableLoading(true);
         const collectData = {
             "hdnAuthMail": userId,
-            "Type": type+""
+            "Type": type + ""
 
 
         };
@@ -156,7 +209,7 @@ const AuthorityMail = (props: Props) => {
                         SendDate: res.data.data[index]["SendDate"],
                         DSFNAme: res.data.data[index]["SendDate"],
                         fileNm: res.data.data[index]["fileNm"]
-                        
+
                     });
                 }
                 setMovementTableData(arr);
@@ -196,6 +249,39 @@ const AuthorityMail = (props: Props) => {
                 setMsgTableData(arr);
                 setIsTableLoading(false);
             });
+    };
+
+
+    const ConvertBase64 = (file: Blob) => {
+        return new Promise((resolve, reject) => {
+            const fileReader = new FileReader();
+            fileReader.readAsDataURL(file);
+            fileReader.onload = () => {
+                resolve(fileReader.result);
+            };
+            fileReader.onerror = (error) => {
+                reject(error);
+            };
+        });
+    };
+
+    const otherDocChangeHandler = async (event: any, params: any) => {
+        if (event.target.files && event.target.files[0]) {
+            const file = event.target.files[0];
+
+            const fileNameParts = file.name.split(".");
+            const fileExtension = fileNameParts[fileNameParts.length - 1];
+            if (fileExtension.toLowerCase() === "pdf") {
+                const fileURL = URL.createObjectURL(file);
+                formik.setFieldValue("fileattach_name", file.name);
+                setPdfView(fileURL);
+                const base64 = await ConvertBase64(file);
+                formik.setFieldValue(params, base64);
+            } else {
+                toast.error("Only PDF files are allowed to be uploaded.");
+                event.target.value = null;
+            }
+        }
     };
 
 
@@ -295,11 +381,11 @@ const AuthorityMail = (props: Props) => {
             '&:hover': {
                 backgroundColor: '#f0f0f0'
             },
-            color: '#000', 
+            color: '#000',
         },
         selected: {
             backgroundColor: '#90CAF9',
-            color: '#000 !important', 
+            color: '#000 !important',
         },
     };
 
@@ -386,10 +472,10 @@ const AuthorityMail = (props: Props) => {
                                             </Box>
                                         }
                                         sx={value === 0 ? tabStyle.selected : tabStyle.default}
-                                     
+
                                         onClick={(event) => {
                                             getTableData("1");
-                                            
+
                                         }}
                                     />
 
@@ -405,7 +491,7 @@ const AuthorityMail = (props: Props) => {
                                         sx={value === 1 ? tabStyle.selected : tabStyle.default}
                                         onClick={(event) => {
                                             getTableData("S");
-                                            
+
                                         }}
                                     />
 
@@ -422,7 +508,7 @@ const AuthorityMail = (props: Props) => {
                                         sx={value === 2 ? tabStyle.selected : tabStyle.default}
                                         onClick={(event) => {
                                             getTableData("I");
-                                            
+
                                         }}
                                     />
 
@@ -438,7 +524,7 @@ const AuthorityMail = (props: Props) => {
                                         sx={value === 3 ? tabStyle.selected : tabStyle.default}
                                         onClick={(event) => {
                                             getTableData("D");
-                                            
+
                                         }}
                                     />
 
@@ -454,7 +540,7 @@ const AuthorityMail = (props: Props) => {
                                         sx={value === 4 ? tabStyle.selected : tabStyle.default}
                                         onClick={(event) => {
                                             getTableData("M");
-                                            
+
                                         }}
                                     />
 
@@ -470,7 +556,7 @@ const AuthorityMail = (props: Props) => {
                                         sx={value === 5 ? tabStyle.selected : tabStyle.default}
                                         onClick={(event) => {
                                             getTableData("L");
-                                            
+
                                         }}
                                     />
 
@@ -487,7 +573,7 @@ const AuthorityMail = (props: Props) => {
                                         sx={value === 6 ? tabStyle.selected : tabStyle.default}
                                         onClick={(event) => {
                                             getTableData("T");
-                                            
+
                                         }}
                                     />
 
@@ -513,6 +599,195 @@ const AuthorityMail = (props: Props) => {
 
                             </Grid>
 
+
+                            <Grid item lg={2} xs={12}>
+                                <Button
+                                    variant="contained"
+                                    color="primary"
+                                    onClick={handleAWaitOpen}
+                                    fullWidth
+                                >
+                                    compose
+                                </Button>
+                            </Grid>
+
+                            <Modal
+                                open={Awaitopen}
+                                onClose={handleAWaitClose}
+                                aria-labelledby="modal-modal-title"
+                                aria-describedby="modal-modal-description"
+                            >
+
+                                <Box sx={style}>
+
+                                    <IconButton
+                                        edge="end"
+                                        onClick={handleAWaitClose}
+                                        aria-label="close"
+                                        sx={{color: "black",marginLeft:"97%"}}
+                                    >
+                                        <CloseIcons />
+                                    </IconButton>
+
+                                    <Typography
+                                        id="modal-modal-title"
+                                        variant="h6"
+                                        component="h2"
+                                    >
+                                        New Message Letter
+                                    </Typography>
+
+
+
+                                    <Grid
+                                        container
+                                        spacing={2}
+                                        alignItems="center"
+                                        sx={{ marginTop: 2 }}
+                                    >
+
+                                        <Grid item sm={12} md={12}>
+                                            <FormControlLabel
+                                                control={
+                                                    <Radio
+                                                        id="letterBy1"
+                                                        name="letterBy"
+                                                        onChange={formik.handleChange}
+                                                       // checked={formik.values.letterBy === 'received'}
+                                                        value="received"
+                                                    />
+                                                }
+                                                label="Section"
+                                            />
+                                            <FormControlLabel
+                                                control={
+                                                    <Radio
+                                                        id="letterBy2"
+                                                        name="letterBy"
+                                                        onChange={formik.handleChange}
+                                                       // checked={formik.values.letterBy === 'dispatch'}
+                                                        value="dispatch"
+                                                    />
+                                                }
+                                                label="Authority"
+                                            />
+                                            <FormControlLabel
+                                                control={
+                                                    <Radio
+                                                        id="letterBy3"
+                                                        name="letterBy"
+                                                        onChange={formik.handleChange}
+                                                       // checked={formik.values.letterBy === 'received/dispatch'}
+                                                        value="received/dispatch"
+                                                    />
+                                                }
+                                                label="Message"
+                                            />
+                                            <FormControlLabel
+                                                control={
+                                                    <Radio
+                                                        id="letterBy4"
+                                                        name="letterBy"
+                                                        onChange={formik.handleChange}
+                                                        //checked={formik.values.letterBy === 'letter'}
+                                                        value="letter"
+                                                    />
+                                                }
+                                                label="Letter"
+                                            />
+                                        </Grid>
+
+
+
+
+
+                                        <Grid item xs={12}>
+                                            <TextField
+
+                                                label={<CustomLabel text="Receipts" />}
+                                                // value={formik.values.moveDate}
+                                                placeholder="Receipts"
+                                                size="small"
+                                                InputLabelProps={{ shrink: true }}
+                                                fullWidth
+                                                name="moveDate"
+                                                id="moveDate"
+                                                style={{ backgroundColor: "white" }}
+                                                onChange={formik.handleChange}
+                                                onBlur={formik.handleBlur}
+
+                                            />
+                                        </Grid>
+
+                                        <Grid item xs={12}>
+                                            <TextField
+
+                                                label={<CustomLabel text="Subject" />}
+                                                // value={formik.values.dueDate}
+                                                placeholder="Subject"
+                                                size="small"
+                                                InputLabelProps={{ shrink: true }}
+                                                fullWidth
+                                                name="dueDate"
+                                                id="dueDate"
+                                                style={{ backgroundColor: "white" }}
+                                                onChange={formik.handleChange}
+                                                onBlur={formik.handleBlur}
+
+                                            />
+                                        </Grid>
+
+                                        <Grid container spacing={1} item>
+                                            <Grid
+                                                xs={12}
+                                                md={6}
+                                                sm={6}
+                                                item
+                                                style={{ marginBottom: "30px", marginTop: "30px" }}
+                                            >
+                                                <TextField
+                                                    type="file"
+                                                    inputProps={{ accept: "application/pdf" }}
+                                                    InputLabelProps={{ shrink: true }}
+                                                    label={
+                                                        <strong style={{ color: "#000" }}>
+                                                            {t("text.EnterDocUpload")}
+                                                        </strong>
+                                                    }
+                                                    size="small"
+                                                    fullWidth
+                                                    style={{ backgroundColor: "white" }}
+                                                    onChange={(e) => otherDocChangeHandler(e, "pdfBase64")}
+                                                />
+                                            </Grid>
+                                        </Grid>
+
+                                        <Grid item xs={12} sm={12}>
+                                            {/* <QuillEditor /> */}
+                                            <ReactQuill
+                                                value={editorContent}
+                                                onChange={handleEditorChange}
+                                                modules={modules}
+                                                formats={formats}
+                                            />
+                                        </Grid>
+
+
+
+                                        <Grid item xs={4}>
+                                            <Button
+                                                variant="contained"
+                                                color="primary"
+                                                // onClick={MoveAwait}
+                                                fullWidth
+                                                style={{ marginLeft: "98%" }}
+                                            >
+                                                send
+                                            </Button>
+                                        </Grid>
+                                    </Grid>
+                                </Box>
+                            </Modal>
                             {/* <Grid item lg={2} xs={12} >
                                 <Button
                                     onClick={getTableData}
@@ -544,7 +819,7 @@ const AuthorityMail = (props: Props) => {
 
                         <Grid item xs={12} container spacing={2}>
 
-                            {value <=3  && (
+                            {value <= 3 && (
                                 <Grid xs={12} sm={12} item>
 
 
@@ -553,7 +828,7 @@ const AuthorityMail = (props: Props) => {
                                             borderCollapse: "collapse",
                                             width: "100%",
                                             border: "1px solid black",
-                                            
+
                                         }}
                                     >
                                         <thead
@@ -564,7 +839,7 @@ const AuthorityMail = (props: Props) => {
                                         >
                                             <tr>
 
-                                            <th
+                                                <th
                                                     style={{
                                                         borderLeft: "1px solid black",
                                                         paddingTop: "5px",
@@ -579,7 +854,7 @@ const AuthorityMail = (props: Props) => {
                                                         borderLeft: "1px solid black",
                                                         paddingTop: "5px",
                                                         paddingBottom: "5px",
-                                                      
+
                                                     }}
                                                 >
                                                     {t("text.FromTo")}
@@ -638,7 +913,7 @@ const AuthorityMail = (props: Props) => {
                                                                 padding: "2px",
                                                             }}
                                                         >
-                                                            {index +1}
+                                                            {index + 1}
                                                         </td>
 
                                                         <td
@@ -676,7 +951,7 @@ const AuthorityMail = (props: Props) => {
                                                             }}
                                                         >
                                                             {row.Csubject}
-                                                           
+
                                                         </td>
                                                         <td
                                                             style={{
@@ -686,7 +961,7 @@ const AuthorityMail = (props: Props) => {
                                                             }}
                                                         >
                                                             {row.CreatedDate}
-                                                           
+
                                                         </td>
                                                     </tr>
                                                 ))}
@@ -710,7 +985,7 @@ const AuthorityMail = (props: Props) => {
                                             borderCollapse: "collapse",
                                             width: "100%",
                                             border: "1px solid black",
-                                            
+
                                         }}
                                     >
                                         <thead
@@ -844,7 +1119,7 @@ const AuthorityMail = (props: Props) => {
                                             borderCollapse: "collapse",
                                             width: "100%",
                                             border: "1px solid black",
-                                            
+
                                         }}
                                     >
                                         <thead

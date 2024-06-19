@@ -74,12 +74,17 @@ export default function Inbox() {
             "lastUpdatedDate ": "1900-01-01",
             "type": 2,
 
+            "inst_id":1,
+            "user_id":userId,
+          
+
+
             "divisionid": parseInt(localStorage.getItem("id") + ""),
 
         };
 
         api.post(`FileMovement/GetSp_movetoworkplace`, value).then((res) => {
-            if (res.data.isSuccess) {
+            if (res.data.isSuccess == true) {
                 toast.success(res.data.mesg);
 
             } else {

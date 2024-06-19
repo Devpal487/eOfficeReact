@@ -86,6 +86,15 @@ const style = {
     p: 4,
 };
 
+
+const AntennaOption = [
+    { label: "Antenna-1", value: "A1" },
+    { label: "Antenna-2", value: "A2" },
+    { label: "Antenna-3", value: "A3" },
+    { label: "Antenna-4", value: "A4" },
+];
+
+
 type Props = {};
 
 const ViewEditFile = (props: Props) => {
@@ -932,28 +941,94 @@ const ViewEditFile = (props: Props) => {
                                     label={t("text.GetFileNoRFID")}
                                 />
 
-                                <Dialog open={open} onClose={handleClose}>
-                                    <DialogTitle>{"File Number Information"}</DialogTitle>
-                                    <DialogContent>
-                                        <DialogContentText>
-                                            {t("text.HereIsContentOfFileNo")} (RFID).
-                                        </DialogContentText>
-                                        <TextField
-                                            autoFocus
-                                            margin="dense"
-                                            id="rfid"
-                                            label="RFID"
-                                            type="text"
-                                            fullWidth
-                                        />
-                                    </DialogContent>
-                                    <DialogActions>
-                                        <Button color="primary">{t("text.Submit")}</Button>
-                                        <Button onClick={handleClose} color="primary">
-                                            {t("text.Close")}
-                                        </Button>
-                                    </DialogActions>
-                                </Dialog>
+
+
+
+                                <Modal
+                                    open={open}
+                                    onClose={handleClose}
+                                    aria-labelledby="modal-modal-title"
+                                    aria-describedby="modal-modal-description"
+                                >
+                                    <Box sx={style}>
+                                        <Typography
+                                            id="modal-modal-title"
+                                            variant="h6"
+                                            component="h2"
+                                        >
+                                            {t("text.RfidSCanForFile")}
+                                        </Typography>
+
+
+                                        <Grid
+                                            container
+                                            spacing={2}
+                                            alignItems="center"
+                                            sx={{ marginTop: 2 }}
+                                        >
+                                            <Grid item xs={4}>
+                                                <Autocomplete
+                                                    disablePortal
+                                                    id="combo-box-demo"
+                                                    options={AntennaOption}
+                                                    fullWidth
+                                                    size="small"
+                                                    onChange={(event, newValue: any) => {
+                                                        console.log(newValue?.value);
+
+                                                        formik.setFieldValue("antenna", newValue?.value + "");
+
+                                                        formik.setFieldTouched("antenna", true);
+                                                        formik.setFieldTouched("antenna", false);
+                                                    }}
+                                                    renderInput={(params) => (
+                                                        <TextField {...params} label={t("text.SelectAntenna")} />
+                                                    )}
+                                                />
+                                            </Grid>
+
+                                            <Grid item xs={4}>
+                                                <FormControlLabel
+                                                    control={
+                                                        <Checkbox
+                                                           // checked={formik.values.rememberName}
+                                                           // onChange={formik.handleChange}
+                                                            name="remember"
+                                                            color="primary"
+                                                        />
+                                                    }
+                                                    label="Remember "
+                                                />
+                                            </Grid>
+
+
+
+                                            <Grid item xs={2}>
+                                                <Button
+                                                    variant="contained"
+                                                    color="primary"
+                                                    //  onClick={MoveAwait}
+                                                    fullWidth
+                                                >
+                                                    Scan
+                                                </Button>
+                                            </Grid>
+
+                                            <Grid item xs={2}>
+                                                <Button
+                                                    variant="contained"
+                                                    color="primary"
+                                                    //  onClick={MoveAwait}
+                                                    fullWidth
+                                                >
+                                                    Reset
+                                                </Button>
+                                            </Grid>
+
+
+                                        </Grid>
+                                    </Box>
+                                </Modal>
                             </Grid>
 <br />
                             <Grid xs={12} sm={12} item>
@@ -1293,7 +1368,9 @@ const ViewEditFile = (props: Props) => {
                                             </IconButton>
                                         </DialogTitle>
                                         <Divider />
+
                                         <DialogContent sx={{ backgroundColor: "#f4f4f5", height: "250px" }}>
+
                                             <DialogContentText>
                                                 <Table
                                                     style={{
@@ -1430,6 +1507,7 @@ const ViewEditFile = (props: Props) => {
                                             </DialogContentText>
                                         </DialogContent>
 
+
                                         <DialogContent sx={{ backgroundColor: "#f4f4f5", width: "100%" }}>
                                                 <Grid  item>
                                                 <TextField 
@@ -1448,6 +1526,7 @@ const ViewEditFile = (props: Props) => {
                                                 </Grid>
                                             
                                         </DialogContent>
+
                                         <Divider />
                                         <DialogActions
                                             sx={{
@@ -1541,7 +1620,9 @@ const ViewEditFile = (props: Props) => {
                                                         {nodeId[0]?.routeMembercycless?.map((item: any, index: any) => (
                                                             <div key={index}>
                                                                 <div style={{ display: "flex", gap: 20, alignItems: "center", }}>
+
                                                                     <div style={{ display: "flex", alignItems: "center", justifyContent:"space-between" }}>
+
                                                                         <div>
                                                                             Level : {item.authorityLevel}
                                                                         </div>

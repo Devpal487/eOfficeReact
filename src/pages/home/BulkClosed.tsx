@@ -25,12 +25,14 @@ import {
     Select,
     MenuItem,
     Radio,
-    FormLabel
+    FormLabel,
+    Checkbox
 } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import api from "../../utils/Url";
 import Box from "@mui/material/Box";
 import CustomDataGrid from "../../utils/CustomDatagrid";
+import { getId, getdivisionId, getinstId } from "../../utils/Constant";
 
 interface MenuPermission {
     isAdd: boolean;
@@ -47,6 +49,33 @@ export default function BulkClosed() {
     const { t } = useTranslation();
 
     const navigate = useNavigate();
+    
+    const userId = getId();
+
+    const instId = getinstId();
+    // console.log("🚀 ~ ViewEditFile ~ userId:", userId);
+    const divId = getdivisionId();
+    // console.log("🚀 ~ ViewEditFile ~ divId:", divId);
+    
+    const [selectAll, setSelectAll] = useState(false);
+    const [selectedRows, setSelectedRows] = useState([]);
+
+    const handleSelectAllChange = (event:any) => {
+        const checked = event.target.checked;
+        setSelectAll(checked);
+        // if (checked) {
+        //     setSelectedRows(data.map((row:any) => row.id));
+        // } else {
+        //     setSelectedRows([]);
+        // }
+    };
+
+
+
+    const handleCheckboxChange = (params:any) => {
+        // Handle checkbox change logic here
+        console.log( 'Row data:', params.row);
+    };
 
     useEffect(() => {
         getAuthDevision();
@@ -72,14 +101,13 @@ export default function BulkClosed() {
         try {
             console.log("Division", Division);
             const collectData = {
-                inst_id: 1,
-                divid: parseInt(localStorage.getItem("id") + ""),
-                refNoYr: parseInt(new Date().getFullYear() + ""),
-                pstart: 0,
+                "userid": userId,
+                "divisionId": divId,
+                "type": "BC"
             };
             console.log("collectData", collectData);
             const response = await api.post(
-                `RefferenceNumber/GetRefferenceNo`,
+                `FileMovement/Getsp_FileRoInbox`,
                 collectData
             );
 
@@ -88,7 +116,7 @@ export default function BulkClosed() {
             const DocsWithIds = data.map((doc: any, index: any) => ({
                 ...doc,
                 serialNo: index + 1,
-                id: doc.rid,
+                id: doc.cFileNo,
                 Division: Division,
             }));
 
@@ -103,49 +131,66 @@ export default function BulkClosed() {
                         width: 120,
                         headerClassName: "MuiDataGrid-colCell",
                     },
+
+
                     {
                         field: "All",
                         headerName: "All",
                         flex: 1,
                         headerClassName: "MuiDataGrid-colCell",
+
+                        renderHeader: () => (
+                            <Checkbox
+                                checked={selectAll}
+                                onChange={handleSelectAllChange}
+                            />
+                        ),
+
+                        renderCell: (params) => {
+
+                            console.log('checkPrams', params)
+                            return [
+                                <Checkbox
+                                    checked={params.value}
+                                    onChange={(params:any) => handleCheckboxChange(params)}
+                                />
+                            ]
+                        },
                     },
+
+
                     {
-                        field: "rFileNumber",
-                        headerName: "File Number",
+                        field: "fileNm",
+                        headerName: "File Name",
                         flex: 1,
                         headerClassName: "MuiDataGrid-colCell",
                     },
                     {
-                        field: "Subject",
-                        headerName: " Subject",
+                        field: "cSubject",
+                        headerName: "Subject",
                         flex: 1,
                         headerClassName: "MuiDataGrid-colCell",
                     },
                     {
-                        field: "Current Status",
-                        headerName: "Current Status ",
+                        field: "lastStaus",
+                        headerName: "Last Status ",
                         flex: 1,
                         headerClassName: "MuiDataGrid-colCell",
                     },
                     {
-                        field: "Updated Remark",
+                        field: "updatedRemark",
                         headerName: "Updated Remark",
                         flex: 1,
                         headerClassName: "MuiDataGrid-colCell",
                     },
 
                     {
-                        field: "File Created By",
+                        field: "createdby",
                         headerName: "File Created By",
                         flex: 1,
                         headerClassName: "MuiDataGrid-colCell",
                     },
-                    {
-                        field: "Status",
-                        headerName: "Status",
-                        flex: 1,
-                        headerClassName: "MuiDataGrid-colCell",
-                    }
+                   
 
                 ];
                 setColumns(columns as any);

@@ -25,12 +25,14 @@ import {
     Select,
     MenuItem,
     Radio,
-    FormLabel
+    FormLabel,
+    Checkbox
 } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import api from "../../utils/Url";
 import Box from "@mui/material/Box";
 import CustomDataGrid from "../../utils/CustomDatagrid";
+import { getId, getdivisionId, getinstId } from "../../utils/Constant";
 
 interface MenuPermission {
     isAdd: boolean;
@@ -51,8 +53,38 @@ export default function MergeFile() {
     const [remarks, setRemarks] = useState("");
 
 
+    const userId = getId();
+
+    const instId = getinstId();
+    // console.log("🚀 ~ ViewEditFile ~ userId:", userId);
+    const divId = getdivisionId();
+    // console.log("🚀 ~ ViewEditFile ~ divId:", divId);
+
+    const [selectAll, setSelectAll] = useState(false);
+    const [selectedRows, setSelectedRows] = useState([]);
+
+    const handleSelectAllChange = (event:any) => {
+        const checked = event.target.checked;
+        setSelectAll(checked);
+        // if (checked) {
+        //     setSelectedRows(data.map((row:any) => row.id));
+        // } else {
+        //     setSelectedRows([]);
+        // }
+    };
+
+    
+
+
+
 
     const navigate = useNavigate();
+
+    const handleCheckboxChange = (params: any) => {
+        // Handle checkbox change logic here
+        console.log('Row data:', params.row);
+    };
+
 
     useEffect(() => {
         getAuthDevision();
@@ -78,14 +110,13 @@ export default function MergeFile() {
         try {
             console.log("Division", Division);
             const collectData = {
-                inst_id: 1,
-                divid: parseInt(localStorage.getItem("id") + ""),
-                refNoYr: parseInt(new Date().getFullYear() + ""),
-                pstart: 0,
+                "userid": userId,
+                "divisionId": divId,
+                "type": "MF"
             };
             console.log("collectData", collectData);
             const response = await api.post(
-                `RefferenceNumber/GetRefferenceNo`,
+                `FileMovement/Getsp_FileRoInbox`,
                 collectData
             );
 
@@ -94,7 +125,7 @@ export default function MergeFile() {
             const DocsWithIds = data.map((doc: any, index: any) => ({
                 ...doc,
                 serialNo: index + 1,
-                id: doc.rid,
+                id: doc.cFileNo,
                 Division: Division,
             }));
 
@@ -110,35 +141,58 @@ export default function MergeFile() {
                         headerClassName: "MuiDataGrid-colCell",
                     },
                     {
-                        field: "All",
+                        field: "all",
                         headerName: "All",
                         flex: 1,
                         headerClassName: "MuiDataGrid-colCell",
+                        renderHeader: () => (
+                            <Checkbox
+                                checked={selectAll}
+                                onChange={handleSelectAllChange}
+                            />
+                        ),
+                        renderCell: (params) => {
+
+                            console.log('checkPrams', params)
+                            return [
+                                <Checkbox
+                                    checked={params.value}
+                                    onChange={(params: any) => handleCheckboxChange(params)}
+                                />
+                            ]
+                        },
                     },
                     {
-                        field: "rFileNumber",
-                        headerName: "File Number",
+                        field: "fileNm",
+                        headerName: "File Name",
                         flex: 1,
                         headerClassName: "MuiDataGrid-colCell",
                     },
                     {
-                        field: "Subject",
+                        field: "cSubject",
                         headerName: " Subject",
                         flex: 1,
                         headerClassName: "MuiDataGrid-colCell",
                     },
                     {
-                        field: "File Created By",
+                        field: "createdby",
                         headerName: "File Created By",
                         flex: 1,
                         headerClassName: "MuiDataGrid-colCell",
                     },
                     {
-                        field: "Status",
-                        headerName: "Status",
+                        field: "lastStaus",
+                        headerName: "Last Status",
+                        flex: 1,
+                        headerClassName: "MuiDataGrid-colCell",
+                    },
+                    {
+                        field: "updatedRemark",
+                        headerName: "Updated Remark",
                         flex: 1,
                         headerClassName: "MuiDataGrid-colCell",
                     }
+
 
                 ];
                 setColumns(columns as any);
@@ -235,12 +289,12 @@ export default function MergeFile() {
                 </div>
             ) : (
                 <CustomDataGrid
-                isLoading={isLoading}
-                rows={totalFile}
-                columns={adjustedColumns}
-                pageSizeOptions={[5, 10, 25, 50, 100]}
-                initialPageSize={5}
-            />)}
+                    isLoading={isLoading}
+                    rows={totalFile}
+                    columns={adjustedColumns}
+                    pageSizeOptions={[5, 10, 25, 50, 100]}
+                    initialPageSize={5}
+                />)}
 
         </Paper>
     );

@@ -321,8 +321,8 @@ const PageCreateAdd = (props: Props) => {
     };
     const modalOpenHandle = (event: any) => {
         setPanOpen(true);
-        if (event === "fileattach_name") {
-            setModalImg(formik.values.fileattach_name);
+        if (event === "pdfBase64") {
+            setModalImg(formik.values.pdfBase64);
         }
     };
     const ConvertBase64 = (file: Blob) => {
@@ -368,8 +368,8 @@ const PageCreateAdd = (props: Props) => {
             rlId: 0,
             rLetterNumber: "",
             rPriority: "",
-            rLetterSentOn: "",
-            rReceivedDate: "",
+            rLetterSentOn:new Date().toISOString().slice(0, 10),
+            rReceivedDate:new Date().toISOString().slice(0, 10),
             dairyDate: defaultValuestime,
             rFileType: 0,
             rFileNumber: 0,
@@ -397,7 +397,7 @@ const PageCreateAdd = (props: Props) => {
             FileType: 0,
             pdfPath: "",
             pdfBase64: "",
-            fileOpenDate: "",
+            fileOpenDate:new Date().toISOString().slice(0, 10),
             types: ""
         },
         onSubmit: async (values: any) => {
@@ -613,7 +613,7 @@ const PageCreateAdd = (props: Props) => {
                         textAlign="center"
                         style={{ fontSize: "18px", fontWeight: 500 }}
                     >
-                        {t("text.PageCreateAdd")}
+                        {t("text.CreateLetterOrFile")}
                     </Typography>
 
                     <Grid item sm={4} xs={12}> 
@@ -1243,15 +1243,16 @@ const PageCreateAdd = (props: Props) => {
                                 />
                             </Grid>
 
+                            
                             <Grid md={12} item>
                                 <TextField
-                                    label={t("text.LetterRemark")}
-                                    value={formik.values.rRemark}
-                                    placeholder={t("text.LetterRemark")}
+                                    label={t("text.Subject")}
+                                    value={formik.values.rSubject}
+                                    placeholder={t("text.Subject")}
                                     size="small"
                                     fullWidth
-                                    name="rRemark"
-                                    id="rRemark"
+                                    name="rSubject"
+                                    id="rSubject"
                                     type="text"
                                     style={{ backgroundColor: "white" }}
                                     onChange={formik.handleChange}
@@ -1259,11 +1260,13 @@ const PageCreateAdd = (props: Props) => {
                                 />
                             </Grid>
 
+                           
+
                             <Grid md={12} item>
                                 <TextField
-                                    label={t("text.SendFrom")}
+                                    label={t("text.SentBy")}
                                     value={formik.values.rSendAdrs}
-                                    placeholder={t("text.SendFrom")}
+                                    placeholder={t("text.SentBy")}
                                     size="small"
                                     fullWidth
                                     name="rSendAdrs"
@@ -1275,15 +1278,16 @@ const PageCreateAdd = (props: Props) => {
                                 />
                             </Grid>
 
+
                             <Grid md={12} item>
                                 <TextField
-                                    label={t("text.Subject")}
-                                    value={formik.values.rSubject}
-                                    placeholder={t("text.Subject")}
+                                    label={t("text.Discription")}
+                                    value={formik.values.rRemark}
+                                    placeholder={t("text.Discription")}
                                     size="small"
                                     fullWidth
-                                    name="rSubject"
-                                    id="rSubject"
+                                    name="rRemark"
+                                    id="rRemark"
                                     type="text"
                                     style={{ backgroundColor: "white" }}
                                     onChange={formik.handleChange}

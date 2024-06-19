@@ -18,14 +18,16 @@ interface ButtonWithLoaderProps {
 
 
 //const ButtonWithLoader: React.FC<ButtonWithLoaderProps> = ({ buttonText, onClickHandler }) => {
-const ButtonWithLoader: React.FC<ButtonWithLoaderProps> = ({
-  buttonText,
-  onClickHandler,
-  successColor = "green",
-  loadingColor = "green",
-  fullWidth = false
-}) => {
-  console.log("Checkfullwidth", fullWidth)
+
+  const ButtonWithLoader: React.FC<ButtonWithLoaderProps> = ({ 
+    buttonText, 
+    onClickHandler, 
+    successColor = "green", 
+    loadingColor = "green", 
+    fullWidth = false
+  }) => {
+    // console.log("Checkfullwidth", fullWidth)
+
 
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);

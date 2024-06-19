@@ -35,7 +35,7 @@ const JurisdictionMasterAdd = (props: Props) => {
       "titleID": -1
     };
     api
-      .post( `Master/GetNewNodeMaster`, collectData)
+      .post( `NewNodeMaster/GetNewNodeMaster`, collectData)
       .then((res) => {
         const arr = res.data.data.map((item: any) => ({
           label: item.name,
@@ -77,7 +77,7 @@ const JurisdictionMasterAdd = (props: Props) => {
     onSubmit: async (values) => {
 
       const response = await api.post(
-         `Master/AddUpdateNewNodeMaster`,
+         `NewNodeMaster/AddUpdateNewNodeMaster`,
         values
       );
       try {

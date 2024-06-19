@@ -251,8 +251,8 @@ const UserManagementEdit = (props: Props) => {
       shorT_NAME: location.state.shorT_NAME,
       useR_CODE: location.state.useR_CODE,
       dob: dayjs(location.state.dob).format("YYYY-MM-DD"),
-      doa: "",
-      doj: "",
+      doa:(location.state.doa),
+      doj: (location.state.doj),
       gendeR_ID: location.state.gendeR_ID,
       cuR_PHONE: "",
       cuR_MOBILE: location.state.cuR_MOBILE,
@@ -270,7 +270,7 @@ const UserManagementEdit = (props: Props) => {
     },
     validationSchema: validationSchema,
     onSubmit: async (values) => {
-      values.doa = `"1900-01-01T07:47:27.349Z"`;
+      values.doa = "1900-01-01T07:47:27.349Z";
       values.doj = "1900-01-01T07:47:27.349Z";
       //values.subRole= roletype;
 

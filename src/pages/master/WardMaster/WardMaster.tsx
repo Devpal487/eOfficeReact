@@ -488,7 +488,7 @@ export default function WardMaster() {
 
               </Grid>
 
-              <Grid xs={3} sm={3} item>
+              <Grid xs={3.5} sm={3.5} item>
                 <TextField
                   type="text"
                   name="wardName"
@@ -510,7 +510,7 @@ export default function WardMaster() {
 
               </Grid>
 
-              <Grid xs={3} sm={3} item>
+              <Grid xs={3.5} sm={3.5} item>
                 <TextField
                   type="text"
                   value={formik.values.wardCode}
@@ -527,10 +527,10 @@ export default function WardMaster() {
               </Grid>
 
 
-              <Grid item xs={3} sx={{ m: -1 }}>
+              <Grid item xs={2} sx={{ m: -1 }}>
                 {/*  {permissionData?.isAdd == true ? ( */}
 
-                <ButtonWithLoader buttonText={editId == -1 ? t("text.save") : t("text.update")} onClickHandler={handleSubmitWrapper} />
+                <ButtonWithLoader buttonText={editId == -1 ? t("text.save") : t("text.update")} onClickHandler={handleSubmitWrapper} fullWidth={true}  />
                 {/* ) : ( */}
                 {/*   "" */}
                 {/* )} */}

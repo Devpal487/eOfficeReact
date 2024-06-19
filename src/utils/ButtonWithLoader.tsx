@@ -1,7 +1,7 @@
 import React from 'react'
 import { useEffect, useState } from "react";
 import Box from "@mui/material/Box";
-import {Button,CircularProgress} from "@mui/material";
+import { Button, CircularProgress } from "@mui/material";
 
 // interface ButtonWithLoaderProps {
 //   buttonText: string;
@@ -16,8 +16,9 @@ interface ButtonWithLoaderProps {
   fullWidth?: boolean;
 }
 
-  
+
 //const ButtonWithLoader: React.FC<ButtonWithLoaderProps> = ({ buttonText, onClickHandler }) => {
+
   const ButtonWithLoader: React.FC<ButtonWithLoaderProps> = ({ 
     buttonText, 
     onClickHandler, 
@@ -26,6 +27,7 @@ interface ButtonWithLoaderProps {
     fullWidth = false
   }) => {
     // console.log("Checkfullwidth", fullWidth)
+
 
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
@@ -44,7 +46,7 @@ interface ButtonWithLoaderProps {
 
   const handleClick = async () => {
     setLoading(true);
-    setTimeout(async () => { 
+    setTimeout(async () => {
       try {
         await onClickHandler();
         setSuccess(true);
@@ -57,20 +59,22 @@ interface ButtonWithLoaderProps {
   };
 
   const buttonSx = {
+    width: fullWidth ? '100%' : 'auto',
     ...(success && {
-      // bgcolor: "green",
       '&:hover': {
-        bgcolor: "green",
+        bgcolor: successColor,
       },
     }),
+    
+   
   };
 
   return (
-    <Box sx={{ display: 'flex', alignItems: 'center' }}>
-      <Box sx={{ m: 1, position: 'relative' }}>
+    <Box sx={{ display: 'flex', alignItems: 'center', width: '100%' }}>
+      <Box sx={{ m: 1, position: 'relative', width: fullWidth ? '100%' : 'auto' }}>
         <Button
           variant="contained"
-          sx={buttonSx}
+          sx={buttonSx} 
           disabled={loading}
           onClick={handleClick}
           fullWidth={fullWidth}

@@ -445,7 +445,7 @@ export default function StateMaster() {
 
               </Grid>
 
-              <Grid item xs={3} sm={3}>
+              <Grid item xs={3.5} sm={3.5}>
                 <TextField
                   label={<CustomLabel text={t("text.EnterStateName")} required={requiredFields.includes('stateName')} />}
                   value={formik.values.stateName}
@@ -466,7 +466,7 @@ export default function StateMaster() {
 
               </Grid>
 
-              <Grid xs={3} sm={3} item>
+              <Grid xs={3.5} sm={3.5} item>
                 <TextField
                   label={<CustomLabel text={t("text.EnterStateCode")} />}
                   value={formik.values.stateCode}
@@ -482,10 +482,10 @@ export default function StateMaster() {
               </Grid>
 
 
-              <Grid item xs={3} sx={{ m: -1 }}>
+              <Grid item xs={2} sx={{ m: -1 }}>
                 {/*  {permissionData?.isAdd == true ? ( */}
 
-                <ButtonWithLoader buttonText={editId == -1 ? t("text.save") : t("text.update")} onClickHandler={handleSubmitWrapper} />
+                <ButtonWithLoader buttonText={editId == -1 ? t("text.save") : t("text.update")} onClickHandler={handleSubmitWrapper} fullWidth={true} />
                 {/* ) : ( */}
                 {/*   "" */}
                 {/* )} */}

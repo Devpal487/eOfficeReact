@@ -31,6 +31,7 @@ import { useTranslation } from "react-i18next";
 import api from "../../utils/Url";
 import Box from "@mui/material/Box";
 import CustomDataGrid from "../../utils/CustomDatagrid";
+import { getId, getdivisionId, getinstId } from "../../utils/Constant";
 
 interface MenuPermission {
     isAdd: boolean;
@@ -47,6 +48,14 @@ export default function Message() {
     const { t } = useTranslation();
 
     const navigate = useNavigate();
+    
+    const userId = getId();
+
+    const instId = getinstId();
+    // console.log("🚀 ~ ViewEditFile ~ userId:", userId);
+    const divId = getdivisionId();
+    // console.log("🚀 ~ ViewEditFile ~ divId:", divId);
+
 
     useEffect(() => {
         getAuthDevision();
@@ -72,14 +81,13 @@ export default function Message() {
         try {
             console.log("Division", Division);
             const collectData = {
-                inst_id: 1,
-                divid: parseInt(localStorage.getItem("id") + ""),
-                refNoYr: parseInt(new Date().getFullYear() + ""),
-                pstart: 0,
+                "userid": userId,
+                "divisionId": divId,
+                "type": "MSG"
             };
             console.log("collectData", collectData);
             const response = await api.post(
-                `RefferenceNumber/GetRefferenceNo`,
+                `FileMovement/Getsp_FileRoInbox`,
                 collectData
             );
 
@@ -110,19 +118,19 @@ export default function Message() {
                         headerClassName: "MuiDataGrid-colCell",
                     },
                     {
-                        field: "Message",
+                        field: "message",
                         headerName: "Message",
                         flex: 1,
                         headerClassName: "MuiDataGrid-colCell",
                     },
                     {
-                        field: "Send By",
+                        field: "SendBy",
                         headerName: "Send By",
                         flex: 1,
                         headerClassName: "MuiDataGrid-colCell",
                     },
                     {
-                        field: "Send Date",
+                        field: "SendDate",
                         headerName: "Send Date",
                         flex: 1,
                         headerClassName: "MuiDataGrid-colCell",

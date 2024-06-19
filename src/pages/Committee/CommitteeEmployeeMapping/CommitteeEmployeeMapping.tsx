@@ -211,7 +211,7 @@ export default function CommitteeEmployeeMapping() {
                         headerClassName: "MuiDataGrid-colCell",
                     },
                     {
-                        field: "designationInCommittee",
+                        field: "authName",
                         headerName: t("text.Authority"),
                         flex: 1,
                         headerClassName: "MuiDataGrid-colCell",

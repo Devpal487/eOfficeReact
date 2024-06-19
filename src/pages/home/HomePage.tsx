@@ -193,7 +193,7 @@ export default function HomePage() {
         const columns: GridColDef[] = [
           {
             field: "rNumber",
-            headerName: "R Number",
+            headerName: "Ref. No",
             flex: 1,
             headerClassName: "MuiDataGrid-colCell",
             renderCell: (params) => {

@@ -1301,38 +1301,7 @@ const PageCreateEdit = (props: Props) => {
                                 />
                             </Grid>
 
-                            <Grid md={12} item>
-                                <TextField
-                                    label={t("text.LetterRemark")}
-                                    value={formik.values.rRemark}
-                                    placeholder={t("text.LetterRemark")}
-                                    size="small"
-                                    fullWidth
-                                    name="rRemark"
-                                    id="rRemark"
-                                    type="text"
-                                    style={{ backgroundColor: "white" }}
-                                    onChange={formik.handleChange}
-                                    onBlur={formik.handleBlur}
-                                />
-                            </Grid>
-
-                            <Grid md={12} item>
-                                <TextField
-                                    label={t("text.SendFrom")}
-                                    value={formik.values.rSendAdrs}
-                                    placeholder={t("text.SendFrom")}
-                                    size="small"
-                                    fullWidth
-                                    name="rSendAdrs"
-                                    id="rSendAdrs"
-                                    type="text"
-                                    style={{ backgroundColor: "white" }}
-                                    onChange={formik.handleChange}
-                                    onBlur={formik.handleBlur}
-                                />
-                            </Grid>
-
+                            
                             <Grid md={12} item>
                                 <TextField
                                     label={t("text.Subject")}
@@ -1349,6 +1318,40 @@ const PageCreateEdit = (props: Props) => {
                                 />
                             </Grid>
 
+                           
+
+                            <Grid md={12} item>
+                                <TextField
+                                    label={t("text.SentBy")}
+                                    value={formik.values.rSendAdrs}
+                                    placeholder={t("text.SentBy")}
+                                    size="small"
+                                    fullWidth
+                                    name="rSendAdrs"
+                                    id="rSendAdrs"
+                                    type="text"
+                                    style={{ backgroundColor: "white" }}
+                                    onChange={formik.handleChange}
+                                    onBlur={formik.handleBlur}
+                                />
+                            </Grid>
+
+
+                            <Grid md={12} item>
+                                <TextField
+                                    label={t("text.Discription")}
+                                    value={formik.values.rRemark}
+                                    placeholder={t("text.Discription")}
+                                    size="small"
+                                    fullWidth
+                                    name="rRemark"
+                                    id="rRemark"
+                                    type="text"
+                                    style={{ backgroundColor: "white" }}
+                                    onChange={formik.handleChange}
+                                    onBlur={formik.handleBlur}
+                                />
+                            </Grid>
                             <Grid container spacing={1} item>
                                 <Grid
                                     xs={12}

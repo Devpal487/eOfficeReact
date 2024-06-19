@@ -582,6 +582,13 @@ const resources = {
         SendBy:"Send By",
         SendDate:"Send Date",
         DSFName:"D.S.F Name",
+        CreateLetterOrFile:"Create Letter/File",
+        EditLetterOrFile:"Edit Letter/File",
+        SentBy:"Sent By",
+        Discription:"Discription",
+        SelectAntenna:"Select Antenna",
+        RfidSCanForFile:"RFID Scan For File",
+        Draft:"Draft",
 
 
 
@@ -1165,6 +1172,13 @@ const resources = {
         SendDate:"दिनांक भेजें",
         DSFName:"डी.एस.एफ का नाम",
         EditUserManegment:"उपयोगकर्ता प्रबंधन संपादित करें",
+         CreateLetterOrFile:"पत्र/फ़ाइल बनाएँ",
+        EditLetterOrFile:"पत्र/फ़ाइल संपादित करें",
+        SentBy:"द्वारा भेजा गया",
+        Discription:"विवरण",
+        SelectAntenna:"एंटीना का चयन करें",
+        RfidSCanForFile:"फ़ाइल के लिए आरएफआईडी स्कैन",
+        Draft:"प्रारूप",
 
 
         

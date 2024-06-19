@@ -1,14 +1,9 @@
 import React, { useEffect, useState } from "react";
-import {
-  DataGrid,
-  GridColDef,
-  GridToolbar,
-} from "@mui/x-data-grid";
+import {GridColDef} from "@mui/x-data-grid";
 import api from "../../../utils/Url";
 import Card from "@mui/material/Card";
 import {
   Box,
-  Button,
   Divider,
   Stack,
   Grid,
@@ -36,10 +31,10 @@ import * as Yup from "yup";
 import { getId } from "../../../utils/Constant";
 import ButtonWithLoader from "../../../utils/ButtonWithLoader";
 import CustomLabel from "../../../CustomLable";
-import ReusableFormSection from "../../../ReusableFormSection";
-import LanguageSelector from "../../../LanguageSelector";
-import TextConverter from "../../../TextConverter";
 import CustomDataGrid from "../../../utils/CustomDatagrid";
+import EnglishToHindiConverter from "../../../EnglishToHindiConverter";
+import InputModeSelector from "../../../InputModeSelector";
+import { InputModeProvider } from "../../../text";
 interface MenuPermission {
   isAdd: boolean;
   isEdit: boolean;
@@ -61,54 +56,39 @@ export default function ZoneMaster() {
     isDel: false,
   });
 
-  const [selectedLang, setSelectedLang] = useState<string>('English');
-  const [inputValue, setInputValue] = useState<string>('');
-
-  const [language, setLanguage] = useState('English');
-
   let navigate = useNavigate();
   const { t } = useTranslation();
 
-
-  const handleLangChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSelectedLang(event.target.value);
-  };
-
-  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    // Update the input value based on the selected language
-    setInputValue(selectedLang.toLowerCase().startsWith('hi') ? convertToHindi(event.target.value) : event.target.value);
-  };
-
-  const convertToHindi = (text: string): string => {
-    // Your conversion logic from English to Hindi here
-    return text;
-  };
-
-
   useEffect(() => {
-    // const dataString = localStorage.getItem("userdata");
-    //   if (dataString) {
-    //     const data = JSON.parse(dataString);
-    //     if (data && data.length > 0) {
-    //       const userPermissionData = data[0]?.userPermission;
-    //       if (userPermissionData && userPermissionData.length > 0) {
-    //         const menudata = userPermissionData[0]?.parentMenu;
-    //         for (let index = 0; index < menudata.length; index++) {
-    //           const childMenudata = menudata[index]?.childMenu;
-    //           const pathrow = childMenudata.find(
-    //             (x: any) => x.path === location.pathname
-    //           );
-    //           console.log("data", pathrow);
-    //           if (pathrow) {
-    //             setPermissionData(pathrow);
-    fetchZonesData();
-    //         }
-    //       }
-    //     }
-    //   }
-    // }
+    const dataString = localStorage.getItem("userdata");
+      if (dataString) {
+        const data = JSON.parse(dataString);
+        if (data && data.length > 0) {
+          const userPermissionData = data[0]?.userPermission;
+          if (userPermissionData && userPermissionData.length > 0) {
+            const menudata = userPermissionData[0]?.parentMenu;
+            for (let index = 0; index < menudata.length; index++) {
+              const childMenudata = menudata[index]?.childMenu;
+              const pathrow = childMenudata.find(
+                (x: any) => x.path === location.pathname
+              );
+              console.log("data", pathrow);
+              if (pathrow) {
+                setPermissionData(pathrow);
+                fetchZonesData();
+            }
+          }
+        }
+      }
+    }
   }, [isLoading]);
 
+  const handleConversionChange = (params:any, text: string) => {
+    console.log("🚀 ~ handleConversionChange ~ params:", params)
+    console.log('Converted text:', text);
+    formik.setFieldValue(params, text);
+
+};
 
   const handleSwitchChange = (
     event: React.ChangeEvent<HTMLInputElement>,
@@ -215,7 +195,7 @@ export default function ZoneMaster() {
                   direction="row"
                   sx={{ alignItems: "center", marginTop: "5px" }}
                 >
-                  {/* {permissionData?.isEdit ? ( */}
+                  {permissionData?.isEdit ? (
                   <EditIcon
                     style={{
                       fontSize: "20px",
@@ -225,10 +205,10 @@ export default function ZoneMaster() {
                     className="cursor-pointer"
                     onClick={() => routeChangeEdit(params.row)}
                   />
-                  {/* ) : (
+                   ) : (
                     ""
                   )}
-                  {permissionData?.isDel ? ( */}
+                  {permissionData?.isDel ? ( 
                   <DeleteIcon
                     style={{
                       fontSize: "20px",
@@ -239,9 +219,9 @@ export default function ZoneMaster() {
                       handledeleteClick(params.row.id);
                     }}
                   />
-                  {/* ) : (
+                   ) : (
                     ""
-                  )} */}
+                  )} 
                   <Switch
                     checked={Boolean(params.row.isActive)}
                     style={{
@@ -346,7 +326,8 @@ export default function ZoneMaster() {
       );
       if (response.data.isSuccess) {
         toast.success(response.data.mesg);
-        formik.resetForm();
+        formik.setFieldValue("zoneName","");
+        formik.setFieldValue("zoneCode","");
         fetchZonesData();
         setEditId(-1);
       } else {
@@ -381,6 +362,9 @@ export default function ZoneMaster() {
         >
           <ConfirmDialog />
 
+          <Grid container spacing={2}>
+              <InputModeProvider>
+            <Grid item md={10} >
           <Typography
             gutterBottom
             variant="h5"
@@ -390,84 +374,31 @@ export default function ZoneMaster() {
           >
             {t("text.zoneMaster")}
           </Typography>
+          </Grid>
+
+          <Grid item md={2} sx={{ padding: "20px" }}>
+          <InputModeSelector />
+          </Grid>
+          
           <Divider />
 
           <Box height={10} />
-          <div>
-            <LanguageSelector onLanguageChange={setLanguage} />
-            <TextConverter selectedLanguage={language} />
-          </div>
-
-          <Stack direction="row" spacing={2} classes="my-2 mb-2">
-
-          </Stack>
-
-          <ReusableFormSection
-            radioGroupId="langSelect"
-            defaultValue={selectedLang}
-            onLangChange={handleLangChange}
-          />
-          <input
-            type="text"
-            value={inputValue}
-            onChange={handleInputChange}
-          />
-
-          <Grid sm={4} md={4} xs={12}>
-            <FormControl
-              style={{
-                display: "flex",
-                flexDirection: "row",
-                alignItems: "center",
-                gap: 20,
-                marginTop: "13px",
-                marginLeft: "12px",
-              }}
-            >
-              <Grid>
-                <FormLabel>Type</FormLabel>
-              </Grid>
-              <Grid>
-                <RadioGroup
-                  row
-                  id="rblLang"
-                  aria-labelledby="demo-row-radio-buttons-group-label"
-                  name="row-radio-buttons-group"
-                  defaultValue="English"
-                >
-                  <FormControlLabel
-                    value="English"
-                    control={<Radio />}
-                    label="English"
-                  />
-                  <FormControlLabel
-                    value="Hindi"
-                    control={<Radio />}
-                    label="Hindi"
-                  />
-                </RadioGroup>
-              </Grid>
-            </FormControl>
-          </Grid>
-
-          <form onSubmit={formik.handleSubmit}>
+          
+          <form onSubmit={formik.handleSubmit}  style={{ marginLeft: "20px" }}>
             <Grid item xs={12} container spacing={3}>
 
               <Grid xs={5} sm={5} item>
-                <TextField
-                  id="zoneName"
-                  name="zoneName"
-                  label={<CustomLabel text={t("text.enterZoneName")} required={requiredFields.includes('zoneName')} />}
+                <EnglishToHindiConverter
+                  fieldname1="zoneName"
+                  fieldname2="zoneName"
+                  textFieldLabel={<CustomLabel text={t("text.enterZoneName")} required={requiredFields.includes('zoneName')} />}
                   value={formik.values.zoneName}
-                  placeholder={t("text.enterZoneName")}
+                  englishPlaceholder={t("text.enterZoneName")}
+                  hindiPlaceholder={t("text.enterZoneName")}
                   size="small"
-                  fullWidth
-                  style={{
-                    backgroundColor: 'white',
-                    borderColor: formik.touched.zoneName && formik.errors.zoneName ? 'red' : 'initial',
-                  }}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
+                  fullWidth={true}
+                  onChange={(text:any)=>handleConversionChange("zoneName", text)}
+                  // onBlur={formik.handleBlur}
                 />
                 {formik.touched.zoneName && formik.errors.zoneName ? (
                   <div style={{ color: "red", margin: "5px" }}>{formik.errors.zoneName}</div>
@@ -476,33 +407,36 @@ export default function ZoneMaster() {
               </Grid>
 
               <Grid item xs={5} sm={5}>
-                <TextField
-                  id="zoneCode"
-                  name="zoneCode"
-                  label={<CustomLabel text={t("text.enterZoneCode")} />}
+                <EnglishToHindiConverter
+                  fieldname1="zoneCode"
+                  fieldname2="zoneCode"
+                  textFieldLabel={<CustomLabel text={t("text.enterZoneCode")} />}
                   value={formik.values.zoneCode}
-                  placeholder={t("text.enterZoneCode")}
+                  englishPlaceholder={t("text.enterZoneCode")}
+                  hindiPlaceholder={t("text.enterZoneCode")}
                   size="small"
-                  fullWidth
-                  style={{ backgroundColor: "white" }}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
+                  fullWidth={true}
+                  // style={{ backgroundColor: "white" }}
+                  onChange={(text:any)=>handleConversionChange("zoneCode", text)}
+                  // onBlur={formik.handleBlur}
                 />
 
               </Grid>
 
 
               <Grid item xs={2} sx={{ m: -1 }}>
-                {/*  {permissionData?.isAdd == true ? ( */}
+                 {permissionData?.isAdd == true ? (
 
                 <ButtonWithLoader buttonText={editId == -1 ? t("text.save") : t("text.update")} onClickHandler={handleSubmitWrapper} />
-                {/* ) : ( */}
-                {/*   "" */}
-                {/* )} */}
+                 ) : (
+                   "" 
+                )} 
               </Grid>
             </Grid>
           </form>
+          </InputModeProvider>
 
+          </Grid>
           {isLoading ? (
             <div
               style={{

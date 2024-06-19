@@ -832,7 +832,7 @@ export default function MiniDrawer({ items }: any) {
               paddingRight: "15px",
             }}
           >
-            <p>Node Name : {nodeName}</p>
+            <p>E-Governance Level : {nodeName}</p>
             <p> Time : {date.toLocaleTimeString()}</p>
             <p> Date : {formattedDate}</p>
           </div>

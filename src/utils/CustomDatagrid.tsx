@@ -63,7 +63,7 @@ const CustomDataGrid: React.FC<CustomDataGridProps> = ({
                 '& .MuiDataGrid-columnHeaders': {
                   backgroundColor: '#2B4593',
                   color: '#fff',
-                  fontSize: '17px',
+                  fontSize: '15px !important',
                   fontWeight: 900,
                   height: '37px',
                   minHeight: '37px',
@@ -92,6 +92,9 @@ const CustomDataGrid: React.FC<CustomDataGridProps> = ({
                   overflow: 'visible',
                   whiteSpace: 'normal',
                 },
+                '& .MuiDataGrid-colCell' :{
+                  fontSize: '15px !important',
+                }
               }}
           />
         </div>

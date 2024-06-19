@@ -194,27 +194,27 @@ export default function UserPermissionMaster() {
     fetchZonesData();
     getEmployeeNamebyID(selectedRoleID);
     getEmployeeName();
-    const dataString = localStorage.getItem("userdata");
-    if (dataString) {
-      const data = JSON.parse(dataString);
-      if (data && data.length > 0) {
-        const userPermissionData = data[0]?.userPermission;
-        if (userPermissionData && userPermissionData.length > 0) {
-          const menudata = userPermissionData[0]?.parentMenu;
-          for (let index = 0; index < menudata.length; index++) {
-            const childMenudata = menudata[index]?.childMenu;
-            const pathrow = childMenudata.find(
-              (x: any) => x.path === location.pathname
-            );
-            console.log("data", pathrow);
-            if (pathrow) {
-              setPermissionData(pathrow);
+    // const dataString = localStorage.getItem("userdata");
+    // if (dataString) {
+    //   const data = JSON.parse(dataString);
+    //   if (data && data.length > 0) {
+    //     const userPermissionData = data[0]?.userPermission;
+    //     if (userPermissionData && userPermissionData.length > 0) {
+    //       const menudata = userPermissionData[0]?.parentMenu;
+    //       for (let index = 0; index < menudata.length; index++) {
+    //         const childMenudata = menudata[index]?.childMenu;
+    //         const pathrow = childMenudata.find(
+    //           (x: any) => x.path === location.pathname
+    //         );
+    //         console.log("data", pathrow);
+    //         if (pathrow) {
+    //           setPermissionData(pathrow);
               getList();
-            }
-          }
-        }
-      }
-    }
+    //         }
+    //       }
+    //     }
+    //   }
+    // }
   }, [isLoading]);
 
   interface FilmOptionType {
@@ -785,7 +785,7 @@ export default function UserPermissionMaster() {
             <Divider />
             <Box height={10} />
             <Stack direction="row" spacing={2} classes="my-2 mb-2">
-              {permissionData?.isAdd == true ? (
+              {/* {permissionData?.isAdd == true ? ( */}
                 <Button
                   onClick={handleOpen}
                   variant="contained"
@@ -793,9 +793,9 @@ export default function UserPermissionMaster() {
                 >
                   {t("text.Add")}
                 </Button>
-              ) : (
+              {/* ) : (
                 ""
-              )}
+              )} */}
 
               {/* <Typography
                 variant="h6"

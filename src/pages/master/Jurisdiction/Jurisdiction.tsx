@@ -96,7 +96,7 @@ export default function Jurisdiction() {
     };
     console.log("collectData " + JSON.stringify(collectData));
     api
-      .delete(`Master/DeleteNewNodeMaster`, { data: collectData })
+      .delete(`NewNodeMaster/DeleteNewNodeMaster`, { data: collectData })
       .then((response) => {
         if (response.data.isSuccess) {
           toast.success(response.data.mesg);

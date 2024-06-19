@@ -73,9 +73,11 @@ export default function Inbox() {
             "movedDate": "1900-01-01",
             "lastUpdatedDate ": "1900-01-01",
             "type": 2,
+
             "inst_id":1,
             "user_id":userId,
           
+
 
             "divisionid": parseInt(localStorage.getItem("id") + ""),
 

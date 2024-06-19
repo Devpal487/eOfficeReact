@@ -30,6 +30,8 @@ import CustomLabel from "../../../CustomLable";
 import ButtonWithLoader from "../../../utils/ButtonWithLoader";
 import dayjs, { Dayjs } from "dayjs";
 import CustomDataGrid from "../../../utils/CustomDatagrid";
+import Chip from "@mui/material/Chip";
+import Switch from "@mui/material/Switch";
 
 
 const selectStatus = [
@@ -189,6 +191,39 @@ export default function AuthorityEmployeeMapping() {
         });
     };
 
+    const handleSwitchChange = (
+        event: React.ChangeEvent<HTMLInputElement>,
+        value: any
+      ) => {
+        console.log(value)
+        const collectData = {
+          
+            "id": value.id,
+            "empId": value.empId,
+            "authorityId": value.authorityId,
+            "uploadDate": defaultValuestime,
+            "ipAddress": value.ipAddress,
+            "officeId": value.officeId,
+            "doj":value.doj,
+            "authorityStatus":event.target.checked == true ? "Y":"N",
+            "dol": value.dol,
+            "deptId": value.deptId,
+            "sectionId": value.sectionId,
+            "divisionid": value.divisionid
+        };
+        api
+          .post(`EmployeesAuthority/AddUpdateEmployeesAuthority`, collectData)
+          .then((response) => {
+            if (response.data.isSuccess) {
+              toast.success(response.data.mesg);
+              getList();
+            } else {
+              toast.error(response.data.mesg);
+            }
+          });
+      };
+    
+
     const getList = () => {
         const collectData = {
             "id": -1,
@@ -254,6 +289,18 @@ export default function AuthorityEmployeeMapping() {
                                             {/*  ) : ( */}
                                             {/*  "" */}
                                             {/* )} */}
+                                            <Switch
+                    checked={Boolean(params.row.authorityStatus === "Y"? true :false)}
+                    style={{
+                      color: params.row.authorityStatus ==="Y" ? "green" : "#FE0000",
+                    }}
+                    onChange={(value: any) =>
+                      handleSwitchChange(value, params.row)
+                    }
+                    inputProps={{
+                      "aria-label": "Toggle Switch",
+                    }}
+                  />
                                         </Stack>,
                                     ];
                                 },
@@ -293,6 +340,23 @@ export default function AuthorityEmployeeMapping() {
                                 headerName: t("text.Status"),
                                 flex: 1,
                                 headerClassName: "MuiDataGrid-colCell",
+                                renderCell: (params) => [
+                                    <Stack direction="row" spacing={1}>
+                                      {params.row.authorityStatus === "Y" ? (
+                                        <Chip
+                                          label={t("text.Active")}
+                                          color="success"
+                                          style={{ fontSize: "14px" }}
+                                        />
+                                      ) : (
+                                        <Chip
+                                          label={t("text.InActive")}
+                                          color="error"
+                                          style={{ fontSize: "14px" }}
+                                        />
+                                      )}
+                                    </Stack>,
+                                  ],
                             }
 
                         ];

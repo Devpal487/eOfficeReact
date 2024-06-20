@@ -1,17 +1,11 @@
 import {
-    Button,
     CardContent,
     Grid,
-    Typography,
     Tabs,
     Tab,
     useMediaQuery, useTheme 
 } from "@mui/material";
-import ArrowBackSharpIcon from "@mui/icons-material/ArrowBackSharp";
-import React, { useEffect, useState } from "react";
-import { Navigate, useNavigate } from "react-router-dom";
-import { useFormik } from "formik";
-import api from "../../utils/Url";
+import  {  useState } from "react";
 import { EmailIcons, FileCopyIcons, FilemoveIcons, FolderIcons, ImportExportIcons, InboxIcons, NotificationsIcons, PendingIcons, ShareIcons, SmsIcons, UpgradeIcons } from "../../utils/icons";
 import Inbox from "./Inbox";
 import Sent from "./Sent";

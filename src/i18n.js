@@ -30,9 +30,9 @@ const resources = {
         InActive: "InActive",
         Action: "Action",
         SrNo: "Sr No.",
-        zoneName:"zone Name",
+        zoneName:"Name",
 
-        zoneCode: "Zone Code",
+        zoneCode: "Code",
         Status: "Status",
         search: "Search",
         save: "Save",
@@ -314,7 +314,7 @@ const resources = {
         throughyby: "Through whom",
         ethroughyby: "Enter Through whom",
         nodeID: "Select Jurisdiction",
-
+        SendTo:"Send To",
 
         // E-office
         eoffice: "Workflow Management System",
@@ -333,15 +333,14 @@ const resources = {
         CommitteeEmployeeMapping: "Committee Employee Mapping",
         TotalMovesFile: "Total Moves File",
         ReceivedFiles: "Received Files",
-        AddRefrenceNo: "Add Refrence Number",
-        RefrenceNoDiary: "Refrence Number Diary",
+        AddRefrenceNo: "Add Reference Number",
+        RefrenceNoDiary: "Reference Number Diary",
         fileName: "File Name",
         fileNo: "File Number",
         PageCreate: "Page Create",
         TotalMovesFile: "Total Moves File",
         ReceivedFiles: "Received Files",
-        AddRefrenceNo: "Add Refrence Number",
-        RefrenceNoDiary: "Refrence Number Diary",
+        AddRefrenceNo: "Add Reference Number",
         fileName: "File Name",
         fileNo: "File Number",
         CreateNewFile: "Create New File",
@@ -362,7 +361,7 @@ const resources = {
         SendTo: "Send To",
         LetterRemark: "Letter Remark",
         SendFrom: "Send From",
-        RefrenceNo: "Refrence Number",
+        RefrenceNo: "Reference Number",
         File: "File",
         Date: "Date",
         Year: "Year",
@@ -609,6 +608,7 @@ const resources = {
       error: {},
       message: {},
       text: {
+        SendTo:"भेजना",
         PanchShala: "पंचशाला",
         // Dashboard
         TotalFile: "कुल फ़ाइल",

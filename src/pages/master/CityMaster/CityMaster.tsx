@@ -1,101 +1,93 @@
-import React, { useEffect, useState } from "react";
+import * as React from "react";
+import Paper from "@mui/material/Paper";
+import { useEffect, useState } from "react";
 import {
-    DataGrid,
-    GridColDef,
-    GridToolbar,
-} from "@mui/x-data-grid";
-import axios from "axios";
-import api from "../../../utils/Url";
-import Card from "@mui/material/Card";
-import {
+    Autocomplete,
     Box,
     Button,
     Divider,
     Stack,
-
+    TextField,
     Typography,
 } from "@mui/material";
-import EditIcon from "@mui/icons-material/Edit";
-import Switch from "@mui/material/Switch";
-import { useNavigate, useLocation } from "react-router-dom";
-import Chip from "@mui/material/Chip";
+import Card from "@mui/material/Card";
+import Grid from "@mui/material/Grid";
+import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
+import api from "../../../utils/Url";
+import { useLocation } from "react-router-dom";
+import CircularProgress from "@mui/material/CircularProgress";
+import { useFormik } from "formik";
+import * as Yup from "yup";
 import { useTranslation } from "react-i18next";
-import Paper from "@mui/material/Paper";
-import AddCircleIcon from "@mui/icons-material/AddCircle";
+import { DataGrid, GridColDef, GridToolbar } from "@mui/x-data-grid";
 import { toast } from "react-toastify";
 import ToastApp from "../../../ToastApp";
+import { getISTDate } from "../../../utils/Constant";
+import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
-import CircularProgress from "@mui/material/CircularProgress";
 import CustomDataGrid from "../../../utils/CustomDatagrid";
+import CustomLabel from "../../../CustomLable";
 
 
-interface MenuPermission {
-    isAdd: boolean;
-    isEdit: boolean;
-    isPrint: boolean;
-    isDel: boolean;
-}
 
-export default function CityMaster() {
-    const [zones, setZones] = useState([]);
+export default function FileMaster() {
+    const { i18n, t } = useTranslation();
+    const { defaultValues, defaultValuestime } = getISTDate();
+
     const [columns, setColumns] = useState<any>([]);
-    const [isLoading, setIsLoading] = useState(true);
+    const [rows, setRows] = useState<any>([]);
+    const [editId, setEditId] = useState<any>(-1);
     const location = useLocation();
-    const [permissionData, setPermissionData] = useState<MenuPermission>({
-        isAdd: false,
-        isEdit: false,
-        isPrint: false,
-        isDel: false,
-    });
+    const [isLoading, setIsLoading] = useState(true);
 
-    let navigate = useNavigate();
-    const { t } = useTranslation();
+    const [fileTypeOption, setFileTypeOption] = useState([{ value: "-1", label: t("text.SelectFileType") }]);
+
+
+    const [option, setOption] = useState([
+        { value: "-1", label: t("text.SelectStateName") },
+    ]);
+
+
+
 
     useEffect(() => {
-        // const dataString = localStorage.getItem("userdata");
-        // if (dataString) {
-        //     const data = JSON.parse(dataString);
-        //     if (data && data.length > 0) {
-        //         const userPermissionData = data[0]?.userPermission;
-        //         if (userPermissionData && userPermissionData.length > 0) {
-        //             const menudata = userPermissionData[0]?.parentMenu;
-        //             for (let index = 0; index < menudata.length; index++) {
-        //                 const childMenudata = menudata[index]?.childMenu;
-        //                 const pathrow = childMenudata.find(
-        //                     (x: any) => x.path === location.pathname
-        //                 );
-        //                 console.log("data", pathrow);
-        //                 if (pathrow) {
-        // setPermissionData(pathrow);
-        fetchZonesData();
-        //                 }
-        //             }
-        //         }
-        //     }
-        // }
+        const dataString = localStorage.getItem("userdata");
+
+        getList();
+
+        getStateZone();
+
     }, []);
-    // }, [isLoading]);
-    const routeChangeAdd = () => {
-        let path = `/master/CityMasterAdd`;
-        navigate(path);
-    };
 
-    const routeChangeEdit = (row: any) => {
-        let path = `/master/CityMasterEdit`;
-        navigate(path, {
-            state: row,
-        });
-    };
 
+
+
+    const getStateZone = () => {
+        const collectData = {
+            "stateId": -1,
+            "countryId": -1
+
+        };
+        api
+            .post(`State/GetStateMaster`, collectData)
+            .then((res) => {
+                const arr = [];
+                for (let index = 0; index < res.data.data.length; index++) {
+                    arr.push({
+                        label: res.data.data[index]["stateName"],
+                        value: res.data.data[index]["stateId"],
+                    });
+                }
+                setOption(arr);
+            });
+    };
 
 
 
     let delete_id = "";
-
     const accept = () => {
         const collectData = {
-            cityId: delete_id
+            cityId: delete_id,
         };
         console.log("collectData " + JSON.stringify(collectData));
         api
@@ -103,13 +95,12 @@ export default function CityMaster() {
             .then((response) => {
                 if (response.data.isSuccess) {
                     toast.success(response.data.mesg);
+                    getList();
                 } else {
                     toast.error(response.data.mesg);
                 }
-                fetchZonesData();
             });
     };
-
     const reject = () => {
         // toast.warn({summary: 'Rejected', detail: 'You have rejected', life: 3000 });
         toast.warn("Rejected: You have rejected", { autoClose: 3000 });
@@ -128,205 +119,294 @@ export default function CityMaster() {
         });
     };
 
-    const fetchZonesData = async () => {
+    const getList = () => {
+        const collectData = {
+            "cityId": -1,
+            "stateId": -1
+        };
         try {
-            const collectData = {
-                cityId: -1,
-                stateId: -1
-            };
-            console.log("collectData", collectData)
-            const response = await api.post(`M10_District/GetDistrictMaster`,
-                collectData
-            );
-            console.log("result", response.data.data)
-            const data = response.data.data;
-            const cityWithIds = data.map((city: any, index: any) => ({
-                ...city,
-                serialNo: index + 1,
-                id: city.cityId,
-            }));
+            api
+                .post(`M10_District/GetDistrictMaster`, collectData)
+                .then((res) => {
+                    console.log("result" + JSON.stringify(res.data.data));
+                    const data = res.data.data;
+                    const arr = data.map((item: any, index: any) => ({
+                        ...item,
+                        serialNo: index + 1,
+                        id: item.cityId,
+                    }));
+                    setRows(arr);
+                    setIsLoading(false);
+                    if (data.length > 0) {
+                        const columns: GridColDef[] = [
+                            {
+                                field: "actions",
+                                headerClassName: "MuiDataGrid-colCell",
+                                headerName: t("text.Action"),
+                                width: 150,
 
+                                renderCell: (params) => {
 
-            setZones(cityWithIds);
-            setIsLoading(false);
+                                    return [
+                                        <Stack
+                                            spacing={1}
+                                            direction="row"
+                                            sx={{ alignItems: "center", marginTop: "5px" }}
+                                        >
+                                            {/*  {permissionData?.isEdit ? ( */}
+                                            <EditIcon
+                                                style={{
+                                                    fontSize: "20px",
+                                                    color: "blue",
+                                                    cursor: "pointer",
+                                                }}
+                                                className="cursor-pointer"
+                                                onClick={() => routeChangeEdit(params.row)}
+                                            />
+                                            {/* ) : ( */}
+                                            {/*   "" */}
+                                            {/* )} */}
+                                            {/*  {permissionData?.isDel ? ( */}
+                                            <DeleteIcon
+                                                style={{
+                                                    fontSize: "20px",
+                                                    color: "red",
+                                                    cursor: "pointer",
+                                                }}
+                                                onClick={() => {
+                                                    handledeleteClick(params.row.id);
+                                                }}
+                                            />
+                                            {/*  ) : ( */}
+                                            {/*  "" */}
+                                            {/* )} */}
+                                        </Stack>,
+                                    ];
+                                },
+                            },
 
-            if (data.length > 0) {
-                const columns: GridColDef[] = [
-                    {
-                        field: "actions",
-                        headerClassName: "MuiDataGrid-colCell",
-                        headerName: t("text.Action"),
-                        width: 150,
+                            {
+                                field: "serialNo",
+                                headerName: t("text.SrNo"),
+                                flex: 1,
+                                headerClassName: "MuiDataGrid-colCell",
+                            },
+                            {
+                                field: "cityName",
+                                headerName:  t("text.DistrictName"),
+                                flex: 1,
+                                headerClassName: "MuiDataGrid-colCell",
+                            },
 
-                        renderCell: (params) => {
-                            return [
-                                <Stack
-                                    spacing={1}
-                                    direction="row"
-                                    sx={{ alignItems: "center", marginTop: "5px" }}
-                                >
-                                    {/* {permissionData?.isEdit ? ( */}
-                                    <EditIcon
-                                        style={{
-                                            fontSize: "20px",
-                                            color: "blue",
-                                            cursor: "pointer",
-                                        }}
-                                        className="cursor-pointer"
-                                        onClick={() => routeChangeEdit(params.row)}
-                                    />
-                                    {/* ) : ( */}
-                                    {/*  "" */}
-                                    {/*)} */}
-                                    {/*{permissionData?.isDel ? ( */}
-                                    <DeleteIcon
-                                        style={{
-                                            fontSize: "20px",
-                                            color: "red",
-                                            cursor: "pointer",
-                                        }}
-                                        onClick={() => {
-                                            handledeleteClick(params.row.id);
-                                        }}
-                                    />
-                                    {/* ) : ( */}
-                                    {/*  "" */}
-                                    {/* )} */}
-                                    {/* <Switch
-                                        checked={Boolean(params.row.isActive)}
-                                        style={{
-                                            color: params.row.isActive ? "green" : "#FE0000",
-                                        }}
-                                        onChange={(value: any) =>
-                                            handleSwitchChange(value, params.row)
-                                        }
-                                        inputProps={{
-                                            "aria-label": "Toggle Switch",
-                                        }}
-                                    /> */}
-                                </Stack>,
-                            ];
-                        },
-                    },
+                            {
+                                field: "stateName",
+                                headerName:  t("text.StateName"),
+                                flex: 1,
+                                headerClassName: "MuiDataGrid-colCell",
+                            },
 
-                    {
-                        field: "serialNo",
-                        headerName: t("text.SrNo"),
-                        flex: 1,
-                        headerClassName: "MuiDataGrid-colCell",
-                    },
-                    {
-                        field: "cityName",
-                        headerName: t("text.DistrictName"),
-                        flex: 1,
-                        headerClassName: "MuiDataGrid-colCell",
-                    },
-
-                    {
-                        field: "stateName",
-                        headerName: t("text.StateName"),
-                        flex: 1,
-                        headerClassName: "MuiDataGrid-colCell",
-                    },
-
-                ];
-                setColumns(columns as any);
-            }
-
+                        ];
+                        setColumns(columns as any);
+                    }
+                });
+            // setIsLoading(false);
         } catch (error) {
             console.error("Error fetching data:", error);
-            // setLoading(false);
+            // setIsLoading(false);
         }
     };
+    const validationSchema = Yup.object({
+        stateId: Yup.string().test(
+            "required",
+            "Select State Is Required",
+            function (value: any) {
+                return value && value.trim() !== "";
+            }
+        ),
+    });
+    const [toaster, setToaster] = useState(false);
+    const formik = useFormik({
+        initialValues: {
 
-    const adjustedColumns = columns.map((column: any) => ({
-        ...column,
-    }));
+            cityId: -1,
+            cityName: "",
+            stateId: "",
 
+            createdOn: defaultValuestime,
+            updatedOn: defaultValuestime,
+            createdBy: "-1",
+            updatedBy: "-1",
+            // "fnId": -1,
+            // "fId": "",
+            // "fileNm": "",
+            // "inst_id": 0,
+            // "user_id": 0,
+            // "createdDate": defaultValuestime,
+            // "divisionId": 0
+        },
+        validationSchema: validationSchema,
+        onSubmit: async (values) => {
+            values.cityId = editId;
+            // console.log("check", values);
+
+            const response = await api.post(
+                `M10_District/AddUpdateDistrictMaster`,
+                values
+            );
+            if (response.data.isSuccess) {
+                setToaster(false);
+                toast.success(response.data.mesg);
+                formik.resetForm();
+                getList();
+                setEditId(-1);
+            } else {
+                setToaster(true);
+                toast.error(response.data.mesg);
+            }
+
+        },
+    });
+
+    const requiredFields = ["stateId"];
+
+
+    const routeChangeEdit = (row: any) => {
+        formik.setFieldValue("stateId", row.stateId);
+        formik.setFieldValue("cityName", row.cityName);
+
+        setEditId(row.id);
+    };
 
     return (
         <>
-            <Card
-                style={{
-                    width: "100%",
-                    // height: "100%",
-                    backgroundColor: "#E9FDEE",
-                    // border: ".5px solid #FF7722 ",
-                    marginTop: "3vh"
-                }}
-            >
-                <Paper
-                    sx={{
+            <Grid item lg={6} sm={6} xs={12} sx={{ marginTop: "3vh" }}>
+                <Card
+                    style={{
                         width: "100%",
-                        overflow: "hidden",
-                        "& .MuiDataGrid-colCell": {
-                            backgroundColor: "#2B4593",
-                            color: "#fff",
-                            fontSize: 17,
-                            fontWeight: 900
-                        },
+                        height: "50%",
+                        backgroundColor: "#E9FDEE",
+                        border: ".5px solid #42AEEE ",
+                        marginTop: "5px",
                     }}
-                    style={{ padding: "10px", }}
                 >
-                    <ConfirmDialog />
-
-                    <Typography
-                        gutterBottom
-                        variant="h5"
-                        component="div"
-                        sx={{ padding: "20px" }}
-                        align="left"
+                    <Paper
+                        sx={{
+                            width: "100%",
+                            overflow: "hidden",
+                            "& .MuiDataGrid-colCell": {
+                                backgroundColor: "#00009C",
+                                color: "#fff",
+                                fontSize: 18,
+                                fontWeight: 800,
+                            },
+                        }}
+                        style={{ padding: "10px" }}
                     >
-                        {t("text.DistrictMaster")}
-                    </Typography>
-                    <Divider />
-
-                    <Box height={10} />
-
-                    <Stack direction="row" spacing={2} classes="my-2 mb-2">
-                        {/*permissionData?.isAdd == true && ( */}
-                        <Button
-                            onClick={routeChangeAdd}
-                            variant="contained"
-                            endIcon={<AddCircleIcon />}
-                            size="large"
+                        <ConfirmDialog />
+                        <Typography
+                            gutterBottom
+                            variant="h5"
+                            component="div"
+                            sx={{ padding: "20px" }}
+                            align="left"
                         >
-                            {t("text.add")}
-                        </Button>
-                        {/*)} */}
+                            {t("text.DistrictMaster")}
+                        </Typography>
+                        <Divider />
 
-                        {/*{permissionData?.isPrint == true ? (
-              <Button variant="contained" endIcon={<PrintIcon />} size="large">
-                {t("text.print")}
-              </Button>
-            ) : (
-              ""
-            )} */}
-                    </Stack>
+                        <Box height={10} />
 
-                    {isLoading ? (
-                        <div
-                            style={{
-                                display: "flex",
-                                justifyContent: "center",
-                                alignItems: "center",
-                            }}
-                        >
-                            <CircularProgress />
-                        </div>
-                    ) : (
-                        <CustomDataGrid
-                            isLoading={isLoading}
-                            rows={zones}
-                            columns={adjustedColumns}
-                            pageSizeOptions={[5, 10, 25, 50, 100]}
-                            initialPageSize={5}
-                        />
-                    )}
-                </Paper>
-            </Card>
+                        <form onSubmit={formik.handleSubmit}>
+                            <Grid item xs={12} container spacing={3}>
+
+                                <Grid xs={5} sm={5} item>
+
+                                    <Autocomplete
+                                        disablePortal
+                                        id="combo-box-demo"
+                                        options={option}
+                                        fullWidth
+                                        size="small"
+                                        onChange={(event, newValue) => {
+                                            console.log(newValue?.value);
+                                            formik.setFieldValue("stateId", newValue?.value);
+                                            formik.setFieldTouched("stateId", true);
+                                            formik.setFieldTouched("stateId", false);
+                                        }}
+
+                                        value={option.find(opt => opt.value === formik.values.stateId) || null}
+                                        // value={}
+                                        renderInput={(params) => (
+                                            <TextField
+                                                {...params}
+                                                label={<CustomLabel text={t("text.SelectStateName")} required={requiredFields.includes('stateId')} />}
+
+                                            />
+                                        )}
+                                    />
+                                    {formik.touched.stateId && formik.errors.stateId ? (
+                                        <div style={{ color: "red", margin: "5px" }}>
+                                            {formik.errors.stateId}
+                                        </div>
+                                    ) : null}
+                                </Grid>
+
+                                <Grid item xs={5} sm={5}>
+                                    <TextField
+                                        label={<CustomLabel text={t("text.EnterDistrictName")} required={requiredFields.includes('cityName')} />}
+                                        value={formik.values.cityName}
+                                        name="cityName"
+                                        id="cityName"
+                                        placeholder={t("text.EnterDistrictName")}
+                                        size="small"
+                                        fullWidth
+                                        style={{ backgroundColor: "white" }}
+                                        onChange={formik.handleChange}
+                                        onBlur={formik.handleBlur}
+                                    />
+                                    {formik.touched.cityName && formik.errors.cityName ? (
+                                        <div style={{ color: "red", margin: "5px" }}>
+                                            {formik.errors.cityName}
+                                        </div>
+                                    ) : null}
+
+                                </Grid>
+
+                                <Grid item xs={2}>
+                                    {/*  {permissionData?.isAdd == true ? ( */}
+                                    <Button type="submit" variant="contained" size="large">
+                                        {editId == "-1" ? t("text.save") : t("text.update")}
+                                    </Button>
+                                    {/* ) : ( */}
+                                    {/*   "" */}
+                                    {/* )} */}
+                                </Grid>
+                            </Grid>
+                        </form>
+
+                        {isLoading ? (
+                            <div
+                                style={{
+                                    display: "flex",
+                                    justifyContent: "center",
+                                    alignItems: "center",
+                                }}
+                            >
+                                <CircularProgress />
+                            </div>
+                        ) : (
+                            <CustomDataGrid
+                                isLoading={isLoading}
+                                rows={rows}
+                                columns={columns}
+                                pageSizeOptions={[5, 10, 25, 50, 100]}
+                                initialPageSize={5}
+                            />
+                        )}
+                    </Paper>
+                </Card>
+            </Grid>
             <ToastApp />
-
         </>
     );
 }

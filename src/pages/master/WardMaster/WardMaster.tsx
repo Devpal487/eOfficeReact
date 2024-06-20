@@ -325,8 +325,7 @@ export default function WardMaster() {
       });
   };
 
-  const requiredFields = ["zoneID", "wardName"];
-
+ 
 
   const validationSchema = Yup.object({
     zoneID: Yup.string().test(
@@ -382,6 +381,10 @@ export default function WardMaster() {
       }
     }
   });
+
+
+  const requiredFields = ["zoneID", "wardName"];
+
 
   const handleSubmitWrapper = async () => {
     await formik.handleSubmit();
@@ -476,13 +479,13 @@ export default function WardMaster() {
                     formik.setFieldTouched("zoneID", false);
                   }}
                   renderInput={(params) => (
-                    <TextField {...params} label={<CustomLabel text={t("text.SelectZoneName")} required={requiredFields.includes('zoneName')} />} />
+                    <TextField {...params} label={<CustomLabel text={t("text.SelectZoneName")} required={requiredFields.includes('zoneID')} />} />
                   )}
                 />
 
-                {formik.touched.zoneName && formik.errors.zoneName ? (
+                {formik.touched.zoneID && formik.errors.zoneID ? (
                   <div style={{ color: "red", margin: "5px" }}>
-                    {formik.errors.zoneName}
+                    {formik.errors.zoneID}
                   </div>
                 ) : null}
 
@@ -493,7 +496,7 @@ export default function WardMaster() {
                   type="text"
                   name="wardName"
                   id="wardName"
-                  label={<CustomLabel text={t("text.enterWardName")} required={requiredFields.includes('enterWardName')} />}
+                  label={<CustomLabel text={t("text.enterWardName")} required={requiredFields.includes('wardName')} />}
                   value={formik.values.wardName}
                   placeholder={t("text.enterWardName")}
                   size="small"

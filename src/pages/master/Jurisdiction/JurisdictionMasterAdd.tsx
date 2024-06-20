@@ -23,10 +23,12 @@ type Props = {};
 const JurisdictionMasterAdd = (props: Props) => {
   const { i18n ,t } = useTranslation();
 
-  const [NodeOption, setNodeOption] = useState([{ value: "-1", label: t("text.SelectNode") }]);
-
   let navigate = useNavigate();
 
+
+  const [NodeOption, setNodeOption] = useState([{ value: "-1", label: t("text.SelectNode") }]);
+
+ 
 
   const getNode = () => {
     const collectData = {

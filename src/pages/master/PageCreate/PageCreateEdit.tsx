@@ -76,6 +76,11 @@ const PageCreateEdit = (props: Props) => {
 
     ]);
 
+    const [userOption, setUserOption] = useState<any>([
+        { value: "-1", label: t("text.SelectUser") },
+    ]);
+
+
     const [SectionOption, setSectionOption] = useState<any>([
         { value: "-1", label: t("text.SelectSection") },
     ]);
@@ -696,52 +701,48 @@ const PageCreateEdit = (props: Props) => {
                     <form onSubmit={formik.handleSubmit}>
                         {toaster === false ? "" : <ToastApp />}
                         <Grid item xs={12} container spacing={2}>
-                            <Grid sm={5} md={5} item>
-                                <Box display="flex" justifyContent="center" alignItems="center">
-                                    <FormControlLabel
-                                        value="received"
-                                        control={
-                                            <Radio
-                                                id="letterBy"
-                                                name="letterBy"
-                                                checked={formik.values.letterBy === "received"}
-                                                onChange={formik.handleChange}
-                                                value="received"
-                                            />
-                                        }
-                                        label={t("text.Received")}
-                                    />
-                                    <FormControlLabel
-                                        value="dispatch"
-                                        control={
-                                            <Radio
-                                                id="letterBy"
-                                                name="letterBy"
-                                                checked={formik.values.letterBy === "dispatch"}
+                            <Grid item sm={6} md={6} xs={12}>
+                                    <FormControl 
+                                    style={{
+                                        display: "flex",
+                                        flexDirection: "row",
+                                        alignItems: "center",
+                                        gap: 20,
+                                        marginTop: "13px",
+                                    }}>
+                                    <Grid>
+                                        <RadioGroup
+                                        row
+                                        aria-labelledby="demo-row-radio-buttons-group-label"
+                                        name="row-radio-buttons-group"
+                                        defaultValue="received"
+                                        onChange={(event) => {
+                                            console.log("radio value check", event.target.value);
+                                            formik.setFieldValue("letterBy",event.target.value);
+                                            // console.log("🚀 ~ PageCreateAdd ~ formik.values.letterBy:", formik.values.letterBy)
+                                        }}
+                                        >
+                                        <FormControlLabel
+                                            value="received"
+                                            control={<Radio />}
+                                            label={t("text.Received")}
+                                        />
+                                        <FormControlLabel
+                                            value="dispatch"
+                                            control={<Radio />}
+                                            label={t("text.Dispatch")}
+                                        />
+                                        <FormControlLabel
+                                            value="received/dispatch"
+                                            control={<Radio />}
+                                            label={t("text.RecOrDisp")}
+                                        />
+                                        </RadioGroup>
+                                    </Grid>
+                                    </FormControl>
+                                </Grid>
 
-                                                onChange={formik.handleChange}
-                                                value="dispatch"
-                                            />
-                                        }
-                                        label={t("text.Dispatch")}
-                                    />
-                                    <FormControlLabel
-                                        value="received/dispatch"
-                                        control={
-                                            <Radio
-                                                id="letterBy"
-                                                name="letterBy"
-                                                checked={formik.values.letterBy === "received/dispatch"}
-                                                onChange={formik.handleChange}
-                                                value="received/dispatch"
-                                            />
-                                        }
-                                        label={t("text.RecOrDisp")}
-                                    />
-                                </Box>
-                            </Grid>
-
-                            <Grid sm={5} md={5} xs={12}>
+                            <Grid item sm={6} md={6} xs={12}>
                                 <FormControl
                                     style={{
                                         display: "flex",
@@ -749,7 +750,7 @@ const PageCreateEdit = (props: Props) => {
                                         alignItems: "center",
                                         gap: 20,
                                         marginTop: "13px",
-                                        marginLeft: "12px",
+                                        // marginLeft: "12px",
                                     }}
                                 >
                                     <Grid>
@@ -760,7 +761,7 @@ const PageCreateEdit = (props: Props) => {
                                             row
                                             aria-labelledby="demo-row-radio-buttons-group-label"
                                             name="row-radio-buttons-group"
-                                            defaultValue="A"
+                                            defaultValue="G"
                                             onChange={(event) => {
                                                 console.log("radio value check", event.target.value);
                                                 formik.setFieldValue("types", event.target.value);
@@ -781,9 +782,7 @@ const PageCreateEdit = (props: Props) => {
                                 </FormControl>
                             </Grid>
 
-                            <Grid sm={2} md={2} xs={12}></Grid>
-
-                            <Grid item lg={4} xs={12}>
+                            <Grid item lg={4} md={4} xs={12}>
                                 <Autocomplete
                                     disablePortal
                                     id="combo-box-demo"
@@ -805,7 +804,7 @@ const PageCreateEdit = (props: Props) => {
                                 />
                             </Grid>
 
-                            {selectedOption !== "dispatch" && (
+                            {formik.values.letterBy !== "dispatch" && formik.values.letterBy !== "received/dispatch" && (
                                 <Grid item lg={4} xs={12}>
                                     <Autocomplete
                                         disablePortal
@@ -829,7 +828,7 @@ const PageCreateEdit = (props: Props) => {
                                 </Grid>
                             )}
 
-                            <Grid item lg={4} xs={12}>
+                            <Grid item lg={4} md={4} xs={12}>
                                 <Autocomplete
                                     disablePortal
                                     id="combo-box-demo"
@@ -851,7 +850,7 @@ const PageCreateEdit = (props: Props) => {
                                 />
                             </Grid>
 
-                            <Grid item lg={4} xs={12}>
+                            <Grid item lg={4} md={4} xs={12}>
                                 <Autocomplete
                                     disablePortal
                                     id="combo-box-demo"
@@ -873,7 +872,7 @@ const PageCreateEdit = (props: Props) => {
                                 />
                             </Grid>
 
-                            <Grid item lg={4} xs={12}>
+                            <Grid item lg={4} md={4} xs={12}>
                                 <Autocomplete
                                     disablePortal
                                     id="combo-box-demo"
@@ -1122,7 +1121,7 @@ const PageCreateEdit = (props: Props) => {
                                 </DialogContent>
                             </Dialog>
 
-                            <Grid md={4} item>
+                            <Grid lg={4} md={4} xs={12} item>
                                 <TextField
                                     label={t("text.EnterLetterNumber")}
                                     value={formik.values.rLetterNumber}
@@ -1137,8 +1136,8 @@ const PageCreateEdit = (props: Props) => {
                                 />
                             </Grid>
 
-                            {selectedOption !== "dispatch" && (
-                                <Grid md={4} item>
+                              {formik.values.letterBy !== "dispatch" && formik.values.letterBy !== "received/dispatch"  && (
+                                <Grid lg={4} md={4} xs={12} item>
                                     <TextField
                                         type="date"
                                         label={t("text.LetterSentOn")}
@@ -1156,7 +1155,7 @@ const PageCreateEdit = (props: Props) => {
                                 </Grid>
                             )}
 
-                            <Grid md={4} item>
+                            <Grid lg={4} md={4} xs={12} item>
                                 <TextField
                                     type="date"
                                     label={t("text.ReceivedData")}
@@ -1173,7 +1172,7 @@ const PageCreateEdit = (props: Props) => {
                                 />
                             </Grid>
 
-                            <Grid md={4} item>
+                            <Grid lg={4} md={4} xs={12} item>
                                 <TextField
                                     type="date"
                                     label={t("text.fileOpenDate")}
@@ -1190,8 +1189,8 @@ const PageCreateEdit = (props: Props) => {
                                 />
                             </Grid>
 
-                            {selectedOption !== "dispatch" && (
-                                <Grid md={4} item>
+                            {formik.values.letterBy !== "dispatch" && formik.values.letterBy !== "received/dispatch"  && (
+                                <Grid lg={4} md={4} xs={12} item>
                                     <TextField
                                         id="rPhone"
                                         name="rPhone"
@@ -1206,6 +1205,52 @@ const PageCreateEdit = (props: Props) => {
                                         inputProps={{ maxLength: 10 }}
                                     />
                                 </Grid>
+                            )}
+
+                            {formik.values.letterBy !== "dispatch" && formik.values.letterBy !== "received/dispatch"  && (
+                                <Grid lg={4} md={4} xs={12} item>
+                                    <TextField
+                                        label={t("text.SentBy")}
+                                        value={formik.values.rSendAdrs}
+                                        placeholder={t("text.SentBy")}
+                                        size="small"
+                                        fullWidth
+                                        name="rSendAdrs"
+                                        id="rSendAdrs"
+                                        type="text"
+                                        style={{ backgroundColor: "white" }}
+                                        onChange={formik.handleChange}
+                                        onBlur={formik.handleBlur}
+                                    />
+                                </Grid>
+                            )}
+
+                            {formik.values.letterBy !== "Received" && (
+                                <Grid item lg={4} md={4} xs={12}>
+                                                <Autocomplete
+                                                    disablePortal
+                                                    id="combo-box-demo"
+                                                    options={userOption}
+                                                    fullWidth
+                                                    size="small"
+                                                    onChange={(event, newValue: any) => {
+                                                        console.log(newValue?.value);
+
+                                                        formik.setFieldValue("", newValue?.value);
+
+                                                        formik.setFieldValue("", newValue?.label);
+
+                                                        // formik.setFieldTouched("rFileType", true);
+                                                        // formik.setFieldTouched("rFileType", false);
+                                                    }}
+                                                    renderInput={(params) => (
+                                                        <TextField
+                                                            {...params}
+                                                            label={t("text.SendTo")}
+                                                        />
+                                                    )}
+                                                />
+                                            </Grid>
                             )}
 
                             {/* <Grid md={4} item container alignItems="center">
@@ -1245,8 +1290,8 @@ const PageCreateEdit = (props: Props) => {
                                     }}
                                 />
                             </Grid> */}
-
-                            <Grid item lg={4} xs={12}>
+                       {formik.values.letterBy !== "dispatch" && formik.values.letterBy !== "received/dispatch" && (
+                            <Grid item lg={4} md={4} xs={12}>
                                 <Autocomplete
                                     disablePortal
                                     id="combo-box-demo"
@@ -1300,7 +1345,7 @@ const PageCreateEdit = (props: Props) => {
                                     )}
                                 />
                             </Grid>
-
+)}
                             
                             <Grid md={12} item>
                                 <TextField

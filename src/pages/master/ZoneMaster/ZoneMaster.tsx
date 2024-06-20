@@ -100,8 +100,8 @@ export default function ZoneMaster() {
       zoneName: value.zoneName,
       zoneCode: value.zoneCode,
       isActive: event.target.checked,
-      user_ID: -1,
-      sortOrder: 0,
+      user_ID: Userid,
+      sortOrder: value.sortOrder,
     };
     api
       .post(`Zone/AddUpdateZonemaster`, collectData)
@@ -165,7 +165,7 @@ export default function ZoneMaster() {
       const collectData = {
         zoneID: -1,
         user_ID: Userid,
-        isActive: true
+        // isActive: true
       };
       const response = await api.post(
         `Zone/GetZonemaster`,
@@ -425,7 +425,7 @@ export default function ZoneMaster() {
 
 
               <Grid item xs={2} sx={{ m: -1 }}>
-                 {permissionData?.isAdd == true ? (
+                 {/* {permissionData?.isAdd == true ? ( */}
 
 
 

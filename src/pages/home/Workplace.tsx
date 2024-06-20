@@ -65,6 +65,10 @@ export default function WorkPlace() {
     const divId = getdivisionId();
     // console.log("🚀 ~ ViewEditFile ~ divId:", divId);
 
+    const [selectedDivision, setSelectedDivision] = useState('');
+
+
+
 
 
     const { t } = useTranslation();
@@ -94,8 +98,8 @@ export default function WorkPlace() {
             rDealHands: "",
             rDealHandlabel: "",
             fileNo: 0,
-            dueDate:"",
-            moveDate:new Date().toISOString().substring(0, 10),
+            dueDate: "",
+            moveDate: new Date().toISOString().substring(0, 10),
 
 
         },
@@ -126,12 +130,12 @@ export default function WorkPlace() {
             "hdnFilNu": formik.values.fileNo,
             "inst_id": instId,
             "userid": userId,
-            "moveddate":formik.values.moveDate.toString() || "",
-            "duedate":formik.values.dueDate.toString() || "",
+            "moveddate": formik.values.moveDate.toString() || "",
+            "duedate": formik.values.dueDate.toString() || "",
             "remark": formik.values.rRemark.toString() || "",
             "routeId": 0,
             "authorityLevel": 0,
-            "workPlaceFlag":formik.values.rDealHandlabel.toString(),
+            "workPlaceFlag": formik.values.rDealHandlabel.toString(),
             "remId": 0,
             "divisionId": divId,
             "message": ""
@@ -278,6 +282,10 @@ export default function WorkPlace() {
                                             console.log("file number", params.row.fnId)
                                             setReviewModalData(true);
 
+                                            const value = event.target.value;
+
+                                            setSelectedDivision(value);
+
                                             // formik.setFieldValue("id", params.row.fnId);
                                             formik.setFieldValue("fileNo", params.row.fnId);
                                             //formik.setFieldValue("rid", params.row.rid);
@@ -383,7 +391,7 @@ export default function WorkPlace() {
 
 
             {ReviewModalData && (
-                <Modal open={true} >
+                <Modal open={true}>
                     <Card
                         style={{
                             width: "80%",
@@ -408,16 +416,9 @@ export default function WorkPlace() {
                             }}
                             style={{ padding: "10px", justifyContent: "center" }}
                         >
-                            <Grid xs={12} display="flex" alignItems="center" justifyContent="space-between" >
-
-                                <Typography fontWeight={600} color="#000" fontSize="20px">Remark to {formik.values.rDealHandlabel} for the Letter </Typography>
-                                {/* <Typography color="#000" ><CloseIcons/></Typography> */}
-                                <IconButton
-                                    // edge="end"
-                                    onClick={handleCloseReviewModal}
-                                    aria-label="close"
-                                // sx={{ color: "#fff", position: "absolute", right: 20, top: 5 }}
-                                >
+                            <Grid xs={12} display="flex" alignItems="center" justifyContent="space-between">
+                                <Typography fontWeight={600} color="#000" fontSize="20px">Remark to {formik.values.rDealHandlabel} for the Letter</Typography>
+                                <IconButton onClick={() => setReviewModalData(false)} aria-label="close">
                                     <CloseIcons />
                                 </IconButton>
                             </Grid>
@@ -425,13 +426,8 @@ export default function WorkPlace() {
                             <ConfirmDialog />
                             <Divider />
                             <Box height={10} />
-                            <Stack direction="column" spacing={2} classes="my-2 mb-2" justifyContent={"center"}>
-                                <Grid
-                                    container
-                                    spacing={2}
-                                    alignItems="center"
-                                    sx={{ marginTop: 2 }}
-                                >
+                            <Stack direction="column" spacing={2} className="my-2 mb-2" justifyContent={"center"}>
+                                <Grid container spacing={2} alignItems="center" sx={{ marginTop: 2 }}>
                                     <Grid item xs={5}>
                                         <TextField
                                             type="date"
@@ -444,54 +440,44 @@ export default function WorkPlace() {
                                             name="moveDate"
                                             id="moveDate"
                                             style={{ backgroundColor: "white" }}
-                                            onChange={handleMoveDateChange}
-                                            onBlur={formik.handleBlur}
-                                            error={
-                                                formik.touched.moveDate &&
-                                                Boolean(formik.errors.moveDate)
-                                            }
-                                            helperText={
-                                                formik.touched.moveDate && formik.errors.moveDate
-                                            }
-                                        />
-                                    </Grid>
-
-                                    <Grid item xs={5}>
-                                        <TextField
-                                            type="date"
-                                            label={<CustomLabel text="Due Date" />}
-                                            value={formik.values.dueDate}
-                                            placeholder="Due Date"
-                                            size="small"
-                                            InputLabelProps={{ shrink: true }}
-                                            fullWidth
-                                            name="dueDate"
-                                            id="dueDate"
-                                            style={{ backgroundColor: "white" }}
                                             onChange={formik.handleChange}
                                             onBlur={formik.handleBlur}
-                                            error={
-                                                formik.touched.dueDate &&
-                                                Boolean(formik.errors.dueDate)
-                                            }
-                                            helperText={
-                                                formik.touched.dueDate && formik.errors.dueDate
-                                            }
-                                            inputProps={{ min: minDueDate }}
+                                            error={formik.touched.moveDate && Boolean(formik.errors.moveDate)}
+                                            helperText={formik.touched.moveDate && formik.errors.moveDate}
                                         />
                                     </Grid>
 
+                                    {selectedDivision !== "2" && selectedDivision !== "3" && (
+                                        <Grid item xs={5}>
+                                            <TextField
+                                                type="date"
+                                                label={<CustomLabel text="Due Date" />}
+                                                value={formik.values.dueDate}
+                                                placeholder="Due Date"
+                                                size="small"
+                                                InputLabelProps={{ shrink: true }}
+                                                fullWidth
+                                                name="dueDate"
+                                                id="dueDate"
+                                                style={{ backgroundColor: "white" }}
+                                                onChange={formik.handleChange}
+                                                onBlur={formik.handleBlur}
+                                                error={formik.touched.dueDate && Boolean(formik.errors.dueDate)}
+                                                helperText={formik.touched.dueDate && formik.errors.dueDate}
+                                                inputProps={{ min: minDueDate }}
+                                            />
+                                        </Grid>
+                                    )}
                                 </Grid>
 
                                 <TextField
-                                    label={<CustomLabel text={t("text.Remark")} required={false} />}
+                                    label={<CustomLabel text="Remark" required={false} />}
                                     value={formik.values.rRemark}
                                     onChange={formik.handleChange}
                                     onBlur={formik.handleBlur}
-                                    placeholder={t("text.Remark")}
+                                    placeholder="Remark"
                                     name="rRemark"
                                     id="rRemark"
-
                                     size="medium"
                                     style={{ backgroundColor: "white", width: '100%' }}
                                     fullWidth
@@ -499,9 +485,7 @@ export default function WorkPlace() {
                                     rows={4}
                                 />
 
-                                <ButtonWithLoader buttonText="Move"
-                                    onClickHandler={getSpMovement}
-                                />
+                                <ButtonWithLoader buttonText="Move" onClickHandler={getSpMovement} />
                             </Stack>
                         </Paper>
                     </Card>

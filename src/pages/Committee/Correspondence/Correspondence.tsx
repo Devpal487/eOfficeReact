@@ -168,7 +168,8 @@ export default function Correspondence() {
         const collectData = {
             "fileId": id,
             "fNid": -1,
-            "nodeId": -1
+            "nodeId": -1,
+            "reviewFlag": ""
         };
         api
             .post(`Correspondance/GetCorrespondance`, collectData)
@@ -182,7 +183,8 @@ export default function Correspondence() {
         const collectData = {
             "fileId": -1,
             "fNid": -1,
-            "nodeId": -1
+            "nodeId": -1,
+            "reviewFlag": ""
         };
         try {
             api
@@ -298,10 +300,10 @@ export default function Correspondence() {
         initialValues: {
             "fileId": -1,
             "fileNo": "",
-            "fNid":divid,
+            "fNid": 0,
             "fileType": "",
             "fileCont": "",
-            "nodeId": 0,
+            "nodeId": 1,
             "dateSave": defaultValuestime,
             "reviewFlag": "",
             "uploading": "",
@@ -522,7 +524,7 @@ export default function Correspondence() {
                                                     control={<Radio />}
                                                     label={t("text.Report")}
                                                 />
-                                                  <FormControlLabel
+                                                <FormControlLabel
                                                     value="D"
                                                     control={<Radio />}
                                                     label={t("text.Draft")}
@@ -534,7 +536,7 @@ export default function Correspondence() {
                                                     label={t("text.Other")}
                                                 />
 
-                                                
+
                                             </RadioGroup>
                                         </Grid>
                                     </FormControl>
@@ -552,7 +554,7 @@ export default function Correspondence() {
                                     >
                                         <TextField
                                             type="file"
-                                               inputProps={{ accept: "application/pdf" }}
+                                            inputProps={{ accept: "application/pdf" }}
                                             InputLabelProps={{ shrink: true }}
                                             label={<CustomLabel text={t("text.AttachedFile")} />}
                                             size="small"

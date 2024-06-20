@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {GridColDef} from "@mui/x-data-grid";
+import { GridColDef } from "@mui/x-data-grid";
 import api from "../../../utils/Url";
 import Card from "@mui/material/Card";
 import {
@@ -61,21 +61,21 @@ export default function ZoneMaster() {
 
   useEffect(() => {
     const dataString = localStorage.getItem("userdata");
-      if (dataString) {
-        const data = JSON.parse(dataString);
-        if (data && data.length > 0) {
-          const userPermissionData = data[0]?.userPermission;
-          if (userPermissionData && userPermissionData.length > 0) {
-            const menudata = userPermissionData[0]?.parentMenu;
-            for (let index = 0; index < menudata.length; index++) {
-              const childMenudata = menudata[index]?.childMenu;
-              const pathrow = childMenudata.find(
-                (x: any) => x.path === location.pathname
-              );
-              console.log("data", pathrow);
-              if (pathrow) {
-                setPermissionData(pathrow);
-                fetchZonesData();
+    if (dataString) {
+      const data = JSON.parse(dataString);
+      if (data && data.length > 0) {
+        const userPermissionData = data[0]?.userPermission;
+        if (userPermissionData && userPermissionData.length > 0) {
+          const menudata = userPermissionData[0]?.parentMenu;
+          for (let index = 0; index < menudata.length; index++) {
+            const childMenudata = menudata[index]?.childMenu;
+            const pathrow = childMenudata.find(
+              (x: any) => x.path === location.pathname
+            );
+            console.log("data", pathrow);
+            if (pathrow) {
+              setPermissionData(pathrow);
+              fetchZonesData();
             }
           }
         }
@@ -83,12 +83,12 @@ export default function ZoneMaster() {
     }
   }, [isLoading]);
 
-  const handleConversionChange = (params:any, text: string) => {
+  const handleConversionChange = (params: any, text: string) => {
     console.log("🚀 ~ handleConversionChange ~ params:", params)
     console.log('Converted text:', text);
     formik.setFieldValue(params, text);
 
-};
+  };
 
   const handleSwitchChange = (
     event: React.ChangeEvent<HTMLInputElement>,
@@ -196,32 +196,32 @@ export default function ZoneMaster() {
                   sx={{ alignItems: "center", marginTop: "5px" }}
                 >
                   {permissionData?.isEdit ? (
-                  <EditIcon
-                    style={{
-                      fontSize: "20px",
-                      color: "blue",
-                      cursor: "pointer",
-                    }}
-                    className="cursor-pointer"
-                    onClick={() => routeChangeEdit(params.row)}
-                  />
-                   ) : (
+                    <EditIcon
+                      style={{
+                        fontSize: "20px",
+                        color: "blue",
+                        cursor: "pointer",
+                      }}
+                      className="cursor-pointer"
+                      onClick={() => routeChangeEdit(params.row)}
+                    />
+                  ) : (
                     ""
                   )}
-                  {permissionData?.isDel ? ( 
-                  <DeleteIcon
-                    style={{
-                      fontSize: "20px",
-                      color: "red",
-                      cursor: "pointer",
-                    }}
-                    onClick={() => {
-                      handledeleteClick(params.row.id);
-                    }}
-                  />
-                   ) : (
+                  {permissionData?.isDel ? (
+                    <DeleteIcon
+                      style={{
+                        fontSize: "20px",
+                        color: "red",
+                        cursor: "pointer",
+                      }}
+                      onClick={() => {
+                        handledeleteClick(params.row.id);
+                      }}
+                    />
+                  ) : (
                     ""
-                  )} 
+                  )}
                   <Switch
                     checked={Boolean(params.row.isActive)}
                     style={{
@@ -326,8 +326,8 @@ export default function ZoneMaster() {
       );
       if (response.data.isSuccess) {
         toast.success(response.data.mesg);
-        formik.setFieldValue("zoneName","");
-        formik.setFieldValue("zoneCode","");
+        formik.setFieldValue("zoneName", "");
+        formik.setFieldValue("zoneCode", "");
         fetchZonesData();
         setEditId(-1);
       } else {
@@ -363,81 +363,81 @@ export default function ZoneMaster() {
           <ConfirmDialog />
 
           <Grid container spacing={2}>
-              <InputModeProvider>
-            <Grid item md={10} >
-          <Typography
-            gutterBottom
-            variant="h5"
-            component="div"
-            sx={{ padding: "20px" }}
-            align="left"
-          >
-            {t("text.zoneMaster")}
-          </Typography>
-          </Grid>
-
-          <Grid item md={2} sx={{ padding: "20px" }}>
-          <InputModeSelector />
-          </Grid>
-          
-          <Divider />
-
-          <Box height={10} />
-          
-          <form onSubmit={formik.handleSubmit}  style={{ marginLeft: "20px" }}>
-            <Grid item xs={12} container spacing={3}>
-
-              <Grid xs={5} sm={5} item>
-                <EnglishToHindiConverter
-                  fieldname1="zoneName"
-                  fieldname2="zoneName"
-                  textFieldLabel={<CustomLabel text={t("text.enterZoneName")} required={requiredFields.includes('zoneName')} />}
-                  value={formik.values.zoneName}
-                  englishPlaceholder={t("text.enterZoneName")}
-                  hindiPlaceholder={t("text.enterZoneName")}
-                  size="small"
-                  fullWidth={true}
-                  onChange={(text:any)=>handleConversionChange("zoneName", text)}
-                  // onBlur={formik.handleBlur}
-                />
-                {formik.touched.zoneName && formik.errors.zoneName ? (
-                  <div style={{ color: "red", margin: "5px" }}>{formik.errors.zoneName}</div>
-                ) : null}
-
+            <InputModeProvider>
+              <Grid item md={10} >
+                <Typography
+                  gutterBottom
+                  variant="h5"
+                  component="div"
+                  sx={{ padding: "20px" }}
+                  align="left"
+                >
+                  {t("text.zoneMaster")}
+                </Typography>
               </Grid>
 
-              <Grid item xs={5} sm={5}>
-                <EnglishToHindiConverter
-                  fieldname1="zoneCode"
-                  fieldname2="zoneCode"
-                  textFieldLabel={<CustomLabel text={t("text.enterZoneCode")} />}
-                  value={formik.values.zoneCode}
-                  englishPlaceholder={t("text.enterZoneCode")}
-                  hindiPlaceholder={t("text.enterZoneCode")}
-                  size="small"
-                  fullWidth={true}
-                  // style={{ backgroundColor: "white" }}
-                  onChange={(text:any)=>handleConversionChange("zoneCode", text)}
-                  // onBlur={formik.handleBlur}
-                />
-
+              <Grid item md={2} sx={{ padding: "20px" }}>
+                <InputModeSelector />
               </Grid>
 
+              <Divider />
 
-              <Grid item xs={2} sx={{ m: -1 }}>
-                 {permissionData?.isAdd == true ? (
+              <Box height={10} />
+
+              <form onSubmit={formik.handleSubmit} style={{ marginLeft: "20px" }}>
+                <Grid item xs={12} container spacing={3}>
+
+                  <Grid xs={5} sm={5} item>
+                    <EnglishToHindiConverter
+                      fieldname1="zoneName"
+                      fieldname2="zoneName"
+                      textFieldLabel={<CustomLabel text={t("text.enterZoneName")} required={requiredFields.includes('zoneName')} />}
+                      value={formik.values.zoneName}
+                      englishPlaceholder={t("text.enterZoneName")}
+                      hindiPlaceholder={t("text.enterZoneName")}
+                      size="small"
+                      fullWidth={true}
+                      onChange={(text: any) => handleConversionChange("zoneName", text)}
+                    // onBlur={formik.handleBlur}
+                    />
+                    {formik.touched.zoneName && formik.errors.zoneName ? (
+                      <div style={{ color: "red", margin: "5px" }}>{formik.errors.zoneName}</div>
+                    ) : null}
+
+                  </Grid>
+
+                  <Grid item xs={5} sm={5}>
+                    <EnglishToHindiConverter
+                      fieldname1="zoneCode"
+                      fieldname2="zoneCode"
+                      textFieldLabel={<CustomLabel text={t("text.enterZoneCode")} />}
+                      value={formik.values.zoneCode}
+                      englishPlaceholder={t("text.enterZoneCode")}
+                      hindiPlaceholder={t("text.enterZoneCode")}
+                      size="small"
+                      fullWidth={true}
+                      // style={{ backgroundColor: "white" }}
+                      onChange={(text: any) => handleConversionChange("zoneCode", text)}
+                    // onBlur={formik.handleBlur}
+                    />
+
+                  </Grid>
+
+
+                  <Grid item xs={2} sx={{ m: -1 }}>
+                    {/* {permissionData?.isAdd == true ? ( */}
 
 
 
-                <ButtonWithLoader buttonText={editId == -1 ? t("text.save") : t("text.update")} onClickHandler={handleSubmitWrapper} fullWidth={true}/>
-                {/* ) : ( */}
-                {/*   "" */}
-                {/* )} */}
+                    <ButtonWithLoader buttonText={editId == -1 ? t("text.save") : t("text.update")} onClickHandler={handleSubmitWrapper} fullWidth={true} />
+                    {/* ) : ( */}
+                    {/*   "" */}
+                    {/* )} */}
 
-              </Grid>
-            </Grid>
-          </form>
-          </InputModeProvider>
+                  </Grid>
+                </Grid>
+              </form>
+            </InputModeProvider>
 
           </Grid>
           {isLoading ? (

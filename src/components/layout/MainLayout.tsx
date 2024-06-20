@@ -31,16 +31,17 @@ const MainLayout = () => {
         childMenu:[
           {menuId: 1, menuName: 'Zone', path:"/master/ZoneMaster",displayNo:0},
           {menuId: 2, menuName: 'Ward', path:"/master/WardMaster",displayNo:0},
-          {menuId: 3, menuName: 'State', path:"/master/StateMaster",displayNo:0},
-          {menuId: 4, menuName: 'Country', path:"/master/CountryMaster",displayNo:0},
+          
+          {menuId: 3, menuName: 'Country', path:"/master/CountryMaster",displayNo:0},
+          {menuId: 4, menuName: 'State', path:"/master/StateMaster",displayNo:0},
           {menuId: 5, menuName: 'District', path:"/master/CityMaster",displayNo:0},
           {menuId: 6, menuName: 'Gender', path:"/master/GenderMaster",displayNo:0},
           {menuId: 7, menuName: 'Department', path:"/master/DepartmentMaster",displayNo:0},
           {menuId: 8, menuName: 'Designation', path:"/master/DesignationMaster",displayNo:0},
           {menuId: 9, menuName: 'Jurisdiction', path:"/master/Jurisdiction",displayNo:0},
           // {menuId: 10, menuName: 'Node Permission', path:"/master/NodePermission",displayNo:0},
-          {menuId: 11, menuName: 'Menu ', path:"/master/MenuMaster",displayNo:0},
-          {menuId: 13, menuName: 'Organization', path:"/master/Institute",displayNo:0},
+          {menuId: 10, menuName: 'Menu ', path:"/master/MenuMaster",displayNo:0},
+          {menuId: 11, menuName: 'Organization', path:"/master/Institute",displayNo:0},
           
         ] 
       },

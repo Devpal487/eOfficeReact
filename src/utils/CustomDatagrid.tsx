@@ -90,7 +90,7 @@ const CustomDataGrid: React.FC<CustomDataGridProps> = ({
                 },
                 '& .MuiDataGrid-columnHeaderTitle': {
                   overflow: 'visible',
-                  whiteSpace: 'normal',
+                  // whiteSpace: 'normal',
                 },
                 '& .MuiDataGrid-colCell' :{
                   fontSize: '15px !important',

@@ -26,6 +26,7 @@ import api from "../../../utils/Url";
 import { toast } from "react-toastify";
 import nopdf from '../../../assets/images/imagepreview.jpg';
 import CustomLabel from "../../../CustomLable";
+import * as Yup from "yup";
 
 
 const style = {
@@ -89,8 +90,10 @@ const CommitteeAdd = (props: Props) => {
   const otherDocChangeHandler = async (event: any, params: any) => {
     if (event.target.files && event.target.files[0]) {
       const file = event.target.files[0];
-      const fileNameParts = file.name.split(".");
-      const fileExtension = fileNameParts[fileNameParts.length - 1];
+      if (!file.type.startsWith('image/')) {
+        alert("Please select a valid image file.");
+        return;
+    }
       const base64 = await ConvertBase64(file);
       formik.setFieldValue(params, base64);
       console.log(base64);
@@ -102,22 +105,23 @@ const CommitteeAdd = (props: Props) => {
 
   const [toaster, setToaster] = useState(false);
 
-  // const validationSchema = Yup.object({
-  //   chackNo: Yup.string().test(
-  //     "required",
-  //     t("text.reqChackNo"),
-  //     function (value: any) {
-  //       return value && value.trim() !== "";
-  //     }
-  //   ),
-  //   fileName: Yup.string().test(
-  //     "required",
-  //     t("text.reqFileName"),
-  //     function (value: any) {
-  //       return value && value.trim() !== "";
-  //     }
-  //   ),
-  // });
+  const validationSchema = Yup.object({
+   
+    committeeName: Yup.string().test(
+      "required",
+      t("text.reqcommitteeName"),
+      function (value: any) {
+        return value && value.trim() !== "";
+      }
+    ),
+    foundedDate: Yup.string().test(
+      "required",
+      t("text.reqfoundedDates"),
+      function (value: any) {
+        return value && value.trim() !== "";
+      }
+    ),
+  });
 
   const formik = useFormik({
     initialValues: {
@@ -132,7 +136,7 @@ const CommitteeAdd = (props: Props) => {
       "committeeDesc": "",
       "type": ""
     },
-    // validationSchema: validationSchema,
+    validationSchema: validationSchema,
 
     onSubmit: async (values) => {
 
@@ -156,7 +160,7 @@ const CommitteeAdd = (props: Props) => {
       }}
   });
 
-  const requiredFields = ["fileName", "chackNo"];
+  const requiredFields = ["committeeName", "foundedDate"];
 
   const back = useNavigate();
 
@@ -246,28 +250,30 @@ const CommitteeAdd = (props: Props) => {
 
               <Grid item sm={4} md={4} xs={12}>
                 <TextField
-                  id="committeeName"
-                  name="committeeName"
-                  label={<CustomLabel text={t("text.committeeName")} />}
-                  value={formik.values.committeeName}
-                  placeholder={t("text.committeeName")}
-                  size="small"
-                  fullWidth
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                />
-                {/* {formik.touched.fileName && formik.errors.fileName ? (
-                    <div style={{ color: "red", margin: "5px" }}>
-                      {formik.errors.fileName}
-                    </div>
-                  ) : null} */}
+                    id="committeeName"
+                    name="committeeName"
+                    label={<CustomLabel text={t("text.committeeName")} required={requiredFields.includes('committeeName')} />}
+                    value={formik.values.committeeName}
+                    placeholder={t("text.committeeName")}
+                    size="small"
+                    fullWidth
+                    style={{
+                      backgroundColor: 'white',
+                      borderColor: formik.touched.committeeName && formik.errors.committeeName ? 'red' : 'initial',
+                    }}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                  />
+                  {formik.touched.committeeName && formik.errors.committeeName ? (
+                    <div style={{ color: "red", margin: "5px" }}>{formik.errors.committeeName}</div>
+                  ) : null}
               </Grid>
 
               <Grid item sm={4} md={4} xs={12}>
                 <TextField
                   id="foundedDate"
                   name="foundedDate"
-                  label={<CustomLabel text={t("text.foundedDate")} />}
+                  label={<CustomLabel text={t("text.foundedDate")} required={requiredFields.includes('foundedDate')} />}
                   value={formik.values.foundedDate}
                   placeholder={t("text.foundedDate")}
                   size="small"
@@ -278,6 +284,11 @@ const CommitteeAdd = (props: Props) => {
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                 />
+                {formik.touched.foundedDate && formik.errors.foundedDate ? (
+                    <div style={{ color: "red", margin: "5px" }}>
+                      {formik.errors.foundedDate}
+                    </div>
+                  ) : null}
               </Grid>
 
 
@@ -291,7 +302,7 @@ const CommitteeAdd = (props: Props) => {
                 >
                   <TextField
                     type="file"
-                    //   inputProps={{ accept: "application/pdf" }}
+                    inputProps={{ accept: "image/*" }}
                     InputLabelProps={{ shrink: true }}
                     label={<CustomLabel text={t("text.AttachedFile")} />}
                     size="small"
@@ -313,7 +324,7 @@ const CommitteeAdd = (props: Props) => {
                   >
                     {formik.values.committeeLogo == "" ? (
                       <img
-                        //   src={nopdf}
+                          src={nopdf}
                         style={{
                           width: 150,
                           height: 100,
@@ -322,7 +333,7 @@ const CommitteeAdd = (props: Props) => {
                         }}
                       />
                     ) : (
-                      <embed
+                      <img
                         src={formik.values.committeeLogo}
                         style={{
                           width: 150,
@@ -361,7 +372,6 @@ const CommitteeAdd = (props: Props) => {
                       <div style={{ width: "100%", height: "100%" }}>
                         <img
                           src={modalImg}
-                          // type="application/pdf"
                           width="100%"
                           height="100%"
                           style={{ borderRadius: 10 }}

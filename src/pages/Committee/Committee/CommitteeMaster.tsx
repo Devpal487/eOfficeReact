@@ -202,6 +202,17 @@ export default function CommitteeMaster() {
                         headerClassName: "MuiDataGrid-colCell",
                     },
                     {
+                        field: "type",
+                        headerName: t("text.Type"),
+                        flex: 1,
+                        headerClassName: "MuiDataGrid-colCell",
+                        renderCell: (params) => (
+                            <div>
+                                {params.row.type === "G" ? "Group" : "Committee"}
+                            </div>
+                        )
+                    },
+                    {
                         field: "committeeName",
                         headerName: t("text.committeeNames"),
                         flex: 1,
@@ -209,7 +220,7 @@ export default function CommitteeMaster() {
                     },
                     {
                         field: "foundedDate",
-                        headerName: t("text.FileNo"),
+                        headerName: t("text.foundedDates"),
                         flex: 1,
                         headerClassName: "MuiDataGrid-colCell",
                         renderCell: (params) => {

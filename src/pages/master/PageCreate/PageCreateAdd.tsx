@@ -224,6 +224,8 @@ const PageCreateAdd = (props: Props) => {
                 label: item.firsT_NAME,
                 value: item.useR_ID,
             }));
+            console.log("🚀 ~ arr ~ res.data.data:", res.data.data)
+            console.log("🚀 ~ arr ~ arr:", arr)
             setUserOption(arr);
         });
     };
@@ -422,21 +424,21 @@ const PageCreateAdd = (props: Props) => {
             }
 
             console.log("values check", values);
-
-            const response = await api.post(`ReferenceDiary/AddUpdateReferenceDiary`,
-                values
-            );
-            if (response.data.isSuccess) {
-                // console.log('Success message:', response.data.mesg);
-                alert(response.data.mesg);
-                toast.success(response.data.mesg);
-                setToaster(false);
-                setTimeout(() => {
-                    navigate(-1);
-                }, 2000);
-            } else {
+            try {
+                const response = await api.post(`ReferenceDiary/AddUpdateReferenceDiary`, values);
+                if (response.data.isSuccess) {
+                    toast.success(response.data.mesg);
+                    setToaster(false);
+                    // setTimeout(() => {
+                        navigate(-1);
+                    // }, 2000);
+                } else {
+                    setToaster(true);
+                    toast.error(response.data.mesg);
+                }
+            } catch (error) {
                 setToaster(true);
-                toast.error(response.data.mesg);
+                toast.error("An error occurred while submitting the form.");
             }
         },
     });
@@ -593,7 +595,6 @@ const PageCreateAdd = (props: Props) => {
             return updatedTableDataed;
         });
     };
-    // console.log("🚀 ~ PageCreateAdd ~ formik.values.letterBy top:", formik.values.letterBy)
 
     const back = useNavigate();
 
@@ -1151,9 +1152,9 @@ const PageCreateAdd = (props: Props) => {
                             {formik.values.letterBy !== "dispatch" && formik.values.letterBy !== "received/dispatch"  && (
                                 <Grid lg={4} md={4} xs={12} item>
                                     <TextField
-                                        label={t("text.SentBy")}
-                                        value={formik.values.rSendAdrs}
-                                        placeholder={t("text.SentBy")}
+                                        label={t("text.SendTo")}
+                                        // value={formik.values.rSendAdrs}
+                                        placeholder={t("text.SendTo")}
                                         size="small"
                                         fullWidth
                                         name="rSendAdrs"

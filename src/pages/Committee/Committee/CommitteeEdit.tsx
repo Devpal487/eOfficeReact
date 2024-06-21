@@ -26,6 +26,7 @@ import api from "../../../utils/Url";
 import { toast } from "react-toastify";
 import dayjs from "dayjs";
 import nopdf from '../../../assets/images/imagepreview.jpg'
+import * as Yup from "yup";
 
 const style = {
   position: "absolute" as "absolute",
@@ -112,8 +113,10 @@ const CommitteeEdit = (props: Props) => {
   const otherDocChangeHandler = async (event: any, params: any) => {
     if (event.target.files && event.target.files[0]) {
       const file = event.target.files[0];
-      const fileNameParts = file.name.split(".");
-      const fileExtension = fileNameParts[fileNameParts.length - 1];
+      if (!file.type.startsWith('image/')) {
+        alert("Please select a valid image file.");
+        return;
+    }
       const base64 = await ConvertBase64(file);
       formik.setFieldValue(params, base64);
       console.log(base64);
@@ -125,22 +128,23 @@ const CommitteeEdit = (props: Props) => {
 
   const [toaster, setToaster] = useState(false);
 
-  // const validationSchema = Yup.object({
-  //   chackNo: Yup.string().test(
-  //     "required",
-  //     t("text.reqChackNo"),
-  //     function (value: any) {
-  //       return value && value.trim() !== "";
-  //     }
-  //   ),
-  //   fileName: Yup.string().test(
-  //     "required",
-  //     t("text.reqFileName"),
-  //     function (value: any) {
-  //       return value && value.trim() !== "";
-  //     }
-  //   ),
-  // });
+  const validationSchema = Yup.object({
+   
+    committeeName: Yup.string().test(
+      "required",
+      t("text.reqcommitteeName"),
+      function (value: any) {
+        return value && value.trim() !== "";
+      }
+    ),
+    foundedDate: Yup.string().test(
+      "required",
+      t("text.reqfoundedDates"),
+      function (value: any) {
+        return value && value.trim() !== "";
+      }
+    ),
+  });
 
   const formik = useFormik({
     initialValues: {
@@ -155,7 +159,7 @@ const CommitteeEdit = (props: Props) => {
       "committeeDesc": location.state.committeeDesc,
       "type": location.state.type
     },
-    // validationSchema: validationSchema,
+    validationSchema: validationSchema,
 
     onSubmit: async (values) => {
 
@@ -179,7 +183,7 @@ const CommitteeEdit = (props: Props) => {
       }}
   });
 
-  const requiredFields = ["fileName", "chackNo"];
+  const requiredFields = ["committeeName", "foundedDate"];
 
   const back = useNavigate();
 
@@ -200,7 +204,7 @@ const CommitteeEdit = (props: Props) => {
             textAlign="center"
             style={{ fontSize: "18px", fontWeight: 500 }}
           >
-            {t("text.AddCommittee")}
+            {t("text.EditCommittee")}
           </Typography>
 
           <Grid item sm={4} xs={12}>
@@ -284,6 +288,9 @@ const CommitteeEdit = (props: Props) => {
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                 />
+                {formik.touched.committeeName && formik.errors.committeeName ? (
+                    <div style={{ color: "red", margin: "5px" }}>{String(formik.errors.committeeName)}</div>
+                  ) : null}
               </Grid>
 
               <Grid item sm={4} md={4} xs={12}>
@@ -301,6 +308,11 @@ const CommitteeEdit = (props: Props) => {
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                 />
+                {formik.touched.foundedDate && formik.errors.foundedDate ? (
+                    <div style={{ color: "red", margin: "5px" }}>
+                      {formik.errors.foundedDate}
+                    </div>
+                  ) : null}
               </Grid>
 
 
@@ -314,7 +326,7 @@ const CommitteeEdit = (props: Props) => {
                 >
                   <TextField
                     type="file"
-                    //   inputProps={{ accept: "application/pdf" }}
+                    inputProps={{ accept: "image/*" }}
                     InputLabelProps={{ shrink: true }}
                     label={
                       <strong style={{ color: "#000" }}>

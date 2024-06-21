@@ -77,12 +77,12 @@ export default function CommitteeMaster() {
     }, []);
     // }, [isLoading]);
     const routeChangeAdd = () => {
-        let path = `/Committee/CommitteeAdd`;
+        let path = `/E-Office/CommitteeAdd`;
         navigate(path);
     };
 
     const routeChangeEdit = (row: any) => {
-        let path = `/Committee/CommitteeEdit`;
+        let path = `/E-Office/CommitteeEdit`;
         navigate(path, {
             state: row,
         });

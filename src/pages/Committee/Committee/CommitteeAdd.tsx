@@ -146,7 +146,7 @@ const CommitteeAdd = (props: Props) => {
         );
         if (response.data.isSuccess) {
           toast.success(response.data.mesg);
-          navigate("/Committee/CommitteeMaster");
+          navigate("/E-Office/CommitteeMaster");
         } else {
           setToaster(true);
           toast.error(response.data.mesg);

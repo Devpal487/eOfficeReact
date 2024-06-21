@@ -163,11 +163,11 @@ const CommitteeEmployeeMappingAdd = (props: Props) => {
             if (response.data.isSuccess) {
                 setToaster(false);
                 toast.success(response.data.mesg);
+                navigate("/E-Office/CommitteeEmployeeMapping");
             } else {
                 setToaster(true);
                 toast.error(response.data.mesg);
             }
-            navigate("/Committee/CommitteeEmployeeMapping");
         },
     });
 

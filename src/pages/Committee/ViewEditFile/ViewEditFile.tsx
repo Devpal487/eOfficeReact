@@ -60,8 +60,11 @@ import * as Yup from "yup";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import MapIcon from "@mui/icons-material/Map";
+import AddIcon from '@mui/icons-material/Add';
+import nopdf from '../../../assets/images/imagepreview.jpg';
 
 import Paper from '@mui/material/Paper';
+import ReactQuill from "react-quill";
 
 
 
@@ -92,6 +95,25 @@ const AntennaOption = [
     { label: "Antenna-2", value: "A2" },
     { label: "Antenna-3", value: "A3" },
     { label: "Antenna-4", value: "A4" },
+];
+
+
+const modules = {
+    toolbar: [
+        [{ 'header': '1' }, { 'header': '2' }, { 'font': [] }],
+        [{ size: [] }],
+        ['bold', 'italic', 'underline', 'strike', 'blockquote'],
+        [{ 'list': 'ordered' }, { 'list': 'bullet' }, { 'indent': '-1' }, { 'indent': '+1' }],
+        ['link', 'image', 'video'],
+        ['clean']
+    ],
+};
+
+const formats = [
+    'header', 'font', 'size',
+    'bold', 'italic', 'underline', 'strike', 'blockquote',
+    'list', 'bullet', 'indent',
+    'link', 'image', 'video'
 ];
 
 
@@ -179,17 +201,61 @@ const ViewEditFile = (props: Props) => {
     const [fileOpenDates, setFileOpenDates] = useState("");
     const [fileTransfered, setFileTransfered] = useState("");
     const [lastStatus, setLastStatus] = useState("");
+    
+    const [panOpens, setPanOpen] = useState(false);
+    const [modalImg, setModalImg] = useState("");
 
     const [nodeId, setNodeId] = useState<any>("");
     const [route2, setRoute2] = useState<any>("");
     const [letterRID, setLetterRID] = useState<any>("");
     const [authorityLevel, setAuthorityLevel] = useState<any>("");
     const [minDueDate, setMinDueDate] = useState("");
+    const [NoteOpen, setNoteOpen] = useState(false);
+    const [CoreOpen, setCoreOpen] = useState(false);
+    const [ReportOpen, setReportOpen] = useState(false);
+    const [editorContent, setEditorContent] = useState<string>('');
 
-    const handlefileMovementDetailOpen = () => {
+    const handleEditorChange = (content: any) => {
+        const textWithoutTags = content.replace(/<[^>]*>/g, '').trim(); // Remove HTML tags
+        console.log("textWithoutTags", textWithoutTags);
+        setEditorContent(textWithoutTags);
+    };
+
+
+
+    const handleNotesheet = () => {
+        setNoteOpen(true);
+    };
+    
+      const handleNoteClose = () => {
+        setNoteOpen(false);
+      };
+
+
+      const handleCorress = () => {
+        setCoreOpen(true);
+      };
+    
+      const handleCoreClose = () => {
+        setCoreOpen(false);
+      };
+
+      const handleReport = () => {
+        setReportOpen(true);
+      };
+    
+      const handleReportClose = () => {
+        setReportOpen(false);
+      };
+
+
+
+
+
+      const handlefileMovementDetailOpen = () => {
         setFileMovementDetailOpen(true);
         setIsDrawerOpen(true);
-    };
+      };
 
     const handlefileMovementDetailClose = () => {
         setFileMovementDetailOpen(false);
@@ -548,6 +614,8 @@ const ViewEditFile = (props: Props) => {
             dueDate: "",
             parkDate: "",
             closeDate: "",
+            remark:"",
+            uploading:"",
         },
         validationSchema: validationSchema,
         onSubmit: async (values) => {
@@ -618,6 +686,7 @@ const ViewEditFile = (props: Props) => {
             backgroundColor: "#00009c",
             color: "#fff",
             fontWeight: "normal",
+            
             // '&:hover': {
             //   backgroundColor: '#f0f0f0',
             // },
@@ -705,6 +774,18 @@ const ViewEditFile = (props: Props) => {
         setPDFData("");
     };
 
+
+    const handlePanClose = () => {
+        setPanOpen(false);
+    };
+
+    const modalOpenHandle = (event: any) => {
+        setPanOpen(true);
+        if (event === "uploading") {
+            setModalImg(formik.values.uploading);
+        }
+    };
+
     const ConvertBase64 = (file: Blob): Promise<string> => {
         return new Promise((resolve, reject) => {
             const fileReader = new FileReader();
@@ -719,21 +800,15 @@ const ViewEditFile = (props: Props) => {
     };
 
     const otherDocChangeHandler = async (event: any, params: any) => {
-        // if (event.target.files && event.target.files[0]) {
-        //     const file = event.target.files[0];
-        //     const fileNameParts = file.name.split(".");
-        //     const fileExtension = fileNameParts[fileNameParts.length - 1];
-        //     if (fileExtension.toLowerCase() === "pdf") {
-        //         const fileURL = URL.createObjectURL(file);
-        //         setPdfView(fileURL);
-        //         const base64 = await ConvertBase64(file);
-        //         setFilebase64(base64);
-        //     } else {
-        //         alert("Only PDF files are allowed to be uploaded.");
-        //         event.target.value = null;
-        //     }
-        // }
+        if (event.target.files && event.target.files[0]) {
+            const file = event.target.files[0];
+            const base64 = await ConvertBase64(file);
+            formik.setFieldValue(params, base64);
+            console.log(base64);
+
+        }
     };
+
 
 
     const items = [
@@ -821,6 +896,81 @@ const ViewEditFile = (props: Props) => {
 
     const handleBackwardData = async () => {
         backwardData();
+    };
+
+
+
+    const addNoteSheet = () => {
+        const value = {
+            "fileId": -1,
+            "fileNo":fileName,
+            "fNid": fileID,
+            "fileType": "",
+            "fileCont": "",
+            "nodeId": 1,
+            "dateSave": defaultValuestime,
+            "reviewFlag": "N",
+            "uploading":formik.values.uploading.toString() || "",
+            "uploadingbyte": ""
+        };
+
+        api.post(`Correspondance/AddUpdateCorrespondance`, value).then((res) => {
+            if (res.data.isSuccess) {
+                toast.success(res.data.mesg);
+                handleNoteClose();
+            } else {
+                toast.error(res.data.mesg);
+            }
+        });
+    };
+
+
+    const addCorrespondence = () => {
+        const value = {
+            "fileId": -1,
+            "fileNo":fileName,
+            "fNid": fileID,
+            "fileType": "",
+            "fileCont": "",
+            "nodeId": 1,
+            "dateSave": defaultValuestime,
+            "reviewFlag": "C",
+            "uploading":formik.values.uploading.toString() || "",
+            "uploadingbyte": ""
+        };
+
+        api.post(`Correspondance/AddUpdateCorrespondance`, value).then((res) => {
+            if (res.data.isSuccess) {
+                toast.success(res.data.mesg);
+                handleCoreClose();
+            } else {
+                toast.error(res.data.mesg);
+            }
+        });
+    };
+
+    const addReport = () => {
+        const value = {
+            "fileId": -1,
+            "fileNo": fileName,
+            "fNid": fileID,
+            "fileType": "",
+            "fileCont": "",
+            "nodeId": 1,
+            "dateSave": defaultValuestime,
+            "reviewFlag": "R",
+            "uploading":formik.values.uploading.toString() || "",
+            "uploadingbyte": ""
+        };
+
+        api.post(`Correspondance/AddUpdateCorrespondance`, value).then((res) => {
+            if (res.data.isSuccess) {
+                toast.success(res.data.mesg);
+                handleReportClose();
+            } else {
+                toast.error(res.data.mesg);
+            }
+        });
     };
 
     return (
@@ -1041,36 +1191,573 @@ const ViewEditFile = (props: Props) => {
                             </Grid>
 
                             <Grid item lg={12} xs={12}>
-                                <Tabs
-                                    value={value}
-                                    onChange={handleTab}
-                                    indicatorColor="primary"
-                                    textColor="primary"
-                                    centered
-                                    variant="fullWidth"
-                                >
-                                    <Tab
-                                        label="Files"
-                                        sx={value === 0 ? tabStyle.selected : tabStyle.default}
+      <Tabs
+        value={value}
+        onChange={handleTab}
+        indicatorColor="primary"
+        textColor="primary"
+        centered
+        variant="fullWidth"
+       // sx={{ minHeight: '70px',maxHeight:'70px' }}
+      >
+        <Tab
+          label="Files"
+          sx={value === 0 ? tabStyle.selected : tabStyle.default}
+        />
+        <Tab
+          label="Notesheet"
+          sx={value === 1 ? tabStyle.selected : tabStyle.default}
+          icon={
+            <IconButton onClick ={()=>{
+              
+
+                if (formik.values.fileNo) {
+                    handleNotesheet()
+                } else {
+                    toast.error("Please select file Number");
+                }
+
+            }} size="small"
+            sx={{ 
+                backgroundColor: value === 1 ? 'skyblue' : 'white', 
+                color: 'black', 
+                '&:hover': {
+                  backgroundColor: value === 1 ? 'skyblue' : 'white',
+                }
+              }}
+              >
+              <AddIcon />
+            </IconButton>
+          }
+          iconPosition="end"
+        />
+        <Tab
+          label="Correspondence"
+          sx={value === 2 ? tabStyle.selected : tabStyle.default}
+          icon={
+            <IconButton onClick ={()=>{
+              
+
+                if (formik.values.fileNo) {
+                    handleCorress()
+                } else {
+                    toast.error("Please select file Number");
+                }
+
+            }} size="small"
+            sx={{ 
+                backgroundColor: value === 2 ? 'skyblue' : 'white', 
+                color: 'black', 
+                '&:hover': {
+                  backgroundColor: value === 2 ? 'skyblue' : 'white',
+                }
+              }}
+              >
+              <AddIcon />
+            </IconButton>
+          }
+          iconPosition="end"
+        />
+        <Tab
+          label="Report"
+          sx={value === 3 ? tabStyle.selected : tabStyle.default}
+
+          icon={
+            <IconButton onClick ={()=>{
+              
+
+                if (formik.values.fileNo) {
+                    handleReport()
+                } else {
+                    toast.error("Please select file Number");
+                }
+
+            }} size="small"
+
+            sx={{ 
+                backgroundColor: value === 1 ? 'skyblue' : 'white', 
+                color: 'black', 
+                '&:hover': {
+                  backgroundColor: value === 1 ? 'skyblue' : 'white',
+                }
+              }}
+            
+            >
+              <AddIcon />
+            </IconButton>
+          }
+          iconPosition="end"
+        />
+        <Tab
+          label="Other"
+          sx={value === 4 ? tabStyle.selected : tabStyle.default}
+        />
+      </Tabs>
+
+      <Modal
+        open={NoteOpen}
+        onClose={handleNoteClose}
+      >
+        <Box sx={style}>
+          <Typography variant="h6" component="h2">
+            Add Notesheet
+          </Typography>
+          
+          <Grid
+                                            container
+                                            spacing={2}
+                                            alignItems="center"
+                                            sx={{ marginTop: 2 }}
+                                        >
+                                           
+
+                                           
+                                <Grid container spacing={1} item>
+                                    <Grid
+                                        xs={12}
+                                        md={6}
+                                        sm={6}
+                                        item
+                                        style={{ marginBottom: "30px", marginTop: "30px" }}
+                                    >
+                                        <TextField
+                                            type="file"
+                                            inputProps={{ accept: "application/pdf" }}
+                                            InputLabelProps={{ shrink: true }}
+                                            label={<CustomLabel text={t("text.AttachedFile")} />}
+                                            size="small"
+                                            fullWidth
+                                            style={{ backgroundColor: "white" }}
+                                            onChange={(e) => otherDocChangeHandler(e, "uploading")}
+                                        />
+                                    </Grid>
+                                    
+
+                                    <Grid xs={12} md={6} sm={6} item>
+                                        <Grid
+                                            style={{
+                                                display: "flex",
+                                                justifyContent: "space-around",
+                                                alignItems: "center",
+                                                margin: "10px",
+                                            }}
+                                        >
+                                            {formik.values.uploading == "" ? (
+                                                <img
+                                                    src={nopdf}
+                                                    style={{
+                                                        width: 150,
+                                                        height: 100,
+                                                        border: "1px solid grey",
+                                                        borderRadius: 10,
+                                                    }}
+                                                />
+                                            ) : (
+                                                <embed
+                                                    src={formik.values.uploading}
+                                                    style={{
+                                                        width: 150,
+                                                        height: 100,
+                                                        border: "1px solid grey",
+                                                        borderRadius: 10,
+                                                        padding: "2px",
+                                                    }}
+                                                />
+                                            )}
+                                            <Typography
+                                                onClick={() => modalOpenHandle("uploading")}
+                                                style={{
+                                                    textDecorationColor: "blue",
+                                                    textDecorationLine: "underline",
+                                                    color: "blue",
+                                                    fontSize: "15px",
+                                                    cursor: "pointer",
+                                                }}
+                                            >
+                                                {t("text.Preview")}
+                                            </Typography>
+                                        </Grid>
+                                    </Grid>
+                                    <Modal open={panOpens} onClose={handlePanClose}>
+                                        <Box sx={style}>
+                                            {modalImg == "" ? (
+                                                <img
+                                                    src={nopdf}
+                                                    style={{
+                                                        width: "170vh",
+                                                        height: "75vh",
+                                                    }}
+                                                />
+                                            ) : (
+                                                <div style={{ width: "100%", height: "100%" }}>
+                                                    <embed
+                                                        src={modalImg}
+                                                        // type="application/pdf"
+                                                        width="100%"
+                                                        height="100%"
+                                                        style={{ borderRadius: 10 }}
+                                                    />
+                                                </div>
+                                            )}
+                                        </Box>
+                                    </Modal>
+                                </Grid>
+
+                                
+
+
+
+                                <Grid item xs={12} sm={12}>
+                                    {/* <QuillEditor /> */}
+                                    <ReactQuill
+                                        value={editorContent}
+                                        onChange={handleEditorChange}
+                                        modules={modules}
+                                        formats={formats}
                                     />
-                                    <Tab
-                                        label="Notesheet"
-                                        sx={value === 1 ? tabStyle.selected : tabStyle.default}
+                                </Grid>
+
+                                <Grid item xs={12}>
+                                                <TextField
+                                                    
+                                                    label={<CustomLabel text="Remark" />}
+                                                    value={formik.values.remark}
+                                                    placeholder="Remark"
+                                                    size="small"
+                                                   // InputLabelProps={{ shrink: true }}
+                                                    fullWidth
+                                                    name="remark"
+                                                    id="remark"
+                                                    style={{ backgroundColor: "white" }}
+                                                    onChange={formik.handleChange}
+                                                    onBlur={formik.handleBlur}
+                                                   
+                                                />
+                                            </Grid>
+
+                                            <Grid item xs={4}>
+                                                <Button
+                                                    variant="contained"
+                                                    color="primary"
+                                                    onClick={addNoteSheet}
+                                                    fullWidth
+                                                >
+                                                    Save
+                                                </Button>
+                                            </Grid>
+                                        </Grid>
+        </Box>
+      </Modal>
+
+
+      <Modal
+        open={CoreOpen}
+        onClose={handleCoreClose}
+      >
+        <Box sx={style}>
+          <Typography variant="h6" component="h2">
+            Add correspondence
+          </Typography>
+          <Grid
+                                            container
+                                            spacing={2}
+                                            alignItems="center"
+                                            sx={{ marginTop: 2 }}
+                                        >
+                                           
+
+                                           
+                                <Grid container spacing={1} item>
+                                    <Grid
+                                        xs={12}
+                                        md={6}
+                                        sm={6}
+                                        item
+                                        style={{ marginBottom: "30px", marginTop: "30px" }}
+                                    >
+                                        <TextField
+                                            type="file"
+                                            inputProps={{ accept: "application/pdf" }}
+                                            InputLabelProps={{ shrink: true }}
+                                            label={<CustomLabel text={t("text.AttachedFile")} />}
+                                            size="small"
+                                            fullWidth
+                                            style={{ backgroundColor: "white" }}
+                                            onChange={(e) => otherDocChangeHandler(e, "uploading")}
+                                        />
+                                    </Grid>
+                                    
+
+                                    <Grid xs={12} md={6} sm={6} item>
+                                        <Grid
+                                            style={{
+                                                display: "flex",
+                                                justifyContent: "space-around",
+                                                alignItems: "center",
+                                                margin: "10px",
+                                            }}
+                                        >
+                                            {formik.values.uploading == "" ? (
+                                                <img
+                                                    src={nopdf}
+                                                    style={{
+                                                        width: 150,
+                                                        height: 100,
+                                                        border: "1px solid grey",
+                                                        borderRadius: 10,
+                                                    }}
+                                                />
+                                            ) : (
+                                                <embed
+                                                    src={formik.values.uploading}
+                                                    style={{
+                                                        width: 150,
+                                                        height: 100,
+                                                        border: "1px solid grey",
+                                                        borderRadius: 10,
+                                                        padding: "2px",
+                                                    }}
+                                                />
+                                            )}
+                                            <Typography
+                                                onClick={() => modalOpenHandle("uploading")}
+                                                style={{
+                                                    textDecorationColor: "blue",
+                                                    textDecorationLine: "underline",
+                                                    color: "blue",
+                                                    fontSize: "15px",
+                                                    cursor: "pointer",
+                                                }}
+                                            >
+                                                {t("text.Preview")}
+                                            </Typography>
+                                        </Grid>
+                                    </Grid>
+                                    <Modal open={panOpens} onClose={handlePanClose}>
+                                        <Box sx={style}>
+                                            {modalImg == "" ? (
+                                                <img
+                                                    src={nopdf}
+                                                    style={{
+                                                        width: "170vh",
+                                                        height: "75vh",
+                                                    }}
+                                                />
+                                            ) : (
+                                                <div style={{ width: "100%", height: "100%" }}>
+                                                    <embed
+                                                        src={modalImg}
+                                                        // type="application/pdf"
+                                                        width="100%"
+                                                        height="100%"
+                                                        style={{ borderRadius: 10 }}
+                                                    />
+                                                </div>
+                                            )}
+                                        </Box>
+                                    </Modal>
+                                </Grid>
+
+                                
+
+
+
+                                <Grid item xs={12} sm={12}>
+                                    {/* <QuillEditor /> */}
+                                    <ReactQuill
+                                        value={editorContent}
+                                        onChange={handleEditorChange}
+                                        modules={modules}
+                                        formats={formats}
                                     />
-                                    <Tab
-                                        label="Correspondence"
-                                        sx={value === 2 ? tabStyle.selected : tabStyle.default}
+                                </Grid>
+
+                                <Grid item xs={12}>
+                                                <TextField
+                                                    
+                                                    label={<CustomLabel text="Remark" />}
+                                                    value={formik.values.remark}
+                                                    placeholder="Remark"
+                                                    size="small"
+                                                   // InputLabelProps={{ shrink: true }}
+                                                    fullWidth
+                                                    name="remark"
+                                                    id="remark"
+                                                    style={{ backgroundColor: "white" }}
+                                                    onChange={formik.handleChange}
+                                                    onBlur={formik.handleBlur}
+                                                   
+                                                />
+                                            </Grid>
+
+                                            <Grid item xs={4}>
+                                                <Button
+                                                    variant="contained"
+                                                    color="primary"
+                                                    onClick={addCorrespondence}
+                                                    fullWidth
+                                                >
+                                                    Save
+                                                </Button>
+                                            </Grid>
+                                        </Grid>
+        </Box>
+      </Modal>
+
+      <Modal
+        open={ReportOpen}
+        onClose={handleReportClose}
+      >
+        <Box sx={style}>
+          <Typography variant="h6" component="h2">
+            Add Report
+          </Typography>
+          <Grid
+                                            container
+                                            spacing={2}
+                                            alignItems="center"
+                                            sx={{ marginTop: 2 }}
+                                        >
+                                           
+
+                                           
+                                <Grid container spacing={1} item>
+                                    <Grid
+                                        xs={12}
+                                        md={6}
+                                        sm={6}
+                                        item
+                                        style={{ marginBottom: "30px", marginTop: "30px" }}
+                                    >
+                                        <TextField
+                                            type="file"
+                                            inputProps={{ accept: "application/pdf" }}
+                                            InputLabelProps={{ shrink: true }}
+                                            label={<CustomLabel text={t("text.AttachedFile")} />}
+                                            size="small"
+                                            fullWidth
+                                            style={{ backgroundColor: "white" }}
+                                            onChange={(e) => otherDocChangeHandler(e, "uploading")}
+                                        />
+                                    </Grid>
+                                    
+
+                                    <Grid xs={12} md={6} sm={6} item>
+                                        <Grid
+                                            style={{
+                                                display: "flex",
+                                                justifyContent: "space-around",
+                                                alignItems: "center",
+                                                margin: "10px",
+                                            }}
+                                        >
+                                            {formik.values.uploading == "" ? (
+                                                <img
+                                                    src={nopdf}
+                                                    style={{
+                                                        width: 150,
+                                                        height: 100,
+                                                        border: "1px solid grey",
+                                                        borderRadius: 10,
+                                                    }}
+                                                />
+                                            ) : (
+                                                <embed
+                                                    src={formik.values.uploading}
+                                                    style={{
+                                                        width: 150,
+                                                        height: 100,
+                                                        border: "1px solid grey",
+                                                        borderRadius: 10,
+                                                        padding: "2px",
+                                                    }}
+                                                />
+                                            )}
+                                            <Typography
+                                                onClick={() => modalOpenHandle("uploading")}
+                                                style={{
+                                                    textDecorationColor: "blue",
+                                                    textDecorationLine: "underline",
+                                                    color: "blue",
+                                                    fontSize: "15px",
+                                                    cursor: "pointer",
+                                                }}
+                                            >
+                                                {t("text.Preview")}
+                                            </Typography>
+                                        </Grid>
+                                    </Grid>
+                                    <Modal open={panOpens} onClose={handlePanClose}>
+                                        <Box sx={style}>
+                                            {modalImg == "" ? (
+                                                <img
+                                                    src={nopdf}
+                                                    style={{
+                                                        width: "170vh",
+                                                        height: "75vh",
+                                                    }}
+                                                />
+                                            ) : (
+                                                <div style={{ width: "100%", height: "100%" }}>
+                                                    <embed
+                                                        src={modalImg}
+                                                        // type="application/pdf"
+                                                        width="100%"
+                                                        height="100%"
+                                                        style={{ borderRadius: 10 }}
+                                                    />
+                                                </div>
+                                            )}
+                                        </Box>
+                                    </Modal>
+                                </Grid>
+
+                                
+
+
+
+                                <Grid item xs={12} sm={12}>
+                                    {/* <QuillEditor /> */}
+                                    <ReactQuill
+                                        value={editorContent}
+                                        onChange={handleEditorChange}
+                                        modules={modules}
+                                        formats={formats}
                                     />
-                                    <Tab
-                                        label="Report"
-                                        sx={value === 3 ? tabStyle.selected : tabStyle.default}
-                                    />
-                                    <Tab
-                                        label="Other"
-                                        sx={value === 4 ? tabStyle.selected : tabStyle.default}
-                                    />
-                                </Tabs>
-                            </Grid>
+                                </Grid>
+
+                                <Grid item xs={12}>
+                                                <TextField
+                                                    
+                                                    label={<CustomLabel text="Remark" />}
+                                                    value={formik.values.remark}
+                                                    placeholder="Remark"
+                                                    size="small"
+                                                   // InputLabelProps={{ shrink: true }}
+                                                    fullWidth
+                                                    name="remark"
+                                                    id="remark"
+                                                    style={{ backgroundColor: "white" }}
+                                                    onChange={formik.handleChange}
+                                                    onBlur={formik.handleBlur}
+                                                   
+                                                />
+                                            </Grid>
+
+                                            <Grid item xs={4}>
+                                                <Button
+                                                    variant="contained"
+                                                    color="primary"
+                                                    onClick={addReport}
+                                                    fullWidth
+                                                >
+                                                    Save
+                                                </Button>
+                                            </Grid>
+                                        </Grid>
+        </Box>
+      </Modal>
+    </Grid>
                         </Grid>
 
                         <Divider />

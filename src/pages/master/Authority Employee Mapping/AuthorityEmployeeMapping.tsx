@@ -66,7 +66,6 @@ export default function AuthorityEmployeeMapping() {
         getAuthority();
 
         getDepartment();
-        getSection();
     }, []);
 
     const getEmployee = () => {
@@ -118,7 +117,8 @@ export default function AuthorityEmployeeMapping() {
 
     const getDepartment = () => {
         const collectData = {
-            "departmentId": -1
+            "departmentId": -1,
+            departmentName:""
         };
         api
             .post(`Department/GetDepartmentmaster`, collectData)
@@ -131,13 +131,18 @@ export default function AuthorityEmployeeMapping() {
             });
     };
 
-    const getSection = () => {
+    const getSection = (id:any) => {
         const collectData = {
             "id": -1,
+            "department": id?.toString(),
+            "section": "",
+            "instid": -1,
+            "sesid": "",
+            "uid": ""
 
         };
         api
-            .post(`SectionMaster/GetDesignationmaster`, collectData)
+            .post(`SectionMaster/GetSectionMaster`, collectData)
             .then((res) => {
                 const arr = res.data.data.map((item: any) => ({
                     label: item.section,
@@ -602,8 +607,10 @@ export default function AuthorityEmployeeMapping() {
                                         size="small"
                                         onChange={(event: any, newValue: any) => {
                                             console.log(newValue?.value);
-
-                                            formik.setFieldValue("deptId", newValue?.value);
+                                            if(newValue != null){
+                                                formik.setFieldValue("deptId", newValue?.value);
+                                                getSection(newValue?.value);
+                                            }
                                             // formik.setFieldValue("deptId", newValue?.label);
                                             formik.setFieldTouched("deptId", true);
                                             formik.setFieldTouched("deptId", false);

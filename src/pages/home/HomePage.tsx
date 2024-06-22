@@ -201,8 +201,8 @@ export default function HomePage() {
           },
 
           {
-            field: "rReceivedDate",
-            headerName: "Received/Dispatch",
+            field: "letterBy",
+            headerName: "Type",
             width: 400,
             flex: 1,
             headerClassName: "MuiDataGrid-colCell",
@@ -245,7 +245,7 @@ export default function HomePage() {
             headerClassName: "MuiDataGrid-colCell",
           },
           {
-            field: "rSendAdrs",
+            field: "",
             headerName: "Moved To",
             flex: 2,
             headerClassName: "MuiDataGrid-colCell",
@@ -289,32 +289,32 @@ export default function HomePage() {
                 }
             },
           },
+          // {
+          //   field: "letterBy",
+          //   headerName: "Lttr From/To",
+          //   flex: 1,
+          //   headerClassName: "MuiDataGrid-colCell",
+          // },
+
           {
-            field: "letterBy",
-            headerName: "Lttr From/To",
+            field: "rSendAdrs",
+            headerName: "Send By",
             flex: 1,
             headerClassName: "MuiDataGrid-colCell",
           },
-
           {
             field: "rLetterSentOn",
-            headerName: "Lttr Send From",
+            headerName: "Send Date",
             flex: 1,
             headerClassName: "MuiDataGrid-colCell",
           },
-          // {
-          //   field: "refNoYr",
-          //   headerName: "Refrence Number Year ",
-          //   flex: 1,
-          //   headerClassName: "MuiDataGrid-colCell",
-          // },
 
-          // {
-          //   field: "attachMentCount",
-          //   headerName: "Attachement Count ",
-          //   flex: 1,
-          //   headerClassName: "MuiDataGrid-colCell",
-          // },
+          {
+            field: "rReceivedDate",
+            headerName: "Received Date",
+            flex: 1,
+            headerClassName: "MuiDataGrid-colCell",
+          },
         ];
         setColumns(columns as any);
       }

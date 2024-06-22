@@ -1211,7 +1211,7 @@ const PageCreateEdit = (props: Props) => {
                                 <Grid lg={4} md={4} xs={12} item>
                                     <TextField
                                         label={t("text.SentBy")}
-                                        value={formik.values.rSendAdrs}
+                                        // value={formik.values.rSendAdrs}
                                         placeholder={t("text.SentBy")}
                                         size="small"
                                         fullWidth

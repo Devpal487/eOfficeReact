@@ -76,12 +76,12 @@ export default function CommitteeEmployeeMapping() {
     }, []);
     // }, [isLoading]);
     const routeChangeAdd = () => {
-        let path = `/Committee/CommitteeEmployeeMappingAdd`;
+        let path = `/E-Office/CommitteeEmployeeMappingAdd`;
         navigate(path);
     };
 
     const routeChangeEdit = (row: any) => {
-        let path = `/Committee/CommitteeEmployeeMappingEdit`;
+        let path = `/E-Office/CommitteeEmployeeMappingEdit`;
         navigate(path, {
             state: row,
         });

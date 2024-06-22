@@ -311,6 +311,8 @@ const resources = {
         AddPermission: "Add Permission",
         SelectUser: "Select User",
         NodeName: "Node Name",
+        createRoute:"Create Route",
+        Route:"Route",
         throughyby: "Through whom",
         ethroughyby: "Enter Through whom",
         nodeID: "Select Jurisdiction",
@@ -916,7 +918,8 @@ const resources = {
         AddPermission: "अनुमति जोड़ें",
         SelectUser: "उपयोगकर्ता का चयन करें",
         NodeName: "नोड नाम",
-
+        createRoute:"रूट बनाएं",
+        Route:"रूट",
         /// e-ffoice
         eoffice: "वर्कफ़्लो प्रबंधन प्रणाली",
         FileMaster: "फ़ाइल मास्टर",

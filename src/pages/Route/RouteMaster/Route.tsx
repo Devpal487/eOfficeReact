@@ -268,7 +268,7 @@ export default function RouteAdd() {
                             sx={{ padding: "20px" }}
                             align="left"
                         >
-                            Create Route
+                            {t("text.Route")}
                         </Typography>
                         <Divider />
 
@@ -286,8 +286,6 @@ export default function RouteAdd() {
                             </Button>
 
                         </Stack>
-                        <br />
-                        <br />
                         {isLoading ? (
                             <div
                                 style={{

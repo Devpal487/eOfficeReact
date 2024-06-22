@@ -111,7 +111,7 @@ const InstituteEdit = (props: Props) => {
         setColorPickerOver(null);
     };
 
-    
+
 
     const open = Boolean(colorPickerAnchor);
     const open1 = Boolean(colorPickerOver);
@@ -465,13 +465,7 @@ const InstituteEdit = (props: Props) => {
     const validationSchema = Yup.object({
 
         esYear: Yup.string()
-            .test(
-                'required',
-                t('text.reqYearOfEstablishment'),
-                function (value: any) {
-                    return value && value.trim() !== '';
-                }
-            )
+
             .matches(/^[0-9]+$/, t('text.EnterNoOnly')),
 
 
@@ -488,13 +482,7 @@ const InstituteEdit = (props: Props) => {
             .min(10, t('text.reqMinTenDigits')),
 
         noOfTeachers: Yup.string()
-            .test(
-                'required',
-                t('text.reqNoOfTeachers'),
-                function (value: any) {
-                    return value && value.trim() !== '';
-                }
-            )
+
             .matches(/^[0-9]+$/, t('text.EnterNoOnly')),
 
         session_year: Yup.string()
@@ -508,13 +496,7 @@ const InstituteEdit = (props: Props) => {
             .matches(/^[0-9]+$/, t('text.EnterNoOnly')),
 
         reAttenDuration: Yup.string()
-            .test(
-                'required',
-                t('text.reqReAtendenceDuration'),
-                function (value: any) {
-                    return value && value.trim() !== '';
-                }
-            )
+
             .matches(/^[0-9]+$/, t('text.EnterNoOnly')),
 
 
@@ -675,7 +657,7 @@ const InstituteEdit = (props: Props) => {
                         {toaster === false ? "" : <ToastApp />}
                         <Grid item xs={12} container spacing={2}>
 
-                        <Grid item md={12} style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
+                            <Grid item md={12} style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
                                 <FormControl component="fieldset" style={{ padding: "1%", border: "1px solid #ccc", borderRadius: "5px", flex: '1' }}>
                                     <FormLabel component="legend">{<CustomLabel text={t("text.ShowAcademicSession")} />}</FormLabel>
                                     <RadioGroup
@@ -940,11 +922,14 @@ const InstituteEdit = (props: Props) => {
                                     onBlur={formik.handleBlur}
                                 />
                             </Grid>
+
+
+
                             <Grid md={4} item>
                                 <TextField
                                     id="esYear"
                                     name="esYear"
-                                    label={<CustomLabel text={t("text.YearOfEstablishment")} required={requiredFields.includes('esYear')}  />}
+                                    label={<CustomLabel text={t("text.YearOfEstablishment")} required={requiredFields.includes('esYear')} />}
                                     value={formik.values.esYear}
                                     placeholder={t("text.YearOfEstablishment")}
                                     size="small"
@@ -960,6 +945,8 @@ const InstituteEdit = (props: Props) => {
                                     <div style={{ color: "red", margin: "5px" }}>{String(formik.errors.esYear)}</div>
                                 ) : null}
                             </Grid>
+
+
                             <Grid md={4} item>
                                 <TextField
 
@@ -1028,7 +1015,7 @@ const InstituteEdit = (props: Props) => {
                                 <TextField
                                     id="phone"
                                     name="phone"
-                                    label={<CustomLabel text={t("text.MobNo")} required={requiredFields.includes('phone')}  />}
+                                    label={<CustomLabel text={t("text.MobNo")} required={requiredFields.includes('phone')} />}
                                     value={formik.values.phone}
                                     placeholder={t("text.MobNo")}
                                     size="small"
@@ -1045,7 +1032,7 @@ const InstituteEdit = (props: Props) => {
                                 ) : null}
                             </Grid>
 
-                            
+
                             <Grid md={4} item>
                                 <TextField
 
@@ -1222,7 +1209,7 @@ const InstituteEdit = (props: Props) => {
                                 <TextField
                                     id="noOfTeachers"
                                     name="noOfTeachers"
-                                    label={<CustomLabel text={t("text.NoOfTeachers")} required={requiredFields.includes('noOfTeachers')}  />}
+                                    label={<CustomLabel text={t("text.NoOfTeachers")} required={requiredFields.includes('noOfTeachers')} />}
                                     value={formik.values.noOfTeachers}
                                     placeholder={t("text.NoOfTeachers")}
                                     size="small"
@@ -1274,7 +1261,7 @@ const InstituteEdit = (props: Props) => {
                                 <TextField
                                     id="session_year"
                                     name="session_year"
-                                    label={<CustomLabel text={t("text.SessionYear")} required={requiredFields.includes('session_year')}  />}
+                                    label={<CustomLabel text={t("text.SessionYear")} required={requiredFields.includes('session_year')} />}
                                     value={formik.values.session_year}
                                     placeholder={t("text.SessionYear")}
                                     size="small"
@@ -1295,7 +1282,7 @@ const InstituteEdit = (props: Props) => {
                                 <TextField
                                     id="reAttenDuration"
                                     name="reAttenDuration"
-                                    label={<CustomLabel text={t("text.ReAtendenceDuration")} required={requiredFields.includes('reAttenDuration')}  />}
+                                    label={<CustomLabel text={t("text.ReAtendenceDuration")} required={requiredFields.includes('reAttenDuration')} />}
                                     value={formik.values.reAttenDuration}
                                     placeholder={t("text.ReAtendenceDuration")}
                                     size="small"

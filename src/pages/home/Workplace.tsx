@@ -235,9 +235,23 @@ export default function WorkPlace() {
                     },
                     {
                         field: "fileNm",
-                        headerName: "File Name",
+                        headerName: "File Number",
                         flex: 1,
                         headerClassName: "MuiDataGrid-colCell",
+                        renderCell: (params) => {
+                            return [
+                              <a
+                                onClick={() => navigate('/E-Office/ViewEditFile')}
+                                style={{
+                                  color: "blue",
+                                  cursor: "pointer",
+                                  textDecoration: "underline",
+                                }}
+                              >
+                                {params.value}
+                              </a>,
+                            ];
+                          },
                     },
                     {
                         field: "cSubject",
@@ -251,6 +265,8 @@ export default function WorkPlace() {
                         flex: 1,
                         headerClassName: "MuiDataGrid-colCell",
                     },
+
+                    
                     {
                         field: "rSubject",
                         headerName: "File Created By",
@@ -289,8 +305,7 @@ export default function WorkPlace() {
                                             // formik.setFieldValue("id", params.row.fnId);
                                             formik.setFieldValue("fileNo", params.row.fnId);
                                             //formik.setFieldValue("rid", params.row.rid);
-                                            // formik.setFieldValue("rDealHands", params.row.Division[0]["value"]);
-                                            //formik.setFieldValue("rDealHandlabel", params.row.Division[0]["label"]);
+                                           
                                             const selectedDivision = params.row.Division.find(
                                                 (item: any) => item.value === event.target.value
                                             );

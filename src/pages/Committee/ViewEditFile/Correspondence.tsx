@@ -22,7 +22,11 @@ interface MenuPermission {
     isDel: boolean;
 }
 
-export default function Correspondence() {
+interface ReportProps {
+    fileID:any | null;
+}
+
+const Correspondence: React.FC<ReportProps> = ({ fileID }) => {
     const [totalFile, setTotalFile] = useState([]);
     const [columns, setColumns] = useState<any>([]);
     const [isLoading, setIsLoading] = useState(true);
@@ -38,21 +42,25 @@ export default function Correspondence() {
 
     const navigate = useNavigate();
 
+   
     useEffect(() => {
-        fetchTotalFile();
-    }, []);
+        if (fileID !== null) {
+            fetchTotalFile(fileID);
+        }
+    }, [fileID]);
 
 
 
 
-    const fetchTotalFile = async () => {
 
-            const value = {
-                "fileId": -1,
-                "fNid": -1,
-                "nodeId": -1,
-                "reviewFlag": "C"
-            };
+    const fetchTotalFile = async (fileID:any) => {
+
+        const value = {
+            "fileId":-1,
+            "fNid": fileID,
+            "nodeId": -1,
+            "reviewFlag": ""
+        };
             console.log("collectData", value);
             const response = await api.post(`Correspondance/GetCorrespondance`, value)
 
@@ -159,3 +167,5 @@ export default function Correspondence() {
         </Paper>
     );
 }
+
+export default Correspondence;

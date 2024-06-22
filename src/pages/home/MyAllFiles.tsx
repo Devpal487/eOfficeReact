@@ -145,9 +145,23 @@ export default function MyAllFiles() {
                     },
                     {
                         field: "fileNm",
-                        headerName: "File Name",
+                        headerName: "File Number",
                         flex: 1,
                         headerClassName: "MuiDataGrid-colCell",
+                        renderCell: (params) => {
+                            return [
+                              <a
+                                onClick={() => navigate('/E-Office/ViewEditFile')}
+                                style={{
+                                  color: "blue",
+                                  cursor: "pointer",
+                                  textDecoration: "underline",
+                                }}
+                              >
+                                {params.value}
+                              </a>,
+                            ];
+                          },
                     },
                     {
                         field: "cSubject",

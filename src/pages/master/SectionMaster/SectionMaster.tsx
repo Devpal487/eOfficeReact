@@ -87,7 +87,7 @@ export default function SectionMaster() {
     };
     console.log("collectData " + JSON.stringify(collectData));
     api
-      .delete(`SectionMaster/DeleteDesignationmaster`, { data: collectData })
+      .delete(`SectionMaster/DeleteSectionMaster`, { data: collectData })
       .then((response) => {
         if (response.data.isSuccess) {
           toast.success(response.data.mesg);
@@ -118,11 +118,16 @@ export default function SectionMaster() {
   const getList = () => {
     const collectData = {
       "id": -1,
-      
+      "department": "",
+      "section": "",
+      "instid": -1,
+      "sesid": "",
+      "uid": ""
+
     };
     try {
       api
-        .post(`SectionMaster/GetDesignationmaster`, collectData)
+        .post(`SectionMaster/GetSectionMaster`, collectData)
         .then((res) => {
           console.log("result" + JSON.stringify(res.data.data));
           const data = res.data.data;
@@ -211,7 +216,7 @@ export default function SectionMaster() {
       // setIsLoading(false);
     }
   };
- 
+
   const [toaster, setToaster] = useState(false);
   const formik = useFormik({
     initialValues: {
@@ -233,7 +238,7 @@ export default function SectionMaster() {
       // updatedBy: "-1",
 
     },
-   
+
     onSubmit: async (values) => {
       values.id = editId;
       // console.log("check", values);
@@ -315,9 +320,9 @@ export default function SectionMaster() {
                     id="combo-box-demo"
                     options={FileOption}
                     value={
-                        FileOption.find(
-                            (option:any) => option.value+"" === formik.values.department
-                        ) || null
+                      FileOption.find(
+                        (option: any) => option.value + "" === formik.values.department
+                      ) || null
                     }
                     fullWidth
                     size="small"

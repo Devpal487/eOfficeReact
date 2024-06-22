@@ -99,9 +99,11 @@ export default function MergeFile() {
             docMid: 0,
             keywords: "",
             subFtype: "",
-            fileNo:0,
-           fileType:0,
-           remark:"",
+            fileNo: 0,
+            fileType: 0,
+            remark: "",
+            fileName: "",
+            fId: 0,
 
         },
         // validationSchema: validationSchema,
@@ -123,14 +125,14 @@ export default function MergeFile() {
 
     const MergeFile = () => {
         const value = {
-            "txtMergeFileName": "",
-            "userid":userId,
-            "fileType":formik.values.fileType,
-            "fileSubject": "",
+            "txtMergeFileName": formik.values.fileName.toString() || "",
+            "userid": userId,
+            "fileType": formik.values.fileType,
+            "fileSubject": formik.values.remark.toString() || "",
             "mergedBy": 0,
-            "fileForMerge": 0,
+            "fileForMerge": formik.values.fId,
             "authid": 0,
-            "divisionId":divId
+            "divisionId": divId
         };
 
         api.post(`FileMovement/GetFileMergeReq`, value).then((res) => {
@@ -167,16 +169,18 @@ export default function MergeFile() {
         const collectData = {
             "fnId": -1,
             "fId": -1,
-            "inst_id": 1,
+            "inst_id": -1,
             "user_id": -1,
-            "divisionId": 1
+            "divisionId": -1
         };
         api
             .post(`FileNumber/GetFileNumber`, collectData)
             .then((res) => {
                 const arr = res.data.data.map((item: any) => ({
+                    fId: item.fId,
                     label: item.fileNm,
                     value: item.fnId,
+
                 }));
                 setFileOps(arr);
             });
@@ -276,9 +280,23 @@ export default function MergeFile() {
                     },
                     {
                         field: "fileNm",
-                        headerName: "File Name",
+                        headerName: "File Number",
                         flex: 1,
                         headerClassName: "MuiDataGrid-colCell",
+                        renderCell: (params) => {
+                            return [
+                                <a
+                                    onClick={() => navigate('/E-Office/ViewEditFile')}
+                                    style={{
+                                        color: "blue",
+                                        cursor: "pointer",
+                                        textDecoration: "underline",
+                                    }}
+                                >
+                                    {params.value}
+                                </a>,
+                            ];
+                        },
                     },
                     {
                         field: "cSubject",
@@ -352,7 +370,10 @@ export default function MergeFile() {
                             onChange={(event, newValue: any) => {
                                 console.log(newValue?.value);
 
+                                formik.setFieldValue("fId", newValue?.fId);
+
                                 formik.setFieldValue("fileNo", newValue?.value);
+                                formik.setFieldValue("fileName", newValue?.label);
 
                                 formik.setFieldTouched("fileNo", true);
                                 formik.setFieldTouched("fileNo", false);
@@ -419,7 +440,7 @@ export default function MergeFile() {
                     </Grid>
                     <Grid item xs={2}>
                         {/*  {permissionData?.isAdd == true ? ( */}
-                        <Button type="submit" variant="contained" size="large" onClick={MergeFile}>
+                        <Button variant="contained" size="large" onClick={MergeFile}>
                             {/* {editId == -1 ? t("text.save") : t("text.update")} */}
 
                             {t("text.save")}

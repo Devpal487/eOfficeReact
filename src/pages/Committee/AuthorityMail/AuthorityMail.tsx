@@ -137,7 +137,7 @@ const AuthorityMail = (props: Props) => {
     const [Awaitopen, setAwaitopen] = useState(false);
     const [pdfView, setPdfView] = useState("");
     const [editorContent, setEditorContent] = useState<string>('');
-    const [selectedOption, setSelectedOption] = useState('S');
+    const [selectedOption, setSelectedOption] = useState('section');
 
     const handleOptionChange = (event: any) => {
         setSelectedOption(event.target.value);
@@ -148,6 +148,13 @@ const AuthorityMail = (props: Props) => {
     const handleChange = (event: any) => {
         setSelectedValue(event.target.value);
     };
+
+
+    const userId = getId();
+
+    const instId: any = getinstId();
+
+    const divId: any = getdivisionId();
 
 
 
@@ -163,7 +170,6 @@ const AuthorityMail = (props: Props) => {
 
 
 
-    const userId = getId();
 
 
     const handleTab = (event: any, newValue: any) => {
@@ -171,18 +177,25 @@ const AuthorityMail = (props: Props) => {
     };
 
     useEffect(() => {
+        formik.setFieldValue("letterBy", "M");
+        formik.setFieldValue("Auth", "section");
         getTableData(1);
-       
+
         getSection();
         getAuthority();
     }, []);
 
     const getSection = () => {
         const collectData = {
-            "id": -1
+            "id": -1,
+            "department": "",
+            "section": "",
+            "instid": -1,
+            "sesid": "",
+            "uid": ""
         };
         api
-            .post(`SectionMaster/GetDesignationmaster`, collectData)
+            .post(`SectionMaster/GetSectionMaster`, collectData)
             .then((res) => {
                 const arr = res.data.data.map((item: any) => ({
                     label: item.section,
@@ -387,7 +400,14 @@ const AuthorityMail = (props: Props) => {
             fileNo: "",
             FileDesc: "",
             fileattach_name: "",
-            fileLable: ""
+            fileLable: "",
+            subject: "",
+            Authority: 0,
+            Section: 0,
+            letterBy: "",
+            Auth: "",
+            base64:""
+
 
 
         },
@@ -405,6 +425,45 @@ const AuthorityMail = (props: Props) => {
             // }
         },
     });
+
+
+    const receiptsValue = selectedOption === 'section' ? null : (formik.values.Authority?.toString() || "");
+
+    const sidValue = selectedOption === 'section' ? null : (formik.values.Authority || "");
+
+
+    const addCompose = () => {
+        const value = {
+            "fmrid": -1,
+            "hdnmes": formik.values.letterBy.toString() || "",
+            "authorityId": 0,
+            "dsid": -1,
+            "ddivisionId": 0,
+            "dletterNo": "",
+            "dSubject": formik.values.subject.toString() || "",
+            "userid": userId,
+            "instid": instId,
+            "dflag": "",
+            "status": "",
+            "message": "",
+            "rcipients": receiptsValue,
+            "sid": sidValue,
+            "divisionid": divId,
+            "sendby": 0,
+            "authType": formik.values.Auth.toString() || "",
+            "fileName":formik.values.fileattach_name.toString() || "",
+            "pdfDoc":formik.values.base64.toString() || "",
+        };
+
+        api.post(`FileMovement/Addsp_Authmaillettersendcls`, value).then((res) => {
+            if (res.data.isSuccess) {
+                toast.success(res.data.mesg);
+                handleAWaitClose();
+            } else {
+                toast.error(res.data.mesg);
+            }
+        });
+    };
 
 
 
@@ -429,6 +488,11 @@ const AuthorityMail = (props: Props) => {
 
 
 
+    const handleRadioChange = (event: any) => {
+        const value = event.target.value;
+        setSelectedOption(value);
+        formik.setFieldValue('Auth', value);
+    };
 
 
 
@@ -656,9 +720,7 @@ const AuthorityMail = (props: Props) => {
                                 aria-labelledby="modal-modal-title"
                                 aria-describedby="modal-modal-description"
                             >
-
-                                <Box sx={style}>
-
+                                <Box sx={{ ...style, maxHeight: '95vh', overflowY: 'auto' }}>
                                     <IconButton
                                         edge="end"
                                         onClick={handleAWaitClose}
@@ -673,27 +735,27 @@ const AuthorityMail = (props: Props) => {
                                         variant="h6"
                                         component="h2"
                                     >
-                                        New Message Letter
+                                        New Message/Letter
                                     </Typography>
 
-
+                                    <Divider />
 
                                     <Grid
                                         container
                                         spacing={2}
                                         alignItems="center"
-                                        sx={{ marginTop: 2 }}
+                                        sx={{ marginTop: 1 }}
                                     >
-
-
-
                                         <Grid item sm={12} md={12}>
                                             <FormControl component="fieldset">
                                                 <RadioGroup
                                                     aria-label="options"
                                                     name="options"
-                                                    value={selectedValue}
-                                                    onChange={handleChange}
+                                                    defaultValue="M"
+                                                    onChange={(event) => {
+                                                        console.log("radio value check", event.target.value);
+                                                        formik.setFieldValue("letterBy", event.target.value);
+                                                    }}
                                                     style={{ display: "flex", flexDirection: "row" }}
                                                 >
                                                     <FormControlLabel value="M" control={<Radio />} label="Message" />
@@ -702,72 +764,57 @@ const AuthorityMail = (props: Props) => {
                                             </FormControl>
                                         </Grid>
 
-
                                         <Grid item sm={12} md={12}>
                                             <FormControl component="fieldset">
                                                 <RadioGroup
                                                     aria-label="options"
                                                     name="options"
                                                     value={selectedOption}
-                                                    onChange={handleOptionChange}
+                                                    defaultValue="section"
+                                                    onChange={handleRadioChange}
                                                     style={{ display: "flex", flexDirection: "row" }}
                                                 >
-                                                    <FormControlLabel value="S" control={<Radio />} label="Section" />
-                                                    <FormControlLabel value="Auth" control={<Radio />} label="Authority" />
+                                                    <FormControlLabel value="section" control={<Radio />} label="Section" />
+                                                    <FormControlLabel value="authority" control={<Radio />} label="Authority" />
                                                 </RadioGroup>
                                             </FormControl>
                                         </Grid>
-
-
-
-
-
 
                                         <Grid item xs={12}>
                                             <Autocomplete
                                                 disablePortal
                                                 id="combo-box-demo"
-                                                options={selectedOption === 'S' ? SectionOps : AuthOps}
+                                                options={selectedOption === 'section' ? SectionOps : AuthOps}
                                                 fullWidth
                                                 size="small"
                                                 onChange={(event, newValue: any) => {
                                                     console.log(newValue?.value);
-                                                    // Assuming you have a formik instance
-                                                    formik.setFieldValue(selectedOption === 'S' ? "section" : "Authority", newValue?.value);
-                                                    formik.setFieldTouched(selectedOption === 'S' ? "section" : "Authority", true);
-                                                    formik.setFieldTouched(selectedOption === 'S' ? "section" : "Authority", false);
+                                                    formik.setFieldValue(selectedOption === 'section' ? "Section" : "Authority", newValue?.value);
+                                                    formik.setFieldTouched(selectedOption === 'section' ? "Section" : "Authority", true);
+                                                    formik.setFieldTouched(selectedOption === 'section' ? "Section" : "Authority", false);
                                                 }}
                                                 renderInput={(params) => (
                                                     <TextField
                                                         {...params}
-                                                        label={
-                                                            <CustomLabel text={selectedOption === 'S' ? t("text.SelectSection") : t("text.SelectAuthority")} />
-                                                        }
+                                                        label={<CustomLabel text={selectedOption === 'section' ? t("text.SelectSection") : t("text.SelectAuthority")} />}
                                                     />
                                                 )}
                                             />
-
-
                                         </Grid>
-
-
-
 
                                         <Grid item xs={12}>
                                             <TextField
-
                                                 label={<CustomLabel text="Subject" />}
-                                                // value={formik.values.dueDate}
+                                                value={formik.values.subject}
                                                 placeholder="Subject"
                                                 size="small"
                                                 InputLabelProps={{ shrink: true }}
                                                 fullWidth
-                                                name="dueDate"
-                                                id="dueDate"
+                                                name="subject"
+                                                id="subject"
                                                 style={{ backgroundColor: "white" }}
                                                 onChange={formik.handleChange}
                                                 onBlur={formik.handleBlur}
-
                                             />
                                         </Grid>
 
@@ -783,21 +830,16 @@ const AuthorityMail = (props: Props) => {
                                                     type="file"
                                                     inputProps={{ accept: "application/pdf" }}
                                                     InputLabelProps={{ shrink: true }}
-                                                    label={
-                                                        <strong style={{ color: "#000" }}>
-                                                            {t("text.EnterDocUpload")}
-                                                        </strong>
-                                                    }
+                                                    label={<strong style={{ color: "#000" }}>{t("text.EnterDocUpload")}</strong>}
                                                     size="small"
                                                     fullWidth
                                                     style={{ backgroundColor: "white" }}
-                                                    onChange={(e) => otherDocChangeHandler(e, "pdfBase64")}
+                                                    onChange={(e) => otherDocChangeHandler(e, "base64")}
                                                 />
                                             </Grid>
                                         </Grid>
 
                                         <Grid item xs={12} sm={12}>
-                                            {/* <QuillEditor /> */}
                                             <ReactQuill
                                                 value={editorContent}
                                                 onChange={handleEditorChange}
@@ -805,20 +847,20 @@ const AuthorityMail = (props: Props) => {
                                                 formats={formats}
                                             />
                                         </Grid>
+                                    </Grid>
 
+                                    <Divider sx={{ marginY: 2 }} />
 
-
-                                        <Grid item xs={4}>
-                                            <Button
-                                                variant="contained"
-                                                color="primary"
-                                                // onClick={MoveAwait}
-                                                fullWidth
-                                                style={{ marginLeft: "98%" }}
-                                            >
-                                                send
-                                            </Button>
-                                        </Grid>
+                                    <Grid item xs={4}>
+                                        <Button
+                                            variant="contained"
+                                            color="primary"
+                                            onClick={addCompose}
+                                            fullWidth
+                                            style={{ marginLeft: "98%" }}
+                                        >
+                                            Send
+                                        </Button>
                                     </Grid>
                                 </Box>
                             </Modal>
@@ -995,7 +1037,7 @@ const AuthorityMail = (props: Props) => {
                                                             }}
                                                         >
                                                             {dayjs(row.CreatedDate).format('DD-MM-YYYY')}
-                                                            
+
 
                                                         </td>
                                                     </tr>

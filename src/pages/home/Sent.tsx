@@ -126,6 +126,27 @@ const fetchTotalFile = async () => {
             width: 120,
             headerClassName: "MuiDataGrid-colCell",
         },
+
+        {
+            field: "fileNm",
+            headerName: "File Number",
+            flex: 1,
+            headerClassName: "MuiDataGrid-colCell",
+            renderCell: (params) => {
+                return [
+                  <a
+                    onClick={() => navigate('/Committee/ViewEditFile')}
+                    style={{
+                      color: "blue",
+                      cursor: "pointer",
+                      textDecoration: "underline",
+                    }}
+                  >
+                    {params.value}
+                  </a>,
+                ];
+              },
+        },
        
         {
             field: "authorityType",

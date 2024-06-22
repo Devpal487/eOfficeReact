@@ -376,13 +376,7 @@ const InstituteAdd = (props: Props) => {
     const validationSchema = Yup.object({
 
         esYear: Yup.string()
-            .test(
-                'required',
-                t('text.reqYearOfEstablishment'),
-                function (value: any) {
-                    return value && value.trim() !== '';
-                }
-            )
+
             .matches(/^[0-9]+$/, t('text.EnterNoOnly')),
 
 
@@ -399,13 +393,7 @@ const InstituteAdd = (props: Props) => {
             .min(10, t('text.reqMinTenDigits')),
 
         noOfTeachers: Yup.string()
-            .test(
-                'required',
-                t('text.reqNoOfTeachers'),
-                function (value: any) {
-                    return value && value.trim() !== '';
-                }
-            )
+
             .matches(/^[0-9]+$/, t('text.EnterNoOnly')),
 
         session_year: Yup.string()
@@ -419,13 +407,7 @@ const InstituteAdd = (props: Props) => {
             .matches(/^[0-9]+$/, t('text.EnterNoOnly')),
 
         reAttenDuration: Yup.string()
-            .test(
-                'required',
-                t('text.reqReAtendenceDuration'),
-                function (value: any) {
-                    return value && value.trim() !== '';
-                }
-            )
+
             .matches(/^[0-9]+$/, t('text.EnterNoOnly')),
 
 
@@ -856,7 +838,7 @@ const InstituteAdd = (props: Props) => {
                                 <TextField
                                     id="esYear"
                                     name="esYear"
-                                    label={<CustomLabel text={t("text.YearOfEstablishment")} required={requiredFields.includes('esYear')}  />}
+                                    label={<CustomLabel text={t("text.YearOfEstablishment")} required={requiredFields.includes('esYear')} />}
                                     value={formik.values.esYear}
                                     placeholder={t("text.YearOfEstablishment")}
                                     size="small"
@@ -940,7 +922,7 @@ const InstituteAdd = (props: Props) => {
                                 <TextField
                                     id="phone"
                                     name="phone"
-                                    label={<CustomLabel text={t("text.MobNo")} required={requiredFields.includes('phone')}  />}
+                                    label={<CustomLabel text={t("text.MobNo")} required={requiredFields.includes('phone')} />}
                                     value={formik.values.phone}
                                     placeholder={t("text.MobNo")}
                                     size="small"
@@ -957,7 +939,7 @@ const InstituteAdd = (props: Props) => {
                                 ) : null}
                             </Grid>
 
-                            
+
                             <Grid md={4} item>
                                 <TextField
 
@@ -1134,7 +1116,7 @@ const InstituteAdd = (props: Props) => {
                                 <TextField
                                     id="noOfTeachers"
                                     name="noOfTeachers"
-                                    label={<CustomLabel text={t("text.NoOfTeachers")} required={requiredFields.includes('noOfTeachers')}  />}
+                                    label={<CustomLabel text={t("text.NoOfTeachers")} required={requiredFields.includes('noOfTeachers')} />}
                                     value={formik.values.noOfTeachers}
                                     placeholder={t("text.NoOfTeachers")}
                                     size="small"
@@ -1186,7 +1168,7 @@ const InstituteAdd = (props: Props) => {
                                 <TextField
                                     id="session_year"
                                     name="session_year"
-                                    label={<CustomLabel text={t("text.SessionYear")} required={requiredFields.includes('session_year')}  />}
+                                    label={<CustomLabel text={t("text.SessionYear")} required={requiredFields.includes('session_year')} />}
                                     value={formik.values.session_year}
                                     placeholder={t("text.SessionYear")}
                                     size="small"
@@ -1207,7 +1189,7 @@ const InstituteAdd = (props: Props) => {
                                 <TextField
                                     id="reAttenDuration"
                                     name="reAttenDuration"
-                                    label={<CustomLabel text={t("text.ReAtendenceDuration")} required={requiredFields.includes('reAttenDuration')}  />}
+                                    label={<CustomLabel text={t("text.ReAtendenceDuration")} required={requiredFields.includes('reAttenDuration')} />}
                                     value={formik.values.reAttenDuration}
                                     placeholder={t("text.ReAtendenceDuration")}
                                     size="small"

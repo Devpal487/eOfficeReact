@@ -103,10 +103,24 @@ const fetchTotalFile = async () => {
             headerClassName: "MuiDataGrid-colCell",
         },
         {
-            field: "rFileNumber",
+            field: "fileNm",
             headerName: "File Number",
             flex: 1,
             headerClassName: "MuiDataGrid-colCell",
+            renderCell: (params) => {
+                return [
+                  <a
+                    onClick={() => navigate('/E-Office/ViewEditFile')}
+                    style={{
+                      color: "blue",
+                      cursor: "pointer",
+                      textDecoration: "underline",
+                    }}
+                  >
+                    {params.value}
+                  </a>,
+                ];
+              },
         },
         {
             field: "rSubject",

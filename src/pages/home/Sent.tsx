@@ -135,7 +135,7 @@ const fetchTotalFile = async () => {
             renderCell: (params) => {
                 return [
                   <a
-                    onClick={() => navigate('/Committee/ViewEditFile')}
+                    onClick={() => navigate('/E-Office/ViewEditFile')}
                     style={{
                       color: "blue",
                       cursor: "pointer",

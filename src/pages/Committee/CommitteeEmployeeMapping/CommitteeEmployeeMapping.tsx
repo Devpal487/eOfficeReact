@@ -25,6 +25,7 @@ import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
 import CircularProgress from "@mui/material/CircularProgress";
 import api from "../../../utils/Url";
 import dayjs, { Dayjs } from "dayjs";
+import CustomDataGrid from "../../../utils/CustomDatagrid";
 
 
 interface MenuPermission {
@@ -75,12 +76,12 @@ export default function CommitteeEmployeeMapping() {
     }, []);
     // }, [isLoading]);
     const routeChangeAdd = () => {
-        let path = `/Committee/CommitteeEmployeeMappingAdd`;
+        let path = `/E-Office/CommitteeEmployeeMappingAdd`;
         navigate(path);
     };
 
     const routeChangeEdit = (row: any) => {
-        let path = `/Committee/CommitteeEmployeeMappingEdit`;
+        let path = `/E-Office/CommitteeEmployeeMappingEdit`;
         navigate(path, {
             state: row,
         });
@@ -210,7 +211,7 @@ export default function CommitteeEmployeeMapping() {
                         headerClassName: "MuiDataGrid-colCell",
                     },
                     {
-                        field: "designationInCommittee",
+                        field: "authName",
                         headerName: t("text.Authority"),
                         flex: 1,
                         headerClassName: "MuiDataGrid-colCell",
@@ -220,8 +221,11 @@ export default function CommitteeEmployeeMapping() {
                         headerName: t("text.DateOfJoining"),
                         flex: 1,
                         headerClassName: "MuiDataGrid-colCell",
+                        renderCell: (params) => {
+                            return dayjs(params.row.doj).format("DD-MM-YYYY");
+                        }
                     },
-                  
+
                     // {
                     //     field: "empStatus",
                     //     headerName: "Emp status",
@@ -334,34 +338,13 @@ export default function CommitteeEmployeeMapping() {
                             <CircularProgress />
                         </div>
                     ) : (
-                        <Box>
-                            <br />
-                            <div style={{ width: "100%", backgroundColor: "#FFFFFF" }}>
-                                <DataGrid
-                                    rows={zones}
-                                    columns={adjustedColumns}
-                                    autoHeight
-                                    slots={{
-                                        toolbar: GridToolbar,
-                                    }}
-                                    rowSpacingType="border"
-                                    pagination={true}
-                                    pageSizeOptions={[5, 10, 25, 50, 100].map((size) => ({
-                                        value: size,
-                                        label: `${size}`,
-                                    }))}
-                                    initialState={{
-                                        pagination: { paginationModel: { pageSize: 5 } },
-                                    }}
-                                    slotProps={{
-                                        toolbar: {
-                                            showQuickFilter: true,
-                                        },
-                                    }}
-                                />
-                            </div>
-
-                        </Box>)}
+                        <CustomDataGrid
+                            isLoading={isLoading}
+                            rows={zones}
+                            columns={adjustedColumns}
+                            pageSizeOptions={[5, 10, 25, 50, 100]}
+                            initialPageSize={5}
+                        />)}
                 </Paper>
             </Card>
             <ToastApp />

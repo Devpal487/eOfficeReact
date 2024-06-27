@@ -23,6 +23,11 @@ import {
     Slide,
     colors,
     Box,
+    Modal,
+    Radio,
+    FormControl,
+    FormLabel,
+    RadioGroup,
 } from "@mui/material";
 import ArrowBackSharpIcon from "@mui/icons-material/ArrowBackSharp";
 import React, { useEffect, useState, useRef } from "react";
@@ -38,7 +43,7 @@ import { toast } from "react-toastify";
 import { getISTDate } from "../../../utils/Constant";
 import Dialog, { DialogProps } from '@mui/material/Dialog';
 import ToastApp from "../../../ToastApp";
-import { EditIcons, UploadIcons, PasteIcons, PrintIcons, PendingIcons, UpgradeIcons, FileCopyIcons, FilemoveIcons, HighlightIcons, SmsIcons, MakeIcons, ArchiveIcons } from "../../../utils/icons";
+import { EditIcons, UploadIcons, PasteIcons, PrintIcons, PendingIcons, UpgradeIcons, FileCopyIcons, FilemoveIcons, HighlightIcons, SmsIcons, MakeIcons, ArchiveIcons, CloseIcons } from "../../../utils/icons";
 import CustomLabel from "../../../CustomLable";
 import FindInPageIcon from '@mui/icons-material/FindInPage';
 import InboxIcon from '@mui/icons-material/Inbox';
@@ -48,6 +53,9 @@ import SaveAsIcon from '@mui/icons-material/SaveAs';
 import MessageIcon from '@mui/icons-material/Message';
 import MailIcon from '@mui/icons-material/Mail';
 import ArrowCircleRightIcon from '@mui/icons-material/ArrowCircleRight';
+import { getinstId, getId, getdivisionId } from "../../../utils/Constant";
+import ReactQuill from "react-quill";
+import dayjs from "dayjs";
 
 const Transition = React.forwardRef(function Transition(
     props: TransitionProps & {
@@ -58,18 +66,50 @@ const Transition = React.forwardRef(function Transition(
     return <Slide direction="up" ref={ref} {...props} />;
 });
 
+// const style = {
+//     position: "absolute" as "absolute",
+//     top: "50%",
+//     left: "50%",
+//     transform: "translate(-50%, -50%)",
+//     width: "120vh",
+//     height: "85vh",
+//     bgcolor: "#f5f5f5",
+//     border: "1px solid #000",
+//     boxShadow: 24,
+//     p: 4,
+//     borderRadius: 10,
+// };
+
+
+const modules = {
+    toolbar: [
+        [{ 'header': '1' }, { 'header': '2' }, { 'font': [] }],
+        [{ size: [] }],
+        ['bold', 'italic', 'underline', 'strike', 'blockquote'],
+        [{ 'list': 'ordered' }, { 'list': 'bullet' }, { 'indent': '-1' }, { 'indent': '+1' }],
+        ['link', 'image', 'video'],
+        ['clean']
+    ],
+};
+
+const formats = [
+    'header', 'font', 'size',
+    'bold', 'italic', 'underline', 'strike', 'blockquote',
+    'list', 'bullet', 'indent',
+    'link', 'image', 'video'
+];
+
+
 const style = {
-    position: "absolute" as "absolute",
+    position: "absolute",
     top: "50%",
     left: "50%",
     transform: "translate(-50%, -50%)",
-    width: "120vh",
-    height: "85vh",
-    bgcolor: "#f5f5f5",
-    border: "1px solid #000",
+    width: 800,
+    bgcolor: "background.paper",
+    border: "2px solid #000",
     boxShadow: 24,
     p: 4,
-    borderRadius: 10,
 };
 
 type Props = {};
@@ -85,18 +125,45 @@ const AuthorityMail = (props: Props) => {
     const [MsgTableData, setMsgTableData] = useState<any>([]);
     const [LetterTableData, setLetterTableData] = useState<any>([]);
 
-    const [ParentInst, setParentInst] = useState<any>([
-        { value: "-1", label: t("text.SelectFileNo") },
+    const [SectionOps, setSectionOps] = useState<any>([
+        { value: "-1", label: t("text.SelectSection") },
+    ]);
+
+    const [AuthOps, setAuthOps] = useState<any>([
+        { value: "-1", label: t("text.SelectSection") },
     ]);
 
     const [tableLoading, setIsTableLoading] = useState(false);
+    const [Awaitopen, setAwaitopen] = useState(false);
+    const [pdfView, setPdfView] = useState("");
+    const [editorContent, setEditorContent] = useState<string>('');
+    const [selectedOption, setSelectedOption] = useState('S');
+
+    const handleOptionChange = (event: any) => {
+        setSelectedOption(event.target.value);
+    };
+
+    const [selectedValue, setSelectedValue] = useState('M');
+
+    const handleChange = (event: any) => {
+        setSelectedValue(event.target.value);
+    };
+
+
+
+    const handleEditorChange = (content: any) => {
+        const textWithoutTags = content.replace(/<[^>]*>/g, '').trim(); // Remove HTML tags
+        console.log("textWithoutTags", textWithoutTags);
+        setEditorContent(textWithoutTags);
+    };
+
 
     //dialog entry
     const [fileID, setFileID] = useState("");
 
 
 
-
+    const userId = getId();
 
 
     const handleTab = (event: any, newValue: any) => {
@@ -104,55 +171,80 @@ const AuthorityMail = (props: Props) => {
     };
 
     useEffect(() => {
-        // getTableData();
-        // getMoveTableData();
-        getFileNo();
+        getTableData(1);
+       
+        getSection();
+        getAuthority();
     }, []);
 
-    const getFileNo = () => {
+    const getSection = () => {
         const collectData = {
-            "fnId": -1,
-            "fId": -1,
-            "inst_id": -1,
-            "user_id": -1,
-            "divisionId": -1
+            "id": -1
         };
         api
-            .post(`FileNumber/GetFileNumber`, collectData)
+            .post(`SectionMaster/GetDesignationmaster`, collectData)
             .then((res) => {
                 const arr = res.data.data.map((item: any) => ({
-                    label: item.fileNm,
-                    value: item.fnId,
+                    label: item.section,
+                    value: item.id,
                 }));
-                setParentInst(arr);
+                setSectionOps(arr);
             });
     };
 
-    const getTableData = () => {
+    const getAuthority = () => {
+        const collectData = {
+            "id": -1,
+            "officeId": -1,
+            "under_id": -1,
+            "divisionid": -1
+        };
+        api
+            .post(`AuthorityMaster/GetAuthorityMaster`, collectData)
+            .then((res) => {
+                const arr = res.data.data.map((item: any) => ({
+                    label: item.authorityType,
+                    value: item.id,
+                }));
+                setAuthOps(arr);
+            });
+    };
+
+    const handleAWaitOpen = () => {
+        console.log("await is clicked");
+        setAwaitopen(true);
+    };
+    const handleAWaitClose = () => {
+        setAwaitopen(false);
+    };
+
+    const getTableData = (type: any) => {
         setIsTableLoading(true);
         const collectData = {
-            "fileNo": formik.values.fileNo,
-            "cDocsFlag": "C",
-            "type": 2
+            "hdnAuthMail": userId,
+            "Type": type + ""
 
 
         };
         api
-            .post(`FileNumber/GetViewEditFileNo`, collectData)
+            .post(`FileMovement/Getsp_AuthortyMail`, collectData)
             .then((res) => {
                 const arr: any = [];
                 console.log("result" + JSON.stringify(res.data.data));
                 for (let index = 0; index < res.data.data.length; index++) {
                     arr.push({
-                        id: res.data.data[index]["rid"],
-                        rid: res.data.data[index]["rid"],
-                        fileNo: res.data.data[index]["fileNo"],
-                        fileNm: res.data.data[index]["fileNm"],
-                        cFileNm: res.data.data[index]["cFileNm"],
-                        date: res.data.data[index]["date"],
-
-
-
+                        FMRId: res.data.data[index]["fmrId"],
+                        FNId: res.data.data[index]["fnId"],
+                        SId: res.data.data[index]["sId"],
+                        AuthorityType: res.data.data[index]["authorityType"],
+                        Csubject: res.data.data[index]["csubject"],
+                        SendByAuth: res.data.data[index]["sendByAuth"],
+                        CreatedDate: res.data.data[index]["createdDate"],
+                        Message: res.data.data[index]["Message"],
+                        SendBy: res.data.data[index]["SendBy"],
+                        SendDate: res.data.data[index]["SendDate"],
+                        DSFNAme: res.data.data[index]["SendDate"],
+                        fileNm: res.data.data[index]["fileNm"]
 
                     });
                 }
@@ -196,6 +288,39 @@ const AuthorityMail = (props: Props) => {
     };
 
 
+    const ConvertBase64 = (file: Blob) => {
+        return new Promise((resolve, reject) => {
+            const fileReader = new FileReader();
+            fileReader.readAsDataURL(file);
+            fileReader.onload = () => {
+                resolve(fileReader.result);
+            };
+            fileReader.onerror = (error) => {
+                reject(error);
+            };
+        });
+    };
+
+    const otherDocChangeHandler = async (event: any, params: any) => {
+        if (event.target.files && event.target.files[0]) {
+            const file = event.target.files[0];
+
+            const fileNameParts = file.name.split(".");
+            const fileExtension = fileNameParts[fileNameParts.length - 1];
+            if (fileExtension.toLowerCase() === "pdf") {
+                const fileURL = URL.createObjectURL(file);
+                formik.setFieldValue("fileattach_name", file.name);
+                setPdfView(fileURL);
+                const base64 = await ConvertBase64(file);
+                formik.setFieldValue(params, base64);
+            } else {
+                toast.error("Only PDF files are allowed to be uploaded.");
+                event.target.value = null;
+            }
+        }
+    };
+
+
 
     const getLetterTableData = () => {
         setIsTableLoading(true);
@@ -219,9 +344,6 @@ const AuthorityMail = (props: Props) => {
                         fileNm: res.data.data[index]["fileNm"],
                         cFileNm: res.data.data[index]["cFileNm"],
                         date: res.data.data[index]["date"],
-
-
-
 
                     });
                 }
@@ -295,13 +417,16 @@ const AuthorityMail = (props: Props) => {
             '&:hover': {
                 backgroundColor: '#f0f0f0'
             },
-            color: '#000', 
+            color: '#000',
         },
         selected: {
             backgroundColor: '#90CAF9',
-            color: '#000 !important', 
+            color: '#000 !important',
         },
     };
+
+
+
 
 
 
@@ -386,7 +511,11 @@ const AuthorityMail = (props: Props) => {
                                             </Box>
                                         }
                                         sx={value === 0 ? tabStyle.selected : tabStyle.default}
-                                        onClick={getTableData}
+
+                                        onClick={(event) => {
+                                            getTableData("1");
+
+                                        }}
                                     />
 
                                     <Tab
@@ -399,7 +528,10 @@ const AuthorityMail = (props: Props) => {
                                             </Box>
                                         }
                                         sx={value === 1 ? tabStyle.selected : tabStyle.default}
-                                    // onClick={getTableData}
+                                        onClick={(event) => {
+                                            getTableData("S");
+
+                                        }}
                                     />
 
 
@@ -413,7 +545,10 @@ const AuthorityMail = (props: Props) => {
                                             </Box>
                                         }
                                         sx={value === 2 ? tabStyle.selected : tabStyle.default}
-                                    // onClick={getTableData}
+                                        onClick={(event) => {
+                                            getTableData("I");
+
+                                        }}
                                     />
 
                                     <Tab
@@ -426,7 +561,10 @@ const AuthorityMail = (props: Props) => {
                                             </Box>
                                         }
                                         sx={value === 3 ? tabStyle.selected : tabStyle.default}
-                                    // onClick={getTableData}
+                                        onClick={(event) => {
+                                            getTableData("D");
+
+                                        }}
                                     />
 
                                     <Tab
@@ -439,7 +577,10 @@ const AuthorityMail = (props: Props) => {
                                             </Box>
                                         }
                                         sx={value === 4 ? tabStyle.selected : tabStyle.default}
-                                        onClick={getMsgTableData}
+                                        onClick={(event) => {
+                                            getTableData("M");
+
+                                        }}
                                     />
 
                                     <Tab
@@ -452,7 +593,10 @@ const AuthorityMail = (props: Props) => {
                                             </Box>
                                         }
                                         sx={value === 5 ? tabStyle.selected : tabStyle.default}
-                                        onClick={getLetterTableData}
+                                        onClick={(event) => {
+                                            getTableData("L");
+
+                                        }}
                                     />
 
 
@@ -466,7 +610,10 @@ const AuthorityMail = (props: Props) => {
                                             </Box>
                                         }
                                         sx={value === 6 ? tabStyle.selected : tabStyle.default}
-                                    // onClick={getTableData}
+                                        onClick={(event) => {
+                                            getTableData("T");
+
+                                        }}
                                     />
 
                                 </Tabs>
@@ -491,6 +638,190 @@ const AuthorityMail = (props: Props) => {
 
                             </Grid>
 
+
+                            <Grid item lg={2} xs={12}>
+                                <Button
+                                    variant="contained"
+                                    color="primary"
+                                    onClick={handleAWaitOpen}
+                                    fullWidth
+                                >
+                                    compose
+                                </Button>
+                            </Grid>
+
+                            <Modal
+                                open={Awaitopen}
+                                onClose={handleAWaitClose}
+                                aria-labelledby="modal-modal-title"
+                                aria-describedby="modal-modal-description"
+                            >
+
+                                <Box sx={style}>
+
+                                    <IconButton
+                                        edge="end"
+                                        onClick={handleAWaitClose}
+                                        aria-label="close"
+                                        sx={{ color: "black", marginLeft: "97%" }}
+                                    >
+                                        <CloseIcons />
+                                    </IconButton>
+
+                                    <Typography
+                                        id="modal-modal-title"
+                                        variant="h6"
+                                        component="h2"
+                                    >
+                                        New Message Letter
+                                    </Typography>
+
+
+
+                                    <Grid
+                                        container
+                                        spacing={2}
+                                        alignItems="center"
+                                        sx={{ marginTop: 2 }}
+                                    >
+
+
+
+                                        <Grid item sm={12} md={12}>
+                                            <FormControl component="fieldset">
+                                                <RadioGroup
+                                                    aria-label="options"
+                                                    name="options"
+                                                    value={selectedValue}
+                                                    onChange={handleChange}
+                                                    style={{ display: "flex", flexDirection: "row" }}
+                                                >
+                                                    <FormControlLabel value="M" control={<Radio />} label="Message" />
+                                                    <FormControlLabel value="L" control={<Radio />} label="Letter" />
+                                                </RadioGroup>
+                                            </FormControl>
+                                        </Grid>
+
+
+                                        <Grid item sm={12} md={12}>
+                                            <FormControl component="fieldset">
+                                                <RadioGroup
+                                                    aria-label="options"
+                                                    name="options"
+                                                    value={selectedOption}
+                                                    onChange={handleOptionChange}
+                                                    style={{ display: "flex", flexDirection: "row" }}
+                                                >
+                                                    <FormControlLabel value="S" control={<Radio />} label="Section" />
+                                                    <FormControlLabel value="Auth" control={<Radio />} label="Authority" />
+                                                </RadioGroup>
+                                            </FormControl>
+                                        </Grid>
+
+
+
+
+
+
+                                        <Grid item xs={12}>
+                                            <Autocomplete
+                                                disablePortal
+                                                id="combo-box-demo"
+                                                options={selectedOption === 'S' ? SectionOps : AuthOps}
+                                                fullWidth
+                                                size="small"
+                                                onChange={(event, newValue: any) => {
+                                                    console.log(newValue?.value);
+                                                    // Assuming you have a formik instance
+                                                    formik.setFieldValue(selectedOption === 'S' ? "section" : "Authority", newValue?.value);
+                                                    formik.setFieldTouched(selectedOption === 'S' ? "section" : "Authority", true);
+                                                    formik.setFieldTouched(selectedOption === 'S' ? "section" : "Authority", false);
+                                                }}
+                                                renderInput={(params) => (
+                                                    <TextField
+                                                        {...params}
+                                                        label={
+                                                            <CustomLabel text={selectedOption === 'S' ? t("text.SelectSection") : t("text.SelectAuthority")} />
+                                                        }
+                                                    />
+                                                )}
+                                            />
+
+
+                                        </Grid>
+
+
+
+
+                                        <Grid item xs={12}>
+                                            <TextField
+
+                                                label={<CustomLabel text="Subject" />}
+                                                // value={formik.values.dueDate}
+                                                placeholder="Subject"
+                                                size="small"
+                                                InputLabelProps={{ shrink: true }}
+                                                fullWidth
+                                                name="dueDate"
+                                                id="dueDate"
+                                                style={{ backgroundColor: "white" }}
+                                                onChange={formik.handleChange}
+                                                onBlur={formik.handleBlur}
+
+                                            />
+                                        </Grid>
+
+                                        <Grid container spacing={1} item>
+                                            <Grid
+                                                xs={12}
+                                                md={6}
+                                                sm={6}
+                                                item
+                                                style={{ marginBottom: "30px", marginTop: "30px" }}
+                                            >
+                                                <TextField
+                                                    type="file"
+                                                    inputProps={{ accept: "application/pdf" }}
+                                                    InputLabelProps={{ shrink: true }}
+                                                    label={
+                                                        <strong style={{ color: "#000" }}>
+                                                            {t("text.EnterDocUpload")}
+                                                        </strong>
+                                                    }
+                                                    size="small"
+                                                    fullWidth
+                                                    style={{ backgroundColor: "white" }}
+                                                    onChange={(e) => otherDocChangeHandler(e, "pdfBase64")}
+                                                />
+                                            </Grid>
+                                        </Grid>
+
+                                        <Grid item xs={12} sm={12}>
+                                            {/* <QuillEditor /> */}
+                                            <ReactQuill
+                                                value={editorContent}
+                                                onChange={handleEditorChange}
+                                                modules={modules}
+                                                formats={formats}
+                                            />
+                                        </Grid>
+
+
+
+                                        <Grid item xs={4}>
+                                            <Button
+                                                variant="contained"
+                                                color="primary"
+                                                // onClick={MoveAwait}
+                                                fullWidth
+                                                style={{ marginLeft: "98%" }}
+                                            >
+                                                send
+                                            </Button>
+                                        </Grid>
+                                    </Grid>
+                                </Box>
+                            </Modal>
                             {/* <Grid item lg={2} xs={12} >
                                 <Button
                                     onClick={getTableData}
@@ -522,7 +853,7 @@ const AuthorityMail = (props: Props) => {
 
                         <Grid item xs={12} container spacing={2}>
 
-                            {value === 0 && (
+                            {value <= 3 && (
                                 <Grid xs={12} sm={12} item>
 
 
@@ -531,7 +862,7 @@ const AuthorityMail = (props: Props) => {
                                             borderCollapse: "collapse",
                                             width: "100%",
                                             border: "1px solid black",
-                                            
+
                                         }}
                                     >
                                         <thead
@@ -542,13 +873,22 @@ const AuthorityMail = (props: Props) => {
                                         >
                                             <tr>
 
-
                                                 <th
                                                     style={{
                                                         borderLeft: "1px solid black",
                                                         paddingTop: "5px",
                                                         paddingBottom: "5px",
                                                         width: "100px",
+                                                    }}
+                                                >
+                                                    {t("text.SrNo")}
+                                                </th>
+                                                <th
+                                                    style={{
+                                                        borderLeft: "1px solid black",
+                                                        paddingTop: "5px",
+                                                        paddingBottom: "5px",
+
                                                     }}
                                                 >
                                                     {t("text.FromTo")}
@@ -560,7 +900,7 @@ const AuthorityMail = (props: Props) => {
                                                         paddingBottom: "5px",
                                                     }}
                                                 >
-                                                    {t("text.FileNo")}
+                                                    {t("text.FileName")}
                                                 </th>
                                                 <th
                                                     style={{
@@ -607,7 +947,7 @@ const AuthorityMail = (props: Props) => {
                                                                 padding: "2px",
                                                             }}
                                                         >
-                                                            {row.fileNo}
+                                                            {index + 1}
                                                         </td>
 
                                                         <td
@@ -617,7 +957,7 @@ const AuthorityMail = (props: Props) => {
                                                                 textAlign: "center",
                                                             }}
                                                         >
-                                                            {row.fileNm}
+                                                            {row.AuthorityType}
                                                         </td>
 
 
@@ -633,7 +973,7 @@ const AuthorityMail = (props: Props) => {
                                                             }}
 
                                                         >
-                                                            {row.cFileNm}
+                                                            {row.fileNm}
                                                         </td>
 
 
@@ -644,8 +984,19 @@ const AuthorityMail = (props: Props) => {
                                                                 textAlign: "center",
                                                             }}
                                                         >
-                                                            {row.date}
-                                                            {/* <p onClick={handleReceiveData}>{row.receiver}</p> */}
+                                                            {row.Csubject}
+
+                                                        </td>
+                                                        <td
+                                                            style={{
+                                                                borderLeft: "1px solid black",
+                                                                borderTop: "1px solid black",
+                                                                textAlign: "center",
+                                                            }}
+                                                        >
+                                                            {dayjs(row.CreatedDate).format('DD-MM-YYYY')}
+                                                            
+
                                                         </td>
                                                     </tr>
                                                 ))}
@@ -669,7 +1020,7 @@ const AuthorityMail = (props: Props) => {
                                             borderCollapse: "collapse",
                                             width: "100%",
                                             border: "1px solid black",
-                                            
+
                                         }}
                                     >
                                         <thead
@@ -735,7 +1086,7 @@ const AuthorityMail = (props: Props) => {
                                         ) : (
                                             <tbody style={{ border: "1px solid black" }}>
 
-                                                {MsgTableData.map((row: any, index: any) => (
+                                                {MovementTableData.map((row: any, index: any) => (
                                                     <tr key={row.id} style={{ border: "1px solid black" }}>
                                                         <td
                                                             style={{
@@ -745,7 +1096,7 @@ const AuthorityMail = (props: Props) => {
                                                                 padding: "2px",
                                                             }}
                                                         >
-                                                            {row.fileNo}
+                                                            {row.Csubject}
                                                         </td>
 
                                                         <td
@@ -755,7 +1106,7 @@ const AuthorityMail = (props: Props) => {
                                                                 textAlign: "center",
                                                             }}
                                                         >
-                                                            {row.fileNm}
+                                                            {row.Message}
                                                         </td>
 
 
@@ -769,12 +1120,9 @@ const AuthorityMail = (props: Props) => {
                                                                 color: "blue",
                                                                 textDecoration: "underline",
                                                             }}
-
                                                         >
-                                                            {row.cFileNm}
+                                                            {row.SendBy}
                                                         </td>
-
-
                                                         <td
                                                             style={{
                                                                 borderLeft: "1px solid black",
@@ -782,7 +1130,7 @@ const AuthorityMail = (props: Props) => {
                                                                 textAlign: "center",
                                                             }}
                                                         >
-                                                            {row.date}
+                                                            {row.SendDate}
                                                             {/* <p onClick={handleReceiveData}>{row.receiver}</p> */}
                                                         </td>
                                                     </tr>
@@ -806,7 +1154,7 @@ const AuthorityMail = (props: Props) => {
                                             borderCollapse: "collapse",
                                             width: "100%",
                                             border: "1px solid black",
-                                            
+
                                         }}
                                     >
                                         <thead
@@ -882,7 +1230,7 @@ const AuthorityMail = (props: Props) => {
                                         ) : (
                                             <tbody style={{ border: "1px solid black" }}>
 
-                                                {LetterTableData.map((row: any, index: any) => (
+                                                {MovementTableData.map((row: any, index: any) => (
                                                     <tr key={row.id} style={{ border: "1px solid black" }}>
                                                         <td
                                                             style={{
@@ -892,7 +1240,7 @@ const AuthorityMail = (props: Props) => {
                                                                 padding: "2px",
                                                             }}
                                                         >
-                                                            {row.fileNo}
+                                                            {row.Csubject}
                                                         </td>
 
                                                         <td
@@ -902,7 +1250,7 @@ const AuthorityMail = (props: Props) => {
                                                                 textAlign: "center",
                                                             }}
                                                         >
-                                                            {row.fileNm}
+                                                            {row.Message}
                                                         </td>
 
 
@@ -918,7 +1266,7 @@ const AuthorityMail = (props: Props) => {
                                                             }}
 
                                                         >
-                                                            {row.cFileNm}
+                                                            {row.SendBy}
                                                         </td>
 
 
@@ -929,7 +1277,7 @@ const AuthorityMail = (props: Props) => {
                                                                 textAlign: "center",
                                                             }}
                                                         >
-                                                            {row.date}
+                                                            {row.SendDate}
                                                             {/* <p onClick={handleReceiveData}>{row.receiver}</p> */}
                                                         </td>
 
@@ -940,7 +1288,7 @@ const AuthorityMail = (props: Props) => {
                                                                 textAlign: "center",
                                                             }}
                                                         >
-                                                            {row.Dsf}
+                                                            {row.DSFNAme}
                                                             {/* <p onClick={handleReceiveData}>{row.receiver}</p> */}
                                                         </td>
                                                     </tr>

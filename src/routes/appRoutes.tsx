@@ -318,22 +318,8 @@ const appRoutes: RouteType[] = [
         state: "master.JurisdictionMasterEdit",
       },
      
-      {
-        path: "/master/AuthorityMaster",
-        element: <AuthorityMaster />,
-        state: "master.AuthorityMaster",
-        sidebarProps: {
-          displayText: "Authority",
-        },
-      },
-      {
-        path: "/master/AuthorityEmployeeMapping",
-        element: <AuthorityEmployeeMapping />,
-        state: "master.AuthorityEmployeeMapping",
-        sidebarProps: {
-          displayText: "Authority Emp Mapping",
-        },
-      },
+      
+      
       {
         path: "/master/PageCreate",
         element: <PageCreate/>,
@@ -375,26 +361,7 @@ const appRoutes: RouteType[] = [
         state: "master.InstituteEdit",
       },
 
-      {
-        path: "/master/SectionMaster",
-        element: <SectionMaster/>,
-        state: "master.SectionMaster",
-        sidebarProps: {
-          displayText: "Section",
-        },
-      },
-
-      {
-        path: "/master/SectionMasterAdd",
-        element: <SectionMasterAdd/>,
-        state: "master.SectionMasterAdd",
-      },
-
-      {
-        path: "/master/SectionMasterEdit",
-        element: <SectionMasterEdit/>,
-        state: "master.SectionMasterEdit",
-      },
+     
 
 
 
@@ -499,120 +466,154 @@ const appRoutes: RouteType[] = [
   
 //   //==================Start Committee====================
   {
-    path: "/Committee",
+    path: "/E-Office",
     element: <DashboardPageLayout />,
-    state: "Committee",
+    state: "E-Office",
     child: [
       {
         index: true,
         element: <DashboardIndex />,
-        state: "Committee.index",
+        state: "E-Office.index",
       },
       {
-        path: "/Committee/CommitteeMaster",
+        path: "/E-Office/CommitteeMaster",
         element: <CommitteeMaster />,
-        state: "Committee.CommitteeMaster",
+        state: "E-Office.CommitteeMaster",
         sidebarProps: {
           displayText: "Committee/Group",
         },
       },
       {
-        path: "/Committee/CommitteeAdd",
+        path: "/E-Office/CommitteeAdd",
         element: <CommitteeAdd />,
-        state: "Committee.CommitteeAdd",
+        state: "E-Office.CommitteeAdd",
       },
       {
-        path: "/Committee/CommitteeEdit",
+        path: "/E-Office/CommitteeEdit",
         element: <CommitteeEdit />,
-        state: "Committee.CommitteeEdit",
+        state: "E-Office.CommitteeEdit",
       },
       {
-        path: "/Committee/CommitteeEmployeeMapping",
+        path: "/E-Office/CommitteeEmployeeMapping",
         element: <CommitteeEmployeeMapping />,
-        state: "Committee.CommitteeEmployeeMapping",
+        state: "E-Office.CommitteeEmployeeMapping",
         sidebarProps: {
           displayText: "Committee Employee Mapping",
         },
       },
       {
-        path: "/Committee/CommitteeEmployeeMappingAdd",
+        path: "/E-Office/CommitteeEmployeeMappingAdd",
         element: <CommitteeEmployeeMappingAdd />,
-        state: "Committee.CommitteeEmployeeMappingAdd",
+        state: "E-Office.CommitteeEmployeeMappingAdd",
       },
       {
-        path: "/Committee/CommitteeEmployeeMappingEdit",
+        path: "/E-Office/CommitteeEmployeeMappingEdit",
         element: <CommitteeEmployeeMappingEdit />,
-        state: "Committee.CommitteeEmployeeMappingEdit",
+        state: "E-Office.CommitteeEmployeeMappingEdit",
       },
 
       
       {
-        path: "/Committee/ViewEditFile",
+        path: "/E-Office/ViewEditFile",
         element: <ViewEditFile/>,
-        state: "Committee.ViewEditFile",
+        state: "E-Office.ViewEditFile",
         sidebarProps: {
           displayText: "View Edit File",
         },
       },
 
       {
-        path: "/Committee/AuthorityMail",
+        path: "/E-Office/AuthorityMail",
         element: <AuthorityMail/>,
-        state: "Committee.AuthorityMail",
+        state: "E-Office.AuthorityMail",
         sidebarProps: {
           displayText: "Authority Mail",
         },
       },
 
       {
-        path: "/Committee/Correspondence",
+        path: "/E-Office/Correspondence",
         element: <Correspondence/>,
-        state: "Committee.Correspondence",
+        state: "E-Office.Correspondence",
         sidebarProps: {
           displayText: "Correspondence",
         },
       },
 
       {
-        path: "/Committee/SplitPDF",
+        path: "/E-Office/SplitPDF",
         element: <SplitPDF/>,
-        state: "Committee.SplitPDF",
+        state: "E-Office.SplitPDF",
        
       },
       {
-        path: "/Committee/SplitPage",
+        path: "/E-Office/SplitPage",
         element: <SplitPage/>,
-        state: "Committee.SplitPage",
+        state: "E-Office.SplitPage",
        
       },
       {
-        path: "/Committee/DocumentIndexing",
+        path: "/E-Office/DocumentIndexing",
         element: <DocumentIndexing/>,
-        state: "Committee.DocumentIndexing",
+        state: "E-Office.DocumentIndexing",
        
       },
 
       {
-        path: "/Committee/Route",
+        path: "/E-Office/Route",
         element: <Route />,
-        state: "Committee.Route",
+        state: "E-Office.Route",
         sidebarProps: {
           displayText: "Route",
         },
       },
       {
-        path: "/Committee/RouteAdd",
+        path: "/E-Office/RouteAdd",
         element: <RouteAdd />,
-        state: "Committee.RouteAdd",
+        state: "E-Office.RouteAdd",
       },
       {
-        path: "/Committee/RouteEdit",
+        path: "/E-Office/RouteEdit",
         element: <RouteEdit />,
-        state: "Committee.RouteEdit",
+        state: "E-Office.RouteEdit",
       },
 
+      {
+        path: "/E-Office/SectionMaster",
+        element: <SectionMaster/>,
+        state: "E-Office.SectionMaster",
+        sidebarProps: {
+          displayText: "Section",
+        },
+      },
 
+      {
+        path: "/E-Office/SectionMasterAdd",
+        element: <SectionMasterAdd/>,
+        state: "E-Office.SectionMasterAdd",
+      },
 
+      {
+        path: "/E-Office/SectionMasterEdit",
+        element: <SectionMasterEdit/>,
+        state: "E-Office.SectionMasterEdit",
+      },
+      {
+        path: "/E-Office/AuthorityEmployeeMapping",
+        element: <AuthorityEmployeeMapping />,
+        state: "E-Office.AuthorityEmployeeMapping",
+        sidebarProps: {
+          displayText: "Authority Emp Mapping",
+        },
+      },
+      {
+        path: "/E-Office/AuthorityMaster",
+        element: <AuthorityMaster />,
+        state: "E-Office.AuthorityMaster",
+        sidebarProps: {
+          displayText: "Authority",
+        },
+      },
     ],
   },
 //   //===================End committee===================

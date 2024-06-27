@@ -25,6 +25,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { toast } from "react-toastify";
 import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
 import SwipeableDrawerRoute from "./SwipeableDrawerRoute";
+import CustomDataGrid from "../../../utils/CustomDatagrid";
 
 
 export default function RouteAdd() {
@@ -45,14 +46,14 @@ export default function RouteAdd() {
     const routeChangeEdit = (row: any) => {
         console.log("row " + row);
 
-        let path = `/Committee/RouteEdit`;
+        let path = `/E-Office/RouteEdit`;
         navigate(path, {
             state: row,
         });
     };
 
     const routeChangeAdd = () => {
-        let path = `/Committee/RouteAdd`;
+        let path = `/E-Office/RouteAdd`;
         navigate(path);
     };
 
@@ -298,33 +299,13 @@ export default function RouteAdd() {
                                 <CircularProgress />
                             </div>
                         ) : (
-                            <Box>
-                                <div>
-                                    <DataGrid
-                                        rows={rows}
-                                        columns={adjustedColumns}
-                                        autoHeight
-                                        slots={{
-                                            toolbar: GridToolbar,
-                                        }}
-                                        rowSpacingType="border"
-                                        pagination={true}
-                                        pageSizeOptions={[5, 10, 25, 50, 100].map((size) => ({
-                                            value: size,
-                                            label: `${size}`,
-                                        }))}
-                                        initialState={{
-                                            pagination: { paginationModel: { pageSize: 5 } },
-                                        }}
-                                        slotProps={{
-                                            toolbar: {
-                                                showQuickFilter: true,
-                                            },
-                                        }}
-                                    />
-                                </div>
-
-                            </Box>)}
+                            <CustomDataGrid
+                            isLoading={isLoading}
+                            rows={rows}
+                            columns={adjustedColumns}
+                            pageSizeOptions={[5, 10, 25, 50, 100]}
+                            initialPageSize={5}
+                        />)}
                     </Paper>
                 </Card>
             </Grid >

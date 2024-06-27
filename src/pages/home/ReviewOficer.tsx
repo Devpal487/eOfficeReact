@@ -1,17 +1,11 @@
 import {
-    Button,
     CardContent,
     Grid,
-    Typography,
     Tabs,
     Tab,
     useMediaQuery, useTheme 
 } from "@mui/material";
-import ArrowBackSharpIcon from "@mui/icons-material/ArrowBackSharp";
-import React, { useEffect, useState } from "react";
-import { Navigate, useNavigate } from "react-router-dom";
-import { useFormik } from "formik";
-import api from "../../utils/Url";
+import  {  useState } from "react";
 import { EmailIcons, FileCopyIcons, FilemoveIcons, FolderIcons, ImportExportIcons, InboxIcons, NotificationsIcons, PendingIcons, ShareIcons, SmsIcons, UpgradeIcons } from "../../utils/icons";
 import Inbox from "./Inbox";
 import Sent from "./Sent";
@@ -51,11 +45,11 @@ const ReviewOficer = (props: Props) => {
         { id: 5, text: " Closed", icon:<UpgradeIcons/>},
         { id: 6, text: " Bulk Closed", icon:<PendingIcons/>},
         { id: 7, text: " My All Files", icon:<FilemoveIcons/>, },
-        { id: 8, text: " Create New File", icon:<FileCopyIcons/>},
-        { id: 9, text: " Merge File", icon:<ImportExportIcons/>},
-        { id: 10, text: " Notifications", icon:<NotificationsIcons/>},
-        { id: 11, text: " Message", icon:<SmsIcons/>},
-        { id: 12, text: " Letter", icon:<EmailIcons/>},
+       // { id: 8, text: " Create New File", icon:<FileCopyIcons/>},
+        { id: 8, text: " Merge File", icon:<ImportExportIcons/>},
+        { id: 9, text: " Notifications", icon:<NotificationsIcons/>},
+        { id: 10, text: " Message", icon:<SmsIcons/>},
+        { id: 11, text: " Letter", icon:<EmailIcons/>},
     ];
 
     const tabStyle = {
@@ -109,10 +103,10 @@ const ReviewOficer = (props: Props) => {
                     {value === 5 && (<Closed/>)}
                     {value === 6 && (<BulkClosed/>)}
                     {value === 7 && (<MyAllFiles/>)}
-                    {value === 9 && (<MergeFile/>)}
-                    {value === 10 && (<Notifications/>)}
-                    {value === 11 && (<Message/>)}
-                    {value === 12 && (<Letter/>)}
+                    {value === 8 && (<MergeFile/>)}
+                    {value === 9 && (<Notifications/>)}
+                    {value === 10 && (<Message/>)}
+                    {value === 11 && (<Letter/>)}
 
                 </CardContent>
             </div>

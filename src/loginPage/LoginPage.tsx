@@ -43,18 +43,11 @@ export default function LoginPage() {
     );
     if (response.data.isSuccess) {
       localStorage.setItem("id", JSON.stringify(response.data.data[0]["id"]));
-      localStorage.setItem(
-        "nodeID",
-        JSON.stringify(response.data.data[0]["nodeID"])
-      );
-      localStorage.setItem(
-        "nodeName",
-        JSON.stringify(response.data.data[0]["name"])
-      );
+      localStorage.setItem("nodeID", JSON.stringify(response.data.data[0]["nodeID"]));
+      localStorage.setItem("nodeName",JSON.stringify(response.data.data[0]["name"]));
       localStorage.setItem("inst_id", "1");
       toast.success(response.data.mesg);
     } else {
-      localStorage.setItem("inst_id", "1");
       toast.error(response.data.mesg);
     }
   };
@@ -70,6 +63,7 @@ export default function LoginPage() {
             toast.error("User Permission is null");
           } else {
             localStorage.setItem("userdata", JSON.stringify(response.data));
+            localStorage.setItem("inst_id", "1");
             localStorage.setItem(
               "useR_ID",
               JSON.stringify(response.data[0]["userdetail"][0]["useR_ID"])
@@ -125,11 +119,7 @@ export default function LoginPage() {
         getNodeData(response.data.data[0]["userdetail"][0]["useR_ID"]);
         toast.success(response.data.mesg);
         formik.resetForm();
-        // let path = `/home`;
-        // navigate(`/home`);
-        console.log("Navigating to /home...");
         navigate(`/home`);
-        console.log("Navigation should have occurred.");
       } else {
         toast.error(response.data.mesg);
       }

@@ -251,8 +251,8 @@ const UserManagementEdit = (props: Props) => {
       shorT_NAME: location.state.shorT_NAME,
       useR_CODE: location.state.useR_CODE,
       dob: dayjs(location.state.dob).format("YYYY-MM-DD"),
-      doa: "",
-      doj: "",
+      doa:(location.state.doa),
+      doj: (location.state.doj),
       gendeR_ID: location.state.gendeR_ID,
       cuR_PHONE: "",
       cuR_MOBILE: location.state.cuR_MOBILE,
@@ -264,7 +264,7 @@ const UserManagementEdit = (props: Props) => {
       logiN_NAME: location.state.logiN_NAME,
       password: location.state.password,
       rolename: "",
-      employeeID:0,
+      employeeID:location.state.employeeID,
       user_Type_Name:location.state.user_Type_Name,
       subRole:[]
     },
@@ -324,7 +324,7 @@ const UserManagementEdit = (props: Props) => {
             textAlign="center"
             style={{ marginTop: "10px", fontSize: "18px", fontWeight: 500 }}
           >
-            {t("text.CreateUserManegment")}
+            {t("text.EditUserManegment")}
           </Typography>
           <Grid xs={4} sm={12} item>
             <Typography style={{ marginTop: "-75px" }}>
@@ -353,7 +353,15 @@ const UserManagementEdit = (props: Props) => {
                   disablePortal
                   id="combo-box-demo"
                   options={UserName}
+                  
+
                   fullWidth
+
+                  value={
+                    UserName.find(
+                      (option:any) => option.value === formik.values.employeeID
+                    ) || null
+                  }
                   // value={CheckMode}
                   size="small"
                   onChange={(event: any, newValue: any) => {

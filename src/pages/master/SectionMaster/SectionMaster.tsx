@@ -1,7 +1,8 @@
 import * as React from "react";
 import Paper from "@mui/material/Paper";
-import {useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
+  Autocomplete,
   Box,
   Button,
   Divider,
@@ -9,136 +10,93 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import AddCircleIcon from "@mui/icons-material/AddCircle";
-import SearchIcon from "@mui/icons-material/Search";
-import Swal from "sweetalert2";
-import EditIcon from "@mui/icons-material/Edit";
-import DeleteIcon from "@mui/icons-material/Delete";
 import Card from "@mui/material/Card";
 import Grid from "@mui/material/Grid";
-import PrintIcon from "@mui/icons-material/Print";
-import axios from "axios";
 import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
-import api from '../../../utils/Url';
-import { useNavigate, useLocation } from "react-router-dom";
+import api from "../../../utils/Url";
+import { useLocation } from "react-router-dom";
+import CircularProgress from "@mui/material/CircularProgress";
+import { useFormik } from "formik";
+import * as Yup from "yup";
 import { useTranslation } from "react-i18next";
+import { DataGrid, GridColDef, GridToolbar } from "@mui/x-data-grid";
 import { toast } from "react-toastify";
 import ToastApp from "../../../ToastApp";
-import {
-  DataGrid,
-  GridColDef,
-  GridToolbar,
-} from "@mui/x-data-grid";
-import Switch from "@mui/material/Switch";
-import Chip from "@mui/material/Chip";
-import CircularProgress from "@mui/material/CircularProgress";
+import { getISTDate } from "../../../utils/Constant";
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
+import CustomDataGrid from "../../../utils/CustomDatagrid";
+import CustomLabel from "../../../CustomLable";
 
-interface MenuPermission {
-  isAdd: boolean;
-  isEdit: boolean;
-  isPrint: boolean;
-  isDel: boolean;
-}
+
 
 export default function SectionMaster() {
-  const [dept, setDept] = useState([]);
-  const [columns, setColumns] = useState<any>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const location = useLocation();
-  const [permissionData, setPermissionData] = useState<MenuPermission>({
-    isAdd: false,
-    isEdit: false,
-    isPrint: false,
-    isDel: false,
-  });
+  const { i18n, t } = useTranslation();
+  const { defaultValues, defaultValuestime } = getISTDate();
 
-  let navigate = useNavigate();
-  const { t } = useTranslation();
+  const [columns, setColumns] = useState<any>([]);
+  const [rows, setRows] = useState<any>([]);
+  const [editId, setEditId] = useState<any>(-1);
+  const location = useLocation();
+  const [isLoading, setIsLoading] = useState(true);
+
+  const [FileOption, setFileOption] = useState<any>([
+    { value: "-1", label: t("text.SelectDepartment") },
+  ]);
+
+  const [option, setOption] = useState([
+    { value: "-1", label: t("text.SelectStateName") },
+  ]);
+
+
+
 
   useEffect(() => {
-    // const dataString = localStorage.getItem("userdata");
-    //   if (dataString) {
-    //     const data = JSON.parse(dataString);
-    //     if (data && data.length > 0) {
-    //       const userPermissionData = data[0]?.userPermission;
-    //       if (userPermissionData && userPermissionData.length > 0) {
-    //         const menudata = userPermissionData[0]?.parentMenu;
-    //         for (let index = 0; index < menudata.length; index++) {
-    //           const childMenudata = menudata[index]?.childMenu;
-    //           const pathrow = childMenudata.find(
-    //             (x: any) => x.path === location.pathname
-    //           );
-    //           console.log("data", pathrow);
-    //           if (pathrow) {
-    //             setPermissionData(pathrow);
-    //           }
-    //         }
-    //       }
-    //     }
-    //   }
-      fetchZonesData();
-    }, [isLoading]);
+    const dataString = localStorage.getItem("userdata");
 
-  const handleSwitchChange = (
-    event: React.ChangeEvent<HTMLInputElement>,
-    value: any
-  ) => {
-    console.log(value)
+    getList();
+
+    getDepartment();
+
+  }, []);
+
+
+
+
+  const getDepartment = () => {
     const collectData = {
-      designation_id: value.id,
-      designation_name: value.designation_name,
-      dept_id: value.dept_id,
-      short_name: value.short_name,
-      isActive: event.target.checked,
-      user_ID: -1,
-      sortOrder: 0,
+      "departmentId": -1,
     };
-    console.log("switch Data", collectData)
     api
-      .post(`Designation/AddUpdateDesignationmaster`, collectData)
-      .then((response) => {
-        if (response.data.isSuccess) {
-          toast.success(response.data.mesg);
-          fetchZonesData();
-        } else {
-          toast.error(response.data.mesg);
-        }
+      .post(`Department/GetDepartmentmaster`, collectData)
+      .then((res) => {
+        const arr = res.data.data.map((item: any) => ({
+          label: item.departmentName,
+          value: item.departmentId,
+        }));
+        setFileOption(arr);
       });
   };
 
-  const routeChangeEdit = (row: any) => {
-    console.log("row " + row);
 
-    let path = `/master/SectionMasterEdit`;
-    navigate(path, {
-      state: row,
-    });
-  };
-
-  const routeChangeAdd = () => {
-    let path = `/master/SectionMasterAdd`;
-    navigate(path);
-  };
 
   let delete_id = "";
-
   const accept = () => {
     const collectData = {
-        id: delete_id
+      id: delete_id,
     };
     console.log("collectData " + JSON.stringify(collectData));
     api
-      .delete(`SectionMaster/DeleteDesignationmaster`, {data:collectData})
+      .delete(`SectionMaster/DeleteDesignationmaster`, { data: collectData })
       .then((response) => {
         if (response.data.isSuccess) {
           toast.success(response.data.mesg);
-          fetchZonesData();
+          getList();
         } else {
           toast.error(response.data.mesg);
         }
       });
   };
-
   const reject = () => {
     // toast.warn({summary: 'Rejected', detail: 'You have rejected', life: 3000 });
     toast.warn("Rejected: You have rejected", { autoClose: 3000 });
@@ -157,200 +115,257 @@ export default function SectionMaster() {
     });
   };
 
-  const fetchZonesData = async () => {
+  const getList = () => {
+    const collectData = {
+      "id": -1,
+      
+    };
     try {
-      const collectData = {
-        "id": -1,
-        
-      };
-      const response = await api.post( `SectionMaster/GetDesignationmaster`,
-        collectData
-      );
-      const data = response.data.data;
-      const designationWithIds = data.map((dept: any, index:any) => ({
-        ...dept,
-        serialNo: index+1,
-        id: dept.id,
-      }));
-      setDept(designationWithIds);
-      setIsLoading(false);
+      api
+        .post(`SectionMaster/GetDesignationmaster`, collectData)
+        .then((res) => {
+          console.log("result" + JSON.stringify(res.data.data));
+          const data = res.data.data;
+          const arr = data.map((item: any, index: any) => ({
+            ...item,
+            serialNo: index + 1,
+            id: item.id,
+          }));
+          setRows(arr);
+          setIsLoading(false);
+          if (data.length > 0) {
+            const columns: GridColDef[] = [
+              {
+                field: "actions",
+                headerClassName: "MuiDataGrid-colCell",
+                headerName: t("text.Action"),
+                width: 150,
 
-      if (data.length > 0) {
-        const columns: GridColDef[] = [
-          {
-            field: "actions",
-            headerClassName: "MuiDataGrid-colCell",
-            headerName: t("text.Action"),
-            width: 150,
+                renderCell: (params) => {
 
-            renderCell: (params) => {
-              return [
-                <Stack
-                  spacing={1}
-                  direction="row"
-                  sx={{ alignItems: "center", marginTop: "5px" }}
-                >
-                  {/* {permissionData?.isEdit ? ( */}
-                    <EditIcon
-                      style={{
-                        fontSize: "20px",
-                        color: "blue",
-                        cursor: "pointer",
-                      }}
-                      className="cursor-pointer"
-                      onClick={() => routeChangeEdit(params.row)}
-                    />
-                  {/* // ) : (
-                  //   ""
-                  // )} */}
-                  {/* {permissionData?.isDel ? ( */}
-                    <DeleteIcon
-                      style={{
-                        fontSize: "20px",
-                        color: "red",
-                        cursor: "pointer",
-                      }}
-                      onClick={() => {
-                        handledeleteClick(params.row.id);
-                      }}
-                    />
-                  {/* ) : (
-                    ""
-                  )} */}
-                  {/* <Switch
-                    checked={Boolean(params.row.isActive)}
-                    style={{
-                      color: params.row.isActive ? "green" : "#FE0000",
-                    }}
-                    onChange={(value: any) =>
-                      handleSwitchChange(value, params.row)
-                    }
-                    inputProps={{
-                      "aria-label": "Toggle Switch",
-                    }}
-                  /> */}
-                </Stack>,
-              ];
-            },
-          },
+                  return [
+                    <Stack
+                      spacing={1}
+                      direction="row"
+                      sx={{ alignItems: "center", marginTop: "5px" }}
+                    >
+                      {/*  {permissionData?.isEdit ? ( */}
+                      <EditIcon
+                        style={{
+                          fontSize: "20px",
+                          color: "blue",
+                          cursor: "pointer",
+                        }}
+                        className="cursor-pointer"
+                        onClick={() => routeChangeEdit(params.row)}
+                      />
+                      {/* ) : ( */}
+                      {/*   "" */}
+                      {/* )} */}
+                      {/*  {permissionData?.isDel ? ( */}
+                      <DeleteIcon
+                        style={{
+                          fontSize: "20px",
+                          color: "red",
+                          cursor: "pointer",
+                        }}
+                        onClick={() => {
+                          handledeleteClick(params.row.id);
+                        }}
+                      />
+                      {/*  ) : ( */}
+                      {/*  "" */}
+                      {/* )} */}
+                    </Stack>,
+                  ];
+                },
+              },
 
-          {
-            field: "serialNo",
-            headerName: t("text.SrNo"),
-            flex: 1,
-            headerClassName: "MuiDataGrid-colCell",
-          },
-          {
-            field: "department",
-            headerName: t("text.Department"),
-            flex: 1,
-            headerClassName: "MuiDataGrid-colCell",
-          },
-          {
-            field: "section",
-            headerName:t("text.Section"),
-            flex: 1,
-            headerClassName: "MuiDataGrid-colCell",
-          },
-          // {
-          //   field: "isActive",
-          //   headerName: t("text.Status"),
-          //   flex: 1,
-          //   headerClassName: "MuiDataGrid-colCell",
-          //   renderCell: (params) => [
-          //     <Stack direction="row" spacing={1}>
-          //       {params.row.isActive ? (
-          //         <Chip
-          //           label={t("text.Active")}
-          //           color="success"
-          //           style={{ fontSize: "14px" }}
-          //         />
-          //       ) : (
-          //         <Chip
-          //           label={t("text.InActive")}
-          //           color="error"
-          //           style={{ fontSize: "14px" }}
-          //         />
-          //       )}
-          //     </Stack>,
-          //   ],
-          // },
-        ];
-        setColumns(columns as any);
-      }
+              {
+                field: "serialNo",
+                headerName: t("text.SrNo"),
+                flex: 1,
+                headerClassName: "MuiDataGrid-colCell",
+              },
+              {
+                field: "department",
+                headerName: t("text.Department"),
+                flex: 1,
+                headerClassName: "MuiDataGrid-colCell",
+              },
 
+              {
+                field: "section",
+                headerName: t("text.Section"),
+                flex: 1,
+                headerClassName: "MuiDataGrid-colCell",
+              },
+
+            ];
+            setColumns(columns as any);
+          }
+        });
+      // setIsLoading(false);
     } catch (error) {
       console.error("Error fetching data:", error);
-      // setLoading(false);
+      // setIsLoading(false);
     }
   };
+ 
+  const [toaster, setToaster] = useState(false);
+  const formik = useFormik({
+    initialValues: {
 
-  const adjustedColumns = columns.map((column: any) => ({
-    ...column,
-  }));
+      "id": -1,
+      "department": "",
+      "section": "",
+      "instid": 0,
+      "sesid": "",
+      "uid": ""
 
-  
+      // cityId: -1,
+      // cityName: "",
+      // stateId: "",
+
+      // createdOn: defaultValuestime,
+      // updatedOn: defaultValuestime,
+      // createdBy: "-1",
+      // updatedBy: "-1",
+
+    },
+   
+    onSubmit: async (values) => {
+      values.id = editId;
+      // console.log("check", values);
+
+      const response = await api.post(
+        `SectionMaster/AddUpdateSectionMaster`,
+        values
+      );
+      if (response.data.isSuccess) {
+        setToaster(false);
+        toast.success(response.data.mesg);
+        formik.resetForm();
+        getList();
+        setEditId(-1);
+      } else {
+        setToaster(true);
+        toast.error(response.data.mesg);
+      }
+
+    },
+  });
+
+  const requiredFields = [];
+
+
+  const routeChangeEdit = (row: any) => {
+    formik.setFieldValue("department", row.department);
+    formik.setFieldValue("section", row.section);
+
+    setEditId(row.id);
+  };
+
   return (
     <>
-      <Card
-        style={{
-          width: "100%",
-          // height: "100%",
-          backgroundColor: "#E9FDEE",
-          border: ".5px solid #FF7722 ",
-          marginTop:"3vh"
-        }}
-      >
-        <Paper
-          sx={{
+      <Grid item lg={6} sm={6} xs={12} sx={{ marginTop: "3vh" }}>
+        <Card
+          style={{
             width: "100%",
-            overflow: "hidden",
-            "& .MuiDataGrid-colCell": {
-              backgroundColor: "#00009C",
-              color: "#fff",
-              fontSize: 17,
-              fontWeight:900 
-            },
+            height: "50%",
+            backgroundColor: "#E9FDEE",
+            border: ".5px solid #42AEEE ",
+            marginTop: "5px",
           }}
-          style={{ padding: "10px",}}
         >
-          <ConfirmDialog />
-
-          <Typography
-            gutterBottom
-            variant="h5"
-            component="div"
-            sx={{ padding: "20px" }}
-            align="left"
+          <Paper
+            sx={{
+              width: "100%",
+              overflow: "hidden",
+              "& .MuiDataGrid-colCell": {
+                backgroundColor: "#00009C",
+                color: "#fff",
+                fontSize: 18,
+                fontWeight: 800,
+              },
+            }}
+            style={{ padding: "10px" }}
           >
-            {t("text.SectionMaster")}
-          </Typography>
-          <Divider />
+            <ConfirmDialog />
+            <Typography
+              gutterBottom
+              variant="h5"
+              component="div"
+              sx={{ padding: "20px" }}
+              align="left"
+            >
+              {t("text.SectionMaster")}
+            </Typography>
+            <Divider />
 
-          <Box height={10} />
+            <Box height={10} />
 
-          <Stack direction="row" spacing={2} classes="my-2 mb-2">
-            {/* {permissionData?.isAdd == true && ( */}
-              <Button
-                onClick={routeChangeAdd}
-                variant="contained"
-                endIcon={<AddCircleIcon />}
-                size="large"
-              >
-                {t("text.add")}
-              </Button>
-            {/* ) } */}
+            <form onSubmit={formik.handleSubmit}>
+              <Grid item xs={12} container spacing={3}>
 
-            {/* {permissionData?.isPrint == true ? (
-              <Button variant="contained" endIcon={<PrintIcon />} size="large">
-                {t("text.print")}
-              </Button>
-            ) : (
-              ""
-            )} */}
-          </Stack>
+                <Grid xs={5} sm={5} item>
 
-          {isLoading ? (
+                  <Autocomplete
+                    disablePortal
+                    id="combo-box-demo"
+                    options={FileOption}
+                    value={
+                        FileOption.find(
+                            (option:any) => option.value+"" === formik.values.department
+                        ) || null
+                    }
+                    fullWidth
+                    size="small"
+                    onChange={(event, newValue: any) => {
+                      console.log(newValue?.value);
+
+                      formik.setFieldValue("department", newValue?.value + "");
+
+                      formik.setFieldTouched("department", true);
+                      formik.setFieldTouched("department", false);
+                    }}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label={<CustomLabel text={t("text.SelectDepartment")} />}
+                      />
+                    )}
+                  />
+                </Grid>
+
+                <Grid item xs={5} sm={5}>
+                  <TextField
+                    id="section"
+                    name="section"
+                    label={<CustomLabel text={t("text.Section")} />}
+                    value={formik.values.section}
+                    placeholder={t("text.Section")}
+                    size="small"
+                    fullWidth
+                    style={{ backgroundColor: "white" }}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                  />
+                </Grid>
+
+                <Grid item xs={2}>
+                  {/*  {permissionData?.isAdd == true ? ( */}
+                  <Button type="submit" variant="contained" size="large">
+                    {editId == "-1" ? t("text.save") : t("text.update")}
+                  </Button>
+                  {/* ) : ( */}
+                  {/*   "" */}
+                  {/* )} */}
+                </Grid>
+              </Grid>
+            </form>
+
+            {isLoading ? (
               <div
                 style={{
                   display: "flex",
@@ -361,38 +376,18 @@ export default function SectionMaster() {
                 <CircularProgress />
               </div>
             ) : (
-              <Box>
-          <br />
-          <div style={{ width: "100%", backgroundColor: "#FFFFFF" }}>
-            <DataGrid
-              rows={dept}
-              columns={adjustedColumns}
-              autoHeight
-              slots={{
-                toolbar: GridToolbar,
-              }}
-              rowSpacingType="border"
-              pagination={true}
-              pageSizeOptions={[5, 10, 25, 50, 100].map((size) => ({
-                value: size,
-                label: `${size}`,
-              }))}
-              initialState={{
-                pagination: { paginationModel: { pageSize: 5 } },
-              }}
-              slotProps={{
-                toolbar: {
-                  showQuickFilter: true,
-                },
-              }}
-            />
-          </div>
-
-          </Box>)}
-        </Paper>
-      </Card>
+              <CustomDataGrid
+                isLoading={isLoading}
+                rows={rows}
+                columns={columns}
+                pageSizeOptions={[5, 10, 25, 50, 100]}
+                initialPageSize={5}
+              />
+            )}
+          </Paper>
+        </Card>
+      </Grid>
       <ToastApp />
-      
     </>
   );
 }

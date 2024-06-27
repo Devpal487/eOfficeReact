@@ -29,6 +29,9 @@ import axios from "axios";
 import CustomLabel from "../../../CustomLable";
 import ButtonWithLoader from "../../../utils/ButtonWithLoader";
 import dayjs, { Dayjs } from "dayjs";
+import CustomDataGrid from "../../../utils/CustomDatagrid";
+import Chip from "@mui/material/Chip";
+import Switch from "@mui/material/Switch";
 
 
 const selectStatus = [
@@ -63,7 +66,6 @@ export default function AuthorityEmployeeMapping() {
         getAuthority();
 
         getDepartment();
-        getSection();
     }, []);
 
     const getEmployee = () => {
@@ -115,7 +117,8 @@ export default function AuthorityEmployeeMapping() {
 
     const getDepartment = () => {
         const collectData = {
-            "departmentId": -1
+            "departmentId": -1,
+            departmentName:""
         };
         api
             .post(`Department/GetDepartmentmaster`, collectData)
@@ -128,13 +131,18 @@ export default function AuthorityEmployeeMapping() {
             });
     };
 
-    const getSection = () => {
+    const getSection = (id:any) => {
         const collectData = {
             "id": -1,
+            "department": id?.toString(),
+            "section": "",
+            "instid": -1,
+            "sesid": "",
+            "uid": ""
 
         };
         api
-            .post(`SectionMaster/GetDesignationmaster`, collectData)
+            .post(`SectionMaster/GetSectionMaster`, collectData)
             .then((res) => {
                 const arr = res.data.data.map((item: any) => ({
                     label: item.section,
@@ -187,6 +195,39 @@ export default function AuthorityEmployeeMapping() {
             reject,
         });
     };
+
+    const handleSwitchChange = (
+        event: React.ChangeEvent<HTMLInputElement>,
+        value: any
+      ) => {
+        console.log(value)
+        const collectData = {
+          
+            "id": value.id,
+            "empId": value.empId,
+            "authorityId": value.authorityId,
+            "uploadDate": defaultValuestime,
+            "ipAddress": value.ipAddress,
+            "officeId": value.officeId,
+            "doj":value.doj,
+            "authorityStatus":event.target.checked == true ? "Y":"N",
+            "dol": value.dol,
+            "deptId": value.deptId,
+            "sectionId": value.sectionId,
+            "divisionid": value.divisionid
+        };
+        api
+          .post(`EmployeesAuthority/AddUpdateEmployeesAuthority`, collectData)
+          .then((response) => {
+            if (response.data.isSuccess) {
+              toast.success(response.data.mesg);
+              getList();
+            } else {
+              toast.error(response.data.mesg);
+            }
+          });
+      };
+    
 
     const getList = () => {
         const collectData = {
@@ -253,6 +294,18 @@ export default function AuthorityEmployeeMapping() {
                                             {/*  ) : ( */}
                                             {/*  "" */}
                                             {/* )} */}
+                                            <Switch
+                    checked={Boolean(params.row.authorityStatus === "Y"? true :false)}
+                    style={{
+                      color: params.row.authorityStatus ==="Y" ? "green" : "#FE0000",
+                    }}
+                    onChange={(value: any) =>
+                      handleSwitchChange(value, params.row)
+                    }
+                    inputProps={{
+                      "aria-label": "Toggle Switch",
+                    }}
+                  />
                                         </Stack>,
                                     ];
                                 },
@@ -292,6 +345,23 @@ export default function AuthorityEmployeeMapping() {
                                 headerName: t("text.Status"),
                                 flex: 1,
                                 headerClassName: "MuiDataGrid-colCell",
+                                renderCell: (params) => [
+                                    <Stack direction="row" spacing={1}>
+                                      {params.row.authorityStatus === "Y" ? (
+                                        <Chip
+                                          label={t("text.Active")}
+                                          color="success"
+                                          style={{ fontSize: "14px" }}
+                                        />
+                                      ) : (
+                                        <Chip
+                                          label={t("text.InActive")}
+                                          color="error"
+                                          style={{ fontSize: "14px" }}
+                                        />
+                                      )}
+                                    </Stack>,
+                                  ],
                             }
 
                         ];
@@ -537,8 +607,10 @@ export default function AuthorityEmployeeMapping() {
                                         size="small"
                                         onChange={(event: any, newValue: any) => {
                                             console.log(newValue?.value);
-
-                                            formik.setFieldValue("deptId", newValue?.value);
+                                            if(newValue != null){
+                                                formik.setFieldValue("deptId", newValue?.value);
+                                                getSection(newValue?.value);
+                                            }
                                             // formik.setFieldValue("deptId", newValue?.label);
                                             formik.setFieldTouched("deptId", true);
                                             formik.setFieldTouched("deptId", false);
@@ -600,33 +672,13 @@ export default function AuthorityEmployeeMapping() {
                                 <CircularProgress />
                             </div>
                         ) : (
-                            <Box>
-                                <br></br>
-                                <div style={{ width: "100%", backgroundColor: "#FFFFFF" }}>
-                                    <DataGrid
-                                        rows={rows}
-                                        columns={columns}
-                                        autoHeight
-                                        slots={{
-                                            toolbar: GridToolbar,
-                                        }}
-                                        rowSpacingType="border"
-                                        pagination={true}
-                                        pageSizeOptions={[5, 10, 25, 50, 100].map((size) => ({
-                                            value: size,
-                                            label: `${size}`,
-                                        }))}
-                                        initialState={{
-                                            pagination: { paginationModel: { pageSize: 5 } },
-                                        }}
-                                        slotProps={{
-                                            toolbar: {
-                                                showQuickFilter: true,
-                                            },
-                                        }}
-                                    />
-                                </div>
-                            </Box>
+                            <CustomDataGrid
+                            isLoading={isLoading}
+                            rows={rows}
+                            columns={columns}
+                            pageSizeOptions={[5, 10, 25, 50, 100]}
+                            initialPageSize={5}
+                        />
                         )}
                     </Paper>
                 </Card>

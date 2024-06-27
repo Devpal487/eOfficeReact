@@ -30,6 +30,10 @@ import {
 import { useTranslation } from "react-i18next";
 import api from "../../utils/Url";
 import Box from "@mui/material/Box";
+import { getinstId, getId, getdivisionId } from "./../../utils/Constant";
+import dayjs, { Dayjs } from "dayjs";
+import CustomDataGrid from "../../utils/CustomDatagrid";
+
 
 interface MenuPermission {
 isAdd: boolean;
@@ -44,6 +48,13 @@ const [columns, setColumns] = useState<any>([]);
 const [isLoading, setIsLoading] = useState(true);
 const [ReviewModalData, setReviewModalData] = useState(false);
 const { t } = useTranslation();
+
+const userId = getId();
+
+const instId = getinstId();
+// console.log("🚀 ~ ViewEditFile ~ userId:", userId);
+const divId = getdivisionId();
+// console.log("🚀 ~ ViewEditFile ~ divId:", divId);
 
 const navigate = useNavigate();
 
@@ -85,14 +96,13 @@ const fetchTotalFile = async () => {
     try {
         console.log("Division", Division);
     const collectData = {
-        inst_id: 1,
-        divid: parseInt(localStorage.getItem("id") + ""),
-        refNoYr: parseInt(new Date().getFullYear() + ""),
-        pstart: 0,
+        "userid": userId,
+        "divisionId": divId,
+        "type": "S"
     };
     console.log("collectData", collectData);
     const response = await api.post(
-        `RefferenceNumber/GetRefferenceNo`,
+        `FileMovement/Getsp_FileRoInbox`,
         collectData
     );
 
@@ -101,7 +111,7 @@ const fetchTotalFile = async () => {
     const DocsWithIds = data.map((doc: any, index: any) => ({
         ...doc,
         serialNo: index + 1,
-        id: doc.rid,
+        id: doc.fmrId,
         Division: Division,
     }));
 
@@ -116,36 +126,43 @@ const fetchTotalFile = async () => {
             width: 120,
             headerClassName: "MuiDataGrid-colCell",
         },
+       
         {
-            field: "rFileNumber",
-            headerName: "File Number",
+            field: "authorityType",
+            headerName: "Authority Type",
             flex: 1,
             headerClassName: "MuiDataGrid-colCell",
         },
         {
-            field: "rSubject",
-            headerName: "Send To ",
-            flex: 1,
-            headerClassName: "MuiDataGrid-colCell",
-        },
-        {
-            field: "rSubject",
+            field: "cSubject",
             headerName: "Subject ",
             flex: 1,
             headerClassName: "MuiDataGrid-colCell",
         },
         {
-            field: "letterBy",
-            headerName: " Updated Remark[File]",
+            field: "lastStaus",
+            headerName: "Last Status",
             flex: 1,
             headerClassName: "MuiDataGrid-colCell",
         },
-
         {
-            field: "rLetterSentOn",
+            field: "sentdate",
             headerName: "Sent Date",
             flex: 1,
             headerClassName: "MuiDataGrid-colCell",
+            renderCell: (params) => {
+                return dayjs(params.row.doj).format("DD-MM-YYYY");
+            }
+        },
+
+        {
+            field: "movedDate",
+            headerName: "Moved Date",
+            flex: 1,
+            headerClassName: "MuiDataGrid-colCell",
+            renderCell: (params) => {
+                return dayjs(params.row.doj).format("DD-MM-YYYY");
+            }
         }
         ];
         setColumns(columns as any);
@@ -185,35 +202,13 @@ return (
                 <CircularProgress />
             </div>
             ) : (
-            <Box>
-        <br />
-        <div style={{ width: "100%", backgroundColor: "#FFFFFF" }}>
-            
-            <DataGrid
-            rows={totalFile}
-            columns={adjustedColumns}
-            autoHeight
-            slots={{
-                toolbar: GridToolbar,
-            }}
-            rowSpacingType="border"
-            pagination={true}
-            pageSizeOptions={[5, 10, 25, 50, 100].map((size) => ({
-                value: size,
-                label: `${size}`,
-            }))}
-            initialState={{
-                pagination: { paginationModel: { pageSize: 5 } },
-            }}
-            slotProps={{
-                toolbar: {
-                showQuickFilter: true,
-                },
-            }}
-            />
-        </div>
-
-        </Box>)}
+                <CustomDataGrid
+                isLoading={isLoading}
+                rows={totalFile}
+                columns={adjustedColumns}
+                pageSizeOptions={[5, 10, 25, 50, 100]}
+                initialPageSize={5}
+            />)}
     
     </Paper>
 );

@@ -1,4 +1,4 @@
-import { Button, FormControl,FormLabel, CardContent, Grid, TextField, Typography, Divider, Autocomplete, Modal, Box, Select, MenuItem, FormControlLabel, Radio, IconButton, InputAdornment, Dialog, DialogTitle, DialogContent, RadioGroup, Table,Collapse } from '@mui/material';
+import { Button, FormControl, FormLabel, CardContent, Grid, TextField, Typography, Divider, Autocomplete, Modal, Box, Select, MenuItem, FormControlLabel, Radio, IconButton, InputAdornment, Dialog, DialogTitle, DialogContent, RadioGroup, Table, Collapse } from '@mui/material';
 import ArrowBackSharpIcon from '@mui/icons-material/ArrowBackSharp';
 import React, { useState, useEffect } from 'react'
 import axios from 'axios';
@@ -76,6 +76,11 @@ const PageCreateEdit = (props: Props) => {
 
     ]);
 
+    const [userOption, setUserOption] = useState<any>([
+        { value: "-1", label: t("text.SelectUser") },
+    ]);
+
+
     const [SectionOption, setSectionOption] = useState<any>([
         { value: "-1", label: t("text.SelectSection") },
     ]);
@@ -94,7 +99,7 @@ const PageCreateEdit = (props: Props) => {
     const [pdf, setPDF] = useState("");
     const [fileName, setfileName] = useState("");
 
-    
+
     const [tableData1, setTableData1] = useState<any>([]);
     const [EmpCode, setEmpCode] = useState("");
     const [Remark, setRemark] = useState("");
@@ -231,7 +236,7 @@ const PageCreateEdit = (props: Props) => {
     const getRootPreview = async () => {
 
         const collectData = {
-            "id": formik.values.rootID || -1,
+            "id": rootid || -1,
             "authorityId": -1,
             "routeId": -1,
             "officeId": -1,
@@ -341,7 +346,7 @@ const PageCreateEdit = (props: Props) => {
             "rFileType": -1,
             "fromdate": "2020-06-13T08:17:35.332Z",
             "todate": "2024-06-13T08:17:35.332Z",
-            "type":1
+            "type": 1
 
         };
 
@@ -439,13 +444,13 @@ const PageCreateEdit = (props: Props) => {
             fileattach_name: location.state.fileattach_name,
             divisionid: location.state.divisionid,
             pucPending: location.state.pucPending,
-            routeID: location.state.routeID, 
+            routeID: location.state.routeID,
             type: location.state.type,
             FileType: location.state.FileType,
             pdfPath: location.state.pdfpath,
             pdfBase64: location.state.pdfBase64,
             fileOpenDate: dayjs(location.state.fileOpenDate).format("YYYY-MM-DD"),
-            types:location.state.types
+            types: location.state.types
 
         },
         onSubmit: async (values: any) => {
@@ -537,7 +542,7 @@ const PageCreateEdit = (props: Props) => {
         }
     };
 
-  
+
     const addMoreRow1 = () => {
         const newRows = {
             id: tableData1.length + 1,
@@ -595,6 +600,53 @@ const PageCreateEdit = (props: Props) => {
         });
     };
 
+    useEffect(() => {
+        if (!formik.values.letterBy) {
+            formik.setFieldValue('letterBy', 'received');
+        }
+    }, [formik.values.letterBy, formik.setFieldValue]);
+
+    
+    const addMoreRow = () => {
+        const newRows = {
+            id: tableData.length + 1,
+            pdFid: -1,
+            pdfName: fileName,
+            docMid: -1,
+
+            subFtype: "",
+
+            isMain: "",
+
+            user_id: -1,
+            pdfPath: pdf,
+            pdfView: pdfView,
+            srn: -1,
+            isDelete: false,
+        };
+
+        setTableData((prevTableData: any) => {
+            const updatedTableDataed = [...prevTableData, newRows];
+            return updatedTableDataed;
+        });
+        console.log(newRows);
+
+        setfileName("");
+        setPDF("");
+
+
+    };
+
+    const removeExtraRow = (id: any) => {
+        setTableData((prevTableData: any) => {
+            const updatedTableDataed = prevTableData.filter(
+                (row: any) => row.id !== id
+            );
+            return updatedTableDataed;
+        });
+    };
+
+
 
 
 
@@ -649,42 +701,48 @@ const PageCreateEdit = (props: Props) => {
                     <form onSubmit={formik.handleSubmit}>
                         {toaster === false ? "" : <ToastApp />}
                         <Grid item xs={12} container spacing={2}>
-                            <Grid sm={5} md={5} item>
-                                <Box display="flex" justifyContent="center" alignItems="center">
-                                    <FormControlLabel
-                                        value="received"
-                                        control={
-                                            <Radio
-                                                checked={selectedOption === "received"}
-                                                onChange={handleRadioChange}
-                                            />
-                                        }
-                                        label={t("text.Received")}
-                                    />
-                                    <FormControlLabel
-                                        value="dispatch"
-                                        control={
-                                            <Radio
-                                                checked={selectedOption === "dispatch"}
-                                                onChange={handleRadioChange}
-                                            />
-                                        }
-                                        label={t("text.Dispatch")}
-                                    />
-                                    <FormControlLabel
-                                        value="received/dispatch"
-                                        control={
-                                            <Radio
-                                                checked={selectedOption === "received/dispatch"}
-                                                onChange={handleRadioChange}
-                                            />
-                                        }
-                                        label={t("text.RecOrDisp")}
-                                    />
-                                </Box>
-                            </Grid>
+                            <Grid item sm={6} md={6} xs={12}>
+                                    <FormControl 
+                                    style={{
+                                        display: "flex",
+                                        flexDirection: "row",
+                                        alignItems: "center",
+                                        gap: 20,
+                                        marginTop: "13px",
+                                    }}>
+                                    <Grid>
+                                        <RadioGroup
+                                        row
+                                        aria-labelledby="demo-row-radio-buttons-group-label"
+                                        name="row-radio-buttons-group"
+                                        defaultValue="received"
+                                        onChange={(event) => {
+                                            console.log("radio value check", event.target.value);
+                                            formik.setFieldValue("letterBy",event.target.value);
+                                            // console.log("🚀 ~ PageCreateAdd ~ formik.values.letterBy:", formik.values.letterBy)
+                                        }}
+                                        >
+                                        <FormControlLabel
+                                            value="received"
+                                            control={<Radio />}
+                                            label={t("text.Received")}
+                                        />
+                                        <FormControlLabel
+                                            value="dispatch"
+                                            control={<Radio />}
+                                            label={t("text.Dispatch")}
+                                        />
+                                        <FormControlLabel
+                                            value="received/dispatch"
+                                            control={<Radio />}
+                                            label={t("text.RecOrDisp")}
+                                        />
+                                        </RadioGroup>
+                                    </Grid>
+                                    </FormControl>
+                                </Grid>
 
-                            <Grid sm={5} md={5} xs={12}>
+                            <Grid item sm={6} md={6} xs={12}>
                                 <FormControl
                                     style={{
                                         display: "flex",
@@ -692,7 +750,7 @@ const PageCreateEdit = (props: Props) => {
                                         alignItems: "center",
                                         gap: 20,
                                         marginTop: "13px",
-                                        marginLeft: "12px",
+                                        // marginLeft: "12px",
                                     }}
                                 >
                                     <Grid>
@@ -703,7 +761,7 @@ const PageCreateEdit = (props: Props) => {
                                             row
                                             aria-labelledby="demo-row-radio-buttons-group-label"
                                             name="row-radio-buttons-group"
-                                            defaultValue="A"
+                                            defaultValue="G"
                                             onChange={(event) => {
                                                 console.log("radio value check", event.target.value);
                                                 formik.setFieldValue("types", event.target.value);
@@ -724,16 +782,14 @@ const PageCreateEdit = (props: Props) => {
                                 </FormControl>
                             </Grid>
 
-                            <Grid sm={2} md={2} xs={12}></Grid>
-
-                            <Grid item lg={4} xs={12}>
+                            <Grid item lg={4} md={4} xs={12}>
                                 <Autocomplete
                                     disablePortal
                                     id="combo-box-demo"
                                     options={LetterType}
                                     fullWidth
                                     size="small"
-                                    value={LetterType.find((opt:any)=> opt.value == formik.values.rlId)|| null}
+                                    value={LetterType.find((opt: any) => opt.value == formik.values.rlId) || null}
                                     onChange={(event, newValue: any) => {
                                         console.log(newValue?.value);
 
@@ -748,14 +804,14 @@ const PageCreateEdit = (props: Props) => {
                                 />
                             </Grid>
 
-                            {selectedOption !== "dispatch" && (
+                            {formik.values.letterBy !== "dispatch" && formik.values.letterBy !== "received/dispatch" && (
                                 <Grid item lg={4} xs={12}>
                                     <Autocomplete
                                         disablePortal
                                         id="combo-box-demo"
                                         options={PriorityOps}
                                         fullWidth
-                                        value={PriorityOps.find((opt:any)=> opt.value == formik.values.rPriority)|| null}
+                                        value={PriorityOps.find((opt: any) => opt.value == formik.values.rPriority) || null}
                                         size="small"
                                         onChange={(event, newValue: any) => {
                                             console.log(newValue?.value);
@@ -772,13 +828,13 @@ const PageCreateEdit = (props: Props) => {
                                 </Grid>
                             )}
 
-                            <Grid item lg={4} xs={12}>
+                            <Grid item lg={4} md={4} xs={12}>
                                 <Autocomplete
                                     disablePortal
                                     id="combo-box-demo"
                                     options={LanguageOption}
                                     fullWidth
-                                    value={LanguageOption.find((opt:any)=> opt.value == formik.values.rLanguage)|| null}
+                                    value={LanguageOption.find((opt: any) => opt.value == formik.values.rLanguage) || null}
                                     size="small"
                                     onChange={(event, newValue: any) => {
                                         console.log(newValue?.value);
@@ -794,13 +850,13 @@ const PageCreateEdit = (props: Props) => {
                                 />
                             </Grid>
 
-                            <Grid item lg={4} xs={12}>
+                            <Grid item lg={4} md={4} xs={12}>
                                 <Autocomplete
                                     disablePortal
                                     id="combo-box-demo"
                                     options={FileOption}
                                     fullWidth
-                                    value={FileOption.find((opt:any)=> opt.value == formik.values.rFileType)|| null}
+                                    value={FileOption.find((opt: any) => opt.value == formik.values.rFileType) || null}
                                     size="small"
                                     onChange={(event, newValue: any) => {
                                         console.log(newValue?.value);
@@ -816,7 +872,7 @@ const PageCreateEdit = (props: Props) => {
                                 />
                             </Grid>
 
-                            <Grid item lg={4} xs={12}>
+                            <Grid item lg={4} md={4} xs={12}>
                                 <Autocomplete
                                     disablePortal
                                     id="combo-box-demo"
@@ -1065,7 +1121,7 @@ const PageCreateEdit = (props: Props) => {
                                 </DialogContent>
                             </Dialog>
 
-                            <Grid md={4} item>
+                            <Grid lg={4} md={4} xs={12} item>
                                 <TextField
                                     label={t("text.EnterLetterNumber")}
                                     value={formik.values.rLetterNumber}
@@ -1080,8 +1136,8 @@ const PageCreateEdit = (props: Props) => {
                                 />
                             </Grid>
 
-                            {selectedOption !== "dispatch" && (
-                                <Grid md={4} item>
+                              {formik.values.letterBy !== "dispatch" && formik.values.letterBy !== "received/dispatch"  && (
+                                <Grid lg={4} md={4} xs={12} item>
                                     <TextField
                                         type="date"
                                         label={t("text.LetterSentOn")}
@@ -1099,7 +1155,7 @@ const PageCreateEdit = (props: Props) => {
                                 </Grid>
                             )}
 
-                            <Grid md={4} item>
+                            <Grid lg={4} md={4} xs={12} item>
                                 <TextField
                                     type="date"
                                     label={t("text.ReceivedData")}
@@ -1116,7 +1172,7 @@ const PageCreateEdit = (props: Props) => {
                                 />
                             </Grid>
 
-                            <Grid md={4} item>
+                            <Grid lg={4} md={4} xs={12} item>
                                 <TextField
                                     type="date"
                                     label={t("text.fileOpenDate")}
@@ -1133,8 +1189,8 @@ const PageCreateEdit = (props: Props) => {
                                 />
                             </Grid>
 
-                            {selectedOption !== "dispatch" && (
-                                <Grid md={4} item>
+                            {formik.values.letterBy !== "dispatch" && formik.values.letterBy !== "received/dispatch"  && (
+                                <Grid lg={4} md={4} xs={12} item>
                                     <TextField
                                         id="rPhone"
                                         name="rPhone"
@@ -1151,7 +1207,53 @@ const PageCreateEdit = (props: Props) => {
                                 </Grid>
                             )}
 
-                            <Grid md={4} item container alignItems="center">
+                            {formik.values.letterBy !== "dispatch" && formik.values.letterBy !== "received/dispatch"  && (
+                                <Grid lg={4} md={4} xs={12} item>
+                                    <TextField
+                                        label={t("text.SentBy")}
+                                        // value={formik.values.rSendAdrs}
+                                        placeholder={t("text.SentBy")}
+                                        size="small"
+                                        fullWidth
+                                        name="rSendAdrs"
+                                        id="rSendAdrs"
+                                        type="text"
+                                        style={{ backgroundColor: "white" }}
+                                        onChange={formik.handleChange}
+                                        onBlur={formik.handleBlur}
+                                    />
+                                </Grid>
+                            )}
+
+                            {formik.values.letterBy !== "Received" && (
+                                <Grid item lg={4} md={4} xs={12}>
+                                                <Autocomplete
+                                                    disablePortal
+                                                    id="combo-box-demo"
+                                                    options={userOption}
+                                                    fullWidth
+                                                    size="small"
+                                                    onChange={(event, newValue: any) => {
+                                                        console.log(newValue?.value);
+
+                                                        formik.setFieldValue("", newValue?.value);
+
+                                                        formik.setFieldValue("", newValue?.label);
+
+                                                        // formik.setFieldTouched("rFileType", true);
+                                                        // formik.setFieldTouched("rFileType", false);
+                                                    }}
+                                                    renderInput={(params) => (
+                                                        <TextField
+                                                            {...params}
+                                                            label={t("text.SendTo")}
+                                                        />
+                                                    )}
+                                                />
+                                            </Grid>
+                            )}
+
+                            {/* <Grid md={4} item container alignItems="center">
                                 <TextField
                                     label={t("text.SendTo")}
                                     value={formik.values.letterBy}
@@ -1187,15 +1289,15 @@ const PageCreateEdit = (props: Props) => {
                                         ),
                                     }}
                                 />
-                            </Grid>
-
-                            <Grid item lg={4} xs={12}>
+                            </Grid> */}
+                       {formik.values.letterBy !== "dispatch" && formik.values.letterBy !== "received/dispatch" && (
+                            <Grid item lg={4} md={4} xs={12}>
                                 <Autocomplete
                                     disablePortal
                                     id="combo-box-demo"
                                     options={RootOps}
                                     fullWidth
-                                    value={RootOps.find((opt:any)=> opt.value == formik.values.routeID)|| null}
+                                    value={RootOps.find((opt: any) => opt.value == formik.values.routeID) || null}
                                     size="small"
                                     onChange={(event, newValue: any) => {
                                         console.log("🚀 ~ PageCreateEdit ~ newValue:", newValue)
@@ -1243,39 +1345,8 @@ const PageCreateEdit = (props: Props) => {
                                     )}
                                 />
                             </Grid>
-
-                            <Grid md={12} item>
-                                <TextField
-                                    label={t("text.LetterRemark")}
-                                    value={formik.values.rRemark}
-                                    placeholder={t("text.LetterRemark")}
-                                    size="small"
-                                    fullWidth
-                                    name="rRemark"
-                                    id="rRemark"
-                                    type="text"
-                                    style={{ backgroundColor: "white" }}
-                                    onChange={formik.handleChange}
-                                    onBlur={formik.handleBlur}
-                                />
-                            </Grid>
-
-                            <Grid md={12} item>
-                                <TextField
-                                    label={t("text.SendFrom")}
-                                    value={formik.values.rSendAdrs}
-                                    placeholder={t("text.SendFrom")}
-                                    size="small"
-                                    fullWidth
-                                    name="rSendAdrs"
-                                    id="rSendAdrs"
-                                    type="text"
-                                    style={{ backgroundColor: "white" }}
-                                    onChange={formik.handleChange}
-                                    onBlur={formik.handleBlur}
-                                />
-                            </Grid>
-
+)}
+                            
                             <Grid md={12} item>
                                 <TextField
                                     label={t("text.Subject")}
@@ -1292,6 +1363,40 @@ const PageCreateEdit = (props: Props) => {
                                 />
                             </Grid>
 
+                           
+
+                            <Grid md={12} item>
+                                <TextField
+                                    label={t("text.SentBy")}
+                                    value={formik.values.rSendAdrs}
+                                    placeholder={t("text.SentBy")}
+                                    size="small"
+                                    fullWidth
+                                    name="rSendAdrs"
+                                    id="rSendAdrs"
+                                    type="text"
+                                    style={{ backgroundColor: "white" }}
+                                    onChange={formik.handleChange}
+                                    onBlur={formik.handleBlur}
+                                />
+                            </Grid>
+
+
+                            <Grid md={12} item>
+                                <TextField
+                                    label={t("text.Discription")}
+                                    value={formik.values.rRemark}
+                                    placeholder={t("text.Discription")}
+                                    size="small"
+                                    fullWidth
+                                    name="rRemark"
+                                    id="rRemark"
+                                    type="text"
+                                    style={{ backgroundColor: "white" }}
+                                    onChange={formik.handleChange}
+                                    onBlur={formik.handleBlur}
+                                />
+                            </Grid>
                             <Grid container spacing={1} item>
                                 <Grid
                                     xs={12}
@@ -1390,7 +1495,7 @@ const PageCreateEdit = (props: Props) => {
                             <Divider />
                             <br />
 
-                            {/* <Grid item xs={12} container spacing={2}>
+                            <Grid item xs={12} container spacing={2}>
                                 <Grid xs={12} lg={2.5} item>
                                     <TextField
                                         id="pdf"
@@ -1421,7 +1526,155 @@ const PageCreateEdit = (props: Props) => {
                                         {t("text.add")}
                                     </Button>
                                 </Grid>
-                            </Grid> */}
+                            </Grid>
+
+
+
+                            {/* <Grid container spacing={2}> */}
+                            <Grid xs={12} sm={12} item sx={{ marginTop: "3px" }}>
+                                <Table
+                                    style={{
+                                        borderCollapse: "collapse",
+                                        width: "100%",
+                                        border: "1px solid black",
+                                    }}
+                                >
+                                    <thead
+                                        style={{ backgroundColor: "#2196f3", color: "#f5f5f5" }}
+                                    >
+                                        <tr>
+                                            <th
+                                                style={{
+                                                    borderLeft: "1px solid black",
+                                                    paddingBlock: "10",
+                                                    paddingTop: "5px",
+                                                    paddingBottom: "5px",
+                                                }}
+                                            >
+                                                {t("text.Action")}
+                                            </th>
+
+                                            <th
+                                                style={{
+                                                    borderLeft: "1px solid black",
+                                                    paddingTop: "5px",
+                                                    paddingBottom: "5px",
+                                                }}
+                                            >
+                                                {t("text.FileName")}
+                                            </th>
+                                            <th
+                                                style={{
+                                                    borderLeft: "1px solid black",
+                                                    paddingTop: "5px",
+                                                    paddingBottom: "5px",
+                                                }}
+                                            >
+                                                {t("text.PdfFile")}
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody style={{ border: "1px solid black" }}>
+                                        {tableData?.map((row: any, index: any) => (
+                                            <tr key={row.id} style={{ border: "1px solid black" }}>
+                                                <td
+                                                    style={{
+                                                        borderLeft: "1px solid black",
+                                                        borderTop: "1px solid black",
+                                                        textAlign: "center",
+                                                    }}
+                                                >
+                                                    {" "}
+                                                    <DeleteIcon
+                                                        style={{
+                                                            fontSize: "20px",
+                                                            color: "darkred",
+                                                            cursor: "pointer",
+                                                        }}
+                                                        onClick={() => removeExtraRow(row.id)}
+                                                    />{" "}
+                                                    {/* <input type="checkbox" /> */}
+                                                </td>
+
+
+                                                <td
+                                                    style={{
+                                                        borderLeft: "1px solid black",
+                                                        borderTop: "1px solid black",
+                                                        textAlign: "center",
+                                                    }}
+                                                >
+                                                    {row.pdfName}
+                                                </td>
+                                                <td
+                                                    style={{
+                                                        borderLeft: "1px solid black",
+                                                        borderTop: "1px solid black",
+                                                        textAlign: "center",
+                                                    }}
+                                                >
+                                                    {row.pdfView == "" ? (
+                                                        ""
+                                                    ) : (
+                                                        <embed
+                                                            src={row.pdfView}
+                                                            style={{
+                                                                width: 150,
+                                                                height: 100,
+                                                                border: "1px solid grey",
+                                                                borderRadius: 10,
+                                                                padding: "2px",
+                                                            }}
+                                                        />
+                                                    )}
+
+                                                    <Typography
+                                                        onClick={() => modalOpenHandle1(row.pdfView)}
+                                                        style={{
+                                                            textDecorationColor: "blue",
+                                                            textDecorationLine: "underline",
+                                                            color: "blue",
+                                                            fontSize: "15px",
+                                                            cursor: "pointer",
+                                                        }}
+                                                    >
+                                                        {t("text.Preview")}
+                                                    </Typography>
+
+                                                    <Modal open={Shows} onClose={handlePanClose1}>
+                                                        <Box sx={style}>
+                                                            {Img == "" ? (
+                                                                <img
+                                                                    src={nopdf}
+                                                                    style={{
+                                                                        width: "170vh",
+                                                                        height: "75vh",
+                                                                    }}
+                                                                />
+                                                            ) : (
+                                                                <embed
+                                                                    //alt="preview image"
+                                                                    src={Img}
+                                                                    style={{
+                                                                        width: "170vh",
+                                                                        height: "75vh",
+                                                                        borderRadius: 10,
+                                                                    }}
+                                                                />
+                                                            )}
+                                                        </Box>
+                                                    </Modal>
+
+
+
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </Table>
+                            </Grid>
+                            {/* </asGrid> */}
+
 
                             <Grid xs={12} sm={12} item sx={{ marginTop: "3px", overflow: "auto" }}>
                                 <div>

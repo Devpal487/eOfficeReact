@@ -29,6 +29,7 @@ import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
 import CircularProgress from "@mui/material/CircularProgress";
 import moment from "moment";
 import api from "../../../utils/Url";
+import CustomDataGrid from "../../../utils/CustomDatagrid";
 
 
 interface MenuPermission {
@@ -376,34 +377,13 @@ export default function Institute() {
                             <CircularProgress />
                         </div>
                     ) : (
-                        <Box>
-                            <br />
-                            <div style={{ width: "100%", backgroundColor: "#FFFFFF" }}>
-                                <DataGrid
-                                    rows={Docs}
-                                    columns={adjustedColumns}
-                                    autoHeight
-                                    slots={{
-                                        toolbar: GridToolbar,
-                                    }}
-                                    rowSpacingType="border"
-                                    pagination={true}
-                                    pageSizeOptions={[5, 10, 25, 50, 100].map((size) => ({
-                                        value: size,
-                                        label: `${size}`,
-                                    }))}
-                                    initialState={{
-                                        pagination: { paginationModel: { pageSize: 5 } },
-                                    }}
-                                    slotProps={{
-                                        toolbar: {
-                                            showQuickFilter: true,
-                                        },
-                                    }}
-                                />
-                            </div>
-
-                        </Box>)}
+                        <CustomDataGrid
+                            isLoading={isLoading}
+                            rows={Docs}
+                            columns={adjustedColumns}
+                            pageSizeOptions={[5, 10, 25, 50, 100]}
+                            initialPageSize={5}
+                        />)}
                 </Paper>
             </Card>
             <ToastApp />

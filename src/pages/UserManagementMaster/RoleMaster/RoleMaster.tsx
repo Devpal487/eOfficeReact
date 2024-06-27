@@ -38,12 +38,13 @@ import * as Yup from "yup";
 import { toast } from "react-toastify";
 import ToastApp from "../../../ToastApp";
 import api from "../../../utils/Url";
-import {getId} from '../../../utils/Constant';
+import { getId } from '../../../utils/Constant';
 import {
   DataGrid,
   GridColDef,
   GridToolbar,
 } from "@mui/x-data-grid";
+import CustomDataGrid from "../../../utils/CustomDatagrid";
 
 
 const style = {
@@ -198,7 +199,7 @@ export default function RoleMaster() {
         }
       }
     }
-      getList();
+    getList();
   }, [isLoading]);
 
   const [open, setOpen] = React.useState(false);
@@ -220,13 +221,13 @@ export default function RoleMaster() {
         roleId: "-1"
       };
       const response = await api.post(
-       `Auth/GetRoleMaster`,
+        `Auth/GetRoleMaster`,
         collectData
       );
       const data = response.data.data;
-      const zonesWithIds = data.map((zone: any, index:any) => ({
+      const zonesWithIds = data.map((zone: any, index: any) => ({
         ...zone,
-        serialNo:index+1,
+        serialNo: index + 1,
         id: zone.roleId,
       }));
       setZones(zonesWithIds);
@@ -248,29 +249,29 @@ export default function RoleMaster() {
                   sx={{ alignItems: "center", marginTop: "5px" }}
                 >
                   {/* {permissionData?.isEdit ? ( */}
-                    <EditIcon
-                      style={{
-                        fontSize: "20px",
-                        color: "blue",
-                        cursor: "pointer",
-                      }}
-                      className="cursor-pointer"
-                      onClick={() => routeChangeEdit(params.row)}
-                    />
+                  <EditIcon
+                    style={{
+                      fontSize: "20px",
+                      color: "blue",
+                      cursor: "pointer",
+                    }}
+                    className="cursor-pointer"
+                    onClick={() => routeChangeEdit(params.row)}
+                  />
                   {/* ) : (
                     ""
                   )}
                   {permissionData?.isDel ? ( */}
-                    <DeleteIcon
-                      style={{
-                        fontSize: "20px",
-                        color: "red",
-                        cursor: "pointer",
-                      }}
-                      onClick={() => {
-                        handledeleteClick(params.row.id);
-                      }}
-                    />
+                  <DeleteIcon
+                    style={{
+                      fontSize: "20px",
+                      color: "red",
+                      cursor: "pointer",
+                    }}
+                    onClick={() => {
+                      handledeleteClick(params.row.id);
+                    }}
+                  />
                 </Stack>,
               ];
             },
@@ -288,8 +289,8 @@ export default function RoleMaster() {
             flex: 1,
             headerClassName: "MuiDataGrid-colCell",
           },
-         
-         
+
+
         ];
         setColumns(columns as any);
       }
@@ -305,7 +306,7 @@ export default function RoleMaster() {
   }));
 
   const getModalList = () => {
-    api.post( "Menu/GetChildMenuMaster").then((res) => {
+    api.post("Menu/GetChildMenuMaster").then((res) => {
       const arr = [];
       // console.log("result" + JSON.stringify(res.data.data));
       for (let index = 0; index < res.data.data.length; index++) {
@@ -342,7 +343,7 @@ export default function RoleMaster() {
       roleId: id,
     };
     api
-      .post( "Auth/GetRoleMaster", collectData)
+      .post("Auth/GetRoleMaster", collectData)
       .then((res) => {
         const arr = [];
         // console.log("result get rolemaster" + JSON.stringify(res.data.data[0]["rolePermission"]));
@@ -387,7 +388,7 @@ export default function RoleMaster() {
     };
     // console.log(collectData);
     api
-      .delete( "Auth/DeleteRoleMaster", {data:collectData})
+      .delete("Auth/DeleteRoleMaster", { data: collectData })
       .then((response) => {
         if (response.data.isSuccess) {
           toast.success(response.data.mesg);
@@ -577,7 +578,7 @@ export default function RoleMaster() {
                 backgroundColor: "#00009C",
                 color: "#fff",
                 fontSize: 17,
-                fontWeight:900 
+                fontWeight: 900
               },
             }}
             style={{ padding: "10px" }}
@@ -596,19 +597,19 @@ export default function RoleMaster() {
             <Box height={10} />
             <Stack direction="row" spacing={2} classes="my-2 mb-2">
               {/* {permissionData?.isAdd == true ? ( */}
-                <Button
-                  onClick={handleOpen}
-                  variant="contained"
-                  endIcon={<AddCircleIcon />}
-                >
-                  {t("text.add")}
-                </Button>
+              <Button
+                onClick={handleOpen}
+                variant="contained"
+                endIcon={<AddCircleIcon />}
+              >
+                {t("text.add")}
+              </Button>
               {/* ) : (
                 ""
               )} */}
 
 
-              
+
             </Stack>
             <Modal open={open} style={{ height: "600px" }}>
               <Box sx={style}>
@@ -721,7 +722,7 @@ export default function RoleMaster() {
                             >
                               <td>{t("text.MenuName")}</td>
                               <td>
-                               {t("text.Add")} <br />
+                                {t("text.Add")} <br />
                                 <input
                                   type="checkbox"
                                   style={{
@@ -737,7 +738,7 @@ export default function RoleMaster() {
                                 />
                               </td>
                               <td>
-                              {t("text.Edit")} <br />
+                                {t("text.Edit")} <br />
                                 <input
                                   type="checkbox"
                                   style={{
@@ -753,7 +754,7 @@ export default function RoleMaster() {
                                 />
                               </td>
                               <td>
-                              {t("text.delete")} <br />
+                                {t("text.delete")} <br />
                                 <input
                                   type="checkbox"
                                   style={{
@@ -769,7 +770,7 @@ export default function RoleMaster() {
                                 />
                               </td>
                               <td>
-                              {t("text.View")} <br />
+                                {t("text.View")} <br />
                                 <input
                                   type="checkbox"
                                   style={{
@@ -785,7 +786,7 @@ export default function RoleMaster() {
                                 />
                               </td>
                               <td>
-                              {t("text.Print")} <br />
+                                {t("text.Print")} <br />
                                 <input
                                   type="checkbox"
                                   style={{
@@ -801,7 +802,7 @@ export default function RoleMaster() {
                                 />
                               </td>
                               <td>
-                              {t("text.Export")} <br />
+                                {t("text.Export")} <br />
                                 <input
                                   type="checkbox"
                                   style={{
@@ -820,7 +821,7 @@ export default function RoleMaster() {
                                 />
                               </td>
                               <td>
-                              {t("text.Release")} <br />
+                                {t("text.Release")} <br />
                                 <input
                                   type="checkbox"
                                   style={{
@@ -839,7 +840,7 @@ export default function RoleMaster() {
                                 />
                               </td>
                               <td>
-                              {t("text.Post")} <br />
+                                {t("text.Post")} <br />
                                 <input
                                   type="checkbox"
                                   style={{
@@ -1056,39 +1057,18 @@ export default function RoleMaster() {
                 <CircularProgress />
               </div>
             ) : (
-              <Box>
-                <br></br>
-              <div style={{ width: "100%", backgroundColor: "#FFFFFF" }}>
-            
-              <DataGrid
+              <CustomDataGrid
+                isLoading={isLoading}
                 rows={zones}
                 columns={adjustedColumns}
-                autoHeight
-                slots={{
-                  toolbar: GridToolbar,
-                }}
-                rowSpacingType="border"
-                pagination={true}
-                pageSizeOptions={[5, 10, 25, 50, 100].map((size) => ({
-                  value: size,
-                  label: `${size}`,
-                }))}
-                initialState={{
-                  pagination: { paginationModel: { pageSize: 5 } },
-                }}
-                slotProps={{
-                  toolbar: {
-                    showQuickFilter: true,
-                  },
-                }}
+                pageSizeOptions={[5, 10, 25, 50, 100]}
+                initialPageSize={5}
               />
-            </div>
-            </Box>
             )}
           </Paper>
         </Card>
       </Grid>
-      <ToastApp/>
+      <ToastApp />
     </>
   );
 }

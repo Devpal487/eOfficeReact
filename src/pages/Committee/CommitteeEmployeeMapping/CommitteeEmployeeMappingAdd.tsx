@@ -154,6 +154,8 @@ const CommitteeEmployeeMappingAdd = (props: Props) => {
             "head": "",
             "divisionid": parseInt(localStorage.getItem('id') + ""),
 
+            "empName": "",
+            "authorityName": ""
         },
         onSubmit: async (values) => {
 
@@ -161,11 +163,11 @@ const CommitteeEmployeeMappingAdd = (props: Props) => {
             if (response.data.isSuccess) {
                 setToaster(false);
                 toast.success(response.data.mesg);
+                navigate("/E-Office/CommitteeEmployeeMapping");
             } else {
                 setToaster(true);
                 toast.error(response.data.mesg);
             }
-            navigate("/Committee/CommitteeEmployeeMapping");
         },
     });
 
@@ -219,10 +221,10 @@ const CommitteeEmployeeMappingAdd = (props: Props) => {
                                         <Checkbox
                                             id="head"
                                             name="head"
-                                            checked={formik.values.head === 'Y'} 
+                                            checked={formik.values.head === 'Y'}
                                             onChange={(e) => {
-                                                const newValue = e.target.checked ? 'Y' : ''; 
-                                                formik.setFieldValue('head', newValue); 
+                                                const newValue = e.target.checked ? 'Y' : 'N';
+                                                formik.setFieldValue('head', newValue);
                                             }}
                                             color="primary"
                                         />

@@ -34,6 +34,8 @@ import ToastApp from "../../ToastApp";
 import ButtonWithLoader from "../../utils/ButtonWithLoader";
 // import { green } from '@mui/material/colors';
 import { getinstId, getdivisionId,getId } from "../../utils/Constant";
+import CustomDataGrid from "../../utils/CustomDatagrid";
+import CustomLabel from "../../CustomLable";
 export const options1 = {
   pieHole: 0.25,
   is3D: false,
@@ -44,8 +46,11 @@ export const options1 = {
 export default function HomePage() {
   const { t } = useTranslation();
   const userid = getId();
+  console.log("🚀 ~ HomePage ~ userid:", userid)
   const divId:any = getdivisionId();
+  console.log("🚀 ~ HomePage ~ divId:", divId)
   const instId:any = getinstId();
+  console.log("🚀 ~ HomePage ~ instId:", instId)
 
   const[switchType, setSwitchType] = useState("1");
   const [ReviewModalData, setReviewModalData] = useState(false);
@@ -60,26 +65,18 @@ export default function HomePage() {
   const [success, setSuccess] = useState(false);
 
   var Division: any[];
- 
-  const buttonSx = {
-    ...(success && {
-      bgcolor: "green",
-      '&:hover': {
-        bgcolor: "red",
-      },
-    }),
-  };
 
   const handleCloseReviewModal = () => {
     setReviewModalData(false);
-    formik.setFieldValue("rDealHands", "");
-    formik.setFieldValue("rDealHandlabel", "");
+    formik.setFieldValue("rDealHands", "", false);
+    formik.setFieldValue("rDealHandlabel", "", false);
   };
 
   useEffect(() => {
-    getAuthDevision();
-    fetchTotalFile();
-    const tokenDataString: any = sessionStorage.getItem("token");
+    setTimeout(() => {
+      getAuthDevision(divId);
+      fetchTotalFile();
+    }, 1100);
   }, []);
 
   const navigate = useNavigate();
@@ -99,9 +96,9 @@ export default function HomePage() {
     });
   };
 
-  const getAuthDevision = () => {
+  const getAuthDevision = (id:any) => {
     const collectData = {
-      divisionid: parseInt(localStorage.getItem("id") + ""),
+      divisionid: parseInt(id),
     };
     api.post(`AuthorityMaster/GetAuthorityDiv`, collectData).then((res) => {
       const arr = res.data.data.map((item: any) => ({
@@ -146,7 +143,6 @@ export default function HomePage() {
           fetchTotalFile();
           handleCloseReviewModal();
           formik.setFieldValue("rRemark","");
-          formik.resetForm();
         //setLoading(false); 
         }else{
           toast.error(res.data.mesg);
@@ -168,8 +164,8 @@ export default function HomePage() {
         `RefferenceNumber/GetRefferenceNo`,
         collectData
       );
-      const data = response.data.data;
-      const DocsWithIds = data.map((doc: any, index: any) => ({
+      const data = response?.data?.data;
+      const DocsWithIds = data?.map((doc: any, index: any) => ({
         ...doc,
         serialNo: index + 1,
         id: doc.rid,
@@ -185,7 +181,7 @@ export default function HomePage() {
         const columns: GridColDef[] = [
           {
             field: "rNumber",
-            headerName: "R Number",
+            headerName: "Ref. No",
             flex: 1,
             headerClassName: "MuiDataGrid-colCell",
             renderCell: (params) => {
@@ -205,8 +201,8 @@ export default function HomePage() {
           },
 
           {
-            field: "rReceivedDate",
-            headerName: "Received/Dispatch",
+            field: "letterBy",
+            headerName: "Type",
             width: 400,
             flex: 1,
             headerClassName: "MuiDataGrid-colCell",
@@ -243,13 +239,13 @@ export default function HomePage() {
           },
 
           {
-            field: "rFileNumber",
+            field: "fileNm",
             headerName: "File Number",
             flex: 1,
             headerClassName: "MuiDataGrid-colCell",
           },
           {
-            field: "rSendAdrs",
+            field: "",
             headerName: "Moved To",
             flex: 2,
             headerClassName: "MuiDataGrid-colCell",
@@ -268,14 +264,22 @@ export default function HomePage() {
                       formik.setFieldValue("id", params.row.id);
                       formik.setFieldValue("rFileNumber", params.row.rFileNumber);
                       formik.setFieldValue("rid", params.row.rid);
-                      formik.setFieldValue("rDealHands", params.row.Division[0]["value"]);
-                      formik.setFieldValue("rDealHandlabel", params.row.Division[0]["label"]);
+                      const selectedDivision = params.row.Division.find(
+                        (item:any) => item.value === event.target.value
+                      );
+                      if (selectedDivision) {
+                        formik.setFieldValue("rDealHands", selectedDivision.value);
+                        formik.setFieldValue("rDealHandlabel", selectedDivision.label);
+                      }else {
+                        formik.setFieldValue("rDealHands", "");
+                        formik.setFieldValue("rDealHandlabel", "");
+                      }
                     }
                     }}
                   fullWidth
                   size="small"
                 >
-                  <MenuItem value="" >Select Division</MenuItem>
+                  <MenuItem value="-1" >Select Division</MenuItem>
                   {params?.row?.Division?.map((item: any) => (
                       <MenuItem key={item.value} value={item.value}>{item.label}</MenuItem>
                     ))}
@@ -285,32 +289,32 @@ export default function HomePage() {
                 }
             },
           },
+          // {
+          //   field: "letterBy",
+          //   headerName: "Lttr From/To",
+          //   flex: 1,
+          //   headerClassName: "MuiDataGrid-colCell",
+          // },
+
           {
-            field: "letterBy",
-            headerName: "Letter From/To",
+            field: "rSendAdrs",
+            headerName: "Send By",
             flex: 1,
             headerClassName: "MuiDataGrid-colCell",
           },
-
           {
             field: "rLetterSentOn",
-            headerName: "Letter Send From",
+            headerName: "Send Date",
             flex: 1,
             headerClassName: "MuiDataGrid-colCell",
           },
-          // {
-          //   field: "refNoYr",
-          //   headerName: "Refrence Number Year ",
-          //   flex: 1,
-          //   headerClassName: "MuiDataGrid-colCell",
-          // },
 
-          // {
-          //   field: "attachMentCount",
-          //   headerName: "Attachement Count ",
-          //   flex: 1,
-          //   headerClassName: "MuiDataGrid-colCell",
-          // },
+          {
+            field: "rReceivedDate",
+            headerName: "Received Date",
+            flex: 1,
+            headerClassName: "MuiDataGrid-colCell",
+          },
         ];
         setColumns(columns as any);
       }
@@ -462,8 +466,8 @@ export default function HomePage() {
                       <Box height={10} />
                       <Stack direction="column" spacing={2} classes="my-2 mb-2" justifyContent={"center"}>
                         <TextField
-                          label={t("text.Remark")}
-                          value={formik.values.rRemark}
+                          label={<CustomLabel text={t("text.Remark")} required={false}  />}
+                          // value={formik.values.rRemark}
                           onChange={formik.handleChange}
                           onBlur={formik.handleBlur}
                           placeholder={t("text.Remark")}
@@ -613,7 +617,8 @@ export default function HomePage() {
 
                       <Grid xs={5} sm={5} item>
                         <TextField
-                          label="Enter Ref. No."
+                          // label="Enter Ref. No."
+                          label={<CustomLabel text="Enter Ref. No." required={false}  />}
                           value={newrefNo}
                           placeholder="Enter Ref. No."
                           size="small"
@@ -629,7 +634,8 @@ export default function HomePage() {
                         <TextField
                           // id="zoneCode"
                           // name="zoneCode"
-                          label="Enter Year"
+                          // label="Enter Year"
+                          label={<CustomLabel text="Enter Year" required={false}  />}
                           value={newrefNoYr}
                           placeholder="Enter Year"
                           size="small"
@@ -658,7 +664,7 @@ export default function HomePage() {
             "& .MuiDataGrid-colCell": {
               backgroundColor: "#2B4593",
               color: "#fff",
-              fontSize: 17,
+              fontSize: 15,
               fontWeight:900
             },
           }}
@@ -666,55 +672,13 @@ export default function HomePage() {
         >
           <ConfirmDialog />
 
-                      {isLoading ? (
-                        <div
-                          style={{
-                            display: "flex",
-                            justifyContent: "center",
-                            alignItems: "center",
-                          }}
-                        >
-                          <CircularProgress />
-                        </div>
-                      ) : (
-                        <Box>
-                          <div
-                            style={{
-                              width: "100%",
-                              backgroundColor: "#FFF",
-                            }}
-                          >
-                            <DataGrid
-                              rows={totalFile}
-                              columns={adjustedColumns}
-                              autoHeight
-                              slots={{
-                                toolbar: GridToolbar,
-                              }}
-                              rowSpacingType="border"
-                              pagination={true}
-                              pageSizeOptions={[5, 10, 25, 50, 100].map(
-                                (size) => ({
-                                  value: size,
-                                  label: `${size}`,
-                                })
-                              )}
-                              initialState={{
-                                pagination: {
-                                  paginationModel: { pageSize: 5 },
-                                },
-                              }}
-                              slotProps={{
-                                toolbar: {
-                                  showQuickFilter: true,
-                                },
-                              }}
-                              scrollbarSize={20} 
-                            />
-                          </div>
-                        </Box>
-                      )}
-
+                      <CustomDataGrid 
+                      isLoading={isLoading}
+                      rows={totalFile}
+                      columns={adjustedColumns}
+                      pageSizeOptions={[5, 10, 25, 50, 100]}
+                      initialPageSize={5}
+                      />
 
                   </Paper>
                 </>

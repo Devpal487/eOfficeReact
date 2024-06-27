@@ -108,7 +108,7 @@ export default function RouteAdd() {
             api
                 .post(`RouteMemberCycle/GetRouteMemberCycle`, collectData)
                 .then((res) => {
-                    console.log("result" + JSON.stringify(res.data.data));
+                    // console.log("result" + JSON.stringify(res.data.data));
                     const data = res.data.data;
                     const arr = data.map((item: any, index: any) => ({
                         ...item,
@@ -268,7 +268,7 @@ export default function RouteAdd() {
                             sx={{ padding: "20px" }}
                             align="left"
                         >
-                            Create Route
+                            {t("text.Route")}
                         </Typography>
                         <Divider />
 
@@ -286,8 +286,6 @@ export default function RouteAdd() {
                             </Button>
 
                         </Stack>
-                        <br />
-                        <br />
                         {isLoading ? (
                             <div
                                 style={{

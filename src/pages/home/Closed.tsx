@@ -127,7 +127,7 @@ export default function Closed() {
                     },
                     {
                         field: "fileNm",
-                        headerName: "File Number",
+                        headerName: t("text.FileNo"),
                         flex: 1,
                         headerClassName: "MuiDataGrid-colCell",
                         renderCell: (params) => {
@@ -147,19 +147,19 @@ export default function Closed() {
                     },
                     {
                         field: "lastUpdatedDate",
-                        headerName: "Last Updated Date",
+                        headerName: t("text.LastUpdatedDate"),
                         flex: 1,
                         headerClassName: "MuiDataGrid-colCell",
                     },
                     {
                         field: "laststaus",
-                        headerName: "Last Status ",
+                        headerName: t("text.LastStatus"),
                         flex: 1,
                         headerClassName: "MuiDataGrid-colCell",
                     },
                     {
                         field: "updatedremark",
-                        headerName: "Updated Remark",
+                        headerName:t("text.UpdatedRemark"),
                         flex: 1,
                         headerClassName: "MuiDataGrid-colCell",
                     },

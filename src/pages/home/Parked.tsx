@@ -104,7 +104,7 @@ const fetchTotalFile = async () => {
         },
         {
             field: "fileNm",
-            headerName: "File Number",
+            headerName: t("text.FileNo"),
             flex: 1,
             headerClassName: "MuiDataGrid-colCell",
             renderCell: (params) => {
@@ -124,7 +124,7 @@ const fetchTotalFile = async () => {
         },
         {
             field: "rSubject",
-            headerName: "Subject ",
+            headerName:t("text.Subject"),
             flex: 1,
             headerClassName: "MuiDataGrid-colCell",
         },

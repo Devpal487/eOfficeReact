@@ -66,7 +66,7 @@ export default function MyAllFiles() {
             "fnId": row.cFileNo,
             "hdnAuth": 1,
 
-            "movedDate": "1900-01-01",
+            "movedDate": new Date().toISOString().substring(0, 10),
             "lastUpdatedDate ": "1900-01-01",
             "type": 2,
             "inst_id": 1,
@@ -145,33 +145,33 @@ export default function MyAllFiles() {
                     },
                     {
                         field: "fileNm",
-                        headerName: "File Number",
+                        headerName: t("text.FileNo"),
                         flex: 1,
                         headerClassName: "MuiDataGrid-colCell",
                         renderCell: (params) => {
                             return [
-                              <a
-                                onClick={() => navigate('/E-Office/ViewEditFile')}
-                                style={{
-                                  color: "blue",
-                                  cursor: "pointer",
-                                  textDecoration: "underline",
-                                }}
-                              >
-                                {params.value}
-                              </a>,
+                                <a
+                                    onClick={() => navigate('/E-Office/ViewEditFile')}
+                                    style={{
+                                        color: "blue",
+                                        cursor: "pointer",
+                                        textDecoration: "underline",
+                                    }}
+                                >
+                                    {params.value}
+                                </a>,
                             ];
-                          },
+                        },
                     },
                     {
                         field: "cSubject",
-                        headerName: " Subject",
+                        headerName: t("text.Subject"),
                         flex: 1,
                         headerClassName: "MuiDataGrid-colCell",
                     },
                     {
                         field: "updatedRemark",
-                        headerName: "Updated Remark",
+                        headerName: t("text.UpdatedRemark"),
                         flex: 1,
                         headerClassName: "MuiDataGrid-colCell",
                     },
@@ -179,13 +179,13 @@ export default function MyAllFiles() {
 
                     {
                         field: "createdby",
-                        headerName: "File Created By",
+                        headerName:t("text.CreatedBy"),
                         flex: 1,
                         headerClassName: "MuiDataGrid-colCell",
                     },
                     {
                         field: "lastStaus",
-                        headerName: "Last Status",
+                        headerName: t("text.LastStatus"),
                         flex: 1,
                         headerClassName: "MuiDataGrid-colCell",
                     },
@@ -193,7 +193,7 @@ export default function MyAllFiles() {
 
                     {
                         field: "SendtoWorkplace",
-                        headerName: "Send Workplace ",
+                        headerName:t("text.SendWorkplace"),
                         flex: 1,
                         headerClassName: "MuiDataGrid-colCell",
                         renderCell: (params) => {
@@ -206,7 +206,7 @@ export default function MyAllFiles() {
                                     onClick={() => handleMove(params.row)}
                                     style={{ height: "80%" }}
                                 >
-                                    send
+                                   {t("text.Send")}
                                 </Button>
 
                             ]

@@ -66,6 +66,7 @@ export default function SectionMaster() {
   const getDepartment = () => {
     const collectData = {
       "departmentId": -1,
+      "departmentName": ""
     };
     api
       .post(`Department/GetDepartmentmaster`, collectData)

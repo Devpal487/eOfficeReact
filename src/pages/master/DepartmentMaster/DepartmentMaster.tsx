@@ -116,7 +116,8 @@ export default function DepartmentMaster() {
 
   const getList = () => {
     const collectData = {
-     "departmentId": -1
+      "departmentId": -1,
+      "departmentName": ""
     };
     try {
       api
@@ -225,16 +226,9 @@ export default function DepartmentMaster() {
       "departmentShortname": "",
       "createdBy": "admin",
       "updatedBy": "admin",
-      "createdOn":defaultValuestime,
-      "updatedOn":defaultValuestime
-      // countryId: -1,
-      // countryName: "",
-      // countryCode: "",
-
-      // createdBy: "",
-      // updatedBy: "",
-      // createdOn: new Date().toISOString(),
-      // updatedOn: new Date().toISOString(),
+      "createdOn": defaultValuestime,
+      "updatedOn": defaultValuestime
+      
 
     },
     validationSchema: validationSchema,
@@ -306,15 +300,7 @@ export default function DepartmentMaster() {
             <Divider />
 
             <Box height={10} />
-            {/* <Stack direction="row" spacing={2} classes="my-2 mb-2"> */}
-            {/* <Grid
-                                // style={{
-                                //     display: "flex",
-                                //     flexDirection: "row",
-                                //     justifyContent: "space-around",
-                                //     alignItems: "flex-start",
-                                // }}
-                            > */}
+           
             <form onSubmit={formik.handleSubmit}>
               <Grid item xs={12} container spacing={2}>
                 <Grid item xs={4}>

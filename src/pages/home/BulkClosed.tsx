@@ -135,7 +135,7 @@ export default function BulkClosed() {
 
                     {
                         field: "All",
-                        headerName: "All",
+                        headerName: t("text.All"),
                         flex: 1,
                         headerClassName: "MuiDataGrid-colCell",
 
@@ -161,7 +161,7 @@ export default function BulkClosed() {
 
                     {
                         field: "fileNm",
-                        headerName: "File Number",
+                        headerName:t("text.FileNo"),
                         flex: 1,
                         headerClassName: "MuiDataGrid-colCell",
                         renderCell: (params) => {
@@ -181,26 +181,26 @@ export default function BulkClosed() {
                     },
                     {
                         field: "cSubject",
-                        headerName: "Subject",
+                        headerName:t("text.Subject"),
                         flex: 1,
                         headerClassName: "MuiDataGrid-colCell",
                     },
                     {
                         field: "lastStaus",
-                        headerName: "Last Status ",
+                        headerName: t("text.LastStatus"),
                         flex: 1,
                         headerClassName: "MuiDataGrid-colCell",
                     },
                     {
                         field: "updatedRemark",
-                        headerName: "Updated Remark",
+                        headerName: t("text.UpdatedRemark"),
                         flex: 1,
                         headerClassName: "MuiDataGrid-colCell",
                     },
 
                     {
                         field: "createdby",
-                        headerName: "File Created By",
+                        headerName:t("text.FileCreatedBy"),
                         flex: 1,
                         headerClassName: "MuiDataGrid-colCell",
                     },

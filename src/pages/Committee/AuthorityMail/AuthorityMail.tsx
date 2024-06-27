@@ -28,6 +28,13 @@ import {
     FormControl,
     FormLabel,
     RadioGroup,
+    TableContainer,
+    TableHead,
+    Paper,
+    tableCellClasses,
+    TableCell,
+    TableRow,
+    TableBody,
 } from "@mui/material";
 import ArrowBackSharpIcon from "@mui/icons-material/ArrowBackSharp";
 import React, { useEffect, useState, useRef } from "react";
@@ -56,6 +63,7 @@ import ArrowCircleRightIcon from '@mui/icons-material/ArrowCircleRight';
 import { getinstId, getId, getdivisionId } from "../../../utils/Constant";
 import ReactQuill from "react-quill";
 import dayjs from "dayjs";
+import { styled } from "@mui/material/styles";
 
 const Transition = React.forwardRef(function Transition(
     props: TransitionProps & {
@@ -79,6 +87,10 @@ const Transition = React.forwardRef(function Transition(
 //     p: 4,
 //     borderRadius: 10,
 // };
+
+
+
+
 
 
 const modules = {
@@ -111,6 +123,35 @@ const style = {
     boxShadow: 24,
     p: 4,
 };
+
+
+const StyledTableCell = styled(TableCell)(({ theme }) => ({
+    [`&.${tableCellClasses.head}`]: {
+        padding: "5px !important",
+        backgroundColor: "#00009c",
+        color: theme.palette.common.white,
+    },
+    [`&.${tableCellClasses.body}`]: {
+        fontSize: 14,
+        padding: "2px !important",
+    },
+}));
+
+const StyledTableRow = styled(TableRow)(({ theme }) => ({
+    // padding: "2px !important",
+    "&:nth-of-type(odd)": {
+        backgroundColor: theme.palette.action.hover,
+    },
+    // hide last border
+    "&:last-child td, &:last-child th": {
+        border: 0,
+        // padding: "2px !important",
+
+    },
+    "& td, & th": {
+        padding: "3px !important", // Ensure all cells in the row have 2px padding
+    },
+}));
 
 type Props = {};
 
@@ -406,7 +447,7 @@ const AuthorityMail = (props: Props) => {
             Section: 0,
             letterBy: "",
             Auth: "",
-            base64:""
+            base64: ""
 
 
 
@@ -451,8 +492,8 @@ const AuthorityMail = (props: Props) => {
             "divisionid": divId,
             "sendby": 0,
             "authType": formik.values.Auth.toString() || "",
-            "fileName":formik.values.fileattach_name.toString() || "",
-            "pdfDoc":formik.values.base64.toString() || "",
+            "fileName": formik.values.fileattach_name.toString() || "",
+            "pdfDoc": formik.values.base64.toString() || "",
         };
 
         api.post(`FileMovement/Addsp_Authmaillettersendcls`, value).then((res) => {
@@ -570,7 +611,7 @@ const AuthorityMail = (props: Props) => {
                                             <Box display="flex" alignItems="center">
                                                 <InboxIcon />
                                                 <Box component="span" ml={1}>
-                                                    Inbox
+                                                    {t('text.Inbox')}
                                                 </Box>
                                             </Box>
                                         }
@@ -587,7 +628,7 @@ const AuthorityMail = (props: Props) => {
                                             <Box display="flex" alignItems="center">
                                                 <SendIcon />
                                                 <Box component="span" ml={1}>
-                                                    Sent
+                                                    {t('text.Sent')}
                                                 </Box>
                                             </Box>
                                         }
@@ -604,7 +645,7 @@ const AuthorityMail = (props: Props) => {
                                             <Box display="flex" alignItems="center">
                                                 <FastForwardIcon />
                                                 <Box component="span" ml={1}>
-                                                    Important
+                                                    {t('text.Important')}
                                                 </Box>
                                             </Box>
                                         }
@@ -620,7 +661,7 @@ const AuthorityMail = (props: Props) => {
                                             <Box display="flex" alignItems="center">
                                                 <SaveAsIcon />
                                                 <Box component="span" ml={1}>
-                                                    Draft
+                                                    {t('text.Draft')}
                                                 </Box>
                                             </Box>
                                         }
@@ -636,7 +677,7 @@ const AuthorityMail = (props: Props) => {
                                             <Box display="flex" alignItems="center">
                                                 <MessageIcon />
                                                 <Box component="span" ml={1}>
-                                                    Message
+                                                    {t('text.Message')}
                                                 </Box>
                                             </Box>
                                         }
@@ -652,7 +693,7 @@ const AuthorityMail = (props: Props) => {
                                             <Box display="flex" alignItems="center">
                                                 <MailIcon />
                                                 <Box component="span" ml={1}>
-                                                    Letter
+                                                    {t('text.Letter')}
                                                 </Box>
                                             </Box>
                                         }
@@ -669,7 +710,7 @@ const AuthorityMail = (props: Props) => {
                                             <Box display="flex" alignItems="center">
                                                 <ArrowCircleRightIcon />
                                                 <Box component="span" ml={1}>
-                                                    Trash
+                                                    {t('text.Trash')}
                                                 </Box>
                                             </Box>
                                         }
@@ -710,7 +751,7 @@ const AuthorityMail = (props: Props) => {
                                     onClick={handleAWaitOpen}
                                     fullWidth
                                 >
-                                    compose
+                                    {t('text.Compose')}
                                 </Button>
                             </Grid>
 
@@ -804,7 +845,7 @@ const AuthorityMail = (props: Props) => {
 
                                         <Grid item xs={12}>
                                             <TextField
-                                                label={<CustomLabel text="Subject" />}
+                                                label={<CustomLabel text={t('text.Subject')} />}
                                                 value={formik.values.subject}
                                                 placeholder="Subject"
                                                 size="small"
@@ -859,7 +900,7 @@ const AuthorityMail = (props: Props) => {
                                             fullWidth
                                             style={{ marginLeft: "98%" }}
                                         >
-                                            Send
+                                            {t('text.Send')}
                                         </Button>
                                     </Grid>
                                 </Box>
@@ -890,6 +931,8 @@ const AuthorityMail = (props: Props) => {
 
                         </Grid>
 
+
+                        <br />
                         <Divider />
                         <br />
 
@@ -899,153 +942,200 @@ const AuthorityMail = (props: Props) => {
                                 <Grid xs={12} sm={12} item>
 
 
-                                    <Table
-                                        style={{
-                                            borderCollapse: "collapse",
-                                            width: "100%",
-                                            border: "1px solid black",
-
+                                    <TableContainer
+                                        component={Paper}
+                                        id="tabcont"
+                                        sx={{
+                                            maxHeight: "65vh",
+                                            marginBottom: "10px",
+                                            border: "1px solid #fff",
                                         }}
                                     >
-                                        <thead
+                                        <Table
+                                            aria-label="customized  table"
                                             style={{
-                                                backgroundColor: "#2196f3",
-                                                color: "#f5f5f5",
+                                                border: "1px gray solid",
+                                                borderCollapse: "collapse",
+                                                width: "100%",
                                             }}
                                         >
-                                            <tr>
-
-                                                <th
-                                                    style={{
-                                                        borderLeft: "1px solid black",
-                                                        paddingTop: "5px",
-                                                        paddingBottom: "5px",
-                                                        width: "100px",
-                                                    }}
-                                                >
-                                                    {t("text.SrNo")}
-                                                </th>
-                                                <th
-                                                    style={{
-                                                        borderLeft: "1px solid black",
-                                                        paddingTop: "5px",
-                                                        paddingBottom: "5px",
-
-                                                    }}
-                                                >
-                                                    {t("text.FromTo")}
-                                                </th>
-                                                <th
-                                                    style={{
-                                                        borderLeft: "1px solid black",
-                                                        paddingTop: "5px",
-                                                        paddingBottom: "5px",
-                                                    }}
-                                                >
-                                                    {t("text.FileName")}
-                                                </th>
-                                                <th
-                                                    style={{
-                                                        borderLeft: "1px solid black",
-                                                        paddingTop: "5px",
-                                                        paddingBottom: "5px",
-                                                        width: "100px",
-                                                    }}
-                                                >
-                                                    {t("text.Subject")}
-                                                </th>
-                                                <th
-                                                    style={{
-                                                        borderLeft: "1px solid black",
-                                                        paddingTop: "5px",
-                                                        paddingBottom: "5px",
-                                                    }}
-                                                >
-                                                    {t("text.Date")}
-                                                </th>
-                                            </tr>
-                                        </thead>
-                                        {tableLoading ? (
-                                            <div
+                                            <TableHead
                                                 style={{
-                                                    display: "flex",
-                                                    justifyContent: "center",
-                                                    alignItems: "center",
-                                                    margin: 10,
+                                                    border: "1px gray solid",
+                                                    borderCollapse: "collapse",
+                                                    position: "sticky",
                                                 }}
                                             >
-                                                <CustomizedProgressBars />
-                                            </div>
-                                        ) : (
-                                            <tbody style={{ border: "1px solid black" }}>
 
-                                                {MovementTableData.map((row: any, index: any) => (
-                                                    <tr key={row.id} style={{ border: "1px solid black" }}>
-                                                        <td
-                                                            style={{
-                                                                borderLeft: "1px solid black",
-                                                                borderTop: "1px solid black",
-                                                                // textAlign: "center",
-                                                                padding: "2px",
-                                                            }}
-                                                        >
-                                                            {index + 1}
-                                                        </td>
+                                                <TableRow>
+                                                    {/* <StyledTableCell /> */}
+                                                    <StyledTableCell
+                                                        align="center"
+                                                        style={{
+                                                            fontSize: 15,
+                                                            fontWeight: 500,
+                                                            border: "1px gray grey",
+                                                            borderLeft: "1px solid #bdbbbb",
+                                                            paddingTop: "5px",
+                                                            paddingBottom: "5px"
+                                                            // padding: "10px",
+                                                        }}
+                                                    >
+                                                        {t("text.SrNo")}
+                                                    </StyledTableCell>
+                                                    <StyledTableCell
+                                                        align="center"
+                                                        style={{
+                                                            fontSize: 15,
+                                                            fontWeight: 500,
+                                                            border: "1px gray grey",
+                                                            borderLeft: "1px solid #bdbbbb",
+                                                            paddingTop: "5px",
+                                                            paddingBottom: "5px"
+                                                            // padding: "10px",
+                                                        }}
+                                                    >
+                                                        {t("text.FromTo")}
+                                                    </StyledTableCell>
+                                                    <StyledTableCell
+                                                        align="center"
+                                                        style={{
+                                                            fontSize: 15,
+                                                            fontWeight: 500,
+                                                            border: "1px gray grey",
+                                                            borderLeft: "1px solid #bdbbbb",
+                                                            paddingTop: "5px",
+                                                            paddingBottom: "5px"
+                                                            // padding: "10px",
+                                                        }}
+                                                    >
+                                                        {t("text.FileName")}
+                                                    </StyledTableCell>
+                                                    <StyledTableCell
+                                                        align="center"
+                                                        style={{
+                                                            fontSize: 15,
+                                                            fontWeight: 500,
+                                                            border: "1px gray grey",
+                                                            borderLeft: "1px solid #bdbbbb",
+                                                            paddingTop: "5px",
+                                                            paddingBottom: "5px"
+                                                            // padding: "10px",
+                                                        }}
+                                                    >
+                                                        {t("text.Subject")}
+                                                    </StyledTableCell>
+                                                    <StyledTableCell
+                                                        align="center"
+                                                        style={{
+                                                            fontSize: 15,
+                                                            fontWeight: 500,
+                                                            border: "1px gray grey",
+                                                            borderLeft: "1px solid #bdbbbb",
+                                                            paddingTop: "5px",
+                                                            paddingBottom: "5px"
+                                                            // padding: "10px",
+                                                        }}
+                                                    >
+                                                        {t("text.Date")}
+                                                    </StyledTableCell>
 
-                                                        <td
-                                                            style={{
-                                                                borderLeft: "1px solid black",
-                                                                borderTop: "1px solid black",
-                                                                textAlign: "center",
-                                                            }}
-                                                        >
-                                                            {row.AuthorityType}
-                                                        </td>
+                                                </TableRow>
+                                            </TableHead>
+                                            {tableLoading ? (
+                                                <div
+                                                    style={{
+                                                        display: "flex",
+                                                        justifyContent: "center",
+                                                        alignItems: "center",
+                                                        margin: 10,
+                                                    }}
+                                                >
+                                                    <CustomizedProgressBars />
+                                                </div>
+                                            ) : (
+                                                <TableBody>
+                                                    {MovementTableData.map((row: any, index: any) => (
+                                                        //<Row key={row.any} row={row} index={index} />
+
+                                                        <StyledTableRow sx={{
+                                                            border: "1px gray grey",
+                                                            borderLeft: "1px solid #bdbbbb",
+                                                            borderTop: "1px solid #bdbbbb",
+
+
+                                                            padding: "2px"
+
+                                                        }}>
+                                                            <TableCell style={{
+                                                                border: "1px gray grey",
+                                                                borderLeft: "1px solid #bdbbbb",
+                                                                borderTop: "1px solid #bdbbbb",
+
+                                                                padding: "2px"
+
+
+                                                            }} align="center">
+                                                                {index + 1}
+                                                            </TableCell>
+
+                                                            <TableCell style={{
+                                                                border: "1px gray grey",
+                                                                borderLeft: "1px solid #bdbbbb",
+                                                                borderTop: "1px solid #bdbbbb",
+
+
+                                                                padding: "2px"
+
+                                                            }}>
+                                                                {row.AuthorityType}
+                                                            </TableCell>
+
+                                                            <TableCell style={{
+                                                                border: "1px gray grey",
+                                                                borderLeft: "1px solid #bdbbbb",
+                                                                borderTop: "1px solid #bdbbbb",
+
+                                                                padding: "2px"
+
+                                                            }}>
+                                                                {row.fileNm}
+                                                            </TableCell>
+
+                                                            <TableCell style={{
+                                                                border: "1px gray grey",
+                                                                borderLeft: "1px solid #bdbbbb",
+                                                                borderTop: "1px solid #bdbbbb",
+
+
+                                                                padding: "2px"
+
+                                                            }}>
+                                                                {row.Csubject}
+                                                            </TableCell>
+
+                                                            <TableCell style={{
+                                                                border: "1px gray grey",
+                                                                borderLeft: "1px solid #bdbbbb",
+                                                                borderTop: "1px solid #bdbbbb",
 
 
 
-                                                        <td
-                                                            style={{
-                                                                borderLeft: "1px solid black",
-                                                                borderTop: "1px solid black",
-                                                                textAlign: "center",
-                                                                // cursor: "pointer",
-                                                                // color: "blue",
-                                                                //textDecoration: "underline",
-                                                            }}
+                                                                padding: "2px"
 
-                                                        >
-                                                            {row.fileNm}
-                                                        </td>
+                                                            }} align="center">
+                                                                {dayjs(row.CreatedDate).format('DD-MM-YYYY')}
+                                                            </TableCell>
 
 
-                                                        <td
-                                                            style={{
-                                                                borderLeft: "1px solid black",
-                                                                borderTop: "1px solid black",
-                                                                textAlign: "center",
-                                                            }}
-                                                        >
-                                                            {row.Csubject}
+                                                        </StyledTableRow>
 
-                                                        </td>
-                                                        <td
-                                                            style={{
-                                                                borderLeft: "1px solid black",
-                                                                borderTop: "1px solid black",
-                                                                textAlign: "center",
-                                                            }}
-                                                        >
-                                                            {dayjs(row.CreatedDate).format('DD-MM-YYYY')}
+                                                    ))}
+                                                </TableBody>
+                                            )}
+                                        </Table>
+                                    </TableContainer>
 
-
-                                                        </td>
-                                                    </tr>
-                                                ))}
-
-                                            </tbody>
-                                        )}
-                                    </Table>
 
 
                                 </Grid>
@@ -1057,130 +1147,202 @@ const AuthorityMail = (props: Props) => {
                                 <Grid xs={12} sm={12} item>
 
 
-                                    <Table
-                                        style={{
-                                            borderCollapse: "collapse",
-                                            width: "100%",
-                                            border: "1px solid black",
-
+                                    <TableContainer
+                                        component={Paper}
+                                        id="tabcont"
+                                        sx={{
+                                            maxHeight: "65vh",
+                                            marginBottom: "10px",
+                                            border: "1px solid #fff",
                                         }}
                                     >
-                                        <thead
+                                        <Table
+                                            aria-label="customized  table"
                                             style={{
-                                                backgroundColor: "#2196f3",
-                                                color: "#f5f5f5",
+                                                border: "1px gray solid",
+                                                borderCollapse: "collapse",
+                                                width: "100%",
                                             }}
                                         >
-                                            <tr>
-
-
-                                                <th
-                                                    style={{
-                                                        borderLeft: "1px solid black",
-                                                        paddingTop: "5px",
-                                                        paddingBottom: "5px",
-                                                        width: "100px",
-                                                    }}
-                                                >
-                                                    {t("text.Subject")}
-                                                </th>
-                                                <th
-                                                    style={{
-                                                        borderLeft: "1px solid black",
-                                                        paddingTop: "5px",
-                                                        paddingBottom: "5px",
-                                                    }}
-                                                >
-                                                    {t("text.Msg")}
-                                                </th>
-                                                <th
-                                                    style={{
-                                                        borderLeft: "1px solid black",
-                                                        paddingTop: "5px",
-                                                        paddingBottom: "5px",
-                                                        width: "100px",
-                                                    }}
-                                                >
-                                                    {t("text.SendBy")}
-                                                </th>
-                                                <th
-                                                    style={{
-                                                        borderLeft: "1px solid black",
-                                                        paddingTop: "5px",
-                                                        paddingBottom: "5px",
-                                                    }}
-                                                >
-                                                    {t("text.SendDate")}
-                                                </th>
-                                            </tr>
-                                        </thead>
-                                        {tableLoading ? (
-                                            <div
+                                            <TableHead
                                                 style={{
-                                                    display: "flex",
-                                                    justifyContent: "center",
-                                                    alignItems: "center",
-                                                    margin: 10,
+                                                    border: "1px gray solid",
+                                                    borderCollapse: "collapse",
+                                                    position: "sticky",
                                                 }}
                                             >
-                                                <CustomizedProgressBars />
-                                            </div>
-                                        ) : (
-                                            <tbody style={{ border: "1px solid black" }}>
 
-                                                {MovementTableData.map((row: any, index: any) => (
-                                                    <tr key={row.id} style={{ border: "1px solid black" }}>
-                                                        <td
-                                                            style={{
-                                                                borderLeft: "1px solid black",
-                                                                borderTop: "1px solid black",
-                                                                // textAlign: "center",
-                                                                padding: "2px",
-                                                            }}
-                                                        >
-                                                            {row.Csubject}
-                                                        </td>
+                                                <TableRow>
+                                                    {/* <StyledTableCell /> */}
+                                                    <StyledTableCell
+                                                        align="center"
+                                                        style={{
+                                                            fontSize: 15,
+                                                            fontWeight: 500,
+                                                            border: "1px gray grey",
+                                                            borderLeft: "1px solid #bdbbbb",
+                                                            paddingTop: "5px",
+                                                            paddingBottom: "5px"
+                                                            // padding: "10px",
+                                                        }}
+                                                    >
+                                                        {t("text.SrNo")}
+                                                    </StyledTableCell>
+                                                    <StyledTableCell
+                                                        align="center"
+                                                        style={{
+                                                            fontSize: 15,
+                                                            fontWeight: 500,
+                                                            border: "1px gray grey",
+                                                            borderLeft: "1px solid #bdbbbb",
+                                                            paddingTop: "5px",
+                                                            paddingBottom: "5px"
+                                                            // padding: "10px",
+                                                        }}
+                                                    >
+                                                        {t("text.Subject")}
+                                                    </StyledTableCell>
+                                                    <StyledTableCell
+                                                        align="center"
+                                                        style={{
+                                                            fontSize: 15,
+                                                            fontWeight: 500,
+                                                            border: "1px gray grey",
+                                                            borderLeft: "1px solid #bdbbbb",
+                                                            paddingTop: "5px",
+                                                            paddingBottom: "5px"
+                                                            // padding: "10px",
+                                                        }}
+                                                    >
+                                                        {t("text.Msg")}
+                                                    </StyledTableCell>
+                                                    <StyledTableCell
+                                                        align="center"
+                                                        style={{
+                                                            fontSize: 15,
+                                                            fontWeight: 500,
+                                                            border: "1px gray grey",
+                                                            borderLeft: "1px solid #bdbbbb",
+                                                            paddingTop: "5px",
+                                                            paddingBottom: "5px"
+                                                            // padding: "10px",
+                                                        }}
+                                                    >
+                                                        {t("text.SendBy")}
+                                                    </StyledTableCell>
+                                                    <StyledTableCell
+                                                        align="center"
+                                                        style={{
+                                                            fontSize: 15,
+                                                            fontWeight: 500,
+                                                            border: "1px gray grey",
+                                                            borderLeft: "1px solid #bdbbbb",
+                                                            paddingTop: "5px",
+                                                            paddingBottom: "5px"
+                                                            // padding: "10px",
+                                                        }}
+                                                    >
+                                                        {t("text.SendDate")}
+                                                    </StyledTableCell>
 
-                                                        <td
-                                                            style={{
-                                                                borderLeft: "1px solid black",
-                                                                borderTop: "1px solid black",
-                                                                textAlign: "center",
-                                                            }}
-                                                        >
-                                                            {row.Message}
-                                                        </td>
+                                                </TableRow>
+                                            </TableHead>
+                                            {tableLoading ? (
+                                                <div
+                                                    style={{
+                                                        display: "flex",
+                                                        justifyContent: "center",
+                                                        alignItems: "center",
+                                                        margin: 10,
+                                                    }}
+                                                >
+                                                    <CustomizedProgressBars />
+                                                </div>
+                                            ) : (
+                                                <TableBody>
+                                                    {MovementTableData.map((row: any, index: any) => (
+                                                        //<Row key={row.any} row={row} index={index} />
+
+                                                        <StyledTableRow sx={{
+                                                            border: "1px gray grey",
+                                                            borderLeft: "1px solid #bdbbbb",
+                                                            borderTop: "1px solid #bdbbbb",
+
+
+                                                            padding: "2px"
+
+                                                        }}>
+                                                            <TableCell style={{
+                                                                border: "1px gray grey",
+                                                                borderLeft: "1px solid #bdbbbb",
+                                                                borderTop: "1px solid #bdbbbb",
 
 
 
-                                                        <td
-                                                            style={{
-                                                                borderLeft: "1px solid black",
-                                                                borderTop: "1px solid black",
-                                                                textAlign: "center",
-                                                                cursor: "pointer",
-                                                                color: "blue",
-                                                                textDecoration: "underline",
-                                                            }}
-                                                        >
-                                                            {row.SendBy}
-                                                        </td>
-                                                        <td
-                                                            style={{
-                                                                borderLeft: "1px solid black",
-                                                                borderTop: "1px solid black",
-                                                                textAlign: "center",
-                                                            }}
-                                                        >
-                                                            {row.SendDate}
-                                                            {/* <p onClick={handleReceiveData}>{row.receiver}</p> */}
-                                                        </td>
-                                                    </tr>
-                                                ))}
+                                                                padding: "2px"
 
-                                            </tbody>
-                                        )}
-                                    </Table>
+                                                            }} align="center">
+                                                                {index + 1}
+                                                            </TableCell>
+
+                                                            <TableCell style={{
+                                                                border: "1px gray grey",
+                                                                borderLeft: "1px solid #bdbbbb",
+                                                                borderTop: "1px solid #bdbbbb",
+
+
+
+                                                                padding: "2px"
+
+                                                            }}>
+                                                                {row.Csubject}
+                                                            </TableCell>
+
+                                                            <TableCell style={{
+                                                                border: "1px gray grey",
+                                                                borderLeft: "1px solid #bdbbbb",
+                                                                borderTop: "1px solid #bdbbbb",
+
+                                                                padding: "2px"
+
+                                                            }}>
+                                                                {row.Message}
+                                                            </TableCell>
+
+                                                            <TableCell style={{
+                                                                border: "1px gray grey",
+                                                                borderLeft: "1px solid #bdbbbb",
+                                                                borderTop: "1px solid #bdbbbb",
+
+
+
+                                                                padding: "2px"
+
+                                                            }}>
+                                                                {row.SendBy}
+                                                            </TableCell>
+
+                                                            <TableCell style={{
+                                                                border: "1px gray grey",
+                                                                borderLeft: "1px solid #bdbbbb",
+                                                                borderTop: "1px solid #bdbbbb",
+
+                                                                padding: "2px"
+
+                                                            }} align="center">
+                                                                {dayjs(row.SendDate).format('DD-MM-YYYY')}
+                                                            </TableCell>
+
+
+                                                        </StyledTableRow>
+
+                                                    ))}
+                                                </TableBody>
+                                            )}
+                                        </Table>
+                                    </TableContainer>
+
+
 
 
                                 </Grid>
@@ -1191,154 +1353,233 @@ const AuthorityMail = (props: Props) => {
                                 <Grid xs={12} sm={12} item>
 
 
-                                    <Table
-                                        style={{
-                                            borderCollapse: "collapse",
-                                            width: "100%",
-                                            border: "1px solid black",
-
+                                    <TableContainer
+                                        component={Paper}
+                                        id="tabcont"
+                                        sx={{
+                                            maxHeight: "65vh",
+                                            marginBottom: "10px",
+                                            border: "1px solid #fff",
                                         }}
                                     >
-                                        <thead
+                                        <Table
+                                            aria-label="customized  table"
                                             style={{
-                                                backgroundColor: "#2196f3",
-                                                color: "#f5f5f5",
+                                                border: "1px gray solid",
+                                                borderCollapse: "collapse",
+                                                width: "100%",
                                             }}
                                         >
-                                            <tr>
-
-
-                                                <th
-                                                    style={{
-                                                        borderLeft: "1px solid black",
-                                                        paddingTop: "5px",
-                                                        paddingBottom: "5px",
-                                                        width: "100px",
-                                                    }}
-                                                >
-                                                    {t("text.Subject")}
-                                                </th>
-                                                <th
-                                                    style={{
-                                                        borderLeft: "1px solid black",
-                                                        paddingTop: "5px",
-                                                        paddingBottom: "5px",
-                                                    }}
-                                                >
-                                                    {t("text.Msg")}
-                                                </th>
-                                                <th
-                                                    style={{
-                                                        borderLeft: "1px solid black",
-                                                        paddingTop: "5px",
-                                                        paddingBottom: "5px",
-                                                        width: "100px",
-                                                    }}
-                                                >
-                                                    {t("text.SendBy")}
-                                                </th>
-                                                <th
-                                                    style={{
-                                                        borderLeft: "1px solid black",
-                                                        paddingTop: "5px",
-                                                        paddingBottom: "5px",
-                                                    }}
-                                                >
-                                                    {t("text.SendDate")}
-                                                </th>
-
-                                                <th
-                                                    style={{
-                                                        borderLeft: "1px solid black",
-                                                        paddingTop: "5px",
-                                                        paddingBottom: "5px",
-                                                    }}
-                                                >
-                                                    {t("text.DSFName")}
-                                                </th>
-                                            </tr>
-                                        </thead>
-                                        {tableLoading ? (
-                                            <div
+                                            <TableHead
                                                 style={{
-                                                    display: "flex",
-                                                    justifyContent: "center",
-                                                    alignItems: "center",
-                                                    margin: 10,
+                                                    border: "1px gray solid",
+                                                    borderCollapse: "collapse",
+                                                    position: "sticky",
                                                 }}
                                             >
-                                                <CustomizedProgressBars />
-                                            </div>
-                                        ) : (
-                                            <tbody style={{ border: "1px solid black" }}>
 
-                                                {MovementTableData.map((row: any, index: any) => (
-                                                    <tr key={row.id} style={{ border: "1px solid black" }}>
-                                                        <td
-                                                            style={{
-                                                                borderLeft: "1px solid black",
-                                                                borderTop: "1px solid black",
-                                                                // textAlign: "center",
-                                                                padding: "2px",
-                                                            }}
-                                                        >
-                                                            {row.Csubject}
-                                                        </td>
+                                                <TableRow>
+                                                    {/* <StyledTableCell /> */}
+                                                    <StyledTableCell
+                                                        align="center"
+                                                        style={{
+                                                            fontSize: 15,
+                                                            fontWeight: 500,
+                                                            border: "1px gray grey",
+                                                            borderLeft: "1px solid #bdbbbb",
+                                                            paddingTop: "5px",
+                                                            paddingBottom: "5px"
+                                                            // padding: "10px",
+                                                        }}
+                                                    >
+                                                        {t("text.SrNo")}
+                                                    </StyledTableCell>
+                                                    <StyledTableCell
+                                                        align="center"
+                                                        style={{
+                                                            fontSize: 15,
+                                                            fontWeight: 500,
+                                                            border: "1px gray grey",
+                                                            borderLeft: "1px solid #bdbbbb",
+                                                            paddingTop: "5px",
+                                                            paddingBottom: "5px"
+                                                            // padding: "10px",
+                                                        }}
+                                                    >
+                                                        {t("text.Subject")}
+                                                    </StyledTableCell>
+                                                    <StyledTableCell
+                                                        align="center"
+                                                        style={{
+                                                            fontSize: 15,
+                                                            fontWeight: 500,
+                                                            border: "1px gray grey",
+                                                            borderLeft: "1px solid #bdbbbb",
+                                                            paddingTop: "5px",
+                                                            paddingBottom: "5px"
+                                                            // padding: "10px",
+                                                        }}
+                                                    >
+                                                        {t("text.Msg")}
+                                                    </StyledTableCell>
+                                                    <StyledTableCell
+                                                        align="center"
+                                                        style={{
+                                                            fontSize: 15,
+                                                            fontWeight: 500,
+                                                            border: "1px gray grey",
+                                                            borderLeft: "1px solid #bdbbbb",
+                                                            paddingTop: "5px",
+                                                            paddingBottom: "5px"
+                                                            // padding: "10px",
+                                                        }}
+                                                    >
+                                                        {t("text.SendBy")}
+                                                    </StyledTableCell>
+                                                    <StyledTableCell
+                                                        align="center"
+                                                        style={{
+                                                            fontSize: 15,
+                                                            fontWeight: 500,
+                                                            border: "1px gray grey",
+                                                            borderLeft: "1px solid #bdbbbb",
+                                                            paddingTop: "5px",
+                                                            paddingBottom: "5px"
+                                                            // padding: "10px",
+                                                        }}
+                                                    >
+                                                        {t("text.SendDate")}
+                                                    </StyledTableCell>
 
-                                                        <td
-                                                            style={{
-                                                                borderLeft: "1px solid black",
-                                                                borderTop: "1px solid black",
-                                                                textAlign: "center",
-                                                            }}
-                                                        >
-                                                            {row.Message}
-                                                        </td>
+                                                    <StyledTableCell
+                                                        align="center"
+                                                        style={{
+                                                            fontSize: 15,
+                                                            fontWeight: 500,
+                                                            border: "1px gray grey",
+                                                            borderLeft: "1px solid #bdbbbb",
+                                                            paddingTop: "5px",
+                                                            paddingBottom: "5px"
+                                                            // padding: "10px",
+                                                        }}
+                                                    >
+                                                        {t("text.DSFName")}
+                                                    </StyledTableCell>
+
+
+                                                </TableRow>
+                                            </TableHead>
+                                            {tableLoading ? (
+                                                <div
+                                                    style={{
+                                                        display: "flex",
+                                                        justifyContent: "center",
+                                                        alignItems: "center",
+                                                        margin: 10,
+                                                    }}
+                                                >
+                                                    <CustomizedProgressBars />
+                                                </div>
+                                            ) : (
+                                                <TableBody>
+                                                    {MovementTableData.map((row: any, index: any) => (
+                                                        //<Row key={row.any} row={row} index={index} />
+
+                                                        <StyledTableRow sx={{
+                                                            border: "1px gray grey",
+                                                            borderLeft: "1px solid #595757",
+                                                            borderTop: "1px solid #595757",
+
+                                                            padding: "2px"
+
+                                                        }}>
+                                                            <TableCell style={{
+                                                                border: "1px gray grey",
+                                                                borderLeft: "1px solid #bdbbbb",
+                                                                borderTop: "1px solid #bdbbbb",
 
 
 
-                                                        <td
-                                                            style={{
-                                                                borderLeft: "1px solid black",
-                                                                borderTop: "1px solid black",
-                                                                textAlign: "center",
-                                                                cursor: "pointer",
-                                                                color: "blue",
-                                                                textDecoration: "underline",
-                                                            }}
+                                                                padding: "2px"
 
-                                                        >
-                                                            {row.SendBy}
-                                                        </td>
+                                                            }} align="center">
+                                                                {index + 1}
+                                                            </TableCell>
+
+                                                            <TableCell style={{
+                                                                border: "1px gray grey",
+                                                                borderLeft: "1px solid #bdbbbb",
+                                                                borderTop: "1px solid #bdbbbb",
 
 
-                                                        <td
-                                                            style={{
-                                                                borderLeft: "1px solid black",
-                                                                borderTop: "1px solid black",
-                                                                textAlign: "center",
-                                                            }}
-                                                        >
-                                                            {row.SendDate}
-                                                            {/* <p onClick={handleReceiveData}>{row.receiver}</p> */}
-                                                        </td>
+                                                                padding: "2px"
 
-                                                        <td
-                                                            style={{
-                                                                borderLeft: "1px solid black",
-                                                                borderTop: "1px solid black",
-                                                                textAlign: "center",
-                                                            }}
-                                                        >
-                                                            {row.DSFNAme}
-                                                            {/* <p onClick={handleReceiveData}>{row.receiver}</p> */}
-                                                        </td>
-                                                    </tr>
-                                                ))}
+                                                            }}>
+                                                                {row.Csubject}
+                                                            </TableCell>
 
-                                            </tbody>
-                                        )}
-                                    </Table>
+                                                            <TableCell style={{
+                                                                border: "1px gray grey",
+                                                                borderLeft: "1px solid #bdbbbb",
+                                                                borderTop: "1px solid #bdbbbb",
+
+
+                                                                padding: "2px"
+
+                                                            }}>
+                                                                {row.Message}
+                                                            </TableCell>
+
+                                                            <TableCell style={{
+                                                                border: "1px gray grey",
+                                                                borderLeft: "1px solid #bdbbbb",
+                                                                borderTop: "1px solid #bdbbbb",
+
+
+
+                                                                padding: "2px"
+
+                                                            }}>
+                                                                {row.SendBy}
+                                                            </TableCell>
+
+                                                            <TableCell style={{
+                                                                border: "1px gray grey",
+                                                                borderLeft: "1px solid #bdbbbb",
+                                                                borderTop: "1px solid #bdbbbb",
+
+
+                                                                padding: "2px"
+
+                                                            }} align="center">
+                                                                {dayjs(row.SendDate).format('DD-MM-YYYY')}
+                                                            </TableCell>
+
+                                                            <TableCell style={{
+                                                                border: "1px gray grey",
+                                                                borderLeft: "1px solid #bdbbbb",
+                                                                borderTop: "1px solid #bdbbbb",
+
+
+                                                                padding: "2px"
+
+                                                            }}>
+                                                                {row.DSFNAme}
+                                                            </TableCell>
+
+
+
+                                                        </StyledTableRow>
+
+                                                    ))}
+                                                </TableBody>
+                                            )}
+                                        </Table>
+                                    </TableContainer>
+
+
+
+
 
 
                                 </Grid>

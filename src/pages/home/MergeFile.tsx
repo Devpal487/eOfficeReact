@@ -257,7 +257,7 @@ export default function MergeFile() {
                     },
                     {
                         field: "all",
-                        headerName: "All",
+                        headerName:t("text.All"),
                         flex: 1,
                         headerClassName: "MuiDataGrid-colCell",
                         renderHeader: () => (
@@ -280,7 +280,7 @@ export default function MergeFile() {
                     },
                     {
                         field: "fileNm",
-                        headerName: "File Number",
+                        headerName:t("text.FileNo"),
                         flex: 1,
                         headerClassName: "MuiDataGrid-colCell",
                         renderCell: (params) => {
@@ -300,25 +300,25 @@ export default function MergeFile() {
                     },
                     {
                         field: "cSubject",
-                        headerName: " Subject",
+                        headerName: t("text.Subject"),
                         flex: 1,
                         headerClassName: "MuiDataGrid-colCell",
                     },
                     {
                         field: "createdby",
-                        headerName: "File Created By",
+                        headerName: t("text.FileCreatedBy"),
                         flex: 1,
                         headerClassName: "MuiDataGrid-colCell",
                     },
                     {
                         field: "lastStaus",
-                        headerName: "Last Status",
+                        headerName:t("text.LastStatus"),
                         flex: 1,
                         headerClassName: "MuiDataGrid-colCell",
                     },
                     {
                         field: "updatedRemark",
-                        headerName: "Updated Remark",
+                        headerName:t("text.UpdatedRemark"),
                         flex: 1,
                         headerClassName: "MuiDataGrid-colCell",
                     }
@@ -425,9 +425,9 @@ export default function MergeFile() {
 
                     <Grid item xs={12} sm={12}>
                         <TextField
-                            label="Enter Remark"
+                            label={<CustomLabel text={t("text.EnterRemark")} />}
                             value={formik.values.remark}
-                            placeholder="Enter Remark"
+                            placeholder={t("text.EnterRemark")}
                             id="remark"
                             name="remark"
                             size="small"

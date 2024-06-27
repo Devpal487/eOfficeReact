@@ -128,7 +128,7 @@ export default function Awaited() {
                     },
                     {
                         field: "fileNm",
-                        headerName: "File Number",
+                        headerName:t("text.FileNo"),
                         flex: 1,
                         headerClassName: "MuiDataGrid-colCell",
                         renderCell: (params) => {
@@ -148,38 +148,38 @@ export default function Awaited() {
                     },
                     {
                         field: "cSubject",
-                        headerName: "Subject",
+                        headerName:t("text.Subject"),
                         flex: 1,
                         headerClassName: "MuiDataGrid-colCell",
                     },
                     {
                         field: "lastStaus",
-                        headerName: "Last Status",
+                        headerName:t("text.LastStatus"),
                         flex: 1,
                         headerClassName: "MuiDataGrid-colCell",
                     },
 
                     {
                         field: "createdby",
-                        headerName: "File Created By",
+                        headerName:t("text.FileCreatedBy"),
                         flex: 1,
                         headerClassName: "MuiDataGrid-colCell",
                     },
                     {
                         field: "mdate",
-                        headerName: "Move date",
+                        headerName: t("text.MovedDate"),
                         flex: 1,
                         headerClassName: "MuiDataGrid-colCell",
                     },
                     {
                         field: "dDate",
-                        headerName: "Due Date",
+                        headerName:t("text.DueDate"),
                         flex: 1,
                         headerClassName: "MuiDataGrid-colCell",
                     },
                     {
                         field: "updatedRemark",
-                        headerName: "Updated Remark",
+                        headerName: t("text.UpdatedRemark"),
                         flex: 1,
                         headerClassName: "MuiDataGrid-colCell",
                     }

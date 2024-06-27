@@ -23,6 +23,12 @@ import {
     Slide,
     Modal,
     Box,
+    TableContainer,
+    TableHead,
+    TableRow,
+    tableCellClasses,
+    TableCell,
+    TableBody,
 } from "@mui/material";
 import ArrowBackSharpIcon from "@mui/icons-material/ArrowBackSharp";
 import React, { useEffect, useState, useRef } from "react";
@@ -72,6 +78,38 @@ import Other from "./Other";
 import Corress from "../Correspondence/Correspondence";
 
 import Report from "./Report";
+
+import { styled } from "@mui/material/styles";
+import dayjs from "dayjs";
+
+
+const StyledTableCell = styled(TableCell)(({ theme }) => ({
+    [`&.${tableCellClasses.head}`]: {
+        padding: "5px !important",
+        backgroundColor: "#00009c",
+        color: theme.palette.common.white,
+    },
+    [`&.${tableCellClasses.body}`]: {
+        fontSize: 14,
+        padding: "2px !important",
+    },
+}));
+
+const StyledTableRow = styled(TableRow)(({ theme }) => ({
+    // padding: "2px !important",
+    "&:nth-of-type(odd)": {
+        backgroundColor: theme.palette.action.hover,
+    },
+    // hide last border
+    "&:last-child td, &:last-child th": {
+        border: 0,
+        // padding: "2px !important",
+
+    },
+    "& td, & th": {
+        padding: "3px !important", // Ensure all cells in the row have 2px padding
+    },
+}));
 
 
 
@@ -634,7 +672,7 @@ const ViewEditFile: React.FC = (props: Props) => {
             closeDate: "",
             remark: "",
             uploading: "",
-            antenna:"",
+            antenna: "",
         },
         validationSchema: validationSchema,
         onSubmit: async (values) => {
@@ -851,7 +889,7 @@ const ViewEditFile: React.FC = (props: Props) => {
             text: " Make Correspondence",
             icon: <MakeIcons />,
             onClick: () => {
-                navigate("/Committee/Correspondence");
+                navigate("/E-Office/Correspondence");
             },
         },
         { text: " FLRD", icon: <PasteIcons /> },
@@ -906,7 +944,7 @@ const ViewEditFile: React.FC = (props: Props) => {
                 }
             },
         },
-        { text: " File Summary", icon: <SmsIcons /> },
+        { text: "File Summary", icon: <SmsIcons /> },
     ];
 
     const back = useNavigate();
@@ -957,7 +995,7 @@ const ViewEditFile: React.FC = (props: Props) => {
             "dateSave": defaultValuestime,
             "reviewFlag": "C",
             "uploading": formik.values.uploading.toString() || "",
-            "uploadingbyte": ""
+            "uploadingbyte": "",
         };
 
         api.post(`Correspondance/AddUpdateCorrespondance`, value).then((res) => {
@@ -1149,7 +1187,7 @@ const ViewEditFile: React.FC = (props: Props) => {
                                     aria-describedby="modal-modal-description"
                                 >
                                     <Box sx={style}>
-                                    <IconButton
+                                        <IconButton
                                             edge="end"
                                             onClick={handleClose}
                                             aria-label="close"
@@ -1179,7 +1217,7 @@ const ViewEditFile: React.FC = (props: Props) => {
                                                     options={AntennaOption}
                                                     fullWidth
                                                     size="small"
-                                                    value={AntennaOption.find((option:any) => option.value === formik.values.antenna) || null}
+                                                    value={AntennaOption.find((option: any) => option.value === formik.values.antenna) || null}
                                                     onChange={(event, newValue: any) => {
                                                         console.log(newValue?.value);
 
@@ -1223,9 +1261,9 @@ const ViewEditFile: React.FC = (props: Props) => {
                                                     variant="contained"
                                                     color="primary"
                                                     fullWidth
-                                                   onClick={()=>{
-                                                    formik.resetForm();
-                                                   }}
+                                                    onClick={() => {
+                                                        formik.resetForm();
+                                                    }}
                                                 >
                                                     Reset
                                                 </Button>
@@ -2632,200 +2670,260 @@ const ViewEditFile: React.FC = (props: Props) => {
                                     </Dialog>
                                 </>
                                 {/* } */}
-                                <Table
-                                    style={{
-                                        borderCollapse: "collapse",
-                                        width: "100%",
-                                        border: "1px solid black",
-                                        // marginLeft: "30px",
+
+
+
+
+
+
+                                <TableContainer
+                                    component={Paper}
+                                    id="tabcont"
+                                    sx={{
+                                        maxHeight: "65vh",
+                                        marginBottom: "10px",
+                                        border: "1px solid #fff",
                                     }}
                                 >
-                                    <thead
+                                    <Table
+                                        aria-label="customized  table"
                                         style={{
-                                            backgroundColor: "#2196f3",
-                                            color: "#f5f5f5",
+                                            border: "1px gray solid",
+                                            borderCollapse: "collapse",
+                                            width: "100%",
                                         }}
                                     >
-                                        <tr>
-                                            <th
-                                                style={{
-                                                    borderLeft: "1px solid black",
-                                                    paddingTop: "5px",
-                                                    paddingBottom: "5px",
-                                                    // width: "100px",
-                                                }}
-                                            >
-                                                {t("text.FileNo")}
-                                            </th>
-                                            <th
-                                                style={{
-                                                    borderLeft: "1px solid black",
-                                                    paddingTop: "5px",
-                                                    paddingBottom: "5px",
-                                                }}
-                                            >
-                                                {t("text.FileName")}
-                                            </th>
-                                            {/* <th
-                                                style={{
-                                                    borderLeft: "1px solid black",
-                                                    paddingTop: "5px",
-                                                    paddingBottom: "5px",
-                                                    // width: "100px",
-                                                }}
-                                            >
-                                                {t("text.File")}
-                                            </th> */}
-                                            <th
-                                                style={{
-                                                    borderLeft: "1px solid black",
-                                                    paddingTop: "5px",
-                                                    paddingBottom: "5px",
-                                                }}
-                                            >
-                                                {t("text.Date")}
-                                            </th>
-                                        </tr>
-                                    </thead>
-                                    {tableLoading ? (
-                                        <div
+                                        <TableHead
                                             style={{
-                                                display: "flex",
-                                                justifyContent: "center",
-                                                alignItems: "center",
-                                                margin: 10,
+                                                border: "1px gray solid",
+                                                borderCollapse: "collapse",
+                                                position: "sticky",
                                             }}
                                         >
-                                            <CustomizedProgressBars />
-                                        </div>
-                                    ) : (
-                                        <tbody style={{ border: "1px solid black" }}>
-                                            {MovementTableData.map((row: any, index: any) => (
-                                                <tr key={row.id} style={{ border: "1px solid black" }}>
-                                                    <td
-                                                        style={{
-                                                            borderLeft: "1px solid black",
-                                                            borderTop: "1px solid black",
-                                                            textAlign: "center",
-                                                            padding: "2px",
-                                                        }}
-                                                    >
-                                                        {row.fileNm}
-                                                    </td>
 
-                                                    {/* <td
-                                                        style={{
-                                                            borderLeft: "1px solid black",
-                                                            borderTop: "1px solid black",
-                                                            textAlign: "center",
-                                                        }}
-                                                    >
-                                                        {row.fileNm}
-                                                    </td> */}
+                                            <TableRow>
+                                                {/* <StyledTableCell /> */}
+                                                <StyledTableCell
+                                                    align="center"
+                                                    style={{
+                                                        fontSize: 15,
+                                                        fontWeight: 500,
+                                                        border: "1px gray grey",
+                                                        borderLeft: "1px solid #bdbbbb",
+                                                        paddingTop: "5px",
+                                                        paddingBottom: "5px"
+                                                        // padding: "10px",
+                                                    }}
+                                                >
+                                                    {t("text.SrNo")}
+                                                </StyledTableCell>
+                                                <StyledTableCell
+                                                    align="center"
+                                                    style={{
+                                                        fontSize: 15,
+                                                        fontWeight: 500,
+                                                        border: "1px gray grey",
+                                                        borderLeft: "1px solid #bdbbbb",
+                                                        paddingTop: "5px",
+                                                        paddingBottom: "5px"
+                                                        // padding: "10px",
+                                                    }}
+                                                >
+                                                    {t("text.FileNo")}
+                                                </StyledTableCell>
+                                                <StyledTableCell
+                                                    align="center"
+                                                    style={{
+                                                        fontSize: 15,
+                                                        fontWeight: 500,
+                                                        border: "1px gray grey",
+                                                        borderLeft: "1px solid #bdbbbb",
+                                                        paddingTop: "5px",
+                                                        paddingBottom: "5px"
+                                                        // padding: "10px",
+                                                    }}
+                                                >
+                                                    {t("text.FileName")}
+                                                </StyledTableCell>
 
-                                                    <td
-                                                        style={{
-                                                            borderLeft: "1px solid black",
-                                                            borderTop: "1px solid black",
-                                                            textAlign: "center",
-                                                            cursor: "pointer",
+                                                <StyledTableCell
+                                                    align="center"
+                                                    style={{
+                                                        fontSize: 15,
+                                                        fontWeight: 500,
+                                                        border: "1px gray grey",
+                                                        borderLeft: "1px solid #bdbbbb",
+                                                        paddingTop: "5px",
+                                                        paddingBottom: "5px"
+                                                        // padding: "10px",
+                                                    }}
+                                                >
+                                                    {t("text.Date")}
+                                                </StyledTableCell>
+
+                                            </TableRow>
+                                        </TableHead>
+                                        {tableLoading ? (
+                                            <div
+                                                style={{
+                                                    display: "flex",
+                                                    justifyContent: "center",
+                                                    alignItems: "center",
+                                                    margin: 10,
+                                                }}
+                                            >
+                                                <CustomizedProgressBars />
+                                            </div>
+                                        ) : (
+                                            <TableBody>
+                                                {MovementTableData.map((row: any, index: any) => (
+                                                    //<Row key={row.any} row={row} index={index} />
+
+                                                    <StyledTableRow sx={{
+                                                        border: "1px gray grey",
+                                                        borderLeft: "1px solid #bdbbbb",
+                                                        borderTop: "1px solid #bdbbbb",
+
+                                                        padding: "2px"
+
+                                                    }}>
+                                                        <TableCell style={{
+                                                            border: "1px gray grey",
+                                                            borderLeft: "1px solid #bdbbbb",
+                                                            borderTop: "1px solid #bdbbbb",
+
+                                                            padding: "2px"
+
+                                                        }} align="center">
+                                                            {index + 1}
+                                                        </TableCell>
+
+                                                        <TableCell style={{
+                                                            border: "1px gray grey",
+                                                            borderLeft: "1px solid #bdbbbb",
+                                                            borderTop: "1px solid #bdbbbb",
+
+
+                                                            padding: "2px"
+
+                                                        }}>
+                                                            {row.fileNm}
+                                                        </TableCell>
+
+                                                        <TableCell style={{
+                                                            border: "1px gray grey", cursor: "pointer",
                                                             color: "blue",
-                                                            textDecoration: "underline",
-                                                        }}
-                                                    >
-                                                        <a
-                                                            onMouseEnter={handleMouseEntered}
-                                                            onMouseLeave={handleMouseLeaveed}
-                                                            onClick={() => handleAddCommentClicks(row)}
+                                                            textDecoration: "underline", borderLeft: "1px solid #bdbbbb",
+                                                            borderTop: "1px solid #bdbbbb",
+
+
+                                                            padding: "2px"
+                                                        }}>
+                                                            <a
+                                                                onMouseEnter={handleMouseEntered}
+                                                                onMouseLeave={handleMouseLeaveed}
+                                                                onClick={() => handleAddCommentClicks(row)}
+                                                            >
+                                                                {" "}
+                                                                {row.cFileNm}
+                                                            </a>
+                                                        </TableCell>
+
+
+                                                        <Dialog
+                                                            open={openModals}
+                                                            keepMounted
+                                                            aria-describedby="alert-dialog-slide-description"
+                                                            TransitionComponent={Transition}
+                                                            maxWidth="xl"
                                                         >
-                                                            {" "}
-                                                            {row.cFileNm}
-                                                        </a>
-                                                    </td>
-
-                                                    <Dialog
-                                                        open={openModals}
-                                                        keepMounted
-                                                        aria-describedby="alert-dialog-slide-description"
-                                                        TransitionComponent={Transition}
-                                                        maxWidth="xl"
-                                                    >
-                                                        <DialogTitle sx={{}}>
-                                                            <div
-                                                                style={{
-                                                                    display: "flex",
-                                                                    alignItems: "center",
-                                                                    justifyContent: "space-between",
-                                                                }}
-                                                            >
+                                                            <DialogTitle sx={{}}>
+                                                                <div
+                                                                    style={{
+                                                                        display: "flex",
+                                                                        alignItems: "center",
+                                                                        justifyContent: "space-between",
+                                                                    }}
+                                                                >
+                                                                    <>
+                                                                        <Typography fontWeight="600">
+                                                                            {/* // {row.cFileNm} */}
+                                                                            {selectedRow ? selectedRow.cFileNm : ''}
+                                                                        </Typography>
+                                                                    </>
+                                                                    <>
+                                                                        <IconButton
+                                                                            aria-label="close"
+                                                                            onClick={handleCloseModals}
+                                                                        >
+                                                                            <CloseIcon />
+                                                                        </IconButton>{" "}
+                                                                    </>
+                                                                </div>
+                                                            </DialogTitle>
+                                                            {isLoading ? (
+                                                                <div
+                                                                    style={{
+                                                                        display: "flex",
+                                                                        justifyContent: "center",
+                                                                        alignItems: "center",
+                                                                        margin: 10,
+                                                                    }}
+                                                                >
+                                                                    <CustomizedProgressBars />
+                                                                </div>
+                                                            ) : (
                                                                 <>
-                                                                    <Typography fontWeight="600">
-                                                                        {/* // {row.cFileNm} */}
-                                                                        {selectedRow ? selectedRow.cFileNm : ''}
-                                                                    </Typography>
+                                                                    {pdfData ? (
+                                                                        <embed
+                                                                            src={pdfData}
+                                                                            style={{
+                                                                                height: "90vh",
+                                                                                width: "100vh",
+                                                                                border: "1px solid gray",
+                                                                            }}
+                                                                        />
+                                                                    ) : (
+                                                                        <div
+                                                                            style={{
+                                                                                display: "flex",
+                                                                                justifyContent: "center",
+                                                                                alignItems: "center",
+                                                                                margin: 10,
+                                                                            }}
+                                                                        >
+                                                                            No PDF Available
+                                                                        </div>
+                                                                    )}
                                                                 </>
-                                                                <>
-                                                                    <IconButton
-                                                                        aria-label="close"
-                                                                        onClick={handleCloseModals}
-                                                                    >
-                                                                        <CloseIcon />
-                                                                    </IconButton>{" "}
-                                                                </>
-                                                            </div>
-                                                        </DialogTitle>
-                                                        {isLoading ? (
-                                                            <div
-                                                                style={{
-                                                                    display: "flex",
-                                                                    justifyContent: "center",
-                                                                    alignItems: "center",
-                                                                    margin: 10,
-                                                                }}
-                                                            >
-                                                                <CustomizedProgressBars />
-                                                            </div>
-                                                        ) : (
-                                                            <>
-                                                                {pdfData ? (
-                                                                    <embed
-                                                                        src={pdfData}
-                                                                        style={{
-                                                                            height: "90vh",
-                                                                            width: "100vh",
-                                                                            border: "1px solid gray",
-                                                                        }}
-                                                                    />
-                                                                ) : (
-                                                                    <div
-                                                                        style={{
-                                                                            display: "flex",
-                                                                            justifyContent: "center",
-                                                                            alignItems: "center",
-                                                                            margin: 10,
-                                                                        }}
-                                                                    >
-                                                                        No PDF Available
-                                                                    </div>
-                                                                )}
-                                                            </>
-                                                        )}
-                                                    </Dialog>
+                                                            )}
+                                                        </Dialog>
 
-                                                    <td
-                                                        style={{
-                                                            borderLeft: "1px solid black",
-                                                            borderTop: "1px solid black",
-                                                            textAlign: "center",
-                                                        }}
-                                                    >
-                                                        {row.date}
-                                                    </td>
-                                                </tr>
-                                            ))}
-                                        </tbody>
-                                    )}
-                                </Table>
+
+
+                                                        <TableCell style={{
+                                                            border: "1px gray grey",
+                                                            borderLeft: "1px solid #bdbbbb",
+                                                            borderTop: "1px solid #bdbbbb",
+
+
+
+                                                            padding: "2px"
+
+                                                        }} align="center">
+                                                            {dayjs(row.date).format('DD-MM-YYYY')}
+                                                        </TableCell>
+
+
+                                                    </StyledTableRow>
+
+                                                ))}
+                                            </TableBody>
+                                        )}
+                                    </Table>
+                                </TableContainer>
+
+
 
                                 <Drawer
                                     anchor="right"

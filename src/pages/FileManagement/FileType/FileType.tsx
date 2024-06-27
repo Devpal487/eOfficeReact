@@ -28,6 +28,7 @@ import { usePermissionData } from "../../../usePermissionData";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { getISTDate } from "../../../utils/Constant";
 import CustomDataGrid from "../../../utils/CustomDatagrid";
+import CustomLabel from "../../../CustomLable";
 
 interface MenuPermission {
     isAdd: boolean;
@@ -313,22 +314,7 @@ export default function FileType() {
                                     <TextField
                                         id="fName"
                                         type="text"
-                                        label={
-                                            <span>
-                                                {t("text.EnterFileTypeName")} {""}
-                                                {requiredFields.includes("fName") && (
-                                                    <span
-                                                        style={{
-                                                            color: formik.values.fName
-                                                                ? "green"
-                                                                : "red",
-                                                        }}
-                                                    >
-                                                        *
-                                                    </span>
-                                                )}
-                                            </span>
-                                        }
+                                        label={<CustomLabel text={t("text.EnterFileTypeName")} required={requiredFields.includes('fName')} />}
                                         placeholder={t("text.EnterFileTypeName")}
                                         value={formik.values.fName}
                                         size="small"
@@ -348,8 +334,8 @@ export default function FileType() {
                                     <TextField
                                         id="fShortNM"
                                         type="text"
-                                        label="Enter File Type Short Name"
-                                        placeholder="Enter File Type Short Name"
+                                        label={<CustomLabel text={t("text.EnterShortName")}  />}
+                                        placeholder={t("text.EnterShortName")}
                                         value={formik.values.fShortNM}
                                         size="small"
                                         name="fShortNM"

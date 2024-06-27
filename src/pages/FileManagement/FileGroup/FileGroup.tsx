@@ -27,6 +27,7 @@ import ToastApp from "../../../ToastApp";
 import { usePermissionData } from "../../../usePermissionData";
 import DeleteIcon from "@mui/icons-material/Delete";
 import CustomDataGrid from "../../../utils/CustomDatagrid";
+import CustomLabel from "../../../CustomLable";
 
 interface MenuPermission {
     isAdd: boolean;
@@ -302,22 +303,7 @@ export default function FileGroup() {
                                             <TextField
                                                 id="fileGroupName"
                                                 type="text"
-                                                label={
-                                                    <span>
-                                                        {t("text.EnterFileGroupName")} {""}
-                                                        {requiredFields.includes("fileGroupName") && (
-                                                            <span
-                                                                style={{
-                                                                    color: formik.values.fileGroupName
-                                                                        ? "green"
-                                                                        : "red",
-                                                                }}
-                                                            >
-                                                                *
-                                                            </span>
-                                                        )}
-                                                    </span>
-                                                }
+                                                label={<CustomLabel text={t("text.EnterFileGroupName")} required={requiredFields.includes('fileGroupName')} />}
                                                 placeholder={t("text.EnterFileGroupName")}
                                                 value={formik.values.fileGroupName}
                                                 size="small"

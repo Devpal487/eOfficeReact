@@ -163,7 +163,7 @@ export default function Inbox() {
 
                     {
                         field: "fileNm",
-                        headerName: "File Number",
+                        headerName: t('text.FileNo'),
                         flex: 1,
                         headerClassName: "MuiDataGrid-colCell",
                         renderCell: (params) => {
@@ -185,7 +185,7 @@ export default function Inbox() {
 
                     {
                         field: "cSubject",
-                        headerName: "Subject ",
+                        headerName:t('text.Subject'),
                         flex: 1,
                         headerClassName: "MuiDataGrid-colCell",
                     },
@@ -193,28 +193,28 @@ export default function Inbox() {
 
                     {
                         field: "fileStatus",
-                        headerName: "File Status ",
+                        headerName:t('text.FileStatus'),
                         flex: 1,
                         headerClassName: "MuiDataGrid-colCell",
                     },
 
                     {
                         field: "createdby",
-                        headerName: "Created By",
+                        headerName: t('text.CreatedBy'),
                         flex: 1,
                         headerClassName: "MuiDataGrid-colCell",
                     },
 
                     {
                         field: "updatedRemark",
-                        headerName: "Remark",
+                        headerName:t('text.Remark'),
                         flex: 1,
                         headerClassName: "MuiDataGrid-colCell",
                     },
 
                     {
                         field: "dairyDate",
-                        headerName: "Date",
+                        headerName:t('text.Date'),
                         flex: 1,
                         headerClassName: "MuiDataGrid-colCell",
                     },
@@ -222,7 +222,7 @@ export default function Inbox() {
 
                     {
                         field: "sendWorkPlace",
-                        headerName: "Work Place",
+                        headerName:t('text.WorkPlace'),
                         flex: 1,
                         headerClassName: "MuiDataGrid-colCell",
                         renderCell: (params) => {
@@ -235,7 +235,7 @@ export default function Inbox() {
                                     onClick={() => handleMove(params.row)}
                                     style={{ height: "80%" }}
                                 >
-                                    Move
+                                   {t('text.Move')}
                                 </Button>
 
                             ]

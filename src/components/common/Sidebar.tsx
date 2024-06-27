@@ -832,9 +832,9 @@ export default function MiniDrawer({ items }: any) {
               paddingRight: "15px",
             }}
           >
-            <p>E-Governance Level : {nodeName}</p>
-            <p> Time : {date.toLocaleTimeString()}</p>
-            <p> Date : {formattedDate}</p>
+            <p>{t('text.EGovernanceLevel')} : {nodeName}</p>
+            <p> {t('text.Time')} : {date.toLocaleTimeString()}</p>
+            <p>{t('text.Date')}: {formattedDate}</p>
           </div>
         </div>
       </AppBar>

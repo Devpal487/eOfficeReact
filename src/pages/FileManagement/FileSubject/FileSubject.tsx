@@ -27,6 +27,7 @@ import ToastApp from "../../../ToastApp";
 import { usePermissionData } from "../../../usePermissionData";
 import DeleteIcon from "@mui/icons-material/Delete";
 import CustomDataGrid from "../../../utils/CustomDatagrid";
+import CustomLabel from "../../../CustomLable";
 
 interface MenuPermission {
     isAdd: boolean;
@@ -303,22 +304,7 @@ export default function FileSubject() {
                                             <TextField
                                                 id="fileSubjectName"
                                                 type="text"
-                                                label={
-                                                    <span>
-                                                        {t("text.EnterFileSubjectName")} {""}
-                                                        {requiredFields.includes("fileSubjectName") && (
-                                                            <span
-                                                                style={{
-                                                                    color: formik.values.fileSubjectName
-                                                                        ? "green"
-                                                                        : "red",
-                                                                }}
-                                                            >
-                                                                *
-                                                            </span>
-                                                        )}
-                                                    </span>
-                                                }
+                                                label={<CustomLabel text={t("text.EnterFileSubjectName")} required={requiredFields.includes('fileSubjectName')} />}
                                                 placeholder={t("text.EnterFileSubjectName")}
                                                 value={formik.values.fileSubjectName}
                                                 size="small"
@@ -338,22 +324,7 @@ export default function FileSubject() {
                                             <TextField
                                                 id="shortName"
                                                 type="text"
-                                                label={
-                                                    <span>
-                                                        {t("text.EnterShortName")} {""}
-                                                        {requiredFields.includes("shortName") && (
-                                                            <span
-                                                                style={{
-                                                                    color: formik.values.shortName
-                                                                        ? "green"
-                                                                        : "red",
-                                                                }}
-                                                            >
-                                                                *
-                                                            </span>
-                                                        )}
-                                                    </span>
-                                                }
+                                                label={<CustomLabel text={t("text.EnterShortName")} required={requiredFields.includes('shortName')} />}
                                                 placeholder={t("text.EnterShortName")}
                                                 value={formik.values.shortName}
                                                 size="small"

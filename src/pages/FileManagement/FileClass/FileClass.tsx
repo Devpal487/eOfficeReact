@@ -405,13 +405,7 @@ export default function FileClass() {
 
                             <Grid xs={3} sm={3} item>
                                 <TextField
-                                    label={
-                                        <span>
-                                            {t("text.EnterClassDescription")}{" "}{requiredFields.includes('classDescription') && (
-                                                <span style={{ color: formik.values.classDescription ? 'green' : 'red' }}>*</span>
-                                            )}
-                                        </span>
-                                    }
+                                    label={<CustomLabel text={t("text.EnterClassDescription")} required={requiredFields.includes('classDescription')} />}
                                     value={formik.values.classDescription}
                                     placeholder={t("text.EnterClassDescription")}
                                     size="small"
@@ -430,7 +424,7 @@ export default function FileClass() {
 
                             <Grid item xs={3.5} sm={3.5}>
                                 <TextField
-                                    label={t("text.EnterShortName")}
+                                    label={<CustomLabel text={t("text.EnterShortName")}  />}
                                     value={formik.values.shortName}
                                     placeholder={t("text.EnterShortName")}
                                     size="small"
@@ -446,7 +440,7 @@ export default function FileClass() {
 
                             <Grid xs={3.5} sm={3.5} item>
                                 <TextField
-                                    label={t("text.EnterWeedingOutAuthority")}
+                                    label={<CustomLabel text={t("text.EnterWeedingOutAuthority")} required={requiredFields.includes('weedingOutAuthority')} />}
                                     value={formik.values.weedingOutAuthority}
                                     name="weedingOutAuthority"
                                     id="weedingOutAuthority"

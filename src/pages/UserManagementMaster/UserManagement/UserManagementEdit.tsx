@@ -486,7 +486,7 @@ const UserManagementEdit = (props: Props) => {
 
               <Grid xs={12} sm={4} item>
                 <TextField
-                  type="text"
+                  type="number"
                   label={
                     <span>
                       {t("text.EnterMobileNo")}{" "}

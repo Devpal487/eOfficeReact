@@ -93,61 +93,112 @@ export default function RouteAdd() {
     getAuthorityData();
     getCommitteeData();
     getCommitteeGroupData();
-   // setTimeout(() => {
     setSelectedValue(location.state.totalLevel);
     var arr = [];
+    const sectionOptions = [];
+
     for (let index = 0; index < location.state.routeMembercycless.length; index++) {
-        const element = location.state.routeMembercycless[index];
-        console.log("🚀 ~ setTimeout ~ element:", element)
-        console.log(element['auth_SectionId']);
-        var tabindex = 0;
-        var nodeModes = "";
-        var auth_SectionId = "";
-       var auth_SectionName = "";
-       // var auth_SectionName = "";
-        var committeeOrGroupId = "";
+      const element = location.state.routeMembercycless[index];
+      console.log("🚀 ~ //setTimeout ~ element:", element["committeeOrGroupId"]);
+
+      let tabindex = 0;
+      let nodeModes = "";
+      let auth_SectionId = "";
+      let auth_SectionName = "";
+      let committeeOrGroupId = "";
+
+      switch (element["nodeMode"]) {
+          case "A":
+              tabindex = 1;
+              nodeModes = "Authority";
+              break;
+          case "C":
+              tabindex = 2;
+              nodeModes = "Committee";
+              console.log("🚀 ~ //setTimeout ~ element[committeeOrGroupId]: 115", element["committeeOrGroupId"]);
+              getCommitteeGroupDetail(element["committeeOrGroupId"]);
+              break;
+          case "G":
+              tabindex = 3;
+              nodeModes = "Group";
+              console.log("🚀 ~ //setTimeout ~ element[committeeOrGroupId]: 120", element["committeeOrGroupId"]);
+              committeeOrGroupId = element['committeeOrGroupId'];
+              if (parseInt(committeeOrGroupId) > 0) {
+                  var section1 = [{ value: committeeOrGroupId}];
+                  console.log("🚀 ~ useEffect ~ section:", section1)
+              }
+              getGroupsDetail(element["committeeOrGroupId"]);
+
+              break;
+          default:
+              tabindex = 0;
+              nodeModes = "Committee/Groups Parameters";
+              break;
+      }
+
+      element['tabindex'] = tabindex;
+      element['nodeModes'] = nodeModes;
+
+      auth_SectionId = element['auth_SectionId'];
+      auth_SectionName = element['auth_SectionName'];
+      if (parseInt(auth_SectionId) > 0) {
+          var section = [{ value: auth_SectionId, label: auth_SectionName }];
+          setSectionOption(section);
+          console.log("🚀 ~ useEffect ~ section:", section)
+      }
+
+      element['nodeType'] = 1;
+      arr.push(element);
+  }
+
+  // setSectionOption(sectionOptions);
+  setRouteMembercycles(arr);
+  console.log(sectionOption);
+    // for (let index = 0; index < location.state.routeMembercycless.length; index++) {
+    //     const element = location.state.routeMembercycless[index];
+    //     console.log("🚀 ~ //setTimeout ~ element:", element["committeeOrGroupId"])
+
+    //     var tabindex = 0;
+    //     var nodeModes = "";
+    //     var auth_SectionId = "";
+    //     var auth_SectionName = "";
         
-        if (element["nodeMode"] === "A") {
-            tabindex = 1;
-            nodeModes = "Authority";
-            // auth_SectionId = auth_SectionId;
-            // auth_SectionName = auth_SectionName;
-            //auth_SectionName
-        } else if (element["nodeMode"] === "C") {
-            tabindex = 2;
-            nodeModes = "Committee";
-            committeeOrGroupId = committeeOrGroupId;
-        } else if (element["nodeMode"] === "G") {
-            tabindex = 3;
-            nodeModes = "Group";
-        } else {
-            tabindex = 0;
-            nodeModes = "Committee/Groups Parameters";
-        }
+    //     if (element["nodeMode"] === "A") {
+    //         tabindex = 1;
+    //         nodeModes = "Authority";
+    //     } else if (element["nodeMode"] === "C") {
+    //         tabindex = 2;
+    //         nodeModes = "Committee";
+    //         if(tabindex = 2){
+    //           element["committeeOrGroupId"]
+    //           console.log("🚀 ~ //setTimeout ~ element[committeeOrGroupId]: 118", element["committeeOrGroupId"])
+    //         }
+    //     } else if (element["nodeMode"] === "G") {
+    //         tabindex = 3;
+    //         nodeModes = "Group";
+    //         if(tabindex = 3){
+    //           element["committeeOrGroupId"]
+    //           console.log("🚀 ~ //setTimeout ~ element[committeeOrGroupId]: 127", element["committeeOrGroupId"])
+    //         }
+    //     } else {
+    //         tabindex = 0;
+    //         nodeModes = "Committee/Groups Parameters";
+    //     }
 
-        element['tabindex'] = tabindex;
-        element['nodeModes'] = nodeModes;
-        auth_SectionId =element['auth_SectionId'];
-        auth_SectionName = element['auth_SectionName'];
-        console.log("auth_SectionId",auth_SectionId)
-        console.log("auth_SectionName",auth_SectionName)
-        if(parseInt( auth_SectionId)>0){
-var section=[ { value: auth_SectionId+"", label:  auth_SectionName}];
-console.log("🚀 ~ setTimeout ~ section:", section)
-  setSectionOption(section);
-  console.log(sectionOption)
-}
-        element['committeeOrGroupId'] = committeeOrGroupId;
-        element['nodeType'] = 1;
-        console.log("element", element);
-
-        arr.push(element);
-        console.log("arr", arr);
-    }
-
-    setRouteMembercycles(arr);
-  //}, 1000);
-    
+    //     element['tabindex'] = tabindex;
+    //     element['nodeModes'] = nodeModes;
+    //     auth_SectionId =element['auth_SectionId'];
+    //     auth_SectionName = element['auth_SectionName'];
+    //     if(parseInt( auth_SectionId)>0){
+    //         var section=[ { value: auth_SectionId, label:  auth_SectionName}];
+    //         setSectionOption(section);
+    //       }
+    //       element['nodeType'] = 1;
+    //       arr.push(element);
+    //     }
+        
+    //     setRouteMembercycles(arr);
+    //     console.log(sectionOption)    
   }, []);
 
  
@@ -293,14 +344,17 @@ console.log("🚀 ~ setTimeout ~ section:", section)
       officeId: -1,
       userId: "",
       ipAddress: "",
-      type: "",
+      type: "C",
     };
-
+try{
     await api
       .post(`CommitteeMaster/GetCommitteeMaster`, collectData)
       .then((res: any) => {
         setCommGroupDetail(res.data.data|| [])
       });
+    }catch(error){
+      toast.error("Committee :" + "Data not available.. Please update....")
+    };
   };
 
   const getGroupsDetail = async (id:any) => {
@@ -310,14 +364,17 @@ console.log("🚀 ~ setTimeout ~ section:", section)
       officeId: -1,
       userId: "",
       ipAddress: "",
-      type: "",
+      type: "G",
     };
-
+try{
     await api
       .post(`CommitteeMaster/GetCommitteeMaster`, collectData)
       .then((res: any) => {
         setGroupDetail(res.data.data|| [])
       });
+    }catch(error){
+      toast.error("Group :" + "Data not available.. Please update....")
+    };
   };
 
   const handleCheckboxChange = (event: any) => {
@@ -400,24 +457,24 @@ console.log("🚀 ~ setTimeout ~ section:", section)
 
     var arr = Array.from({ length: value }, (_, index) => ({
       id: -1,
-      authorityId: 0,
+      authorityId: "",
       email: "",
       sms: "",
       arrivalDate: defaultValuestime,
       message: "",
       authorityLevel: index + 1,
-      routeId: 0,
+      routeId: "",
       officeId: 1,
       uploadDate: defaultValuestime,
-      subRoute: 0,
-      committee: 0,
-      memGroup: 0,
+      subRoute: "",
+      committee: "",
+      memGroup: "",
       nodeMod: 1,
       nodeModes: "Authority",
       nodeMode: "A",
-      committeeOrGroupId: 0,
-      auth_DeptId: 0,
-      auth_SectionId: 0,
+      committeeOrGroupId: "",
+      auth_DeptId: "",
+      auth_SectionId: "",
       tabindex: 1,
       nodeType: 1,
       divisionid: DivId,
@@ -428,6 +485,8 @@ console.log("🚀 ~ setTimeout ~ section:", section)
     }));
     console.log("arr onchange", arr);
     setRouteMembercycles(arr);
+    console.log("🚀 ~ renderCards `431  ~ routeMembercycles[index].auth_SectionId:", routeMembercycles.auth_SectionId)
+
     // const updatedRouteMembercycless = [...routeMembercycles];
     //setRouteMembercycles(updatedRouteMembercycless);
     console.log("routeMembercycles onchange", routeMembercycles);

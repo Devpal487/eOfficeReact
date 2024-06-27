@@ -46,7 +46,7 @@ export default function LoginPage() {
       localStorage.setItem("nodeID", JSON.stringify(response.data.data[0]["nodeID"]));
       localStorage.setItem("nodeName",JSON.stringify(response.data.data[0]["name"]));
       localStorage.setItem("inst_id", "1");
-      toast.success(response.data.mesg);
+      // toast.success(response.data.mesg);
     } else {
       toast.error(response.data.mesg);
     }

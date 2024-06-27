@@ -108,7 +108,7 @@ export default function RouteAdd() {
             api
                 .post(`RouteMemberCycle/GetRouteMemberCycle`, collectData)
                 .then((res) => {
-                    console.log("result" + JSON.stringify(res.data.data));
+                    // console.log("result" + JSON.stringify(res.data.data));
                     const data = res.data.data;
                     const arr = data.map((item: any, index: any) => ({
                         ...item,

@@ -31,7 +31,7 @@ import { TransitionProps } from "@mui/material/transitions";
 import Slide from "@mui/material/Slide";
 import DialogTitle from "@mui/material/DialogTitle";
 import CloseIcon from "@mui/icons-material/Close";
-import { DeleteOutline } from "@mui/icons-material";
+import { DeleteOutline, Margin } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import CustomizedProgressBars from "../../../components/Loader";
 import { t } from "i18next";
@@ -40,21 +40,29 @@ import CustomLabel from "../../../CustomLable";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
-    backgroundColor: "#1976D2",
+    padding: "5px !important",
+    backgroundColor: "#00009c",
     color: theme.palette.common.white,
   },
   [`&.${tableCellClasses.body}`]: {
     fontSize: 14,
+    padding: "2px !important",
   },
 }));
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
+  // padding: "2px !important",
   "&:nth-of-type(odd)": {
     backgroundColor: theme.palette.action.hover,
   },
   // hide last border
   "&:last-child td, &:last-child th": {
     border: 0,
+    // padding: "2px !important",
+
+  },
+  "& td, & th": {
+    padding: "3px !important", // Ensure all cells in the row have 2px padding
   },
 }));
 
@@ -226,26 +234,6 @@ function Row({ row, index }: { row: any; index: number }) {
     });
   };
 
-  // const getFileData = (docMid: any) => {
-  //   setIsLoading(true);
-  //   const collectData = {
-  //     pdFid: docMid,
-  //     user_Id: -1
-
-  //   };
-  //   console.log("collectData " + JSON.stringify(collectData));
-  //   axios
-  //     .post(HOST_URL.HOST_URL2 + `DocFiles/GetDocFiles`, collectData)
-  //     .then((response) => {
-  //       console.log(
-  //         "check pdf",
-  //         response?.data?.data[0]["pdfBase64"]
-  //       );
-  //       setPDFData(response?.data?.data[0]["pdfBase64"]);
-  //   setIsLoading(false);
-  //     });
-  // };
-
   const getFileData = (docMid: any) => {
     setIsLoading(true);
     const collectData = {
@@ -273,12 +261,14 @@ function Row({ row, index }: { row: any; index: number }) {
   return (
     <React.Fragment>
       <ToastApp />
-      <StyledTableRow sx={{ border: "1px gray solid", padding: "5px" }}>
-        <TableCell style={{ border: "1px gray solid" }} align="center">
+      <StyledTableRow sx={{ border: "1px gray grey" }}>
+
+        <TableCell style={{ border: "1px gray grey" }} align="center">
           {index + 1}
         </TableCell>
-        <TableCell style={{ border: "1px gray solid" }}>
-          <p
+
+        <TableCell style={{ border: "1px gray grey" }} align="center">
+          <p 
             style={textStyle}
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
@@ -286,6 +276,7 @@ function Row({ row, index }: { row: any; index: number }) {
           >
            {t("text.AddComment")}
           </p>
+
           <Dialog
             open={openModal}
             keepMounted
@@ -301,6 +292,7 @@ function Row({ row, index }: { row: any; index: number }) {
               </IconButton>{" "}
               {row.fileNo}
             </DialogTitle>
+
             <Grid xs={12} sm={12} item sx={{ margin: "5px" }}>
               <Table
                 style={{
@@ -549,8 +541,10 @@ function Row({ row, index }: { row: any; index: number }) {
               </Grid>
             </Grid>
           </Dialog>
+
         </TableCell>
-        <TableCell style={{ border: "1px gray solid" }}>
+
+        <TableCell style={{ border: "1px gray grey" }} align="center">
           <p
             style={textStyles}
             onMouseEnter={handleMouseEnters}
@@ -560,15 +554,17 @@ function Row({ row, index }: { row: any; index: number }) {
             {t("text.Index")}
           </p>
         </TableCell>
-        <TableCell style={{ border: "1px gray solid" }}>
+
+        <TableCell style={{ border: "1px gray grey" }}>
           <p
             style={textStyle1}
             onMouseEnter={handleMouseEntered}
             onMouseLeave={handleMouseLeaveed}
             onClick={() => handleAddCommentClicks(row.pdFid)}
           >
-            {row.pdfName}
+            {row.fileNo}
           </p>
+
           <Dialog
             open={openModals}
             keepMounted
@@ -608,27 +604,32 @@ function Row({ row, index }: { row: any; index: number }) {
                 />) : (<div style={{ display: 'flex', justifyContent: "center", alignItems: "center", margin: 10 }}>No PDF Available</div>)}
             </>)}
           </Dialog>
+
         </TableCell>
-        <TableCell style={{ border: "1px gray solid" }}>
+        <TableCell style={{ border: "1px gray grey" }}>
           {row.fileDef}
         </TableCell>
-        {/* <TableCell style={{ border: "1px gray solid" }}  align="center">
-            {row.synopsis}
-          </TableCell> */}
-        <TableCell style={{ border: "1px gray solid" }}>
+
+        {/* <TableCell style={{ border: "1px gray grey" }}>
           {row.subSubject}
         </TableCell>
-        <TableCell style={{ border: "1px gray solid" }}>
+
+        <TableCell style={{ border: "1px gray grey" }}>
           {row.keywords}
-        </TableCell>
-        <TableCell style={{ border: "1px gray solid" }}>{row.fDate}</TableCell>
-        <TableCell style={{ border: "1px gray solid" }} align="center">
+        </TableCell> */}
+
+        <TableCell  align="center" style={{ border: "1px gray grey" }}>{row.fDate}</TableCell>
+
+        <TableCell  align="center" style={{ border: "1px gray grey" }}>
           {row.cDate}
         </TableCell>
-        <TableCell style={{ border: "1px gray solid" }}>
+
+        {/* <TableCell style={{ border: "1px gray grey" }}>
           {row.synopsis}
         </TableCell>
-        <TableCell style={{ border: "1px gray solid" }}>{row.complt}</TableCell>
+
+        <TableCell style={{ border: "1px gray grey" }}>{row.complt}</TableCell> */}
+
       </StyledTableRow>
     </React.Fragment>
   );
@@ -843,12 +844,6 @@ export default function DocumentIndexing() {
         sx={{
           width: "100%",
           overflow: "hidden",
-          "& .MuiDataGrid-colCell": {
-            backgroundColor: "#f0ad4e",
-            color: "#000",
-            fontSize: 17,
-            fontWeight: 900,
-          },
         }}
         style={{ padding: "10px" }}
       >
@@ -1136,7 +1131,7 @@ export default function DocumentIndexing() {
                     style={{
                       fontSize: 17,
                       fontWeight: 600,
-                      border: "1px gray solid",
+                      border: "1px gray grey",
                       padding: "5px",
                       backgroundColor: "transparent",
                       color: "#000",
@@ -1149,10 +1144,10 @@ export default function DocumentIndexing() {
                     <StyledTableCell
                       align="center"
                       style={{
-                        fontSize: 17,
+                        fontSize: 15,
                         fontWeight: 500,
-                        border: "1px gray solid",
-                        padding: "10px",
+                        border: "1px gray grey",
+                        // padding: "10px",
                       }}
                     >
                       {t("text.SrNo")}
@@ -1160,10 +1155,10 @@ export default function DocumentIndexing() {
                     <StyledTableCell
                       align="center"
                       style={{
-                        fontSize: 17,
+                        fontSize: 15,
                         fontWeight: 500,
-                        border: "1px gray solid",
-                        padding: "10px",
+                        border: "1px gray grey",
+                        // padding: "10px",
                       }}
                     >
                       {t("text.Comments")}
@@ -1171,10 +1166,10 @@ export default function DocumentIndexing() {
                     <StyledTableCell
                       align="center"
                       style={{
-                        fontSize: 17,
+                        fontSize: 15,
                         fontWeight: 500,
-                        border: "1px gray solid",
-                        padding: "10px",
+                        border: "1px gray grey",
+                        // padding: "10px",
                       }}
                     >
                       {t("text.ViewIndexPdf")}
@@ -1182,21 +1177,21 @@ export default function DocumentIndexing() {
                     <StyledTableCell
                       align="center"
                       style={{
-                        fontSize: 17,
+                        fontSize: 15,
                         fontWeight: 500,
-                        border: "1px gray solid",
-                        padding: "10px",
+                        border: "1px gray grey",
+                        // padding: "10px",
                       }}
                     >
-                      {t("text.ViewFullPdf")}
+                      {t("text.FileNo")}
                     </StyledTableCell>
                     <StyledTableCell
                       align="center"
                       style={{
-                        fontSize: 17,
+                        fontSize: 15,
                         fontWeight: 500,
-                        border: "1px gray solid",
-                        padding: "10px",
+                        border: "1px gray grey",
+                        // padding: "10px",
                       }}
                     >
                       {t("text.FileDefinition")}
@@ -1204,32 +1199,10 @@ export default function DocumentIndexing() {
                     <StyledTableCell
                       align="center"
                       style={{
-                        fontSize: 17,
+                        fontSize: 15,
                         fontWeight: 500,
-                        border: "1px gray solid",
-                        padding: "10px",
-                      }}
-                    >
-                      {t("text.SubSubject")}
-                    </StyledTableCell>
-                    <StyledTableCell
-                      align="center"
-                      style={{
-                        fontSize: 17,
-                        fontWeight: 500,
-                        border: "1px gray solid",
-                        padding: "10px",
-                      }}
-                    >
-                      {t("text.SearchKeywords")}
-                    </StyledTableCell>
-                    <StyledTableCell
-                      align="center"
-                      style={{
-                        fontSize: 17,
-                        fontWeight: 500,
-                        border: "1px gray solid",
-                        padding: "10px",
+                        border: "1px gray grey",
+                        // padding: "10px",
                       }}
                     >
                      {t("text.DateFrom")}
@@ -1237,35 +1210,13 @@ export default function DocumentIndexing() {
                     <StyledTableCell
                       align="center"
                       style={{
-                        fontSize: 17,
+                        fontSize: 15,
                         fontWeight: 500,
-                        border: "1px gray solid",
-                        padding: "10px",
+                        border: "1px gray grey",
+                        // padding: "10px",
                       }}
                     >
                       {t("text.DateTo")}
-                    </StyledTableCell>
-                    <StyledTableCell
-                      align="center"
-                      style={{
-                        fontSize: 17,
-                        fontWeight: 500,
-                        border: "1px gray solid",
-                        padding: "10px",
-                      }}
-                    >
-                      {t("text.Synopsis")}
-                    </StyledTableCell>
-                    <StyledTableCell
-                      align="center"
-                      style={{
-                        fontSize: 17,
-                        fontWeight: 500,
-                        border: "1px gray solid",
-                        padding: "10px",
-                      }}
-                    >
-                      {t("text.Complete")}
                     </StyledTableCell>
                   </TableRow>
                 </TableHead>

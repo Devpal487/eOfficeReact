@@ -595,12 +595,14 @@ const resources = {
         Draft:"Draft",
         reqCountryName:"Country Name Is Required",
         reqdeptName:"Department Name Is Required",
-
-
-
-
-
-
+        AddComment:"Add Comment",
+        Index:"Index!",
+        PhysicalSerialNo:"Physical Serial Number",
+        RelatedOficer:"Related Oficer",
+        PageNoFrom:"Page Number From",
+        PageNoTo:"Page Number To",
+        AddRow:"Add Row",
+        PhysicalIndex:"Physical Index",
 
 
 
@@ -1192,11 +1194,14 @@ const resources = {
         RfidSCanForFile:"फ़ाइल के लिए आरएफआईडी स्कैन",
         Draft:"प्रारूप",
         reqdeptName:"विभाग का नाम आवश्यक है",
-
-
-
-        
- 
+        AddComment:"टिप्पणी जोडा",
+        Index:"सूचकांक!",
+        PhysicalIndex:"भौतिक सूचकांक",
+        RelatedOficer:"संबंधित अधिकारी",
+        PageNoFrom:"पृष्ठ संख्या से",
+        PageNoTo:"पृष्ठ संख्या को",
+        AddRow:"पंक्ति जोड़ें",
+        PhysicalIndex:"भौतिक सूचकांक",
 
         
 

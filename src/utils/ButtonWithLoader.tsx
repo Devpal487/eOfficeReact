@@ -26,7 +26,7 @@ const ButtonWithLoader: React.FC<ButtonWithLoaderProps> = ({
   loadingColor = "green",
   fullWidth = false
 }) => {
-  console.log("Checkfullwidth", fullWidth)
+  // console.log("Checkfullwidth", fullWidth)
 
 
 

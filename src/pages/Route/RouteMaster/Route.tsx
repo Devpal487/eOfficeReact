@@ -46,14 +46,14 @@ export default function RouteAdd() {
     const routeChangeEdit = (row: any) => {
         console.log("row " + row);
 
-        let path = `/Committee/RouteEdit`;
+        let path = `/E-Office/RouteEdit`;
         navigate(path, {
             state: row,
         });
     };
 
     const routeChangeAdd = () => {
-        let path = `/Committee/RouteAdd`;
+        let path = `/E-Office/RouteAdd`;
         navigate(path);
     };
 

@@ -65,29 +65,18 @@ export default function HomePage() {
   const [success, setSuccess] = useState(false);
 
   var Division: any[];
- 
-  const buttonSx = {
-    ...(success && {
-      bgcolor: "green",
-      '&:hover': {
-        bgcolor: "red",
-      },
-    }),
-  };
 
   const handleCloseReviewModal = () => {
     setReviewModalData(false);
-    formik.setFieldValue("rDealHands", "");
-    formik.setFieldValue("rDealHandlabel", "");
+    formik.setFieldValue("rDealHands", "", false);
+    formik.setFieldValue("rDealHandlabel", "", false);
   };
 
   useEffect(() => {
-    // window.location.reload();
     setTimeout(() => {
       getAuthDevision(divId);
       fetchTotalFile();
     }, 1100);
-    // const tokenDataString: any = sessionStorage.getItem("token");
   }, []);
 
   const navigate = useNavigate();
@@ -154,7 +143,6 @@ export default function HomePage() {
           fetchTotalFile();
           handleCloseReviewModal();
           formik.setFieldValue("rRemark","");
-          formik.resetForm();
         //setLoading(false); 
         }else{
           toast.error(res.data.mesg);
@@ -213,8 +201,8 @@ export default function HomePage() {
           },
 
           {
-            field: "rReceivedDate",
-            headerName: "Received/Dispatch",
+            field: "letterBy",
+            headerName: "Type",
             width: 400,
             flex: 1,
             headerClassName: "MuiDataGrid-colCell",
@@ -257,7 +245,7 @@ export default function HomePage() {
             headerClassName: "MuiDataGrid-colCell",
           },
           {
-            field: "rSendAdrs",
+            field: "",
             headerName: "Moved To",
             flex: 2,
             headerClassName: "MuiDataGrid-colCell",
@@ -276,8 +264,6 @@ export default function HomePage() {
                       formik.setFieldValue("id", params.row.id);
                       formik.setFieldValue("rFileNumber", params.row.rFileNumber);
                       formik.setFieldValue("rid", params.row.rid);
-                     // formik.setFieldValue("rDealHands", params.row.Division[0]["value"]);
-                      //formik.setFieldValue("rDealHandlabel", params.row.Division[0]["label"]);
                       const selectedDivision = params.row.Division.find(
                         (item:any) => item.value === event.target.value
                       );
@@ -293,7 +279,7 @@ export default function HomePage() {
                   fullWidth
                   size="small"
                 >
-                  <MenuItem value="" >Select Division</MenuItem>
+                  <MenuItem value="-1" >Select Division</MenuItem>
                   {params?.row?.Division?.map((item: any) => (
                       <MenuItem key={item.value} value={item.value}>{item.label}</MenuItem>
                     ))}
@@ -303,32 +289,32 @@ export default function HomePage() {
                 }
             },
           },
+          // {
+          //   field: "letterBy",
+          //   headerName: "Lttr From/To",
+          //   flex: 1,
+          //   headerClassName: "MuiDataGrid-colCell",
+          // },
+
           {
-            field: "letterBy",
-            headerName: "Lttr From/To",
+            field: "rSendAdrs",
+            headerName: "Send By",
             flex: 1,
             headerClassName: "MuiDataGrid-colCell",
           },
-
           {
             field: "rLetterSentOn",
-            headerName: "Lttr Send From",
+            headerName: "Send Date",
             flex: 1,
             headerClassName: "MuiDataGrid-colCell",
           },
-          // {
-          //   field: "refNoYr",
-          //   headerName: "Refrence Number Year ",
-          //   flex: 1,
-          //   headerClassName: "MuiDataGrid-colCell",
-          // },
 
-          // {
-          //   field: "attachMentCount",
-          //   headerName: "Attachement Count ",
-          //   flex: 1,
-          //   headerClassName: "MuiDataGrid-colCell",
-          // },
+          {
+            field: "rReceivedDate",
+            headerName: "Received Date",
+            flex: 1,
+            headerClassName: "MuiDataGrid-colCell",
+          },
         ];
         setColumns(columns as any);
       }
@@ -481,7 +467,7 @@ export default function HomePage() {
                       <Stack direction="column" spacing={2} classes="my-2 mb-2" justifyContent={"center"}>
                         <TextField
                           label={<CustomLabel text={t("text.Remark")} required={false}  />}
-                          value={formik.values.rRemark}
+                          // value={formik.values.rRemark}
                           onChange={formik.handleChange}
                           onBlur={formik.handleBlur}
                           placeholder={t("text.Remark")}

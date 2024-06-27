@@ -70,9 +70,9 @@ export default function RouteAdd() {
     { value: 1, label: "Authority" },
   ]);
   const nodeTypeOptions = [
-    { value: 1, label: "Authority", short:"A" },
-    { value: 2, label: "Committee", short:"C" },
-    { value: 3, label: "Group", short:"G" },
+    { value: 1, label: "Authority", short: "A" },
+    { value: 2, label: "Committee", short: "C" },
+    { value: 3, label: "Group", short: "G" },
   ];
   const [toaster, setToaster] = useState(false);
 
@@ -248,7 +248,7 @@ export default function RouteAdd() {
       ...updatedRouteMembercycless[cardIndex],
 
       arrivalDate: defaultValuestime,
-      authorityLevel: cardIndex+1,
+      authorityLevel: cardIndex + 1,
       uploadDate: defaultValuestime,
 
       nodeModes: newValue?.label == "undefined" ? "Authority" : newValue?.label,
@@ -283,7 +283,7 @@ export default function RouteAdd() {
       if (response.data.isSuccess) {
         setToaster(false);
         toast.success(response.data.mesg);
-        navigate("/Committee/Route");
+        navigate("/E-Office/Route");
       } else {
         setToaster(true);
         toast.error(response.data.mesg);
@@ -297,21 +297,21 @@ export default function RouteAdd() {
   ) => {
     formik.setFieldValue("totalLevel", value);
 
-    var arr = Array.from({ length: value }, (_,index) => ({
+    var arr = Array.from({ length: value }, (_, index) => ({
       id: -1,
       authorityId: 0,
       email: "",
       sms: "",
       arrivalDate: defaultValuestime,
       message: "",
-      authorityLevel: index+1,
+      authorityLevel: index + 1,
       routeId: 0,
       officeId: 1,
       uploadDate: defaultValuestime,
       subRoute: 0,
       committee: 0,
       memGroup: 0,
-      nodeMod:1,
+      nodeMod: 1,
       nodeModes: "Authority",
       nodeMode: "A",
       committeeOrGroupId: 0,
@@ -320,8 +320,10 @@ export default function RouteAdd() {
       tabindex: 1,
       nodeType: 1,
       divisionid: DivId,
-      //auth_DeptId: authDept,
-      //auth_SectionId: authSection
+      "parameterPriority": "",
+      "authName": "",
+      "auth_DeptName": "",
+      "auth_SectionName": ""
     }));
     console.log("arr onchange", arr);
     setRouteMembercycles(arr);
@@ -340,9 +342,9 @@ export default function RouteAdd() {
 
     const cards = Array.from({ length: numberOfCards }, (_, index) => (
       <Grid item xs={4} key={index}>
-        <Card style={{ marginTop: "10px", backgroundColor: "#89CFF0" }}>
+        <Card style={{ marginTop: "10px", backgroundColor: "#FEFEFA", border:"0.5px solid #000" }}>
           <CardContent>
-            <CardContent sx={{ padding: 0 }}>
+            <CardContent sx={{ padding: 0 , marginBottom:1}}>
               <Grid
                 container
                 style={{
@@ -352,7 +354,7 @@ export default function RouteAdd() {
                 }}
               >
                 <h2>Level {index + 1}</h2>
-                <Grid xs={5} item>
+                <Grid xs={6} item>
                   <Autocomplete
                     disablePortal
                     disableClearable
@@ -372,7 +374,6 @@ export default function RouteAdd() {
                 </Grid>
               </Grid>
             </CardContent>
-
             <Divider />
             <br />
 
@@ -381,9 +382,12 @@ export default function RouteAdd() {
                 value={routeMembercycles[index].tabindex}
                 variant="scrollable"
                 scrollButtons={false}
-                aria-label="scrollable prevent tabs example"
+                // aria-label="scrollable prevent tabs example"
+                // variant="fullWidth"
+                aria-label="lab API tabs example"
+          // aria-label="full width tabs example"
               >
-               
+
                 {routeMembercycles[index].nodeType === 1 && (
                   <Tab
                     label="Authority"
@@ -399,12 +403,12 @@ export default function RouteAdd() {
                     sx={{
                       backgroundColor:
                         routeMembercycles[index].tabindex === 1
-                          ? "#00009c"
+                          ? "#F8F8FF"
                           : "inherit",
                       color:
                         routeMembercycles[index].tabindex === 1
                           ? "white"
-                          : "inherit",
+                          : "white",
                     }}
                   />
                 )}
@@ -422,7 +426,7 @@ export default function RouteAdd() {
                     sx={{
                       backgroundColor:
                         routeMembercycles[index].tabindex === 2
-                          ? "#00009c"
+                          ? "#F8F8FF"
                           : "inherit",
                       color:
                         routeMembercycles[index].tabindex === 2
@@ -445,7 +449,7 @@ export default function RouteAdd() {
                     sx={{
                       backgroundColor:
                         routeMembercycles[index].tabindex === 3
-                          ? "#00009c"
+                          ? "#F8F8FF"
                           : "inherit",
                       color:
                         routeMembercycles[index].tabindex === 3
@@ -472,12 +476,12 @@ export default function RouteAdd() {
                   sx={{
                     backgroundColor:
                       routeMembercycles[index].tabindex === 0
-                        ? "#00009c"
+                        ? "#F8F8FF"
                         : "inherit",
-                    color:
-                      routeMembercycles[index].tabindex === 0
-                        ? "white"
-                        : "inherit",
+                    // color:
+                    //   routeMembercycles[index].tabindex === 0
+                    //     ? "white"
+                    //     : "inherit",
                   }}
                 />
               </Tabs>
@@ -533,7 +537,7 @@ export default function RouteAdd() {
                             label="subRoute name"
                             placeholder="subRoute name"
                             style={{ background: "white" }}
-                            //value=""
+                          //value=""
                           />
                         </Grid>
                         <Grid xs={3} item>
@@ -564,7 +568,7 @@ export default function RouteAdd() {
                                 }
                                 label="Committee"
                                 labelPlacement="end"
-                                // onChange={(event) => formik.setFieldValue("committee", event.target.checked)}
+                              // onChange={(event) => formik.setFieldValue("committee", event.target.checked)}
                               />
                             </FormGroup>
                           </FormControl>
@@ -727,6 +731,8 @@ export default function RouteAdd() {
                                   //setAuthDept(newValue?.value)
                                   routeMembercycles[index].auth_DeptId =
                                     newValue?.value;
+                                    routeMembercycles[index].auth_DeptName =
+                                    newValue?.label;
                                   handleCardTabChange(
                                     nodeTypetemp,
                                     index,
@@ -764,6 +770,8 @@ export default function RouteAdd() {
                                   //  setAuthSection(newValue?.value)
                                   routeMembercycles[index].auth_SectionId =
                                     newValue?.value;
+                                    routeMembercycles[index].auth_SectionName =
+                                    newValue?.label;
                                   handleCardTabChange(
                                     nodeTypetemp,
                                     index,
@@ -799,6 +807,8 @@ export default function RouteAdd() {
                                   //  setAuthSection(newValue?.value)
                                   routeMembercycles[index].authorityId =
                                     newValue?.value;
+                                    routeMembercycles[index].authName =
+                                    newValue?.label;
                                   handleCardTabChange(
                                     nodeTypetemp,
                                     index,
@@ -956,7 +966,7 @@ export default function RouteAdd() {
                           marginBottom={5}
                         >
                           <Grid
-                            xs={6}
+                            xs={4}
                             item
                             container
                             alignItems="center"
@@ -964,7 +974,7 @@ export default function RouteAdd() {
                           >
                             <img src={comm} alt="Committee" height="100px" />
                           </Grid>
-                          <Grid item xs={6} container spacing={2}>
+                          <Grid item xs={8} container spacing={2}>
                             <Grid item lg={12} xs={12}>
                               <Autocomplete
                                 disablePortal
@@ -1114,7 +1124,7 @@ export default function RouteAdd() {
                           marginBottom={5}
                         >
                           <Grid
-                            xs={6}
+                            xs={4}
                             item
                             container
                             alignItems="center"
@@ -1122,7 +1132,7 @@ export default function RouteAdd() {
                           >
                             <img src={grp} alt="Group" height="50px" />
                           </Grid>
-                          <Grid item xs={6} container spacing={2}>
+                          <Grid item xs={8} container spacing={2}>
                             <Grid item lg={12} xs={12}>
                               <Autocomplete
                                 disablePortal
@@ -1168,17 +1178,17 @@ export default function RouteAdd() {
                                 <FormGroup aria-label="position" row>
                                   <FormLabel
                                     component="legend"
-                                    // defaultValue="Y"
+                                  // defaultValue="Y"
                                   >
                                     Notify by :
                                   </FormLabel>
                                   <FormControlLabel
                                     value="Y"
                                     control={
-                                      <Checkbox                                                                                                                     
+                                      <Checkbox
                                         onChange={(event) => {
                                           if (event.target.checked) {
-                                            routeMembercycles[index].email ="Y";
+                                            routeMembercycles[index].email = "Y";
                                           } else {
                                             routeMembercycles[index].email = "";
                                           }
@@ -1278,9 +1288,9 @@ export default function RouteAdd() {
       <div
         style={{
           padding: "-5px 5px",
-          backgroundColor: "#ffffff",
+          backgroundColor: "#fff",
           borderRadius: "5px",
-          //   border: ".5px solid #FF7722",
+          border: ".5px solid #FF7722",
           marginTop: "3vh",
         }}
       >
@@ -1290,7 +1300,7 @@ export default function RouteAdd() {
             textAlign="center"
             style={{ fontSize: "18px", fontWeight: 500 }}
           >
-            Create Route
+            Create Route 
           </Typography>
 
           <Grid item sm={4} xs={12}>

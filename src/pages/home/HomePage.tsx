@@ -54,15 +54,11 @@ export default function HomePage() {
 
   const[switchType, setSwitchType] = useState("1");
   const [ReviewModalData, setReviewModalData] = useState(false);
-  const [referenceNo, setReferenceNo] = useState("");
-  const [year, setYear] = useState("");
   const [columns, setColumns] = useState<any>([]);
   const [totalFile, setTotalFile] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [refno, setRefNo]= useState("");
   const [refNoYr , setRefNoYr ]= useState("");
-  const [loading, setLoading] = useState(false);
-  const [success, setSuccess] = useState(false);
 
   var Division: any[];
 
@@ -125,7 +121,6 @@ export default function HomePage() {
   
 
   const getSpMovement = async () => {
-    // setLoading(true);
     const value = {
       "eid": userid?.toString(),
       "hdnFileNumber": formik.values.rFileNumber.toString() || "",
@@ -143,12 +138,9 @@ export default function HomePage() {
           fetchTotalFile();
           handleCloseReviewModal();
           formik.setFieldValue("rRemark","");
-        //setLoading(false); 
         }else{
           toast.error(res.data.mesg);
-          //setLoading(false); 
         }
-      // setLoading(false); 
       });
   };
 
@@ -289,12 +281,6 @@ export default function HomePage() {
                 }
             },
           },
-          // {
-          //   field: "letterBy",
-          //   headerName: "Lttr From/To",
-          //   flex: 1,
-          //   headerClassName: "MuiDataGrid-colCell",
-          // },
 
           {
             field: "rSendAdrs",
@@ -437,28 +423,18 @@ export default function HomePage() {
                     <Paper
                       sx={{
                         width: "100%",
-                        overflow: "hidden",
-                        "& .MuiDataGrid-colCell": {
-                          backgroundColor: "#42AEEE",
-                          color: "#fff",
-                          fontSize: 17,
-                          fontWeight: 900
-                        }
+                        overflow: "hidden"
                       }}
                       style={{ padding: "10px", justifyContent: "center" }}
                     >
                       <Grid xs={12} display="flex" alignItems="center" justifyContent="space-between" >
 
                       <Typography fontWeight={600} color="#000" fontSize="20px">Remark to {formik.values.rDealHandlabel} for the Letter {refno}--{refNoYr}</Typography>
-                      {/* <Typography color="#000" ><CloseIcons/></Typography> */}
-                      <IconButton
-                                            // edge="end"
-                                            onClick={handleCloseReviewModal}
-                                            aria-label="close"
-                                            //sx={{ color: "#fff", position: "absolute", right: 20, top: 5 }}
-                                        >
-                                            <CloseIcons/>
-                                        </IconButton>
+                      
+                      <IconButton onClick={handleCloseReviewModal} aria-label="close" >
+                        <CloseIcons/>
+                      </IconButton>
+
                       </Grid>
 
                       <ConfirmDialog />
@@ -613,9 +589,9 @@ export default function HomePage() {
                       </Grid>
 */}
                       <form >
-                    <Grid item xs={12} container spacing={3}>
+                    <Grid item xs={12} container spacing={1}>
 
-                      <Grid xs={5} sm={5} item>
+                      <Grid  md={5.5} item>
                         <TextField
                           // label="Enter Ref. No."
                           label={<CustomLabel text="Enter Ref. No." required={false}  />}
@@ -630,7 +606,7 @@ export default function HomePage() {
                         />
                       </Grid>
 
-                      <Grid item xs={5} sm={5}>
+                      <Grid item  md={5.5}>
                         <TextField
                           // id="zoneCode"
                           // name="zoneCode"
@@ -648,7 +624,7 @@ export default function HomePage() {
 
                       </Grid>
 
-                      <Grid item xs={2}>
+                      <Grid item md={0.5}>
                         <Button variant="contained" size="large" onClick={fetchTotalFile}>
                           Start
                         </Button>

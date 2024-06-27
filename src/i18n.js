@@ -311,6 +311,8 @@ const resources = {
         AddPermission: "Add Permission",
         SelectUser: "Select User",
         NodeName: "Node Name",
+        createRoute:"Create Route",
+        Route:"Route",
         throughyby: "Through whom",
         ethroughyby: "Enter Through whom",
         nodeID: "Select Jurisdiction",
@@ -593,12 +595,14 @@ const resources = {
         Draft:"Draft",
         reqCountryName:"Country Name Is Required",
         reqdeptName:"Department Name Is Required",
-
-
-
-
-
-
+        AddComment:"Add Comment",
+        Index:"Index!",
+        PhysicalSerialNo:"Physical Serial Number",
+        RelatedOficer:"Related Oficer",
+        PageNoFrom:"Page Number From",
+        PageNoTo:"Page Number To",
+        AddRow:"Add Row",
+        PhysicalIndex:"Physical Index",
 
 
 
@@ -916,7 +920,8 @@ const resources = {
         AddPermission: "अनुमति जोड़ें",
         SelectUser: "उपयोगकर्ता का चयन करें",
         NodeName: "नोड नाम",
-
+        createRoute:"रूट बनाएं",
+        Route:"रूट",
         /// e-ffoice
         eoffice: "वर्कफ़्लो प्रबंधन प्रणाली",
         FileMaster: "फ़ाइल मास्टर",
@@ -1189,11 +1194,14 @@ const resources = {
         RfidSCanForFile:"फ़ाइल के लिए आरएफआईडी स्कैन",
         Draft:"प्रारूप",
         reqdeptName:"विभाग का नाम आवश्यक है",
-
-
-
-        
- 
+        AddComment:"टिप्पणी जोडा",
+        Index:"सूचकांक!",
+        PhysicalIndex:"भौतिक सूचकांक",
+        RelatedOficer:"संबंधित अधिकारी",
+        PageNoFrom:"पृष्ठ संख्या से",
+        PageNoTo:"पृष्ठ संख्या को",
+        AddRow:"पंक्ति जोड़ें",
+        PhysicalIndex:"भौतिक सूचकांक",
 
         
 

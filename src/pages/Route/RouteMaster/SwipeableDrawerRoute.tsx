@@ -51,7 +51,7 @@ function Row({ row, index }: { row: any; index: number }) {
     const [isHovered, setIsHovered] = useState(false);
 
     const renderNodeMode = (nodeMode: string) => {
-        console.log("nodeMode:", nodeMode);
+        // console.log("nodeMode:", nodeMode);
         switch (nodeMode) {
             case 'A':
                 return 'Authority';

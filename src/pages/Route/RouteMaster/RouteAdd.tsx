@@ -82,13 +82,16 @@ export default function RouteAdd() {
   const nodeId: any = localStorage.getItem("id");
   // console.log("nodeId", nodeId)
 
+  const [commGroupdetail , setCommGroupDetail] = useState<any>([])
+  const [groupdetail , setGroupDetail] = useState<any>([])
+ 
   useEffect(() => {
     getFileData();
     getDepartmentData();
     getAuthorityData();
     getCommitteeData();
     getCommitteeGroupData();
-    getSectionData();
+    
   }, []);
 
   const getFileData = async () => {
@@ -111,13 +114,18 @@ export default function RouteAdd() {
     });
   };
 
-  const getSectionData = async () => {
+  const getSectionData = async (id:any) => {
     const collectData = {
-      id: -1
+     "id": -1,
+    "department": id?.toString(),
+    "section": "",
+    "instid": -1,
+    "sesid": "",
+    "uid": ""
     };
 
     await api
-      .post(`SectionMaster/GetDesignationmaster`, collectData)
+      .post(`SectionMaster/GetSectionMaster`, collectData)
       .then((res: any) => {
         const arr: any = [];
         for (let index = 0; index < res.data.data.length; index++) {
@@ -133,6 +141,7 @@ export default function RouteAdd() {
   const getDepartmentData = async () => {
     const collectData = {
       departmentId: -1,
+      departmentName:""
     };
 
     await api
@@ -216,6 +225,40 @@ export default function RouteAdd() {
           });
         }
         setCommitteeGroupOption(arr);
+      });
+  };
+
+  const getCommitteeGroupDetail = async (id:any) => {
+    const collectData = {
+      id: id,
+      committeeName: "",
+      officeId: -1,
+      userId: "",
+      ipAddress: "",
+      type: "",
+    };
+
+    await api
+      .post(`CommitteeMaster/GetCommitteeMaster`, collectData)
+      .then((res: any) => {
+        setCommGroupDetail(res.data.data|| [])
+      });
+  };
+
+  const getGroupsDetail = async (id:any) => {
+    const collectData = {
+      id: id,
+      committeeName: "",
+      officeId: -1,
+      userId: "",
+      ipAddress: "",
+      type: "",
+    };
+
+    await api
+      .post(`CommitteeMaster/GetCommitteeMaster`, collectData)
+      .then((res: any) => {
+        setGroupDetail(res.data.data|| [])
       });
   };
 
@@ -341,10 +384,10 @@ export default function RouteAdd() {
     const numberOfCards = parseInt(selectedValue);
 
     const cards = Array.from({ length: numberOfCards }, (_, index) => (
-      <Grid item xs={4} key={index}>
-        <Card style={{ marginTop: "10px", backgroundColor: "#FEFEFA", border:"0.5px solid #000" }}>
+      <Grid item xs={12} md={6} lg={4} key={index}>
+        <Card style={{ backgroundColor: "#FEFEFA", border:"0.5px solid #000", boxShadow: "0 4px 8px rgba(0, 0, 0, 0.5)" }}>
           <CardContent>
-            <CardContent sx={{ padding: 0 , marginBottom:1}}>
+            <CardContent sx={{ padding: 0 , marginBottom:0}}>
               <Grid
                 container
                 style={{
@@ -382,10 +425,28 @@ export default function RouteAdd() {
                 value={routeMembercycles[index].tabindex}
                 variant="scrollable"
                 scrollButtons={false}
-                // aria-label="scrollable prevent tabs example"
-                // variant="fullWidth"
                 aria-label="lab API tabs example"
-          // aria-label="full width tabs example"
+          sx={{
+            '& .MuiTabs-indicator': {
+              backgroundColor: '#01796F', 
+              height: 2, 
+            },
+            '& .MuiTab-root': { 
+              fontWeight: 'bold',
+              textTransform: 'none',
+              fontSize: '0.8rem', 
+              backgroundColor: '#F0FFFF',
+              borderRadius:"10px",
+              gap:"15px",
+              '&:hover': {
+                backgroundColor: '#F0FFFF',
+                color:"#000"
+              },
+            },
+            '& .Mui-selected': {
+              color: '#006D6F',
+            },
+          }}
               >
 
                 {routeMembercycles[index].nodeType === 1 && (
@@ -492,27 +553,27 @@ export default function RouteAdd() {
               <>
                 {routeMembercycles[index].tabindex == 0 ? (
                   <>
-                    <Grid item xs={12} container spacing={2}>
-                      <Grid item xs={12} container spacing={2}>
-                        <Grid item xs={12}>
+                    <Grid item xs={12} md={12} lg={12} container spacing={2}>
+                      <Grid item xs={12} md={12} lg={12} container spacing={2}>
+                        <Grid item xs={12} md={12} lg={12}>
                           <Typography>
                             Authority is required to transfer file over :{" "}
                           </Typography>
                         </Grid>
                         <Grid item xs={4}>
-                          <Typography>Mode</Typography>
+                          <Typography align="center" sx={{fontWeight:600}}>Mode</Typography>
                         </Grid>
                         <Grid item xs={4}></Grid>
                         <Grid item xs={4}>
-                          <Typography>Priority</Typography>
+                          <Typography align="center" sx={{fontWeight:600}}>Priority</Typography>
                         </Grid>
                       </Grid>
                       <Divider />
 
-                      <Grid container item xs={12} gap={2}>
+                      <Grid container item xs={12} gap={1}>
                         <Grid item xs={3}>
-                          <FormControl component="fieldset">
-                            <FormGroup aria-label="position" row>
+                          <FormControl >
+                            <FormGroup row>
                               <FormControlLabel
                                 value="SubRoute"
                                 control={<Checkbox />}
@@ -524,11 +585,16 @@ export default function RouteAdd() {
                                     event.target.checked
                                   )
                                 }
+                                sx={{
+                                  '& .MuiFormControlLabel-label': {
+                                    fontSize: '0.75rem', // Custom font size
+                                  },
+                                }}
                               />
                             </FormGroup>
                           </FormControl>
                         </Grid>
-                        <Grid item xs={4}>
+                        <Grid item xs={5}>
                           <TextField
                             id="subRoute"
                             name="subRoute"
@@ -556,10 +622,10 @@ export default function RouteAdd() {
                         </Grid>
                       </Grid>
 
-                      <Grid container item xs={12} gap={2}>
+                      <Grid container item xs={12} gap={1}>
                         <Grid item xs={3}>
-                          <FormControl component="fieldset">
-                            <FormGroup aria-label="position" row>
+                          <FormControl>
+                            <FormGroup row>
                               <FormControlLabel
                                 value="Committee"
                                 // control={<Checkbox />}
@@ -568,12 +634,15 @@ export default function RouteAdd() {
                                 }
                                 label="Committee"
                                 labelPlacement="end"
-                              // onChange={(event) => formik.setFieldValue("committee", event.target.checked)}
-                              />
+                                sx={{
+                                  '& .MuiFormControlLabel-label': {
+                                    fontSize: '0.75rem', // Custom font size
+                                  },
+                                }}/>
                             </FormGroup>
                           </FormControl>
                         </Grid>
-                        <Grid item xs={4}>
+                        <Grid item xs={5}>
                           {isCommitteeChecked ? (
                             <Autocomplete
                               disablePortal
@@ -623,10 +692,10 @@ export default function RouteAdd() {
                         </Grid>
                       </Grid>
 
-                      <Grid container item xs={12} gap={2}>
+                      <Grid container item xs={12} gap={1}>
                         <Grid item xs={3}>
-                          <FormControl component="fieldset">
-                            <FormGroup aria-label="position" row>
+                          <FormControl>
+                            <FormGroup row>
                               <FormControlLabel
                                 value="Group"
                                 control={
@@ -634,11 +703,16 @@ export default function RouteAdd() {
                                 }
                                 label="Group"
                                 labelPlacement="end"
-                              />
+                                sx={{
+                                  '& .MuiFormControlLabel-label': {
+                                    fontSize: '0.75rem', // Custom font size
+                                  },
+                                }}/>
                             </FormGroup>
                           </FormControl>
                         </Grid>
-                        <Grid item xs={4}>
+
+                        <Grid item xs={5}>
                           {isCommitteeGroupChecked ? (
                             <Autocomplete
                               disablePortal
@@ -672,6 +746,7 @@ export default function RouteAdd() {
                             />
                           )}
                         </Grid>
+
                         <Grid xs={3} item>
                           <Autocomplete
                             disablePortal
@@ -686,6 +761,7 @@ export default function RouteAdd() {
                             )}
                           />
                         </Grid>
+
                       </Grid>
                     </Grid>
                   </>
@@ -697,7 +773,7 @@ export default function RouteAdd() {
                           item
                           xs={12}
                           container
-                          spacing={1}
+                          spacing={0.5}
                           alignItems="center"
                           justifyContent="center"
                         >
@@ -708,9 +784,9 @@ export default function RouteAdd() {
                             alignItems="center"
                             justifyContent="center"
                           >
-                            <img src={auth} alt="Authority" height="100px" />
+                            <img src={auth} alt="Authority" height="90px" />
                           </Grid>
-                          <Grid item xs={8} container spacing={1}>
+                          <Grid item xs={8} container spacing={0.5}>
                             <Grid item lg={12} xs={12}>
                               <Autocomplete
                                 disablePortal
@@ -720,19 +796,23 @@ export default function RouteAdd() {
                                 size="small"
                                 style={{ background: "white" }}
                                 //value={selectedValue}
-                                value={
-                                  departmentOption.find(
-                                    (option) =>
-                                      option.value ===
-                                      routeMembercycles[index].auth_DeptId
-                                  ) || null
-                                }
+                                // value={
+                                //   departmentOption.find(
+                                //     (option) =>
+                                //       option.value ===
+                                //       routeMembercycles[index].auth_DeptId
+                                //   ) || null
+                                // }
                                 onChange={(e: any, newValue: any) => {
                                   //setAuthDept(newValue?.value)
-                                  routeMembercycles[index].auth_DeptId =
+                                  if(newValue != "" ){
+                                    routeMembercycles[index].auth_DeptId =
                                     newValue?.value;
                                     routeMembercycles[index].auth_DeptName =
                                     newValue?.label;
+                                    getSectionData(newValue?.value);
+                                  }
+                                    
                                   handleCardTabChange(
                                     nodeTypetemp,
                                     index,
@@ -756,13 +836,13 @@ export default function RouteAdd() {
                                 size="small"
                                 options={sectionOption}
                                 // value={selectedValue}
-                                value={
-                                  sectionOption.find(
-                                    (option) =>
-                                      option.value ===
-                                      routeMembercycles[index].auth_SectionId
-                                  ) || null
-                                }
+                                // value={
+                                //   sectionOption.find(
+                                //     (option) =>
+                                //       option.value ===
+                                //       routeMembercycles[index].auth_SectionId
+                                //   ) || null
+                                // }
                                 style={{ background: "white" }}
                                 // onChange={handleAutocompleteChange}
                                 onChange={(e: any, newValue: any) => {
@@ -856,14 +936,11 @@ export default function RouteAdd() {
                             NA
                           </Grid>
 
-                          <Grid item xs={12} container spacing={1}>
-                            <Grid xs={4} item>
-                              <FormControl component="fieldset">
-                                <FormGroup aria-label="position" row>
-                                  <FormLabel
-                                    component="legend"
-                                    defaultValue="Y"
-                                  >
+                          {/* <Grid item xs={12} container spacing={1}> */}
+                            <Grid xs={12} item>
+                              <FormControl>
+                                <FormGroup row>
+                                  <FormLabel defaultValue="Y" sx={{marginTop:1, mr:2}}>
                                     Notify by :
                                   </FormLabel>
                                   <FormControlLabel
@@ -890,7 +967,6 @@ export default function RouteAdd() {
                                       routeMembercycles[index]?.email ===
                                       "Y"
                                     }
-                                    labelPlacement="end"
                                   />
 
                                   <FormControlLabel
@@ -916,23 +992,21 @@ export default function RouteAdd() {
                                     checked={
                                       routeMembercycles[index]?.sms === "N"
                                     }
-                                    labelPlacement="end"
                                   />
                                 </FormGroup>
                               </FormControl>
                             </Grid>
 
-                            <Grid xs={4} item>
+                            <Grid xs={12} item>
                               <TextareaAutosize
                                 aria-label="empty textarea"
                                 placeholder="Enter Message"
                                 style={{
-                                  width: "200px",
+                                  width: "100%",
                                   fontSize: " 1.075rem",
                                   fontWeight: "400",
-                                  lineHeight: "6",
-                                  padding: "8px 12px",
                                   borderRadius: "4px",
+                                  lineHeight:"2"
                                 }}
                                 value={routeMembercycles[index].message}
                                 onChange={(event) => {
@@ -952,7 +1026,7 @@ export default function RouteAdd() {
                                 onBlur={formik.handleBlur}
                               />
                             </Grid>
-                          </Grid>
+                          {/* </Grid> */}
                         </Grid>
                       </div>
                     )}
@@ -962,9 +1036,38 @@ export default function RouteAdd() {
                           item
                           xs={12}
                           container
-                          spacing={2}
-                          marginBottom={5}
+                          spacing={1}
                         >
+                           <Grid item lg={12} xs={12}>
+                              <Autocomplete
+                                disablePortal
+                                id="combo-box-demo"
+                                options={committeeOption}
+                                style={{ background: "white" }}
+                                fullWidth
+                                size="small"
+                                onChange={(event: any, newValue: any) => {
+                                  console.log(
+                                    newValue?.value);
+                                    if(newValue != ""){
+                                      routeMembercycles[index].committeeOrGroupId =
+                                      newValue?.value;
+                                      getCommitteeGroupDetail(newValue?.value)
+                                    }
+                                  handleCardTabChange(
+                                    nodeTypetemp,
+                                    index,
+                                    routeMembercycles[index].tabindex
+                                  );
+                                }}
+                                renderInput={(params) => (
+                                  <TextField
+                                    {...params}
+                                    label={<span>{"Committee"}</span>}
+                                  />
+                                )}
+                              />
+                            </Grid>
                           <Grid
                             xs={4}
                             item
@@ -972,10 +1075,11 @@ export default function RouteAdd() {
                             alignItems="center"
                             justifyContent="center"
                           >
-                            <img src={comm} alt="Committee" height="100px" />
+                            <img src={commGroupdetail.length > 0 ? commGroupdetail[0]?.committeeLogo :comm} alt="Committee" width="100px" height="75px" />
+
                           </Grid>
-                          <Grid item xs={8} container spacing={2}>
-                            <Grid item lg={12} xs={12}>
+                          <Grid item xs={8} container spacing={1}>
+                            {/* <Grid item lg={12} xs={12}>
                               <Autocomplete
                                 disablePortal
                                 id="combo-box-demo"
@@ -1003,29 +1107,26 @@ export default function RouteAdd() {
                                   />
                                 )}
                               />
-                            </Grid>
+                            </Grid> */}
 
                             <Grid item lg={12} xs={12}>
                               <TextField
-                                id="zoneCode"
-                                name="zoneCode"
                                 label="Enter Description"
                                 placeholder="Enter Description"
                                 size="small"
                                 style={{ background: "white" }}
                                 fullWidth
+                                value={commGroupdetail.length > 0 ? commGroupdetail[0]?.committeeDesc : ''}
+                                InputLabelProps={{shrink:true}}
+                                disabled={true}
                               />
                             </Grid>
                           </Grid>
 
-                          <Grid item xs={12} container spacing={2}>
-                            <Grid xs={4} item>
-                              <FormControl component="fieldset">
-                                <FormGroup aria-label="position" row>
-                                  <FormLabel
-                                    component="legend"
-                                    defaultValue="Y"
-                                  >
+                          <Grid xs={12} item>
+                              <FormControl>
+                                <FormGroup row>
+                                  <FormLabel defaultValue="Y" sx={{marginTop:1, mr:2}}>
                                     Notify by :
                                   </FormLabel>
                                   <FormControlLabel
@@ -1052,7 +1153,6 @@ export default function RouteAdd() {
                                       routeMembercycles[index]?.email ===
                                       "Y"
                                     }
-                                    labelPlacement="end"
                                   />
 
                                   <FormControlLabel
@@ -1078,39 +1178,40 @@ export default function RouteAdd() {
                                     checked={
                                       routeMembercycles[index]?.sms === "N"
                                     }
-                                    labelPlacement="end"
                                   />
                                 </FormGroup>
                               </FormControl>
                             </Grid>
 
-                            <Grid xs={4} item>
+                            <Grid xs={12} item>
                               <TextareaAutosize
                                 aria-label="empty textarea"
                                 placeholder="Enter Message"
                                 style={{
-                                  width: "200px",
+                                  width: "100%",
                                   fontSize: " 1.075rem",
                                   fontWeight: "400",
-                                  lineHeight: "6",
-                                  padding: "8px 12px",
                                   borderRadius: "4px",
+                                  lineHeight:"3"
                                 }}
                                 value={routeMembercycles[index].message}
-                                onChange={(event: any) => {
+                                onChange={(event) => {
                                   routeMembercycles[index].message =
                                     event.target.value;
+                                  formik.setFieldValue(
+                                    "message",
+                                    event.target.value
+                                  );
                                   handleCardTabChange(
                                     nodeTypetemp,
                                     index,
                                     routeMembercycles[index].tabindex
                                   );
                                 }}
+                                // onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
                               />
                             </Grid>
-
-                            {/* </Grid> */}
-                          </Grid>
                         </Grid>
                       </>
                     )}
@@ -1120,9 +1221,37 @@ export default function RouteAdd() {
                           item
                           xs={12}
                           container
-                          spacing={2}
-                          marginBottom={5}
+                          spacing={1}
                         >
+                          <Grid item lg={12} xs={12}>
+                              <Autocomplete
+                                disablePortal
+                                id="combo-box-demo"
+                                options={committeeGroupOption}
+                                fullWidth
+                                size="small"
+                                onChange={(event: any, newValue: any) => {
+                                  console.log(newValue?.value);
+                                  if(newValue != ""){
+                                    routeMembercycles[index].committeeOrGroupId =
+                                    newValue?.value;
+                                    getGroupsDetail(newValue?.value)
+                                  }
+                                  handleCardTabChange(
+                                    nodeTypetemp,
+                                    index,
+                                    routeMembercycles[index].tabindex
+                                  );
+                                }}
+                                style={{ background: "white" }}
+                                renderInput={(params) => (
+                                  <TextField
+                                    {...params}
+                                    label={<span>{"Select Group"}</span>}
+                                  />
+                                )}
+                              />
+                            </Grid>
                           <Grid
                             xs={4}
                             item
@@ -1130,10 +1259,11 @@ export default function RouteAdd() {
                             alignItems="center"
                             justifyContent="center"
                           >
-                            <img src={grp} alt="Group" height="50px" />
+                            {/* <img src={grp} alt="Group" height="75px" /> */}
+                            <img src={groupdetail.length > 0 ? groupdetail[0]?.committeeLogo :comm} alt="Committee" width="100px" height="75px" />
                           </Grid>
-                          <Grid item xs={8} container spacing={2}>
-                            <Grid item lg={12} xs={12}>
+                          <Grid item xs={8} container spacing={1}>
+                            {/* <Grid item lg={12} xs={12}>
                               <Autocomplete
                                 disablePortal
                                 id="combo-box-demo"
@@ -1158,28 +1288,26 @@ export default function RouteAdd() {
                                   />
                                 )}
                               />
-                            </Grid>
+                            </Grid> */}
 
                             <Grid item lg={12} xs={12}>
                               <TextField
-                                id="zoneCode"
-                                name="zoneCode"
                                 label="Enter Description"
                                 style={{ background: "white" }}
                                 placeholder="Enter Description"
                                 size="small"
                                 fullWidth
+                                value={groupdetail.length > 0 ? groupdetail[0]?.committeeDesc : ''}
+                                InputLabelProps={{shrink:true}}
+                                disabled={true}
                               />
                             </Grid>
                           </Grid>
-                          <Grid item xs={12} container spacing={2}>
-                            <Grid xs={4} item>
-                              <FormControl component="fieldset">
-                                <FormGroup aria-label="position" row>
-                                  <FormLabel
-                                    component="legend"
-                                  // defaultValue="Y"
-                                  >
+                           
+                           <Grid xs={12} item>
+                              <FormControl>
+                                <FormGroup row>
+                                  <FormLabel defaultValue="Y" sx={{marginTop:1, mr:2}}>
                                     Notify by :
                                   </FormLabel>
                                   <FormControlLabel
@@ -1188,7 +1316,8 @@ export default function RouteAdd() {
                                       <Checkbox
                                         onChange={(event) => {
                                           if (event.target.checked) {
-                                            routeMembercycles[index].email = "Y";
+                                            routeMembercycles[index].email =
+                                              event.target.value;
                                           } else {
                                             routeMembercycles[index].email = "";
                                           }
@@ -1205,7 +1334,6 @@ export default function RouteAdd() {
                                       routeMembercycles[index]?.email ===
                                       "Y"
                                     }
-                                    labelPlacement="end"
                                   />
 
                                   <FormControlLabel
@@ -1215,7 +1343,7 @@ export default function RouteAdd() {
                                         onChange={(event) => {
                                           if (event.target.checked) {
                                             routeMembercycles[index].sms =
-                                              "N";
+                                              event.target.value;
                                           } else {
                                             routeMembercycles[index].sms = "";
                                           }
@@ -1231,39 +1359,39 @@ export default function RouteAdd() {
                                     checked={
                                       routeMembercycles[index]?.sms === "N"
                                     }
-                                    labelPlacement="end"
                                   />
                                 </FormGroup>
                               </FormControl>
                             </Grid>
 
-                            <Grid xs={4} item>
+                            <Grid xs={12} item>
                               <TextareaAutosize
                                 aria-label="empty textarea"
                                 placeholder="Enter Message"
                                 style={{
-                                  width: "200px",
+                                  width: "100%",
                                   fontSize: " 1.075rem",
                                   fontWeight: "400",
-                                  lineHeight: "6",
-                                  padding: "8px 12px",
                                   borderRadius: "4px",
+                                  lineHeight:"3"
                                 }}
                                 value={routeMembercycles[index].message}
                                 onChange={(event) => {
                                   routeMembercycles[index].message =
                                     event.target.value;
+                                  formik.setFieldValue(
+                                    "message",
+                                    event.target.value
+                                  );
                                   handleCardTabChange(
                                     nodeTypetemp,
                                     index,
                                     routeMembercycles[index].tabindex
                                   );
                                 }}
+                                onBlur={formik.handleBlur}
                               />
                             </Grid>
-
-                            {/* </Grid> */}
-                          </Grid>
                         </Grid>
                       </>
                     )}
@@ -1277,7 +1405,7 @@ export default function RouteAdd() {
     ));
 
     return (
-      <Grid container spacing={2}>
+      <Grid container spacing={1.2}>
         {cards}
       </Grid>
     );
@@ -1300,7 +1428,7 @@ export default function RouteAdd() {
             textAlign="center"
             style={{ fontSize: "18px", fontWeight: 500 }}
           >
-            Create Route 
+          {t("text.createRoute")}
           </Typography>
 
           <Grid item sm={4} xs={12}>
@@ -1326,7 +1454,7 @@ export default function RouteAdd() {
           <form onSubmit={formik.handleSubmit}>
             {toaster === false ? "" : <ToastApp />}
             <Grid item xs={12} container spacing={3}>
-              <Grid xs={5} item>
+              <Grid xs={6} item>
                 <TextField
                   id="routeName"
                   name="routeName"
@@ -1339,13 +1467,13 @@ export default function RouteAdd() {
                 />
               </Grid>
 
-              <Grid xs={5} item>
+              <Grid xs={6} item>
                 <Autocomplete
                   disablePortal
                   id="combo-box-demo"
                   fullWidth
                   size="small"
-                  options={[1, 2, 3, 4, 5, 6, 7]}
+                  options={[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]}
                   value={selectedValue}
                   onChange={handleAutocompleteChange}
                   renderInput={(params) => (
@@ -1353,7 +1481,7 @@ export default function RouteAdd() {
                   )}
                 />
               </Grid>
-              <Grid item xs={12} container>
+              <Grid item xs={12} md={12} lg={12} container>
                 {renderCards()}
               </Grid>
               <Grid item xs={2}>

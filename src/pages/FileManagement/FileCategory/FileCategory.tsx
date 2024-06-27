@@ -191,7 +191,7 @@ export default function FileCategory() {
                 flex: 1,
                 headerClassName: "MuiDataGrid-colCell",
               },
-             
+
             ];
             setColumns(columns as any);
           }
@@ -218,7 +218,7 @@ export default function FileCategory() {
       "fileCatid": -1,
       "fileCatDesc": ""
 
-     
+
 
 
 
@@ -251,7 +251,7 @@ export default function FileCategory() {
 
   const routeChangeEdit = (row: any) => {
     formik.setFieldValue("fileCatDesc", row.fileCatDesc);
-   
+
     setEditId(row.id);
   };
 
@@ -306,20 +306,7 @@ export default function FileCategory() {
               <Grid item xs={12} container spacing={2}>
                 <Grid item xs={4}>
                   <TextField
-                    label={
-                      <span>
-                        {t("text.EnterFileCategory")} {" "}
-                        {requiredFields.includes("fileCatDesc") && (
-                          <span
-                            style={{
-                              color: formik.values.fileCatDesc ? "green" : "red",
-                            }}
-                          >
-                            *
-                          </span>
-                        )}
-                      </span>
-                    }
+                    label={<CustomLabel text={t("text.EnterFileCategory")} required={requiredFields.includes('fileCatDesc')} />}
                     value={formik.values.fileCatDesc}
                     name="fileCatDesc"
                     id="fileCatDesc"
@@ -338,7 +325,6 @@ export default function FileCategory() {
                 </Grid>
 
 
-               
                 <Grid item xs={2}>
                   {/* {permissionData?.isAdd == true ? ( */}
                   <Button type="submit" variant="contained" size="large">

@@ -60,9 +60,9 @@ export default function WorkPlace() {
 
     const userId = getId();
 
-    const instId = getinstId();
+    const instId:any = getinstId();
     // console.log("🚀 ~ ViewEditFile ~ userId:", userId);
-    const divId = getdivisionId();
+    const divId:any = getdivisionId();
     // console.log("🚀 ~ ViewEditFile ~ divId:", divId);
 
     const [selectedDivision, setSelectedDivision] = useState('');
@@ -128,7 +128,7 @@ export default function WorkPlace() {
         const value = {
 
             "hdnFilNu": formik.values.fileNo,
-            "inst_id": instId,
+            "inst_id": parseInt(instId),
             "userid": userId,
             "moveddate": formik.values.moveDate.toString() || "",
             "duedate": formik.values.dueDate.toString() || "",
@@ -137,7 +137,7 @@ export default function WorkPlace() {
             "authorityLevel": 0,
             "workPlaceFlag": formik.values.rDealHandlabel.toString(),
             "remId": 0,
-            "divisionId": divId,
+            "divisionId":  parseInt(divId),
             "message": ""
         };
         await api
@@ -190,9 +190,9 @@ export default function WorkPlace() {
     // };
 
     const arr = [
-        { label: "Awaited", value: "1" },
+        { label: "awaited", value: "1" },
         { label: "Closed", value: "2" },
-        { label: "Park/Archive", value: "3" },
+        { label: "Parked/Archived", value: "3" },
     ];
 
     Division = arr;
@@ -204,7 +204,7 @@ export default function WorkPlace() {
             console.log("Division", Division);
             const collectData = {
                 "userid": userId,
-                "divisionId": divId,
+                "divisionId": parseInt(divId),
                 "type": "WP"
             };
             console.log("collectData", collectData);
@@ -235,39 +235,55 @@ export default function WorkPlace() {
                     },
                     {
                         field: "fileNm",
-                        headerName: "File Name",
+                        headerName:  t("text.FileNo"),
                         flex: 1,
                         headerClassName: "MuiDataGrid-colCell",
+                        renderCell: (params) => {
+                            return [
+                              <a
+                                onClick={() => navigate('/E-Office/ViewEditFile')}
+                                style={{
+                                  color: "blue",
+                                  cursor: "pointer",
+                                  textDecoration: "underline",
+                                }}
+                              >
+                                {params.value}
+                              </a>,
+                            ];
+                          },
                     },
                     {
                         field: "cSubject",
-                        headerName: "Subject",
+                        headerName: t("text.Subject"),
                         flex: 1,
                         headerClassName: "MuiDataGrid-colCell",
                     },
                     {
                         field: "fileStatus",
-                        headerName: "File Status ",
+                        headerName: t("text.FileStatus"),
                         flex: 1,
                         headerClassName: "MuiDataGrid-colCell",
                     },
+
+                    
                     {
-                        field: "rSubject",
-                        headerName: "File Created By",
+                        field: "createdby",
+                        headerName:  t("text.CreatedBy"),
                         flex: 1,
                         headerClassName: "MuiDataGrid-colCell",
                     },
 
                     {
                         field: "updatedRemark",
-                        headerName: "Update Remark",
+                        headerName: t("text.UpdatedRemark"),
                         flex: 1,
                         headerClassName: "MuiDataGrid-colCell",
                     },
 
                     {
                         field: "rLetterSentOn",
-                        headerName: "Sent To",
+                        headerName:  t("text.SentTo"),
                         flex: 1,
                         headerClassName: "MuiDataGrid-colCell",
                         renderCell: (params) => {
@@ -289,8 +305,7 @@ export default function WorkPlace() {
                                             // formik.setFieldValue("id", params.row.fnId);
                                             formik.setFieldValue("fileNo", params.row.fnId);
                                             //formik.setFieldValue("rid", params.row.rid);
-                                            // formik.setFieldValue("rDealHands", params.row.Division[0]["value"]);
-                                            //formik.setFieldValue("rDealHandlabel", params.row.Division[0]["label"]);
+                                           
                                             const selectedDivision = params.row.Division.find(
                                                 (item: any) => item.value === event.target.value
                                             );
@@ -316,8 +331,8 @@ export default function WorkPlace() {
                         },
                     },
                     {
-                        field: "Review File",
-                        headerName: "Review File",
+                        field: "ReviewFile",
+                        headerName: t("text.ReviewFile"),
                         flex: 1,
                         headerClassName: "MuiDataGrid-colCell",
                         renderCell: (params) => {
@@ -327,10 +342,10 @@ export default function WorkPlace() {
                                 <Button
                                     variant="contained"
                                     color="primary"
-                                    onClick={() => navigate('/Committee/ViewEditFile')}
+                                    onClick={() => navigate('/E-Office/ViewEditFile')}
                                     style={{ height: "80%" }}
                                 >
-                                    View/Edit
+                                   {t("text.ViewEdit")}
                                 </Button>
 
                             ]

@@ -463,7 +463,7 @@ const UserManagementAdd = (props: Props) => {
 
               <Grid xs={12} sm={4} item>
                 <TextField
-                  type="text"
+                 
                   label={
                     <span>
                       {t("text.EnterMobileNo")}{" "}
@@ -479,6 +479,7 @@ const UserManagementAdd = (props: Props) => {
                     </span>
                   }
                   inputProps={{ maxLength: 10 }}
+                  type="number"
                   name="cuR_MOBILE"
                   id="cuR_MOBILE"
                   value={formik.values.cuR_MOBILE}

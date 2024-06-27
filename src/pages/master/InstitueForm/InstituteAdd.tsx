@@ -36,7 +36,7 @@ import HOST_URL from "../../../utils/Url";
 import { useTranslation } from "react-i18next";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import nopdf from "../../../assets/images/nopdf.png";
+// import nopdf from "../../../assets/images/nopdf.png";
 import api from "../../../utils/Url";
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -46,6 +46,7 @@ import ToastApp from "../../../ToastApp";
 import { ColorLens as ColorLensIcon } from "@mui/icons-material";
 import { SketchPicker } from "react-color";
 import CustomLabel from "../../../CustomLable";
+import nopdf from '../../../assets/images/imagepreview.jpg';
 
 const style = {
     position: "absolute" as "absolute",
@@ -376,13 +377,7 @@ const InstituteAdd = (props: Props) => {
     const validationSchema = Yup.object({
 
         esYear: Yup.string()
-            .test(
-                'required',
-                t('text.reqYearOfEstablishment'),
-                function (value: any) {
-                    return value && value.trim() !== '';
-                }
-            )
+
             .matches(/^[0-9]+$/, t('text.EnterNoOnly')),
 
 
@@ -399,13 +394,7 @@ const InstituteAdd = (props: Props) => {
             .min(10, t('text.reqMinTenDigits')),
 
         noOfTeachers: Yup.string()
-            .test(
-                'required',
-                t('text.reqNoOfTeachers'),
-                function (value: any) {
-                    return value && value.trim() !== '';
-                }
-            )
+
             .matches(/^[0-9]+$/, t('text.EnterNoOnly')),
 
         session_year: Yup.string()
@@ -419,14 +408,18 @@ const InstituteAdd = (props: Props) => {
             .matches(/^[0-9]+$/, t('text.EnterNoOnly')),
 
         reAttenDuration: Yup.string()
-            .test(
-                'required',
-                t('text.reqReAtendenceDuration'),
-                function (value: any) {
-                    return value && value.trim() !== '';
-                }
-            )
+
             .matches(/^[0-9]+$/, t('text.EnterNoOnly')),
+
+        pincode: Yup.string()
+
+            .matches(/^[0-9]+$/, t('text.EnterNoOnly')),
+
+        email: Yup.string()
+            .matches(
+                /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+                'Enter a valid email address'
+            ),
 
 
 
@@ -534,7 +527,7 @@ const InstituteAdd = (props: Props) => {
     });
 
 
-    const requiredFields = ['esYear,phone,noOfTeachers,session_year,reAttenDuration'];
+    const requiredFields = ['esYear,phone,noOfTeachers,session_year,reAttenDuration,pincode,email'];
 
 
 
@@ -856,11 +849,13 @@ const InstituteAdd = (props: Props) => {
                                 <TextField
                                     id="esYear"
                                     name="esYear"
-                                    label={<CustomLabel text={t("text.YearOfEstablishment")} required={requiredFields.includes('esYear')}  />}
+                                    label={<CustomLabel text={t("text.YearOfEstablishment")} required={requiredFields.includes('esYear')} />}
                                     value={formik.values.esYear}
                                     placeholder={t("text.YearOfEstablishment")}
                                     size="small"
                                     fullWidth
+                                    type="number"
+                                    inputProps={{ min: "0", step: "1" }}
                                     style={{
                                         backgroundColor: 'white',
                                         borderColor: formik.touched.esYear && formik.errors.esYear ? 'red' : 'initial',
@@ -940,9 +935,11 @@ const InstituteAdd = (props: Props) => {
                                 <TextField
                                     id="phone"
                                     name="phone"
-                                    label={<CustomLabel text={t("text.MobNo")} required={requiredFields.includes('phone')}  />}
+                                    label={<CustomLabel text={t("text.MobNo")} required={requiredFields.includes('phone')} />}
                                     value={formik.values.phone}
                                     placeholder={t("text.MobNo")}
+                                    type="number"
+                                    inputProps={{ min: "0", step: "1" }}
                                     size="small"
                                     fullWidth
                                     style={{
@@ -957,7 +954,7 @@ const InstituteAdd = (props: Props) => {
                                 ) : null}
                             </Grid>
 
-                            
+
                             <Grid md={4} item>
                                 <TextField
 
@@ -997,10 +994,12 @@ const InstituteAdd = (props: Props) => {
                             <Grid md={4} item>
                                 <TextField
 
-                                    label={<CustomLabel text={t("text.PinCode")} />}
+                                    label={<CustomLabel text={t("text.PinCode")} required={requiredFields.includes('pincode')} />}
                                     value={formik.values.pincode}
                                     placeholder={t("text.PinCode")}
                                     size="small"
+                                    type="number"
+                                    inputProps={{ min: "0", step: "1" }}
 
                                     fullWidth
                                     name="pincode"
@@ -1009,16 +1008,21 @@ const InstituteAdd = (props: Props) => {
                                     onChange={formik.handleChange}
                                     onBlur={formik.handleBlur}
                                 />
+
+                                {formik.touched.pincode && formik.errors.pincode ? (
+                                    <div style={{ color: "red", margin: "5px" }}>{formik.errors.pincode}</div>
+                                ) : null}
                             </Grid>
 
 
                             <Grid md={4} item>
                                 <TextField
 
-                                    label={<CustomLabel text={t("text.Email")} />}
+                                    label={<CustomLabel text={t("text.Email")} required={requiredFields.includes('email')} />}
                                     value={formik.values.email}
                                     placeholder={t("text.Email")}
                                     size="small"
+                                   
 
                                     fullWidth
                                     name="email"
@@ -1027,6 +1031,9 @@ const InstituteAdd = (props: Props) => {
                                     onChange={formik.handleChange}
                                     onBlur={formik.handleBlur}
                                 />
+                                 {formik.touched.email && formik.errors.email ? (
+                                    <div style={{ color: "red", margin: "5px" }}>{formik.errors.email}</div>
+                                ) : null}
                             </Grid>
 
                             <Grid md={4} item>
@@ -1134,11 +1141,13 @@ const InstituteAdd = (props: Props) => {
                                 <TextField
                                     id="noOfTeachers"
                                     name="noOfTeachers"
-                                    label={<CustomLabel text={t("text.NoOfTeachers")} required={requiredFields.includes('noOfTeachers')}  />}
+                                    label={<CustomLabel text={t("text.NoOfTeachers")} required={requiredFields.includes('noOfTeachers')} />}
                                     value={formik.values.noOfTeachers}
                                     placeholder={t("text.NoOfTeachers")}
                                     size="small"
                                     fullWidth
+                                    type="number"
+                                    inputProps={{ min: "0", step: "1" }}
                                     style={{
                                         backgroundColor: 'white',
                                         borderColor: formik.touched.noOfTeachers && formik.errors.noOfTeachers ? 'red' : 'initial',
@@ -1186,9 +1195,11 @@ const InstituteAdd = (props: Props) => {
                                 <TextField
                                     id="session_year"
                                     name="session_year"
-                                    label={<CustomLabel text={t("text.SessionYear")} required={requiredFields.includes('session_year')}  />}
+                                    label={<CustomLabel text={t("text.SessionYear")} required={requiredFields.includes('session_year')} />}
                                     value={formik.values.session_year}
                                     placeholder={t("text.SessionYear")}
+                                    type="number"
+                                    inputProps={{ min: "0", step: "1" }}
                                     size="small"
                                     fullWidth
                                     style={{
@@ -1207,9 +1218,11 @@ const InstituteAdd = (props: Props) => {
                                 <TextField
                                     id="reAttenDuration"
                                     name="reAttenDuration"
-                                    label={<CustomLabel text={t("text.ReAtendenceDuration")} required={requiredFields.includes('reAttenDuration')}  />}
+                                    label={<CustomLabel text={t("text.ReAtendenceDuration")} required={requiredFields.includes('reAttenDuration')} />}
                                     value={formik.values.reAttenDuration}
                                     placeholder={t("text.ReAtendenceDuration")}
+                                    type="number"
+                                    inputProps={{ min: "0", step: "1" }}
                                     size="small"
                                     fullWidth
                                     style={{

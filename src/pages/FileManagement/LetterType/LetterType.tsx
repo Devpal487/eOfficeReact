@@ -27,8 +27,9 @@ import { toast } from "react-toastify";
 import ToastApp from "../../../ToastApp";
 import { usePermissionData } from "../../../usePermissionData";
 import DeleteIcon from "@mui/icons-material/Delete";
-import {getId} from '../../../utils/Constant'
+import { getId } from '../../../utils/Constant'
 import CustomDataGrid from "../../../utils/CustomDatagrid";
+import CustomLabel from "../../../CustomLable";
 
 export default function LetterType() {
     const { i18n, t } = useTranslation();
@@ -54,7 +55,7 @@ export default function LetterType() {
         };
         console.log("collectData " + JSON.stringify(collectData));
         api
-            .delete( `LetterType/DeleteLetterType`, {data:collectData})
+            .delete(`LetterType/DeleteLetterType`, { data: collectData })
             .then((response) => {
                 if (response.data.isSuccess) {
                     toast.success(response.data.mesg);
@@ -92,7 +93,7 @@ export default function LetterType() {
         try {
             api
                 .post(`LetterType/GetLetterType`, collectData)
-                .then((res:any) => {
+                .then((res: any) => {
                     console.log("result" + JSON.stringify(res.data.data));
                     const data = res.data.data;
                     const arr = data.map((item: any, index: any) => ({
@@ -158,13 +159,13 @@ export default function LetterType() {
                             },
                             {
                                 field: "lName",
-                                headerName:"Letter Name",
+                                headerName: "Letter Name",
                                 flex: 1,
                                 headerClassName: "MuiDataGrid-colCell",
                             },
                             {
                                 field: "lNameShortNM",
-                                headerName:"Short Name",
+                                headerName: "Short Name",
                                 flex: 1,
                                 headerClassName: "MuiDataGrid-colCell",
                             },
@@ -192,18 +193,18 @@ export default function LetterType() {
     const formik = useFormik({
         initialValues: {
             "lId": -1,
-  "lName": "",
-  "lNameShortNM": "",
-  "inst_id": 0,
-  "user_id": ID,
-  "createdDate": "2024-05-22T09:32:11.847Z",
-  "divisionid": 0
+            "lName": "",
+            "lNameShortNM": "",
+            "inst_id": 0,
+            "user_id": ID,
+            "createdDate": "2024-05-22T09:32:11.847Z",
+            "divisionid": 0
         },
         validationSchema: validationSchema,
         onSubmit: async (values) => {
             values.lId = editId;
             console.log("check", values)
-            const response = await api.post(`LetterType/AddUpdateLetterType`,values);
+            const response = await api.post(`LetterType/AddUpdateLetterType`, values);
             if (response.data.isSuccess) {
                 setToaster(false);
                 toast.success(response.data.mesg);
@@ -279,14 +280,10 @@ export default function LetterType() {
                                     <Grid item xs={12} container spacing={3}>
 
                                         <Grid xs={5} sm={5} item>
-                                        <TextField
+                                            <TextField
                                                 id="lName"
                                                 type="text"
-                                                label={
-                                                    <span>
-                                                        {t("text.letterName")} {""}
-                                                    </span>
-                                                }
+                                                label={<CustomLabel text={t("text.letterName")} />}
                                                 placeholder={t("text.letterName")}
                                                 value={formik.values.lName}
                                                 size="small"
@@ -295,18 +292,14 @@ export default function LetterType() {
                                                 onChange={formik.handleChange}
                                                 onBlur={formik.handleBlur}
                                             />
-                                           
+
                                         </Grid>
 
                                         <Grid item xs={5} sm={5}>
                                             <TextField
                                                 id="lNameShortNM"
                                                 type="text"
-                                                label={
-                                                    <span>
-                                                        {t("text.letterShortName")} {""}
-                                                    </span>
-                                                }
+                                                label={<CustomLabel text={t("text.letterShortName")} />}
                                                 placeholder={t("text.letterShortName")}
                                                 value={formik.values.lNameShortNM}
                                                 size="small"
@@ -315,7 +308,7 @@ export default function LetterType() {
                                                 onChange={formik.handleChange}
                                                 onBlur={formik.handleBlur}
                                             />
-                                            
+
                                         </Grid>
 
                                         <Grid item xs={2}>
@@ -348,12 +341,12 @@ export default function LetterType() {
                             </div>
                         ) : (
                             <CustomDataGrid
-                            isLoading={isLoading}
-                            rows={rows}
-                            columns={columns}
-                            pageSizeOptions={[5, 10, 25, 50, 100]}
-                            initialPageSize={5}
-                        />
+                                isLoading={isLoading}
+                                rows={rows}
+                                columns={columns}
+                                pageSizeOptions={[5, 10, 25, 50, 100]}
+                                initialPageSize={5}
+                            />
                         )}
                     </Paper>
                 </Card>

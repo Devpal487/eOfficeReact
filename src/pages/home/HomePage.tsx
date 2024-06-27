@@ -1,4 +1,4 @@
-import { useEffect,useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   Card,
   Grid,
@@ -6,11 +6,11 @@ import {
   Divider,
   Button,
   TextField,
-  Stack,    
+  Stack,
   IconButton,
   Paper,
   CircularProgress,
-   FormControl,
+  FormControl,
   RadioGroup,
   FormControlLabel,
   Select,
@@ -33,7 +33,7 @@ import { CloseIcons } from "../../utils/icons";
 import ToastApp from "../../ToastApp";
 import ButtonWithLoader from "../../utils/ButtonWithLoader";
 // import { green } from '@mui/material/colors';
-import { getinstId, getdivisionId,getId } from "../../utils/Constant";
+import { getinstId, getdivisionId, getId } from "../../utils/Constant";
 import CustomDataGrid from "../../utils/CustomDatagrid";
 import CustomLabel from "../../CustomLable";
 export const options1 = {
@@ -47,18 +47,23 @@ export default function HomePage() {
   const { t } = useTranslation();
   const userid = getId();
   console.log("🚀 ~ HomePage ~ userid:", userid)
-  const divId:any = getdivisionId();
+  const divId: any = getdivisionId();
   console.log("🚀 ~ HomePage ~ divId:", divId)
-  const instId:any = getinstId();
+  const instId: any = getinstId();
   console.log("🚀 ~ HomePage ~ instId:", instId)
 
-  const[switchType, setSwitchType] = useState("1");
+  const [switchType, setSwitchType] = useState("1");
   const [ReviewModalData, setReviewModalData] = useState(false);
+  const [referenceNo, setReferenceNo] = useState("");
+  const [year, setYear] = useState("");
   const [columns, setColumns] = useState<any>([]);
   const [totalFile, setTotalFile] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [refno, setRefNo]= useState("");
-  const [refNoYr , setRefNoYr ]= useState("");
+  const [refno, setRefNo] = useState("");
+  const [refNoYr, setRefNoYr] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [selectedDivision, setSelectedDivision] = useState("-1");
 
   var Division: any[];
 
@@ -92,7 +97,7 @@ export default function HomePage() {
     });
   };
 
-  const getAuthDevision = (id:any) => {
+  const getAuthDevision = (id: any) => {
     const collectData = {
       divisionid: parseInt(id),
     };
@@ -113,14 +118,15 @@ export default function HomePage() {
       rFileNumber: "",
       rid: "",
       rDealHands: "",
-      rDealHandlabel:""
+      rDealHandlabel: ""
 
     },
     onSubmit: async (values) => { },
   });
-  
+
 
   const getSpMovement = async () => {
+    // setLoading(true);
     const value = {
       "eid": userid?.toString(),
       "hdnFileNumber": formik.values.rFileNumber.toString() || "",
@@ -137,10 +143,13 @@ export default function HomePage() {
           toast.success(res.data.mesg);
           fetchTotalFile();
           handleCloseReviewModal();
-          formik.setFieldValue("rRemark","");
-        }else{
+          formik.setFieldValue("rRemark", "");
+          //setLoading(false); 
+        } else {
           toast.error(res.data.mesg);
+          //setLoading(false); 
         }
+        // setLoading(false); 
       });
   };
 
@@ -168,12 +177,12 @@ export default function HomePage() {
 
       setTotalFile(sortedData);
       setIsLoading(false);
-      
+
       if (data.length > 0) {
         const columns: GridColDef[] = [
           {
             field: "rNumber",
-            headerName: "Ref. No",
+            headerName: t('text.RefNo'),
             flex: 1,
             headerClassName: "MuiDataGrid-colCell",
             renderCell: (params) => {
@@ -194,61 +203,62 @@ export default function HomePage() {
 
           {
             field: "letterBy",
-            headerName: "Type",
+            headerName: t('text.Type'),
             width: 400,
             flex: 1,
             headerClassName: "MuiDataGrid-colCell",
           },
           {
             field: "rPriority",
-            headerName: "Priority",
+            headerName: t('text.Priority'),
             flex: 1,
             headerClassName: "MuiDataGrid-colCell",
-            renderCell:(params)=>{
-                let priorityText = "";
-                switch (params.value) {
-                  case "1":
-                    priorityText = "Most Immediate";
-                    break;
-                  case "2":
-                    priorityText = "Immediate";
-                    break;
-                  case "3":
-                    priorityText = "Ordinary";
-                    break;
-                  default:
-                    priorityText = "";
-                }
-                return <span>{priorityText}</span>;
+            renderCell: (params) => {
+              let priorityText = "";
+              switch (params.value) {
+                case "1":
+                  priorityText = "Most Immediate";
+                  break;
+                case "2":
+                  priorityText = "Immediate";
+                  break;
+                case "3":
+                  priorityText = "Ordinary";
+                  break;
+                default:
+                  priorityText = "";
+              }
+              return <span>{priorityText}</span>;
             }
           },
 
           {
             field: "rSubject",
-            headerName: "Subject ",
+            headerName: t('text.Subject'),
             flex: 1,
             headerClassName: "MuiDataGrid-colCell",
           },
 
           {
             field: "fileNm",
-            headerName: "File Number",
+            headerName: t('text.FileNo'),
             flex: 1,
             headerClassName: "MuiDataGrid-colCell",
           },
           {
             field: "",
-            headerName: "Moved To",
+            headerName: t('text.MovedTo'),
             flex: 2,
             headerClassName: "MuiDataGrid-colCell",
             renderCell: (params) => {
-             
-                if (params.row.authorityType === null) {
-                  return ( <Select
+
+              if (params.row.authorityType === null) {
+                return (<Select
+                  value={selectedDivision}
                   onChange={(event) => {
-                    if(!params.row.rFileNumber){
+                    if (!params.row.rFileNumber) {
                       toast.error("Please first assign File Number then proceed further....")
-                    }else{
+                    } else {
                       console.log("file number", params.row.rFileNumber)
                       setReviewModalData(true);
                       setRefNo(params.row.refNo);
@@ -257,47 +267,51 @@ export default function HomePage() {
                       formik.setFieldValue("rFileNumber", params.row.rFileNumber);
                       formik.setFieldValue("rid", params.row.rid);
                       const selectedDivision = params.row.Division.find(
-                        (item:any) => item.value === event.target.value
+                        (item: any) => item.value === event.target.value
                       );
                       if (selectedDivision) {
                         formik.setFieldValue("rDealHands", selectedDivision.value);
                         formik.setFieldValue("rDealHandlabel", selectedDivision.label);
-                      }else {
+                        // setSelectedDivision(selectedDivision.value);
+                      } else {
                         formik.setFieldValue("rDealHands", "");
                         formik.setFieldValue("rDealHandlabel", "");
+                        // setSelectedDivision("-1");
                       }
+                      setSelectedDivision(selectedDivision.value);
                     }
-                    }}
+                  }}
                   fullWidth
                   size="small"
                 >
-                  <MenuItem value="-1" >Select Division</MenuItem>
+                  <MenuItem value="-1" >{t('text.SelectDivision')}</MenuItem>
                   {params?.row?.Division?.map((item: any) => (
-                      <MenuItem key={item.value} value={item.value}>{item.label}</MenuItem>
-                    ))}
+                    <MenuItem key={item.value} value={item.value}>{item.label}</MenuItem>
+                  ))}
                 </Select>)
-                }else{
-                  return params.row.authorityType;
-                }
+              } else {
+                return params.row.authorityType;
+              }
             },
           },
 
+
           {
             field: "rSendAdrs",
-            headerName: "Send By",
+            headerName: t('text.SendBy'),
             flex: 1,
             headerClassName: "MuiDataGrid-colCell",
           },
           {
             field: "rLetterSentOn",
-            headerName: "Send Date",
+            headerName: t('text.SendDate'),
             flex: 1,
             headerClassName: "MuiDataGrid-colCell",
           },
 
           {
             field: "rReceivedDate",
-            headerName: "Received Date",
+            headerName: t('text.ReceivedDate'),
             flex: 1,
             headerClassName: "MuiDataGrid-colCell",
           },
@@ -313,40 +327,41 @@ export default function HomePage() {
     ...column,
   }));
 
-  const[newrefNoYr , setNewrefNoYr] = useState(2024);
-  const[newrefNo , setNewrefNo] = useState("");
+  const [newrefNoYr, setNewrefNoYr] = useState(2024);
+  const [newrefNo, setNewrefNo] = useState("");
 
-  const getReferencesave =async()=>{
+  const getReferencesave = async () => {
     let collectData;
-    if (newrefNo !== null && newrefNo !== "" && newrefNoYr !== null ) {
-    collectData={
-      "inst_id": parseInt(instId),
-      "divid": parseInt(divId),
-      "refNoYr": newrefNoYr,
-      "pstart": newrefNo
-    };}else{
+    if (newrefNo !== null && newrefNo !== "" && newrefNoYr !== null) {
+      collectData = {
+        "inst_id": parseInt(instId),
+        "divid": parseInt(divId),
+        "refNoYr": newrefNoYr,
+        "pstart": newrefNo
+      };
+    } else {
       toast.error("Please fill Ref. No and Year before proceed further...")
     }
     console.log("🚀 ~ getReferencesave ~ collectData:", collectData)
 
     await api.post(`RefferenceNumber/GetRefferenceNo`, collectData)
-    .then((res) => {
-      console.log("🚀 ~ .then ~ res:", res)
-    })
+      .then((res) => {
+        console.log("🚀 ~ .then ~ res:", res)
+      })
   };
 
   return (
-    <div  style={{
+    <div style={{
       padding: "5px 5px",
       backgroundColor: "#ffffff",
       borderRadius: "5px",
       marginTop: "5px",
       border: ".5px solid #00009c",
-  }}>
-    <ToastApp/>
+    }}>
+      <ToastApp />
       <div
         style={{
-          backgroundColor:"#fff",
+          backgroundColor: "#fff",
           marginTop: "10px",
           display: "flex",
           alignItems: "center",
@@ -359,104 +374,118 @@ export default function HomePage() {
         }}
       >
 
-              <Grid sm={12} md={12} xs={12} >
-                <FormControl
-                  style={{
-                    display: "flex",
-                    flexDirection: "row",
-                    alignItems: "center",
-                    gap: 50,
-                    // marginTop: "13px",
-                    marginLeft: "12px",
-                    marginRight: "12px",
+        <Grid sm={12} md={12} xs={12} >
+          <FormControl
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center",
+              gap: 50,
+              // marginTop: "13px",
+              marginLeft: "12px",
+              marginRight: "12px",
+            }}
+          >
+            <Grid>
+              <FormLabel>{t('text.SwitchTo')}:</FormLabel>
+            </Grid>
+            <Grid sx={{
+              marginLeft: "40px"
+            }} >
+              <RadioGroup
+                row
+                aria-labelledby="demo-row-radio-buttons-group-label"
+                name="row-radio-buttons-group"
+                defaultValue="1"
+                onChange={(event: any) => {
+                  setSwitchType(event.target.value);
+                }}
+              >
+                <FormControlLabel
+                  value="1"
+                  control={<Radio />}
+                  label={t("text.RefrenceNoDiary")}
+                />
+                <FormControlLabel
+                  value="2"
+                  control={<Radio />}
+                  label={t('text.ReviewOficerInbox')}
+                  sx={{
+                    marginLeft: "40px"
                   }}
-                >
-                  <Grid>
-                    <FormLabel>Switch to:</FormLabel>
-                  </Grid>
-                  <Grid  sx={{
-                            marginLeft:"40px"
-                          }} >
-                    <RadioGroup
-                      row
-                      aria-labelledby="demo-row-radio-buttons-group-label"
-                      name="row-radio-buttons-group"
-                      defaultValue="1"
-                      onChange={(event:any) => {
-                        setSwitchType(event.target.value);
-                      }}
-                      >
-                      <FormControlLabel
-                        value="1"
-                        control={<Radio />}
-                        label={t("text.RefrenceNoDiary")}
-                        />
-                      <FormControlLabel
-                        value="2"
-                        control={<Radio />}
-                        label="Review Officer Inbox"
-                          sx={{
-                            marginLeft:"40px"
-                          }}
-                      />
-                    </RadioGroup>
-                  </Grid>
-                </FormControl>
-              </Grid>
+                />
+              </RadioGroup>
+            </Grid>
+          </FormControl>
+        </Grid>
 
       </div>
-    
 
-{ReviewModalData && (
-                <Modal open={true} >
-                  <Card
-                    style={{
-                      width: "80%",
-                      justifyContent: "center",
-                      alignItems: "center",
-                      backgroundColor: "#E9FDEE",
-                      border: ".5px solid #42AEEE",
-                      marginTop: "35vh",
-                      marginLeft: "10%"
-                    }}
-                  >
-                    <Paper
-                      sx={{
-                        width: "100%",
-                        overflow: "hidden"
-                      }}
-                      style={{ padding: "10px", justifyContent: "center" }}
-                    >
-                      <Grid xs={12} display="flex" alignItems="center" justifyContent="space-between" >
 
-                      <Typography fontWeight={600} color="#000" fontSize="20px">Remark to {formik.values.rDealHandlabel} for the Letter {refno}--{refNoYr}</Typography>
-                      
-                      <IconButton onClick={handleCloseReviewModal} aria-label="close" >
-                        <CloseIcons/>
-                      </IconButton>
+      {ReviewModalData && (
+        <Modal open={true} >
+          <Card
+            style={{
+              width: "80%",
+              justifyContent: "center",
+              alignItems: "center",
+              backgroundColor: "#E9FDEE",
+              border: ".5px solid #42AEEE",
+              marginTop: "35vh",
+              marginLeft: "10%"
+            }}
+          >
+            <Paper
+              sx={{
+                width: "100%",
+                overflow: "hidden",
+                "& .MuiDataGrid-colCell": {
+                  backgroundColor: "#42AEEE",
+                  color: "#fff",
+                  fontSize: 17,
+                  fontWeight: 900
+                }
+              }}
+              style={{ padding: "10px", justifyContent: "center" }}
+            >
+              <Grid xs={12} display="flex" alignItems="center" justifyContent="space-between" >
 
-                      </Grid>
+                <Typography fontWeight={600} color="#000" fontSize="20px">Remark to {formik.values.rDealHandlabel} for the Letter {refno}--{refNoYr}</Typography>
+                {/* <Typography color="#000" ><CloseIcons/></Typography> */}
+                <IconButton
+                  // edge="end"
+                  onClick={() => {
+                    handleCloseReviewModal();
+                    setSelectedDivision("-1");
 
-                      <ConfirmDialog />
-                      <Divider />
-                      <Box height={10} />
-                      <Stack direction="column" spacing={2} classes="my-2 mb-2" justifyContent={"center"}>
-                        <TextField
-                          label={<CustomLabel text={t("text.Remark")} required={false}  />}
-                          // value={formik.values.rRemark}
-                          onChange={formik.handleChange}
-                          onBlur={formik.handleBlur}
-                          placeholder={t("text.Remark")}
-                          name="rRemark"
-                          id="rRemark"
-                          
-                          size="medium"
-                          style={{ backgroundColor: "white", width: '100%' }}
-                          fullWidth
-                          multiline
-                          rows={4}
-                        />
-                        {/* <Box  sx={{ display: 'inline-block', position: 'relative' }} >
+                  }}
+                  aria-label="close"
+                //sx={{ color: "#fff", position: "absolute", right: 20, top: 5 }}
+                >
+                  <CloseIcons />
+                </IconButton>
+              </Grid>
+
+              <ConfirmDialog />
+              <Divider />
+              <Box height={10} />
+              <Stack direction="column" spacing={2} classes="my-2 mb-2" justifyContent={"center"}>
+                <TextField
+                  label={<CustomLabel text={t("text.Remark")} required={false} />}
+                  // value={formik.values.rRemark}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  placeholder={t("text.Remark")}
+                  name="rRemark"
+                  id="rRemark"
+
+                  size="medium"
+                  style={{ backgroundColor: "white", width: '100%' }}
+                  fullWidth
+                  multiline
+                  rows={4}
+                />
+                {/* <Box  sx={{ display: 'inline-block', position: 'relative' }} >
                           <Button
                             variant="contained"
 
@@ -489,7 +518,7 @@ export default function HomePage() {
         />
       )}
                         </Box> */}
-                        {/* <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                {/* <Box sx={{ display: 'flex', alignItems: 'center' }}>
       
       <Box sx={{ m: 1, position: 'relative' }}>
         <Button
@@ -518,21 +547,21 @@ export default function HomePage() {
         )}
       </Box>
     </Box> */}
-     <ButtonWithLoader buttonText="Move" onClickHandler={getSpMovement} />
-                      </Stack>
-                    </Paper>
-                  </Card>
-                </Modal>
-              )}
+                <ButtonWithLoader buttonText="Move" onClickHandler={getSpMovement} />
+              </Stack>
+            </Paper>
+          </Card>
+        </Modal>
+      )}
 
 
 
-        {switchType === "1" && (
-          <>
-               <Grid sm={6} md={6} xs={6} sx={{backgroundColor:"#f0f0f0", marginTop:"10px", padding:"10px", border: "1px solid #ccc", boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)", transition: "all 0.3s ease",borderRadius:"12px"}} 
-              //  display="flex" alignItems="center" justifyContent="space-around"
-               >
-                 {/*       <Grid xs={2}>
+      {switchType === "1" && (
+        <>
+          <Grid sm={6} md={6} xs={6} sx={{ backgroundColor: "#f0f0f0", marginTop: "10px", padding: "10px", border: "1px solid #ccc", boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)", transition: "all 0.3s ease", borderRadius: "12px" }}
+          //  display="flex" alignItems="center" justifyContent="space-around"
+          >
+            {/*       <Grid xs={2}>
                       <Button
                       type="submit"
                       fullWidth
@@ -588,79 +617,79 @@ export default function HomePage() {
                     </Button>
                       </Grid>
 */}
-                      <form >
-                    <Grid item xs={12} container spacing={1}>
+            <form >
+              <Grid item xs={12} container spacing={3}>
 
-                      <Grid  md={5.5} item>
-                        <TextField
-                          // label="Enter Ref. No."
-                          label={<CustomLabel text="Enter Ref. No." required={false}  />}
-                          value={newrefNo}
-                          placeholder="Enter Ref. No."
-                          size="small"
-                          fullWidth
-                          style={{backgroundColor: 'white'}}
-                          onChange={(e:any)=>{
-                            setNewrefNo(e.target.value)
-                          }}
-                        />
-                      </Grid>
+                <Grid xs={5} sm={5} item>
+                  <TextField
+                    // label="Enter Ref. No."
+                    label={<CustomLabel text={t('text.EnterRefNo')} required={false} />}
+                    value={newrefNo}
+                    placeholder={t('text.EnterRefNo')}
+                    size="small"
+                    fullWidth
+                    style={{ backgroundColor: 'white' }}
+                    onChange={(e: any) => {
+                      setNewrefNo(e.target.value)
+                    }}
+                  />
+                </Grid>
 
-                      <Grid item  md={5.5}>
-                        <TextField
-                          // id="zoneCode"
-                          // name="zoneCode"
-                          // label="Enter Year"
-                          label={<CustomLabel text="Enter Year" required={false}  />}
-                          value={newrefNoYr}
-                          placeholder="Enter Year"
-                          size="small"
-                          fullWidth
-                          style={{ backgroundColor: "white" }}
-                          onChange={(e:any)=>{
-                            setNewrefNoYr(parseInt(e.target.value))
-                          }}
-                        />
+                <Grid item xs={5} sm={5}>
+                  <TextField
+                    // id="zoneCode"
+                    // name="zoneCode"
+                    // label="Enter Year"
+                    label={<CustomLabel text={t('text.EnterYear')} required={false} />}
+                    value={newrefNoYr}
+                    placeholder={t('text.EnterYear')}
+                    size="small"
+                    fullWidth
+                    style={{ backgroundColor: "white" }}
+                    onChange={(e: any) => {
+                      setNewrefNoYr(parseInt(e.target.value))
+                    }}
+                  />
 
-                      </Grid>
+                </Grid>
 
-                      <Grid item md={0.5}>
-                        <Button variant="contained" size="large" onClick={fetchTotalFile}>
-                          Start
-                        </Button>
-                      </Grid>
-                    </Grid>
-                      </form>
-                  </Grid> 
-                  <br/>
-                  <Paper
-          sx={{
-            width: "100%",
-            overflow: "hidden",
-            "& .MuiDataGrid-colCell": {
-              backgroundColor: "#2B4593",
-              color: "#fff",
-              fontSize: 15,
-              fontWeight:900
-            },
-          }}
-          style={{ padding: "10px",}}
-        >
-          <ConfirmDialog />
+                <Grid item xs={2}>
+                  <Button variant="contained" size="large" onClick={fetchTotalFile}>
+                    {t('text.Start')}
+                  </Button>
+                </Grid>
+              </Grid>
+            </form>
+          </Grid>
+          <br />
+          <Paper
+            sx={{
+              width: "100%",
+              overflow: "hidden",
+              "& .MuiDataGrid-colCell": {
+                backgroundColor: "#2B4593",
+                color: "#fff",
+                fontSize: 15,
+                fontWeight: 900
+              },
+            }}
+            style={{ padding: "10px", }}
+          >
+            <ConfirmDialog />
 
-                      <CustomDataGrid 
-                      isLoading={isLoading}
-                      rows={totalFile}
-                      columns={adjustedColumns}
-                      pageSizeOptions={[5, 10, 25, 50, 100]}
-                      initialPageSize={5}
-                      />
+            <CustomDataGrid
+              isLoading={isLoading}
+              rows={totalFile}
+              columns={adjustedColumns}
+              pageSizeOptions={[5, 10, 25, 50, 100]}
+              initialPageSize={5}
+            />
 
-                  </Paper>
-                </>
-        )}
+          </Paper>
+        </>
+      )}
 
-{switchType === "2" && (<ReviewOficer/>)}
+      {switchType === "2" && (<ReviewOficer />)}
     </div>
   );
 }

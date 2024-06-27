@@ -49,18 +49,18 @@ export default function BulkClosed() {
     const { t } = useTranslation();
 
     const navigate = useNavigate();
-    
+
     const userId = getId();
 
     const instId = getinstId();
     // console.log("🚀 ~ ViewEditFile ~ userId:", userId);
     const divId = getdivisionId();
     // console.log("🚀 ~ ViewEditFile ~ divId:", divId);
-    
+
     const [selectAll, setSelectAll] = useState(false);
     const [selectedRows, setSelectedRows] = useState([]);
 
-    const handleSelectAllChange = (event:any) => {
+    const handleSelectAllChange = (event: any) => {
         const checked = event.target.checked;
         setSelectAll(checked);
         // if (checked) {
@@ -72,9 +72,9 @@ export default function BulkClosed() {
 
 
 
-    const handleCheckboxChange = (params:any) => {
+    const handleCheckboxChange = (params: any) => {
         // Handle checkbox change logic here
-        console.log( 'Row data:', params.row);
+        console.log('Row data:', params.row);
     };
 
     useEffect(() => {
@@ -135,7 +135,7 @@ export default function BulkClosed() {
 
                     {
                         field: "All",
-                        headerName: "All",
+                        headerName: t("text.All"),
                         flex: 1,
                         headerClassName: "MuiDataGrid-colCell",
 
@@ -152,7 +152,7 @@ export default function BulkClosed() {
                             return [
                                 <Checkbox
                                     checked={params.value}
-                                    onChange={(params:any) => handleCheckboxChange(params)}
+                                    onChange={(params: any) => handleCheckboxChange(params)}
                                 />
                             ]
                         },
@@ -161,36 +161,50 @@ export default function BulkClosed() {
 
                     {
                         field: "fileNm",
-                        headerName: "File Name",
+                        headerName:t("text.FileNo"),
                         flex: 1,
                         headerClassName: "MuiDataGrid-colCell",
+                        renderCell: (params) => {
+                            return [
+                                <a
+                                    onClick={() => navigate('/E-Office/ViewEditFile')}
+                                    style={{
+                                        color: "blue",
+                                        cursor: "pointer",
+                                        textDecoration: "underline",
+                                    }}
+                                >
+                                    {params.value}
+                                </a>,
+                            ];
+                        },
                     },
                     {
                         field: "cSubject",
-                        headerName: "Subject",
+                        headerName:t("text.Subject"),
                         flex: 1,
                         headerClassName: "MuiDataGrid-colCell",
                     },
                     {
                         field: "lastStaus",
-                        headerName: "Last Status ",
+                        headerName: t("text.LastStatus"),
                         flex: 1,
                         headerClassName: "MuiDataGrid-colCell",
                     },
                     {
                         field: "updatedRemark",
-                        headerName: "Updated Remark",
+                        headerName: t("text.UpdatedRemark"),
                         flex: 1,
                         headerClassName: "MuiDataGrid-colCell",
                     },
 
                     {
                         field: "createdby",
-                        headerName: "File Created By",
+                        headerName:t("text.FileCreatedBy"),
                         flex: 1,
                         headerClassName: "MuiDataGrid-colCell",
                     },
-                   
+
 
                 ];
                 setColumns(columns as any);

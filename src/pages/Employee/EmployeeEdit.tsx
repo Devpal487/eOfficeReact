@@ -682,7 +682,9 @@ const EmployeeEdit = (props: Props) => {
                 <TextField
                   id="empMobileNo"
                   name="empMobileNo"
-                  inputProps={{ maxLength: 10 }}
+                  inputProps={{  min: "0",maxLength: 10 }}
+                  type="number"
+                  
                   label={
                     <span>
                       {t("text.EnterMobileNo")} {" "}
@@ -814,6 +816,7 @@ const EmployeeEdit = (props: Props) => {
                   }
                   value={formik.values.empAddharNo}
                   placeholder={t("text.EnterAdharNumber")}
+                  type="number"
                   size="small"
                   fullWidth
                   style={{ backgroundColor: "white" }}
@@ -1337,7 +1340,8 @@ const EmployeeEdit = (props: Props) => {
                   placeholder={t("text.EnterPincode")}
                   inputProps={{ maxLength: 6 }}
                   size="small"
-                  type="text"
+                  type="number"
+                 
                   fullWidth
                   style={{ backgroundColor: "white" }}
                   onChange={formik.handleChange}

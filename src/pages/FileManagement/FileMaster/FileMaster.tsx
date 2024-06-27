@@ -26,6 +26,7 @@ import { getISTDate } from "../../../utils/Constant";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import CustomDataGrid from "../../../utils/CustomDatagrid";
+import CustomLabel from "../../../CustomLable";
 
 
 
@@ -309,12 +310,7 @@ export default function FileMaster() {
                                                     formik.setFieldTouched("fId", false);
                                                 }}
                                                 renderInput={(params) => (
-                                                    <TextField {...params} label={
-                                                        <span>
-                                                            {t("text.SelectFileType")} {""}
-                                                            
-                                                        </span>
-                                                    } />
+                                                    <TextField {...params} label={<CustomLabel text={t("text.SelectFileType")} required={requiredFields.includes('fId')} />} />
                                                 )}
                                             />
                                             {formik.touched.fId &&
@@ -329,11 +325,7 @@ export default function FileMaster() {
                                             <TextField
                                                 id="fileNm"
                                                 type="text"
-                                                label={
-                                                    <span>
-                                                        {t("text.FileNumber")} {""}
-                                                    </span>
-                                                }
+                                                label={<CustomLabel text={t("text.FileNumber")} required={requiredFields.includes('fileNm')} />}
                                                 placeholder={t("text.FileNumber")}
                                                 value={formik.values.fileNm}
                                                 size="small"

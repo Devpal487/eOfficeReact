@@ -19,6 +19,7 @@ import SwipeableDrawerRoute from "./SwipeableDrawerRoute";
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import KeyboardArrowUpTwoToneIcon from '@mui/icons-material/KeyboardArrowUpTwoTone';
 import ExpandMoreTwoToneIcon from '@mui/icons-material/ExpandMoreTwoTone';
+import CustomLabel from '../../../CustomLable';
 
 
 const style = {
@@ -799,7 +800,7 @@ const PageCreateEdit = (props: Props) => {
                                         formik.setFieldTouched("rlId", false);
                                     }}
                                     renderInput={(params) => (
-                                        <TextField {...params} label={t("text.SelectLetterType")} />
+                                        <TextField {...params} label={<CustomLabel text={t('text.SelectLetterType')} required={false} />} />
                                     )}
                                 />
                             </Grid>
@@ -822,7 +823,7 @@ const PageCreateEdit = (props: Props) => {
                                             formik.setFieldTouched("rPriority", false);
                                         }}
                                         renderInput={(params) => (
-                                            <TextField {...params} label={t("text.SelectPriority")} />
+                                            <TextField {...params} label={<CustomLabel text={t('text.SelectPriority')} required={false} />} />
                                         )}
                                     />
                                 </Grid>
@@ -845,7 +846,7 @@ const PageCreateEdit = (props: Props) => {
                                         formik.setFieldTouched("rLanguage", false);
                                     }}
                                     renderInput={(params) => (
-                                        <TextField {...params} label={t("text.SelectLanguage")} />
+                                        <TextField {...params} label={<CustomLabel text={t('text.SelectLanguage')} required={false} />} />
                                     )}
                                 />
                             </Grid>
@@ -867,7 +868,7 @@ const PageCreateEdit = (props: Props) => {
                                         formik.setFieldTouched("rFileType", false);
                                     }}
                                     renderInput={(params) => (
-                                        <TextField {...params} label={t("text.SelectFileType")} />
+                                        <TextField {...params} label={<CustomLabel text={t('text.SelectFileType')} required={false} />} />
                                     )}
                                 />
                             </Grid>
@@ -898,7 +899,7 @@ const PageCreateEdit = (props: Props) => {
                                             {...params}
                                             id="rFileNumber"
                                             name="rFileNumber"
-                                            label={t("text.SelectFileNo")}
+                                            label={<CustomLabel text={t('text.SelectFileNo')} required={false} />}
                                             InputProps={{
                                                 ...params.InputProps,
                                                 endAdornment: (
@@ -981,7 +982,7 @@ const PageCreateEdit = (props: Props) => {
                                                     renderInput={(params) => (
                                                         <TextField
                                                             {...params}
-                                                            label={t("text.SelectSection")}
+                                                            label={<CustomLabel text={t('text.SelectSection')} required={false} />}
                                                         />
                                                     )}
                                                 />
@@ -1007,7 +1008,7 @@ const PageCreateEdit = (props: Props) => {
                                                     renderInput={(params) => (
                                                         <TextField
                                                             {...params}
-                                                            label={t("text.SelectFileType")}
+                                                            label={<CustomLabel text={t('text.SelectFileType')} required={false} />}
                                                         />
                                                     )}
                                                 />
@@ -1054,7 +1055,7 @@ const PageCreateEdit = (props: Props) => {
 
                                             <Grid item xs={8}>
                                                 <TextField
-                                                    label={t("text.FileNo")}
+                                                    label={<CustomLabel text={t('text.FileNo')} required={false} />}
                                                     value={mergedValue}
                                                     placeholder={t("text.FileNo")}
                                                     size="small"
@@ -1076,7 +1077,7 @@ const PageCreateEdit = (props: Props) => {
                                                         fileSubmit();
                                                     }}
                                                 >
-                                                    Submit
+                                                    {t('text.Submit')}
                                                 </Button>
                                             </Grid>
                                         </Grid>
@@ -1091,7 +1092,7 @@ const PageCreateEdit = (props: Props) => {
                                         >
                                             <Grid item xs={8}>
                                                 <TextField
-                                                    label={t("text.FileNo")}
+                                                    label={<CustomLabel text={t('text.FileNo')} required={false} />}
                                                     value={formik.values.rFileNumber}
                                                     placeholder={t("text.FileNo")}
                                                     size="small"
@@ -1123,7 +1124,7 @@ const PageCreateEdit = (props: Props) => {
 
                             <Grid lg={4} md={4} xs={12} item>
                                 <TextField
-                                    label={t("text.EnterLetterNumber")}
+                                    label={<CustomLabel text={t('text.EnterLetterNumber')} required={false} />}
                                     value={formik.values.rLetterNumber}
                                     placeholder={t("text.EnterLetterNumber")}
                                     size="small"
@@ -1140,9 +1141,9 @@ const PageCreateEdit = (props: Props) => {
                                 <Grid lg={4} md={4} xs={12} item>
                                     <TextField
                                         type="date"
-                                        label={t("text.LetterSentOn")}
+                                        label={<CustomLabel text={t('text.LetterSentOn')} required={false} />}
                                         value={formik.values.rLetterSentOn}
-                                        placeholder={t("text.rLetterSentOn")}
+                                        placeholder={t("text.LetterSentOn")}
                                         size="small"
                                         InputLabelProps={{ shrink: true }}
                                         fullWidth
@@ -1158,7 +1159,7 @@ const PageCreateEdit = (props: Props) => {
                             <Grid lg={4} md={4} xs={12} item>
                                 <TextField
                                     type="date"
-                                    label={t("text.ReceivedData")}
+                                    label={<CustomLabel text={t('text.ReceivedData')} required={false} />}
                                     value={formik.values.rReceivedDate}
                                     name="rReceivedDate"
                                     id="rReceivedDate"
@@ -1175,7 +1176,7 @@ const PageCreateEdit = (props: Props) => {
                             <Grid lg={4} md={4} xs={12} item>
                                 <TextField
                                     type="date"
-                                    label={t("text.fileOpenDate")}
+                                    label={<CustomLabel text={t('text.fileOpenDate')} required={false} />}
                                     value={formik.values.fileOpenDate}
                                     name="fileOpenDate"
                                     id="fileOpenDate"
@@ -1194,7 +1195,7 @@ const PageCreateEdit = (props: Props) => {
                                     <TextField
                                         id="rPhone"
                                         name="rPhone"
-                                        label={t("text.EnterMobNo")}
+                                        label={<CustomLabel text={t('text.EnterMobNo')} required={false} />}
                                         value={formik.values.rPhone}
                                         placeholder={t("text.EnterMobNo")}
                                         size="small"
@@ -1210,7 +1211,7 @@ const PageCreateEdit = (props: Props) => {
                             {formik.values.letterBy !== "dispatch" && formik.values.letterBy !== "received/dispatch"  && (
                                 <Grid lg={4} md={4} xs={12} item>
                                     <TextField
-                                        label={t("text.SentBy")}
+                                        label={<CustomLabel text={t('text.SentBy')} required={false} />}
                                         // value={formik.values.rSendAdrs}
                                         placeholder={t("text.SentBy")}
                                         size="small"
@@ -1246,7 +1247,7 @@ const PageCreateEdit = (props: Props) => {
                                                     renderInput={(params) => (
                                                         <TextField
                                                             {...params}
-                                                            label={t("text.SendTo")}
+                                                            label={<CustomLabel text={t('text.SendTo')} required={false} />}
                                                         />
                                                     )}
                                                 />
@@ -1310,7 +1311,7 @@ const PageCreateEdit = (props: Props) => {
                                     renderInput={(params) => (
                                         <TextField
                                             {...params}
-                                            label={t("text.SelectRoot")}
+                                            label={<CustomLabel text={t('text.SelectRoot')} required={false} />}
                                             InputProps={{
                                                 ...params.InputProps,
                                                 endAdornment: (
@@ -1349,7 +1350,7 @@ const PageCreateEdit = (props: Props) => {
                             
                             <Grid md={12} item>
                                 <TextField
-                                    label={t("text.Subject")}
+                                    label={<CustomLabel text={t('text.Subject')} required={false} />}
                                     value={formik.values.rSubject}
                                     placeholder={t("text.Subject")}
                                     size="small"
@@ -1367,7 +1368,7 @@ const PageCreateEdit = (props: Props) => {
 
                             <Grid md={12} item>
                                 <TextField
-                                    label={t("text.SentBy")}
+                                    label={<CustomLabel text={t('text.SentBy')} required={false} />}
                                     value={formik.values.rSendAdrs}
                                     placeholder={t("text.SentBy")}
                                     size="small"
@@ -1384,7 +1385,7 @@ const PageCreateEdit = (props: Props) => {
 
                             <Grid md={12} item>
                                 <TextField
-                                    label={t("text.Discription")}
+                                    label={<CustomLabel text={t('text.Discription')} required={false} />}
                                     value={formik.values.rRemark}
                                     placeholder={t("text.Discription")}
                                     size="small"
@@ -1409,11 +1410,7 @@ const PageCreateEdit = (props: Props) => {
                                         type="file"
                                         inputProps={{ accept: "application/pdf" }}
                                         InputLabelProps={{ shrink: true }}
-                                        label={
-                                            <strong style={{ color: "#000" }}>
-                                                {t("text.EnterDocUpload")}
-                                            </strong>
-                                        }
+                                        label={<CustomLabel text={t('text.EnterDocUpload')} required={false} />}
                                         size="small"
                                         fullWidth
                                         style={{ backgroundColor: "white" }}
@@ -1500,7 +1497,7 @@ const PageCreateEdit = (props: Props) => {
                                     <TextField
                                         id="pdf"
                                         name="pdf"
-                                        label={t("text.AttachedFile")}
+                                        label={<CustomLabel text={t('text.AttachedFile')} required={false} />}
                                         // value={pdf}
                                         placeholder={t("text.AttachedFile")}
                                         size="small"

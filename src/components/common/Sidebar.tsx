@@ -149,6 +149,11 @@ const Drawer = styled(MuiDrawer, {
 
 export default function MiniDrawer({ items }: any) {
   const theme = useTheme();
+
+  let headerName = localStorage.getItem("name");
+  let appLogo :any = localStorage.getItem("applogo");
+  let sideLogo :any = localStorage.getItem("sidelogo");
+
   const [open, setOpen] = React.useState(true);
   const [menuOpen, setMenuOpen] = React.useState(false);
   const [profileDrawerOpen, setProfileDrawerOpen] = React.useState(false);
@@ -324,21 +329,6 @@ export default function MiniDrawer({ items }: any) {
     return ids;
   };
 
-
-
-  // const handleToggle = (id: number) => () => {
-  //   const currentIndex = check.indexOf(id);
-  //   const newChecked = [...check];
-
-  //   if (currentIndex === -1) {
-  //       newChecked.push(id);
-  //   } else {
-  //       newChecked.splice(currentIndex, 1);
-  //   }
-  //   setCheck(newChecked);
-  // };
-
-  //console.log("Checked value", check)
   const defaultSelectedNodeId = parseInt(localStorage.getItem('id') + "");
 
   useEffect(() => {
@@ -356,17 +346,14 @@ export default function MiniDrawer({ items }: any) {
    const newChecked = currentIndex === -1 ? [id] : [];
    const updatedChecked = newChecked.length === 1 ? [id] : [];
 
-
     if (currentIndex === -1) {
       newChecked.push(id);
     } else {
       newChecked.splice(currentIndex, 1);
     }
 
-   
     setCheck(updatedChecked);
 
-   
     setExpandedItems((prevExpanded) =>
       prevExpanded.includes(id.toString())
         ? prevExpanded.filter(item => item !== id.toString())
@@ -460,13 +447,6 @@ export default function MiniDrawer({ items }: any) {
     setOpenlogo(false);
   };
 
-  // const Logout = () => {
-  //   localStorage.removeItem("userdata");
-  //   localStorage.removeItem("useR_ID");
-  //   sessionStorage.removeItem("token");
-  //   navigate("/");
-  // };
-
   const Logout = useCallback(() => {
     localStorage.clear();
     sessionStorage.clear();
@@ -488,12 +468,6 @@ export default function MiniDrawer({ items }: any) {
 
   var data = JSON.parse(localStorage.getItem("userdata")!);
   var menudata = data[0]["userdetail"];
-  // var userDataString = localStorage.getItem("userdata");
-  // if (userDataString) {
-  //     var data = JSON.parse(userDataString);
-  //     var menudata = data[0]["userdetail"];
-  //   // console.log(userDetail);
-  // }
 
   var username =
     menudata[0]["firsT_NAME"] +
@@ -512,20 +486,16 @@ export default function MiniDrawer({ items }: any) {
   var currentLanguage = localStorage.getItem("preferredLanguage");
   var newLanguage = currentLanguage === "hi" ? "English" : "हिंदी";
 
-
   const userData = JSON.parse(localStorage.getItem("userdata")!) || {};
   const userDetail = userData[0]?.userdetail || [];
 
-
   const collapsehamndle = (index: any) => {
-    // console.log(index);
     if (index == collapseIndex) {
       setCollapseIndex(-1);
     } else {
       setCollapseIndex(index);
     }
   };
-  // console.log("items", items);
 
   const getImageForFirstName = (
     firsT_NAME: any,
@@ -562,7 +532,6 @@ export default function MiniDrawer({ items }: any) {
 
   function handleClicked(event: React.MouseEvent<HTMLDivElement, MouseEvent>) {
     event.preventDefault();
-    // console.info("You clicked a breadcrumb.");
   }
 
   const handleClickhome = () => {
@@ -575,10 +544,8 @@ export default function MiniDrawer({ items }: any) {
 
     const words = text.split(" ");
 
-    // Extract the first letter from each word
     const firstLetters = words.map((word: any) => word.charAt(0));
 
-    // Join the first letters back into a string
     const result = firstLetters.join("");
 
     return <div>{result}</div>;
@@ -597,7 +564,6 @@ export default function MiniDrawer({ items }: any) {
 
   return (
     <Box sx={{ display: "flex", }}>
-      {/* <CssBaseline /> */}
       <AppBar position="fixed" open={open} style={{}}>
         <Toolbar
           style={{
@@ -612,8 +578,6 @@ export default function MiniDrawer({ items }: any) {
               display: "flex",
               justifyContent: "flex-start",
               alignItems: "center",
-              // paddingTop: "10px",
-              // paddingBottom: "10px",
             }}
           >
             <IconButton
@@ -622,19 +586,17 @@ export default function MiniDrawer({ items }: any) {
               onClick={handleDrawerOpen}
               edge="start"
               sx={{
-                // marginRight: 5,
                 ...(open && { display: "none" }),
               }}
             >
               <MenuIcon fontSize="large" />
             </IconButton>
 
-            {!openlogo && <img src={logo} width={60} height={60} />}
+            {!openlogo && <img src={appLogo} width={60} height={60} />}
           </div>
 
           <div style={{ fontSize: "25px" }}>
-            {/* <Typewriter text="PanchShala" delay={120} infinite /> */}
-            {t("text.eoffice")}
+            {headerName}
           </div>
 
           <IconButton
@@ -862,7 +824,7 @@ export default function MiniDrawer({ items }: any) {
                     paddingBottom: "25px",
                   }}
                 >
-                  <img src={loged} width={100} height={100} />
+                  <img src={sideLogo} width={100} height={100} />
                 </div>
               ) : (
                 <div style={{ padding: 0 }}></div>

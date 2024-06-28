@@ -1,24 +1,17 @@
 import React, { useEffect, useState } from "react";
 import {
-    DataGrid,
     GridColDef,
-    GridToolbar,
 } from "@mui/x-data-grid";
-import axios from "axios";
-import HOST_URL from "../../../utils/Url";
 import Card from "@mui/material/Card";
 import {
     Box,
     Button,
     Divider,
     Stack,
-
     Typography,
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
-import Switch from "@mui/material/Switch";
 import { useNavigate, useLocation } from "react-router-dom";
-import Chip from "@mui/material/Chip";
 import { useTranslation } from "react-i18next";
 import Paper from "@mui/material/Paper";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
@@ -27,7 +20,6 @@ import ToastApp from "../../../ToastApp";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
 import CircularProgress from "@mui/material/CircularProgress";
-import moment from "moment";
 import api from "../../../utils/Url";
 import CustomDataGrid from "../../../utils/CustomDatagrid";
 
@@ -56,26 +48,26 @@ export default function Institute() {
 
     useEffect(() => {
         const dataString = localStorage.getItem("userdata");
-        // if (dataString) {
-        //     const data = JSON.parse(dataString);
-        //     if (data && data.length > 0) {
-        //         const userPermissionData = data[0]?.userPermission;
-        //         if (userPermissionData && userPermissionData.length > 0) {
-        //             const menudata = userPermissionData[0]?.parentMenu;
-        //             for (let index = 0; index < menudata.length; index++) {
-        //                 const childMenudata = menudata[index]?.childMenu;
-        //                 const pathrow = childMenudata.find(
-        //                     (x: any) => x.path === location.pathname
-        //                 );
-        //                 console.log("data", pathrow);
-        //                 if (pathrow) {
-        //                     setPermissionData(pathrow);
-        //                 }
-        //             }
-        //         }
-        //     }
-        // }
-        fetchDocData();
+        if (dataString) {
+            const data = JSON.parse(dataString);
+            if (data && data.length > 0) {
+                const userPermissionData = data[0]?.userPermission;
+                if (userPermissionData && userPermissionData.length > 0) {
+                    const menudata = userPermissionData[0]?.parentMenu;
+                    for (let index = 0; index < menudata.length; index++) {
+                        const childMenudata = menudata[index]?.childMenu;
+                        const pathrow = childMenudata.find(
+                            (x: any) => x.path === location.pathname
+                        );
+                        // console.log("data", pathrow);
+                        if (pathrow) {
+                            setPermissionData(pathrow);
+                            fetchDocData();
+                        }
+                    }
+                }
+            }
+        }
     }, []);
     // }, [isLoading]);
     const routeChangeAdd = () => {
@@ -161,7 +153,7 @@ export default function Institute() {
             const collectData = {
                 "id": -1
             };
-            console.log("collectData", collectData)
+            // console.log("collectData", collectData)
             const response = await api.post(
                  `Institute_Master/GetInstitute_Master`,
                 collectData

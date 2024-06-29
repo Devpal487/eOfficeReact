@@ -81,11 +81,8 @@ const InstituteEdit = (props: Props) => {
         { value: "-1", label: t("text.SelectParentInstitute") },
     ]);
 
-
     const [colorPickerAnchor, setColorPickerAnchor] = useState(null);
     const [colorPickerOver, setColorPickerOver] = useState(null);
-
-
 
     const handleIconClick = (event: any) => {
         setColorPickerAnchor(event.currentTarget);
@@ -103,7 +100,6 @@ const InstituteEdit = (props: Props) => {
         formik.setFieldValue("mOverColor", color.hex);
     };
 
-
     const handlePopoverClose = () => {
         setColorPickerAnchor(null);
     };
@@ -112,25 +108,10 @@ const InstituteEdit = (props: Props) => {
         setColorPickerOver(null);
     };
 
-
-
     const open = Boolean(colorPickerAnchor);
     const open1 = Boolean(colorPickerOver);
     const id = open ? "color-popover" : undefined;
     const id1 = open1 ? "color-popover" : undefined;
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     useEffect(() => {
         getCountry();
@@ -146,8 +127,6 @@ const InstituteEdit = (props: Props) => {
         getReportById();
 
     }, [])
-
-
 
     const getCountry = () => {
         const collectData = {
@@ -255,19 +234,12 @@ const InstituteEdit = (props: Props) => {
         api
             .post(`Institute_Master/GetInstitute_Master`, collectData)
             .then((res) => {
-                // console.log(
-                //   "result" + JSON.stringify(res.data.data[0]["signatureFile"])
-                // );
-
                 const Doc = res.data.data[0]["instLogo"];
                 if (Doc) {
                     formik.setFieldValue("instLogo", Doc);
                 }
             });
     };
-
-
-
 
     const getimgbyid = () => {
         const collectData = {
@@ -295,10 +267,6 @@ const InstituteEdit = (props: Props) => {
         api
             .post(`Institute_Master/GetInstitute_Master`, collectData)
             .then((res) => {
-                // console.log(
-                //   "result" + JSON.stringify(res.data.data[0]["signatureFile"])
-                // );
-
                 const Doc = res.data.data[0]["reportheaderimg"];
                 if (Doc) {
                     formik.setFieldValue("reportheaderimg", Doc);
@@ -315,10 +283,6 @@ const InstituteEdit = (props: Props) => {
         api
             .post(`Institute_Master/GetInstitute_Master`, collectData)
             .then((res) => {
-                // console.log(
-                //   "result" + JSON.stringify(res.data.data[0]["signatureFile"])
-                // );
-
                 const Doc = res.data.data[0]["reportfooterimg"];
                 if (Doc) {
                     formik.setFieldValue("reportfooterimg", Doc);
@@ -336,10 +300,6 @@ const InstituteEdit = (props: Props) => {
         api
             .post(`Institute_Master/GetInstitute_Master`, collectData)
             .then((res) => {
-                // console.log(
-                //   "result" + JSON.stringify(res.data.data[0]["signatureFile"])
-                // );
-
                 const Doc = res.data.data[0]["reportHeader"];
                 if (Doc) {
                     formik.setFieldValue("reportHeader", Doc);
@@ -347,23 +307,14 @@ const InstituteEdit = (props: Props) => {
             });
     };
 
-
-
-
-
-
     const [panOpens, setPanOpen] = React.useState(false);
     const [Opens, setOpen] = React.useState(false);
     const [OpenImg, setOpenImg] = React.useState(false);
     const [OpenFooter, setOpenFooter] = React.useState(false);
     const [OpenHeader, setOpenHeader] = React.useState(false);
-
-
-
-
     const [modalImg, setModalImg] = useState("");
-
     const [Img, setImg] = useState("");
+
     const handlePanClose = () => {
         setPanOpen(false);
     };
@@ -431,7 +382,6 @@ const InstituteEdit = (props: Props) => {
         });
     };
 
-
     const otherDocChangeHandler = async (event: any, params: any) => {
         if (event.target.files && event.target.files[0]) {
             const file = event.target.files[0];
@@ -442,35 +392,20 @@ const InstituteEdit = (props: Props) => {
                 formik.setFieldValue(params, base64);
                 console.log(base64);
             } else {
-                // Display an error message indicating that only PDF files are allowed
-                alert("Only  files are allowed to be uploaded.");
-                // Optionally, you can clear the file input field
+                toast.error("Only files are allowed to be uploaded.");
                 event.target.value = null;
             }
         }
     };
 
-
-
-
-
-
-
-
-
     let navigate = useNavigate();
-
 
     const back = useNavigate();
 
     const validationSchema = Yup.object({
 
         esYear: Yup.string()
-
             .matches(/^[0-9]+$/, t('text.EnterNoOnly')),
-
-
-
         phone: Yup.string()
             .test(
                 'required',
@@ -509,19 +444,10 @@ const InstituteEdit = (props: Props) => {
                 /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
                 'Enter a valid email address'
             ),
-
-
-
-
-
-
-
-
     });
 
-
-
     const [toaster, setToaster] = useState(false);
+    
     const formik = useFormik({
         initialValues: {
             id: location.state.id,
@@ -541,7 +467,6 @@ const InstituteEdit = (props: Props) => {
             resiNo: location.state.resiNo,
             pincode: location.state.pincode,
             email: location.state.email,
-
             fax: location.state.fax,
             website: location.state.website,
             districtArea: location.state.districtArea,
@@ -593,29 +518,19 @@ const InstituteEdit = (props: Props) => {
             parent_inst: location.state.parent_inst,
             instImage: location.state.instImage,
             instLogo: location.state.instLogo,
-
-
-
-
-
-
         },
 
         validationSchema: validationSchema,
-
         onSubmit: async (values) => {
             const response = await api.post(`Institute_Master/AddUpdateInstitute_Master`,
                 values
             );
             if (response.data.isSuccess) {
                 setToaster(false);
-
                 toast.success(response.data.mesg);
                 navigate("/master/Institute");
             } else {
-
                 setToaster(true);
-
                 toast.error(response.data.mesg);
             }
 
@@ -749,8 +664,18 @@ const InstituteEdit = (props: Props) => {
 
                             <Grid item md={12}>
 
-                                <FormControl component="fieldset">
+                                <FormControl component="fieldset" style={{
+                    display: "flex",
+                    flexDirection: "row",
+                    alignItems: "center",
+                    gap: 20,
+                    // marginTop: "13px",
+                    // marginLeft: "12px",
+                  }}> 
+                  <Grid>
                                     <FormLabel component="legend">{<CustomLabel text={t("text.OrgType")} />}</FormLabel>
+                                    </Grid>
+                                    <Grid>
                                     <RadioGroup
                                         row
                                         aria-label="inst_type"
@@ -764,6 +689,7 @@ const InstituteEdit = (props: Props) => {
                                         <FormControlLabel value="U" control={<Radio />} label={t("text.University")} />
                                         <FormControlLabel value="I" control={<Radio />} label={t("text.Institute")} />
                                     </RadioGroup>
+                                    </Grid>
                                 </FormControl>
                             </Grid>
 

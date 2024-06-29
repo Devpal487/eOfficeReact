@@ -12,7 +12,6 @@ const resources = {
       message: {},
       text: {
         PanchShala: "PanchShala",
-        // Dashboard
         TotalFile: " Total File",
         TotalEPCApproved: "Total EPC Approved",
         TotalEPCPending: "Total EPC Pending",
@@ -31,7 +30,6 @@ const resources = {
         Action: "Action",
         SrNo: "Sr No.",
         zoneName:"Name",
-
         zoneCode: "Code",
         Status: "Status",
         search: "Search",
@@ -317,8 +315,6 @@ const resources = {
         ethroughyby: "Enter Through whom",
         nodeID: "Select Jurisdiction",
         SendTo:"Send To",
-
-        // E-office
         eoffice: "Workflow Management System",
         FileMaster: "File Master",
         FileType: "File Type",
@@ -396,13 +392,13 @@ const resources = {
         EditAcademicSession: "Edit Academic Session",
         EditableFinancialYear: "Editable Financial Year",
         DefaultJurisdiction: "Default Jurisdiction",
-        OrgType: "Organization Type",
+        OrgType: "Organization Type :",
         Yes: "Yes",
         No: "No",
         School: "School",
         College: "College",
         University: "University",
-        Institute: "Organization",
+        Institute: "Institute",
         Address: "Address",
         District: "District",
         YearOfEstablishment: "Year Of Establishment",
@@ -576,7 +572,6 @@ const resources = {
         selectAuthority :"Select Authority",
         selectStatus :"Select Status",
         SelectDepartment :"Select Department ",
-
         selectCommGroupname:"Select Committee/Group Name",
         DateOfJoining:"Date Of Joining",
         SelectStatus:"Select Status",
@@ -595,7 +590,6 @@ const resources = {
         Draft:"Draft",
         reqCountryName:"Country Name Is Required",
         reqdeptName:"Department Name Is Required",
-
         RefNo:"Ref. No",
         MovedTo:"Moved To",
         ReviewOficerInbox:"Review Oficer Inbox",
@@ -646,11 +640,6 @@ const resources = {
         PageNoTo:"Page Number To",
         AddRow:"Add Row",
         PhysicalIndex:"Physical Index",
-
-
-
-
-
       },
 
       content: {},
@@ -664,7 +653,6 @@ const resources = {
       text: {
         SendTo:"भेजना",
         PanchShala: "पंचशाला",
-        // Dashboard
         TotalFile: "कुल फ़ाइल",
         TotalEPCApproved: "कुल ईपीसी मंजूर",
         TotalEPCPending: "कुल ईपीसी लंबित",
@@ -966,7 +954,6 @@ const resources = {
         NodeName: "नोड नाम",
         createRoute:"रूट बनाएं",
         Route:"रूट",
-        /// e-ffoice
         eoffice: "वर्कफ़्लो प्रबंधन प्रणाली",
         FileMaster: "फ़ाइल मास्टर",
         FileType: "फ़ाइल प्रकार",
@@ -1039,7 +1026,7 @@ const resources = {
         EditAcademicSession: "शैक्षणिक सत्र संपादित करें",
         EditableFinancialYear: "संपादन योग्य वित्तीय वर्ष",
         DefaultJurisdiction: "डिफ़ॉल्ट क्षेत्राधिकार",
-        OrgType: "संगठन प्रकार",
+        OrgType: "संगठन प्रकार :",
         Yes: "हाँ",
         No: "नहीं",
         School: "पाठशाला",
@@ -1083,7 +1070,6 @@ const resources = {
         ReportHeaderImg: "रिपोर्ट हेडर इमेज",
         ReportFooterImg: "रिपोर्ट पाद लेख छवि",
         ReportHeader: "रिपोर्ट हैडर",
-
         EnterNoOnly: "केवल नंबर दर्ज करें",
         reqYearOfEstablishment: "स्थापना वर्ष की आवश्यकता है",
         reqMobNo: "मोबाइल नंबर की आवश्यकता है",
@@ -1238,7 +1224,6 @@ const resources = {
         RfidSCanForFile:"फ़ाइल के लिए आरएफआईडी स्कैन",
         Draft:"प्रारूप",
         reqdeptName:"विभाग का नाम आवश्यक है",
-
         RefNo:"संदर्भ संख्या",
         MovedTo:"तक ले जाया गया",
         ReviewOficerInbox:"अधिकारी इनबॉक्स की समीक्षा",
@@ -1288,45 +1273,6 @@ const resources = {
          PageNoTo:"पृष्ठ संख्या को",
          AddRow:"पंक्ति जोड़ें",
          PhysicalIndex:"भौतिक सूचकांक",
-
-
-
-
-
-
-
-
-
-
-        
- 
-
-       
-
-
-        
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
       },
       content: {},

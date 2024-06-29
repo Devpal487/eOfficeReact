@@ -76,11 +76,11 @@ export default function RouteAdd() {
   ];
   const [toaster, setToaster] = useState(false);
 
-  const [isCommitteeChecked, setIsCommitteeChecked] = useState(false);
-  const [isCommitteeGroupChecked, setIsCommitteeGroupChecked] = useState(false);
+  const [issubRouteCheck, setIssubRouteCheck] = useState<any>(0);
+  const [isCommitteeChecked, setIsCommitteeChecked] = useState<any>(0);
+  const [isCommitteeGroupChecked, setIsCommitteeGroupChecked] = useState<any>(0);
   const [routeMembercycles, setRouteMembercycles] = useState<any>();
   const nodeId: any = localStorage.getItem("id");
-  // console.log("nodeId", nodeId)
 
   const [commGroupdetail , setCommGroupDetail] = useState<any>([])
   const [groupdetail , setGroupDetail] = useState<any>([])
@@ -262,12 +262,44 @@ export default function RouteAdd() {
       });
   };
 
-  const handleCheckboxChange = (event: any) => {
-    setIsCommitteeChecked(event.target.checked);
+  const handleCheckboxSubRouteChange = (event: any, index:any) => {
+    // console.log("🚀 ~ handleCheckboxChange ~ event:", event.target.checked === true ? 1:0)
+    let num :any =  event.target.checked === true ? 1:0;
+    // console.log("🚀 ~ handleCheckboxSubRouteChange ~ num:", num)
+    setRouteMembercycles((prev:any) => {
+      const updatedArray = [...prev];
+      updatedArray[index] = {
+        ...updatedArray[index],
+        subRouteCheck: num,
+      };
+      return updatedArray;
+    });
   };
 
-  const handleCheckboxesChange = (event: any) => {
+  const handleCheckboxChange = (event: any, index:any) => {
+    setIsCommitteeChecked(event.target.checked);
+    let num :any =  event.target.checked === true ? 1:0;
+    setRouteMembercycles((prev:any) => {
+      const updatedArray = [...prev];
+      updatedArray[index] = {
+        ...updatedArray[index],
+        committeeCheck: num,
+      };
+      return updatedArray;
+    });
+  };
+
+  const handleCheckboxesChange = (event: any,  index:any) => {
     setIsCommitteeGroupChecked(event.target.checked);
+    let num :any =  event.target.checked === true ? 1:0;
+    setRouteMembercycles((prev:any) => {
+      const updatedArray = [...prev];
+      updatedArray[index] = {
+        ...updatedArray[index],
+        groupCheck: num,
+      };
+      return updatedArray;
+    });
   };
 
   const handleNodeTypeChange = (newValue: any, cardIndex: number) => {
@@ -279,6 +311,42 @@ export default function RouteAdd() {
     handleCardTabChange(newValue, cardIndex, tabindex);
   };
 
+
+  const handleparameterPriorityChange = (event: React.SyntheticEvent<Element, Event>, value: number | null, index: number) => {
+    setRouteMembercycles((prev:any) => {
+      const updatedArray = [...prev];
+      updatedArray[index] = {
+        ...updatedArray[index],
+        parameterPriority: value?.toString(),
+      };
+      return updatedArray;
+    });
+  };
+
+  const handlecommitteePriorityChange = (event: React.SyntheticEvent<Element, Event>, value: number | null, index: number) => {
+    setRouteMembercycles((prev:any) => {
+      const updatedArray = [...prev];
+      updatedArray[index] = {
+        ...updatedArray[index],
+        committeePriority: value,
+      };
+      return updatedArray;
+    });
+  };
+
+  const handlegroupPriorityChange = (event: React.SyntheticEvent<Element, Event>, value: number | null, index: number) => {
+    setRouteMembercycles((prev:any) => {
+      const updatedArray = [...prev];
+      updatedArray[index] = {
+        ...updatedArray[index],
+        groupPriority: value,
+      };
+      return updatedArray;
+    });
+  };
+
+
+  
   const handleCardTabChange = (
     newValue: any,
     cardIndex: number,
@@ -294,12 +362,12 @@ export default function RouteAdd() {
       authorityLevel: cardIndex + 1,
       uploadDate: defaultValuestime,
 
-      nodeModes: newValue?.label == "undefined" ? "Authority" : newValue?.label,
-      nodeMode: newValue?.label == "undefined" ? "A" : newValue?.short,
-      nodeMod: newValue?.value == "undefined" ? 1 : newValue?.value,
+      nodeModes: newValue?.label == "undefined" || newValue?.label == undefined ? "Authority" : newValue?.label,
+      nodeMode: newValue?.label == "undefined" || newValue?.label == undefined? "A" : newValue?.short,
+      nodeMod: newValue?.value == "undefined" || newValue?.value == undefined? 1 : newValue?.value,
 
       tabindex: tabindex,
-      nodeType: newValue?.value == "undefined" ? 1 : newValue?.value,
+      nodeType: newValue?.value == "undefined" || newValue?.value == undefined? 1 : newValue?.value,
     };
     console.log("Updated routeMembercycless:", updatedRouteMembercycless);
     setRouteMembercycles(updatedRouteMembercycless);
@@ -318,7 +386,6 @@ export default function RouteAdd() {
     onSubmit: async (values) => {
       values.routeMembercycless = routeMembercycles;
       console.log("check", values);
-
       const response = await api.post(
         `RouteMemberCycle/AddUpdateRouteMemberCycle`,
         values
@@ -333,6 +400,8 @@ export default function RouteAdd() {
       }
     },
   });
+
+
 
   const handleAutocompleteChange = (
     event: React.SyntheticEvent,
@@ -351,7 +420,7 @@ export default function RouteAdd() {
       routeId: 0,
       officeId: 1,
       uploadDate: defaultValuestime,
-      subRoute: 0,
+      subRoute: "",
       committee: 0,
       memGroup: 0,
       nodeMod: 1,
@@ -363,10 +432,15 @@ export default function RouteAdd() {
       tabindex: 1,
       nodeType: 1,
       divisionid: DivId,
-      "parameterPriority": "",
-      "authName": "",
-      "auth_DeptName": "",
-      "auth_SectionName": ""
+      parameterPriority: "",
+      authName: "",
+      auth_DeptName: "",
+      auth_SectionName: "",
+      subRouteCheck: 0,
+      committeeCheck: 0,
+      groupCheck: 0,
+      committeePriority: 0,
+      groupPriority: 0,
     }));
     console.log("arr onchange", arr);
     setRouteMembercycles(arr);
@@ -375,6 +449,8 @@ export default function RouteAdd() {
     console.log("routeMembercycles onchange", routeMembercycles);
     setSelectedValue(value);
   };
+
+
 
   const renderCards = () => {
     if (selectedValue === null) {
@@ -452,14 +528,14 @@ export default function RouteAdd() {
                 {routeMembercycles[index].nodeType === 1 && (
                   <Tab
                     label="Authority"
-                    // onClick={() => {
-                    //   console.log("routeMembercycles", routeMembercycles);
-                    //   handleCardTabChange(
-                    //     { value: 1, label: "Authority", short: "A" },
-                    //     index,
-                    //     1
-                    //   );
-                    // }}
+                    onClick={() => {
+                      console.log("routeMembercycles", routeMembercycles);
+                      handleCardTabChange(
+                        { value: 1, label: "Authority", short: "A" },
+                        index,
+                        1
+                      );
+                    }}
                     value={1}
                     sx={{
                       backgroundColor:
@@ -475,14 +551,14 @@ export default function RouteAdd() {
                 )}
                 {routeMembercycles[index].nodeType === 2 && (
                   <Tab
-                    label="Committe"
-                    // onClick={() => {
-                    //   handleCardTabChange(
-                    //     { value: 2, label: "Committe", short: "C" },
-                    //     index,
-                    //     2
-                    //   );
-                    // }}
+                    label="Committee"
+                    onClick={() => {
+                      handleCardTabChange(
+                        { value: 2, label: "Committee", short: "C" },
+                        index,
+                        2
+                      );
+                    }}
                     value={2}
                     sx={{
                       backgroundColor:
@@ -499,13 +575,13 @@ export default function RouteAdd() {
                 {routeMembercycles[index].nodeType === 3 && (
                   <Tab
                     label="Group"
-                    // onClick={() => {
-                    //   handleCardTabChange(
-                    //     { value: 3, label: "Group", short: "G" },
-                    //     index,
-                    //     3
-                    //   );
-                    // }}
+                    onClick={() => {
+                      handleCardTabChange(
+                        { value: 3, label: "Group", short: "G" },
+                        index,
+                        3
+                      );
+                    }}
                     value={3}
                     sx={{
                       backgroundColor:
@@ -519,15 +595,12 @@ export default function RouteAdd() {
                     }}
                   />
                 )}
+                
                 <Tab
-                  label="Committe/Group Parameters"
+                  label="Committee/Group Parameters"
                   onClick={() => {
                     handleCardTabChange(
-                      {
-                        value: 0,
-                        label: "Committee/Group Parameters",
-                        short: "P",
-                      },
+                     nodeTypetemp,
                       index,
                       0
                     );
@@ -576,20 +649,18 @@ export default function RouteAdd() {
                             <FormGroup row>
                               <FormControlLabel
                                 value="SubRoute"
-                                control={<Checkbox />}
+                                control={<Checkbox 
+                                  // checked={routeMembercycles.subRouteCheck === 1}
+                                  onChange={(event) => handleCheckboxSubRouteChange(event, index)}
+                                  />}
                                 label="Sub Route"
                                 labelPlacement="end"
-                                onChange={(event: any) =>
-                                  formik.setFieldValue(
-                                    "subRoute",
-                                    event.target.checked
-                                  )
-                                }
                                 sx={{
                                   '& .MuiFormControlLabel-label': {
                                     fontSize: '0.75rem', // Custom font size
                                   },
                                 }}
+
                               />
                             </FormGroup>
                           </FormControl>
@@ -603,7 +674,10 @@ export default function RouteAdd() {
                             label="subRoute name"
                             placeholder="subRoute name"
                             style={{ background: "white" }}
-                          //value=""
+                            onChange={(e:any)=>{
+                              routeMembercycles[index].subRoute =
+                              e.target.value;
+                            }}
                           />
                         </Grid>
                         <Grid xs={3} item>
@@ -615,9 +689,11 @@ export default function RouteAdd() {
                             style={{ background: "white" }}
                             size="small"
                             options={[0, 1, 2]}
+                            onChange={(event, value) => handleparameterPriorityChange(event, value, index)}
                             renderInput={(params) => (
                               <TextField {...params} label="Select Priority" />
                             )}
+                            
                           />
                         </Grid>
                       </Grid>
@@ -630,7 +706,7 @@ export default function RouteAdd() {
                                 value="Committee"
                                 // control={<Checkbox />}
                                 control={
-                                  <Checkbox onChange={handleCheckboxChange} />
+                                  <Checkbox onChange={(event) => handleCheckboxChange(event, index)}/>
                                 }
                                 label="Committee"
                                 labelPlacement="end"
@@ -685,6 +761,7 @@ export default function RouteAdd() {
                             style={{ background: "white" }}
                             size="small"
                             options={[0, 1, 2]}
+                            onChange={(event, value) => handlecommitteePriorityChange(event, value, index)}
                             renderInput={(params) => (
                               <TextField {...params} label="Select Priority" />
                             )}
@@ -699,7 +776,7 @@ export default function RouteAdd() {
                               <FormControlLabel
                                 value="Group"
                                 control={
-                                  <Checkbox onChange={handleCheckboxesChange} />
+                                  <Checkbox onChange={(event) => handleCheckboxesChange(event, index)}/>
                                 }
                                 label="Group"
                                 labelPlacement="end"
@@ -756,6 +833,7 @@ export default function RouteAdd() {
                             fullWidth
                             size="small"
                             options={[0, 1, 2]}
+                            onChange={(event, value) => handlegroupPriorityChange(event, value, index)}
                             renderInput={(params) => (
                               <TextField {...params} label="Select Priority" />
                             )}

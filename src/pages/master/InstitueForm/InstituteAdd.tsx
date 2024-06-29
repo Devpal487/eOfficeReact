@@ -8,45 +8,31 @@ import {
     Autocomplete,
     Modal,
     Box,
-    Select,
-    MenuItem,
     RadioGroup,
     FormControlLabel,
     Radio,
     IconButton,
     InputAdornment,
-    Dialog,
-    DialogTitle,
-    DialogContent,
-    DialogActions,
-    Table,
     FormControl,
     FormLabel,
-    InputLabel,
-    FormGroup,
     Checkbox,
     ListItemText,
     Popover,
 } from "@mui/material";
 import ArrowBackSharpIcon from "@mui/icons-material/ArrowBackSharp";
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import { Navigate, useNavigate } from "react-router-dom";
-import HOST_URL from "../../../utils/Url";
 import { useTranslation } from "react-i18next";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-// import nopdf from "../../../assets/images/nopdf.png";
 import api from "../../../utils/Url";
-import AddIcon from '@mui/icons-material/Add';
-import DeleteIcon from "@mui/icons-material/Delete";
-import AddCircleIcon from "@mui/icons-material/AddCircle";
 import { toast } from "react-toastify";
 import ToastApp from "../../../ToastApp";
 import { ColorLens as ColorLensIcon } from "@mui/icons-material";
 import { SketchPicker } from "react-color";
 import CustomLabel from "../../../CustomLable";
 import nopdf from '../../../assets/images/imagepreview.jpg';
+import { getId, getdivisionId, getinstId } from "../../../utils/Constant";
 
 const style = {
     position: "absolute" as "absolute",
@@ -62,30 +48,50 @@ const style = {
     borderRadius: 10,
 };
 
-
 const Options = [
     { label: 'Yes', value: '1' },
     { label: 'No', value: '2' },
 ];
-
 
 const MenuOptions = [
     { label: 'Amimation', value: '1' },
     { label: 'Normal', value: '2' },
 ];
 
-
-
-
-
-
 type Props = {};
 
 const InstituteAdd = (props: Props) => {
 
-
-
     const { t } = useTranslation();
+    const userid = getId();
+    const divid = getdivisionId();
+    const instid = getinstId();
+
+    const [panOpens, setPanOpen] = React.useState(false);
+    const [Opens, setOpen] = React.useState(false);
+    const [OpenImg, setOpenImg] = React.useState(false);
+    const [OpenFooter, setOpenFooter] = React.useState(false);
+    const [OpenHeader, setOpenHeader] = React.useState(false);
+    const [modalImg, setModalImg] = useState("");
+    const [Img, setImg] = useState("");
+    const [colorPickerAnchor, setColorPickerAnchor] = useState(null);
+    const [colorPickerOver, setColorPickerOver] = useState(null);
+    
+    useEffect(() => {
+        getCountry();
+        getState();
+        getCity();
+        getStRoles();
+        getEmpRoles();
+        getParentInst();
+
+    }, []);
+
+    const open = Boolean(colorPickerAnchor);
+    const open1 = Boolean(colorPickerOver);
+    const id = open ? "color-popover" : undefined;
+    const id1 = open1 ? "color-popover" : undefined;
+
 
     const [CountryOps, setCountryOps] = useState<any>([
         { value: "-1", label: t("text.SelectCountry") },
@@ -114,11 +120,6 @@ const InstituteAdd = (props: Props) => {
     ]);
 
 
-    const [colorPickerAnchor, setColorPickerAnchor] = useState(null);
-    const [colorPickerOver, setColorPickerOver] = useState(null);
-
-
-
     const handleIconClick = (event: any) => {
         setColorPickerAnchor(event.currentTarget);
     };
@@ -135,7 +136,6 @@ const InstituteAdd = (props: Props) => {
         formik.setFieldValue("mOverColor", color.hex);
     };
 
-
     const handlePopoverClose = () => {
         setColorPickerAnchor(null);
     };
@@ -145,29 +145,6 @@ const InstituteAdd = (props: Props) => {
     };
 
 
-
-    const open = Boolean(colorPickerAnchor);
-    const open1 = Boolean(colorPickerOver);
-    const id = open ? "color-popover" : undefined;
-    const id1 = open1 ? "color-popover" : undefined;
-
-
-
-
-
-
-    const [panOpens, setPanOpen] = React.useState(false);
-    const [Opens, setOpen] = React.useState(false);
-    const [OpenImg, setOpenImg] = React.useState(false);
-    const [OpenFooter, setOpenFooter] = React.useState(false);
-    const [OpenHeader, setOpenHeader] = React.useState(false);
-
-
-
-
-    const [modalImg, setModalImg] = useState("");
-
-    const [Img, setImg] = useState("");
     const handlePanClose = () => {
         setPanOpen(false);
     };
@@ -187,7 +164,6 @@ const InstituteAdd = (props: Props) => {
             setImg(formik.values.instImage);
         }
     };
-
 
     const handlePanClose2 = () => {
         setOpenImg(false);
@@ -255,20 +231,6 @@ const InstituteAdd = (props: Props) => {
         };
     }
 
-
-
-
-
-
-    useEffect(() => {
-        getCountry();
-        getState();
-        getCity();
-        getStRoles();
-        getEmpRoles();
-        getParentInst();
-
-    }, []);
 
 
     const getCountry = () => {
@@ -366,12 +328,6 @@ const InstituteAdd = (props: Props) => {
             });
     };
 
-
-
-
-
-
-
     let navigate = useNavigate();
 
     const validationSchema = Yup.object({
@@ -429,12 +385,6 @@ const InstituteAdd = (props: Props) => {
 
     });
 
-
-
-
-
-
-
     const [toaster, setToaster] = useState(false);
 
     const formik = useFormik({
@@ -466,8 +416,8 @@ const InstituteAdd = (props: Props) => {
             "grade": "",
             "yearfrom": 0,
             "fb": "",
-            "user_id": "",
-            "inst_ID": 0,
+            "user_id": userid,
+            "inst_ID": instid,
             "session_year": "",
             "date_R": "",
             "rememberInst": true,
@@ -502,9 +452,6 @@ const InstituteAdd = (props: Props) => {
             "reportheaderimg": "",
             "reportfooterimg": "",
             "reportHeader": ""
-
-
-
         },
         validationSchema: validationSchema,
         onSubmit: async (values) => {
@@ -513,28 +460,17 @@ const InstituteAdd = (props: Props) => {
             );
             if (response.data.isSuccess) {
                 setToaster(false);
-
                 toast.success(response.data.mesg);
                 navigate("/master/Institute");
             } else {
-
                 setToaster(true);
-
                 toast.error(response.data.mesg);
             }
 
         }
     });
 
-
     const requiredFields = ['esYear,phone,noOfTeachers,session_year,reAttenDuration,pincode,email'];
-
-
-
-
-
-
-
 
     const back = useNavigate();
 
@@ -583,14 +519,18 @@ const InstituteAdd = (props: Props) => {
 
                             <Grid item md={12} style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
                                 <FormControl component="fieldset" style={{ padding: "1%", border: "1px solid #ccc", borderRadius: "5px", flex: '1' }}>
-                                    <FormLabel component="legend">{<CustomLabel text={t("text.ShowAcademicSession")} />}</FormLabel>
+                                    <FormLabel component="legend" >{<CustomLabel text={t("text.ShowAcademicSession")} />}</FormLabel>
                                     <RadioGroup
                                         row
                                         aria-label="academicSession"
                                         name="shoAcadSess"
                                         id="shoAcadSess"
-                                        value={formik.values.shoAcadSess}
-                                        onChange={formik.handleChange}
+                                        defaultValue="N"
+                                        // value={formik.values.shoAcadSess}
+                                        onChange={(e:any)=>{
+                                            console.log("🚀 ~ InstituteAdd ~ e.target.value:", e.target.value);
+                                            formik.setFieldValue("shoAcadSess", e.target.value);
+                                        }}
                                     >
                                         <FormControlLabel value="Y" control={<Radio />} label={t("text.Yes")} />
                                         <FormControlLabel value="N" control={<Radio />} label={t("text.No")} />
@@ -604,8 +544,12 @@ const InstituteAdd = (props: Props) => {
                                         aria-label="shoFincYr"
                                         name="shoFincYr"
                                         id="shoFincYr"
-                                        value={formik.values.shoFincYr}
-                                        onChange={formik.handleChange}
+                                        // value={formik.values.shoFincYr}
+                                        defaultValue="N"
+                                        onChange={(e:any)=>{
+                                            console.log("🚀 ~ shoFincYr ~ e.target.value:", e.target.value);
+                                            formik.setFieldValue("shoFincYr", e.target.value);
+                                        }}
                                     >
                                         <FormControlLabel value="Y" control={<Radio />} label={t("text.Yes")} />
                                         <FormControlLabel value="N" control={<Radio />} label={t("text.No")} />
@@ -620,8 +564,12 @@ const InstituteAdd = (props: Props) => {
                                         aria-label="editAcadSess"
                                         name="editAcadSess"
                                         id="editAcadSess"
-                                        value={formik.values.editAcadSess}
-                                        onChange={formik.handleChange}
+                                        // value={formik.values.editAcadSess}
+                                        defaultValue="N"
+                                        onChange={(e:any)=>{
+                                            console.log("🚀 ~ editAcadSess ~ e.target.value:", e.target.value);
+                                            formik.setFieldValue("editAcadSess", e.target.value);
+                                        }}
                                     >
                                         <FormControlLabel value="Y" control={<Radio />} label={t("text.Yes")} />
                                         <FormControlLabel value="N" control={<Radio />} label={t("text.No")} />
@@ -635,8 +583,12 @@ const InstituteAdd = (props: Props) => {
                                         aria-label="editFincYr"
                                         name="editFincYr"
                                         id="editFincYr"
-                                        value={formik.values.editFincYr}
-                                        onChange={formik.handleChange}
+                                        // value={formik.values.editFincYr}
+                                        defaultValue="N"
+                                        onChange={(e:any)=>{
+                                            console.log("🚀 ~ editFincYr ~ e.target.value:", e.target.value);
+                                            formik.setFieldValue("editFincYr", e.target.value);
+                                        }}
                                     >
                                         <FormControlLabel value="Y" control={<Radio />} label={t("text.Yes")} />
                                         <FormControlLabel value="N" control={<Radio />} label={t("text.No")} />
@@ -650,8 +602,12 @@ const InstituteAdd = (props: Props) => {
                                         aria-label="jurisdictionDefault"
                                         name="jurisdictionDefault"
                                         id="jurisdictionDefault"
-                                        value={formik.values.jurisdictionDefault}
-                                        onChange={formik.handleChange}
+                                        // value={formik.values.jurisdictionDefault}
+                                        defaultValue="N"
+                                        onChange={(e:any)=>{
+                                            console.log("🚀 ~ jurisdictionDefault ~ e.target.value:", e.target.value);
+                                            formik.setFieldValue("jurisdictionDefault", e.target.value);
+                                        }}
                                     >
                                         <FormControlLabel value="Y" control={<Radio />} label={t("text.Yes")} />
                                         <FormControlLabel value="N" control={<Radio />} label={t("text.No")} />
@@ -661,33 +617,46 @@ const InstituteAdd = (props: Props) => {
 
                             <Grid item md={12}>
 
-                                <FormControl component="fieldset">
+                                <FormControl component="fieldset"  style={{
+                    display: "flex",
+                    flexDirection: "row",
+                    alignItems: "center",
+                    gap: 20,
+                    // marginTop: "13px",
+                    // marginLeft: "12px",
+                  }}>
+                     <Grid>
                                     <FormLabel component="legend">{<CustomLabel text={t("text.OrgType")} />}</FormLabel>
+                                    </Grid>
+                                    <Grid> 
                                     <RadioGroup
                                         row
                                         aria-label="inst_type"
                                         name="inst_type"
                                         id="inst_type"
-                                        value={formik.values.inst_type}
-                                        onChange={formik.handleChange}
+                                        // value={formik.values.inst_type}
+                                        defaultValue="S"
+                                        onChange={(e:any)=>{
+                                            console.log("🚀 ~ inst_type ~ e.target.value:", e.target.value);
+                                            formik.setFieldValue("inst_type", e.target.value);
+                                        }}
                                     >
                                         <FormControlLabel value="S" control={<Radio />} label={t("text.School")} />
                                         <FormControlLabel value="C" control={<Radio />} label={t("text.College")} />
                                         <FormControlLabel value="U" control={<Radio />} label={t("text.University")} />
                                         <FormControlLabel value="I" control={<Radio />} label={t("text.Institute")} />
                                     </RadioGroup>
+                                    </Grid>
                                 </FormControl>
                             </Grid>
 
 
                             <Grid md={4} item>
                                 <TextField
-
                                     label={<CustomLabel text={t("text.InstituteName")} />}
                                     value={formik.values.insname}
                                     placeholder={t("text.InstituteName")}
                                     size="small"
-
                                     fullWidth
                                     name="insname"
                                     id="insname"
@@ -946,7 +915,12 @@ const InstituteAdd = (props: Props) => {
                                         backgroundColor: 'white',
                                         borderColor: formik.touched.phone && formik.errors.phone ? 'red' : 'initial',
                                     }}
-                                    onChange={formik.handleChange}
+                                    //onChange={formik.handleChange}
+                                    onChange={(e)=>{
+                                        let phone_number = e.target.value;
+                                        console.log("phone", String(phone_number));
+                                        formik.setFieldValue("phone", String(phone_number));
+                                    }}
                                     onBlur={formik.handleBlur}
                                 />
                                 {formik.touched.phone && formik.errors.phone ? (
@@ -1000,12 +974,16 @@ const InstituteAdd = (props: Props) => {
                                     size="small"
                                     type="number"
                                     inputProps={{ min: "0", step: "1" }}
-
                                     fullWidth
                                     name="pincode"
                                     id="pincode"
                                     style={{ backgroundColor: "white" }}
-                                    onChange={formik.handleChange}
+                                    // onChange={formik.handleChange}
+                                    onChange={(e)=>{
+                                        let pincode = e.target.value;
+                                        console.log("pincode", String(pincode));
+                                        formik.setFieldValue("pincode", String(pincode));
+                                    }}
                                     onBlur={formik.handleBlur}
                                 />
 
@@ -1206,8 +1184,13 @@ const InstituteAdd = (props: Props) => {
                                         backgroundColor: 'white',
                                         borderColor: formik.touched.session_year && formik.errors.session_year ? 'red' : 'initial',
                                     }}
-                                    onChange={formik.handleChange}
+                                    // onChange={formik.handleChange}
                                     onBlur={formik.handleBlur}
+                                    onChange={(e)=>{
+                                        let session_year = e.target.value;
+                                        console.log("session_year", String(session_year));
+                                        formik.setFieldValue("session_year", String(session_year));
+                                    }}
                                 />
                                 {formik.touched.session_year && formik.errors.session_year ? (
                                     <div style={{ color: "red", margin: "5px" }}>{formik.errors.session_year}</div>

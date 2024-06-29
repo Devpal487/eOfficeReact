@@ -53,7 +53,7 @@ export default function Message() {
 
     const instId = getinstId();
     // console.log("🚀 ~ ViewEditFile ~ userId:", userId);
-    const divId = getdivisionId();
+    const divId:any = getdivisionId();
     // console.log("🚀 ~ ViewEditFile ~ divId:", divId);
 
 
@@ -82,7 +82,7 @@ export default function Message() {
             console.log("Division", Division);
             const collectData = {
                 "userid": userId,
-                "divisionId": divId,
+                divisionId: parseInt(divId),
                 "type": "MSG"
             };
             console.log("collectData", collectData);
@@ -96,7 +96,7 @@ export default function Message() {
             const DocsWithIds = data.map((doc: any, index: any) => ({
                 ...doc,
                 serialNo: index + 1,
-                id: doc.rid,
+               id:index + 1,
                 Division: Division,
             }));
 
@@ -112,26 +112,26 @@ export default function Message() {
                         headerClassName: "MuiDataGrid-colCell",
                     },
                     {
-                        field: "Subject",
-                        headerName: "Subject",
+                        field: "subject",
+                        headerName: t("text.Subject"),
                         flex: 1,
                         headerClassName: "MuiDataGrid-colCell",
                     },
                     {
-                        field: "message",
-                        headerName: "Message",
+                        field: "messege",
+                        headerName: t("text.Message"),
                         flex: 1,
                         headerClassName: "MuiDataGrid-colCell",
                     },
                     {
-                        field: "SendBy",
-                        headerName: "Send By",
+                        field: "sendBy",
+                        headerName:t("text.SendBy"),
                         flex: 1,
                         headerClassName: "MuiDataGrid-colCell",
                     },
                     {
-                        field: "SendDate",
-                        headerName: "Send Date",
+                        field: "sendDate",
+                        headerName: t("text.SendDate"),
                         flex: 1,
                         headerClassName: "MuiDataGrid-colCell",
                     },

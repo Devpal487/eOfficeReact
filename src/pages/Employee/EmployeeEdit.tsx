@@ -75,9 +75,9 @@ const EmployeeEdit = (props: Props) => {
     getRole();
     getEmpDesignation();
     getDepartment();
-    getState();
+   // getState();
     getCountry();
-    getCity();
+   // getCity();
     getimgbyid();
     getSignById();
   }, []);
@@ -108,11 +108,10 @@ const EmployeeEdit = (props: Props) => {
       setDepartment(arr);
     });
   };
-
-  const getState = () => {
+  const getState = (countryId:any) => {
     const collectData = {
       stateId: -1,
-      countryId: formik.values.empCountryID,
+      countryId:countryId,
     };
     api.post(`State/GetStateMaster`, collectData).then((res) => {
       const arr = res.data.data.map((item: any) => ({
@@ -136,10 +135,10 @@ const EmployeeEdit = (props: Props) => {
     });
   };
 
-  const getCity = () => {
+  const getCity = (stateId:any) => {
     const collectData = {
       cityId: -1,
-      stateId:formik.values.empStateId,
+      stateId:stateId,
     };
     api.post(`M10_District/GetDistrictMaster`, collectData).then((res) => {
       const arr = res.data.data.map((item: any) => ({
@@ -1024,6 +1023,7 @@ const EmployeeEdit = (props: Props) => {
                     formik.setFieldValue("empCountryID", newValue?.value);
                     formik.setFieldTouched("empCountryID", true);
                     formik.setFieldTouched("empCountryID", false);
+                    getState(newValue?.value);
                   }}
                   renderInput={(params) => (
                     <TextField
@@ -1070,6 +1070,7 @@ const EmployeeEdit = (props: Props) => {
                     formik.setFieldValue("empStateId", newValue?.value);
                     formik.setFieldTouched("empStateId", true);
                     formik.setFieldTouched("empStateId", false);
+                    getCity(newValue?.value);
                   }}
                   renderInput={(params) => (
                     <TextField

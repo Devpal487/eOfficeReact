@@ -68,9 +68,9 @@ const EmployeeAdd = (props: Props) => {
   useEffect(() => {
     getEmpDesignation();
     getDepartment();
-    getState();
+   // getState();
     getCountry();
-    getCity();
+   // getCity();
     getGender();
     getRole();
   }, []);
@@ -103,10 +103,10 @@ const EmployeeAdd = (props: Props) => {
   };
 
  
-  const getState = () => {
+  const getState = (countryId:any) => {
     const collectData = {
       stateId: -1,
-      countryId: formik.values.empCountryID,
+      countryId:countryId,
     };
     api.post(`State/GetStateMaster`, collectData).then((res) => {
       const arr = res.data.data.map((item: any) => ({
@@ -130,10 +130,10 @@ const EmployeeAdd = (props: Props) => {
     });
   };
 
-  const getCity = () => {
+  const getCity = (stateId:any) => {
     const collectData = {
       cityId: -1,
-      stateId:formik.values.empStateId,
+      stateId:stateId,
     };
     api.post(`M10_District/GetDistrictMaster`, collectData).then((res) => {
       const arr = res.data.data.map((item: any) => ({
@@ -386,6 +386,8 @@ const EmployeeAdd = (props: Props) => {
     validationSchema: validationSchema,
 
     onSubmit: async (values) => {
+
+     
       // console.log("Before submission formik values", values);
 
       const filteredValues = Object.fromEntries(
@@ -892,9 +894,12 @@ const EmployeeAdd = (props: Props) => {
                   //  ) || null
                   //}
                   onChange={(event, newValue: any) => {
+                    
                     formik.setFieldValue("empCountryID", newValue?.value);
                     formik.setFieldTouched("empCountryID", true);
                     formik.setFieldTouched("empCountryID", false);
+                    getState(newValue?.value);
+                    
                   }}
                   renderInput={(params) => (
                     <TextField
@@ -928,9 +933,11 @@ const EmployeeAdd = (props: Props) => {
                   // ) || null
                   // }
                   onChange={(event, newValue: any) => {
+                    
                     formik.setFieldValue("empStateId", newValue?.value);
                     formik.setFieldTouched("empStateId", true);
                     formik.setFieldTouched("empStateId", false);
+                    getCity(newValue?.value);
                   }}
                   renderInput={(params) => (
                     <TextField

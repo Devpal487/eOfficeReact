@@ -93,12 +93,10 @@ export default function BulkClosed() {
   };
 
   const handleCheckboxChange = (params: any) => {
-
-    formik.setFieldValue("fileNo", params.row.cFileNo );
     
    
-    console.log("Check row data:", params.row);
-   
+    console.log("Row data:", params.row);
+    formik.setFieldValue('fileNo',params.row.cFileNo)
   };
 
   useEffect(() => {

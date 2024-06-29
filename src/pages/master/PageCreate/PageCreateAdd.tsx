@@ -415,6 +415,8 @@ const PageCreateAdd = (props: Props) => {
             types: ""
         },
         onSubmit: async (values: any) => {
+
+
             if (values.rFileType && (!values.rFileNumber || !values.rLetterNumber)) {
                 setToaster(true);
 
@@ -424,6 +426,9 @@ const PageCreateAdd = (props: Props) => {
                 return;
             }
 
+            if (values.rPhone === "") {
+                values.rPhone = null;
+              }
             console.log("values check", values);
             try {
                 const response = await api.post(`ReferenceDiary/AddUpdateReferenceDiary`, values);

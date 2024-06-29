@@ -462,6 +462,10 @@ const PageCreateEdit = (props: Props) => {
                 return;
             }
 
+            if (values.rPhone === "") {
+                values.rPhone = null;
+              }
+
             console.log("values check", values)
 
 

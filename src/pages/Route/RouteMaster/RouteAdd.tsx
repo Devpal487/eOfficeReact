@@ -514,6 +514,7 @@ export default function RouteAdd() {
               backgroundColor: '#F0FFFF',
               borderRadius:"10px",
               gap:"15px",
+               color:"#1976d2",
               '&:hover': {
                 backgroundColor: '#F0FFFF',
                 color:"#000"
@@ -667,12 +668,12 @@ export default function RouteAdd() {
                         </Grid>
                         <Grid item xs={5}>
                           <TextField
-                            id="subRoute"
+                            id="SubRoute"
                             name="subRoute"
                             size="small"
                             fullWidth
-                            label="subRoute name"
-                            placeholder="subRoute name"
+                            label="SubRoute Name"
+                            placeholder="SubRoute Name"
                             style={{ background: "white" }}
                             onChange={(e:any)=>{
                               routeMembercycles[index].subRoute =
@@ -874,13 +875,13 @@ export default function RouteAdd() {
                                 size="small"
                                 style={{ background: "white" }}
                                 //value={selectedValue}
-                                // value={
-                                //   departmentOption.find(
-                                //     (option) =>
-                                //       option.value ===
-                                //       routeMembercycles[index].auth_DeptId
-                                //   ) || null
-                                // }
+                                value={
+                                  departmentOption.find(
+                                    (option) =>
+                                      option.value ===
+                                      routeMembercycles[index].auth_DeptId
+                                  ) || null
+                                }
                                 onChange={(e: any, newValue: any) => {
                                   //setAuthDept(newValue?.value)
                                   if(newValue != "" ){
@@ -914,13 +915,13 @@ export default function RouteAdd() {
                                 size="small"
                                 options={sectionOption}
                                 // value={selectedValue}
-                                // value={
-                                //   sectionOption.find(
-                                //     (option) =>
-                                //       option.value ===
-                                //       routeMembercycles[index].auth_SectionId
-                                //   ) || null
-                                // }
+                                value={
+                                  sectionOption.find(
+                                    (option) =>
+                                      option.value ===
+                                      routeMembercycles[index].auth_SectionId
+                                  ) || null
+                                }
                                 style={{ background: "white" }}
                                 // onChange={handleAutocompleteChange}
                                 onChange={(e: any, newValue: any) => {
@@ -1030,7 +1031,7 @@ export default function RouteAdd() {
                                             routeMembercycles[index].email =
                                               event.target.value;
                                           } else {
-                                            routeMembercycles[index].email = "";
+                                            routeMembercycles[index].email = "N";
                                           }
                                           handleCardTabChange(
                                             nodeTypetemp,
@@ -1048,7 +1049,7 @@ export default function RouteAdd() {
                                   />
 
                                   <FormControlLabel
-                                    value="N"
+                                    value="Y"
                                     control={
                                       <Checkbox
                                         onChange={(event) => {
@@ -1056,7 +1057,7 @@ export default function RouteAdd() {
                                             routeMembercycles[index].sms =
                                               event.target.value;
                                           } else {
-                                            routeMembercycles[index].sms = "";
+                                            routeMembercycles[index].sms = "N";
                                           }
                                           handleCardTabChange(
                                             nodeTypetemp,
@@ -1068,7 +1069,7 @@ export default function RouteAdd() {
                                     }
                                     label="SMS"
                                     checked={
-                                      routeMembercycles[index]?.sms === "N"
+                                      routeMembercycles[index]?.sms === "Y"
                                     }
                                   />
                                 </FormGroup>

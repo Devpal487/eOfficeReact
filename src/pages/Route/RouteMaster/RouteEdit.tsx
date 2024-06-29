@@ -1137,7 +1137,7 @@ try{
                                             routeMembercycles[index].email =
                                               event.target.value;
                                           } else {
-                                            routeMembercycles[index].email = "";
+                                            routeMembercycles[index].email = "N";
                                           }
                                           handleCardTabChange(
                                             nodeTypetemp,
@@ -1155,7 +1155,7 @@ try{
                                   />
 
                                   <FormControlLabel
-                                    value="N"
+                                    value="Y"
                                     control={
                                       <Checkbox
                                         onChange={(event) => {
@@ -1163,7 +1163,7 @@ try{
                                             routeMembercycles[index].sms =
                                               event.target.value;
                                           } else {
-                                            routeMembercycles[index].sms = "";
+                                            routeMembercycles[index].sms = "N";
                                           }
                                           handleCardTabChange(
                                             nodeTypetemp,
@@ -1175,7 +1175,7 @@ try{
                                     }
                                     label="SMS"
                                     checked={
-                                      routeMembercycles[index]?.sms === "N"
+                                      routeMembercycles[index]?.sms === "Y"
                                     }
                                   />
                                 </FormGroup>

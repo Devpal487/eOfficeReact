@@ -433,13 +433,17 @@ const PageCreateAdd = (props: Props) => {
             try {
                 const response = await api.post(`ReferenceDiary/AddUpdateReferenceDiary`, values);
                 if (response.data.isSuccess) {
-                    toast.success(response.data.mesg);
-                    setToaster(true);
+
+                    setTimeout(() => {
+                        toast.success(response.data.mesg);
+                    }, 500);
+                   
+                   // setToaster(true);
                     
                         navigate(-1);
                     
                 } else {
-                    setToaster(true);
+                   // setToaster(true);
                     toast.error(response.data.mesg);
                 }
             } catch (error) {
@@ -650,7 +654,7 @@ const PageCreateAdd = (props: Props) => {
                     <Divider />
                     <br />
                     <form onSubmit={formik.handleSubmit}>
-                        {toaster === false ? "" : <ToastApp />}
+                        {/* {toaster === false ? "" : <ToastApp />} */}
                         <ToastContainer />
                         <Grid item xs={12} container spacing={2}>
                                 <Grid item sm={6} md={6} xs={12}>
@@ -2321,6 +2325,7 @@ const PageCreateAdd = (props: Props) => {
                             </Grid>
                         </Grid>
                     </form>
+                    <ToastContainer />
                 </CardContent>
             </div>
         </div>

@@ -542,10 +542,10 @@ export default function RouteAdd() {
                         routeMembercycles[index].tabindex === 1
                           ? "#F8F8FF"
                           : "inherit",
-                      color:
-                        routeMembercycles[index].tabindex === 1
-                          ? "white"
-                          : "white",
+                      // color:
+                      //   routeMembercycles[index].tabindex === 1
+                      //     ? "white"
+                      //     : "white",
                     }}
                   />
                 )}

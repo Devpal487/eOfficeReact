@@ -60,27 +60,25 @@ export default function BulkClosed() {
 
   const formik = useFormik({
     initialValues: {
-        // pdFid: -1,
-        pdfName: "",
-        docMid: 0,
-        keywords: "",
-        subFtype: "",
-        fileNo: 0,
-        fileType: 0,
-        remark: "",
-        fileName: "",
-        fId: 0,
-
+      // pdFid: -1,
+      pdfName: "",
+      docMid: 0,
+      keywords: "",
+      subFtype: "",
+      fileNo: 0,
+      fileType: 0,
+      remark: "",
+      fileName: "",
+      fId: 0,
     },
     // validationSchema: validationSchema,
     onSubmit: async (values) => {
-        // const response = await api.post(
-        //    `DocFiles/AddUpdateDocFiles`,
-        //    values
-        // );
-        
+      // const response = await api.post(
+      //    `DocFiles/AddUpdateDocFiles`,
+      //    values
+      // );
     },
-});
+  });
 
   const handleSelectAllChange = (event: any) => {
     const checked = event.target.checked;
@@ -93,12 +91,8 @@ export default function BulkClosed() {
   };
 
   const handleCheckboxChange = (params: any) => {
-
-    formik.setFieldValue("fileNo", params.row.cFileNo );
-    
-   
-    console.log("Check row data:", params.row);
-   
+    console.log("Row data:", params.row);
+    formik.setFieldValue("fileNo", params.row.Division.cFileNo);
   };
 
   useEffect(() => {
@@ -108,7 +102,7 @@ export default function BulkClosed() {
 
   const SubmitBulk = () => {
     const value = {
-      fileNo:formik.values.fileNo,
+      fileNo: formik.values.fileNo,
       lastStatus: "",
     };
 

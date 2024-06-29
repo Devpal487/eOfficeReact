@@ -32,7 +32,7 @@ import api from "../../../utils/Url";
 import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
-import { toast } from "react-toastify";
+import { toast,ToastContainer } from "react-toastify";
 import ToastApp from "../../../ToastApp";
 import { getISTDate } from "../../../utils/Constant";
 import VisibilityIcon from "@mui/icons-material/Visibility";
@@ -429,10 +429,10 @@ const PageCreateAdd = (props: Props) => {
                 const response = await api.post(`ReferenceDiary/AddUpdateReferenceDiary`, values);
                 if (response.data.isSuccess) {
                     toast.success(response.data.mesg);
-                    setToaster(false);
-                    // setTimeout(() => {
+                    setToaster(true);
+                    
                         navigate(-1);
-                    // }, 2000);
+                    
                 } else {
                     setToaster(true);
                     toast.error(response.data.mesg);
@@ -646,6 +646,7 @@ const PageCreateAdd = (props: Props) => {
                     <br />
                     <form onSubmit={formik.handleSubmit}>
                         {toaster === false ? "" : <ToastApp />}
+                        <ToastContainer />
                         <Grid item xs={12} container spacing={2}>
                                 <Grid item sm={6} md={6} xs={12}>
                                     <FormControl 
@@ -875,6 +876,7 @@ const PageCreateAdd = (props: Props) => {
                                         />
                                     )}
                                 />
+                                 
                             </Grid>
 
                             <Dialog

@@ -138,6 +138,11 @@ export default function MergeFile() {
         api.post(`FileMovement/GetFileMergeReq`, value).then((res) => {
             if (res.data.isSuccess) {
                 toast.success(res.data.mesg);
+                formik.setFieldValue("fileType", '');
+                formik.setFieldValue("fileNo",'');
+                formik.setFieldValue("fileName",'');
+                formik.setFieldValue("remark",'');
+                
 
             } else {
                 toast.error(res.data.mesg);
@@ -360,11 +365,11 @@ export default function MergeFile() {
                             disablePortal
                             id="combo-box-demo"
                             options={FileOps}
-                            // value={
-                            //     ZoneOption.find(
-                            //         (option) => option.value === formik.values.fileTypeId
-                            //     ) || null
-                            // }
+                            value={
+                                FileOps.find(
+                                    (option:any) => option.value === formik.values.fileNo
+                                ) || null
+                            }
                             fullWidth
                             size="small"
                             onChange={(event, newValue: any) => {
@@ -396,11 +401,11 @@ export default function MergeFile() {
                             disablePortal
                             id="combo-box-demo"
                             options={FileTypeOps}
-                            // value={
-                            //     ZoneOption.find(
-                            //         (option) => option.value === formik.values.fileTypeId
-                            //     ) || null
-                            // }
+                            value={
+                                FileTypeOps.find(
+                                    (option:any) => option.value === formik.values.fileType
+                                ) || null
+                            }
                             fullWidth
                             size="small"
                             onChange={(event, newValue: any) => {

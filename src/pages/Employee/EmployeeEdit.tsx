@@ -44,24 +44,28 @@ type Props = {};
 
 const EmployeeEdit = (props: Props) => {
   const { i18n, t } = useTranslation();
-  
+
   const [EmpDesignation, setEmpDesignation] = useState<any>([
     { value: "-1", label: t("text.SelectDesignation") },
   ]);
   const [Department, setDepartment] = useState<any>([
-    { value: "-1", label:t("text.SelectDepartment") },
+    { value: "-1", label: t("text.SelectDepartment") },
   ]);
   const [StateOption, setStateOption] = useState<any>([
-    { value: "-1", label:t("text.SelectState") },
+    { value: "-1", label: t("text.SelectState") },
   ]);
   const [Country, setCountry] = useState<any>([
     { value: "-1", label: t("text.SelectCountry") },
   ]);
-  const [City, setCity] = useState<any>([{ value: "-1", label: t("text.SelectCity") }]);
+  const [City, setCity] = useState<any>([
+    { value: "-1", label: t("text.SelectCity") },
+  ]);
   const [Gender, setGender] = useState<any>([
     { value: "-1", label: t("text.SelectGender") },
   ]);
-  const [Role, setRole] = useState<any>([{ value: "-1", label: t("text.SelectRole") }]);
+  const [Role, setRole] = useState<any>([
+    { value: "-1", label: t("text.SelectRole") },
+  ]);
 
   const location = useLocation();
   console.log("location", location.state);
@@ -82,109 +86,95 @@ const EmployeeEdit = (props: Props) => {
     const collectData = {
       designationId: -1,
     };
-    api
-      .post(
-         `Designation/GetDesignationmaster`,
-        collectData
-      )
-      .then((res) => {
-        const arr = res.data.data.map((item: any) => ({
-          label: item.designationName,
-          value: item.designationId,
-        }));
-        setEmpDesignation(arr);
-      });
+    api.post(`Designation/GetDesignationmaster`, collectData).then((res) => {
+      const arr = res.data.data.map((item: any) => ({
+        label: item.designationName,
+        value: item.designationId,
+      }));
+      setEmpDesignation(arr);
+    });
   };
 
   const getDepartment = () => {
     const collectData = {
       departmentId: -1,
+      departmentName: "",
     };
-    api
-      .post( `Department/GetDepartmentmaster`, collectData)
-      .then((res) => {
-        const arr = res.data.data.map((item: any) => ({
-          label: item.departmentName,
-          value: item.departmentId,
-        }));
-        setDepartment(arr);
-      });
+    api.post(`Department/GetDepartmentmaster`, collectData).then((res) => {
+      const arr = res.data.data.map((item: any) => ({
+        label: item.departmentName,
+        value: item.departmentId,
+      }));
+      setDepartment(arr);
+    });
   };
 
   const getState = () => {
     const collectData = {
       stateId: -1,
+      countryId: formik.values.empCountryID,
     };
-    api
-      .post( `State/GetStateMaster`, collectData)
-      .then((res) => {
-        const arr = res.data.data.map((item: any) => ({
-          label: item.stateName,
-          value: item.stateId,
-        }));
-        setStateOption(arr);
-      });
+    api.post(`State/GetStateMaster`, collectData).then((res) => {
+      const arr = res.data.data.map((item: any) => ({
+        label: item.stateName,
+        value: item.stateId,
+      }));
+      setStateOption(arr);
+    });
   };
 
   const getCountry = () => {
     const collectData = {
       countryId: -1,
     };
-    api
-      .post(`Country/GetCountryMaster`, collectData)
-      .then((res) => {
-        const arr = res.data.data.map((item: any) => ({
-          label: item.countryName,
-          value: item.countryId,
-        }));
-        setCountry(arr);
-      });
+    api.post(`Country/GetCountryMaster`, collectData).then((res) => {
+      const arr = res.data.data.map((item: any) => ({
+        label: item.countryName,
+        value: item.countryId,
+      }));
+      setCountry(arr);
+    });
   };
 
   const getCity = () => {
     const collectData = {
-      countryId: -1,
+      cityId: -1,
+      stateId:formik.values.empStateId,
     };
-    api
-      .post( `M10_District/GetDistrictMaster`, collectData)
-      .then((res) => {
-        const arr = res.data.data.map((item: any) => ({
-          label: item.cityName,
-          value: item.cityId,
-        }));
-        setCity(arr);
-      });
+    api.post(`M10_District/GetDistrictMaster`, collectData).then((res) => {
+      const arr = res.data.data.map((item: any) => ({
+        label: item.cityName,
+        value: item.cityId,
+      }));
+      setCity(arr);
+    });
   };
 
   const getGender = () => {
     const collectData = {
       genderID: -1,
     };
-    api
-      .post(`Gender/GetGenderMaster`, collectData)
-      .then((res) => {
-        const arr = res.data.data.map((item: any) => ({
-          label: item.genderName,
-          value: item.genderID,
-        }));
-        setGender(arr);
-      });
+    api.post(`Gender/GetGenderMaster`, collectData).then((res) => {
+      const arr = res.data.data.map((item: any) => ({
+        label: item.genderName,
+        value: item.genderID,
+      }));
+      setGender(arr);
+    });
   };
 
   const getRole = () => {
     const collectData = {
       roleId: "-1",
     };
-    api
-      .post(`Auth/GetRoleMaster`, collectData)
-      .then((res) => {
-        const arr = res.data.data.map((item: any) => ({
-          label: item.roleName,
-          value: item.roleId,
-        }));
-        console.log(" arr ", arr);
-        setRole(arr);
-      });
+    api.post(`Auth/GetRoleMaster`, collectData).then((res) => {
+      const arr = res.data.data.map((item: any) => ({
+        label: item.roleName,
+        value: item.roleId,
+      }));
+      console.log(" arr ", arr);
+      setRole(arr);
+    });
   };
 
   const getimgbyid = () => {
@@ -202,14 +192,12 @@ const EmployeeEdit = (props: Props) => {
       roleId: location.state.roleId,
     };
 
-    api
-      .post( `EmpMaster/GetEmpmaster`, collectData)
-      .then((res) => {
-        console.log("result" + JSON.stringify(res.data.data[0]["imageFile"]));
+    api.post(`EmpMaster/GetEmpmaster`, collectData).then((res) => {
+      console.log("result" + JSON.stringify(res.data.data[0]["imageFile"]));
 
-        const Doc = res.data.data[0]["imageFile"];
-        formik.setFieldValue("imageFile", Doc);
-      });
+      const Doc = res.data.data[0]["imageFile"];
+      formik.setFieldValue("imageFile", Doc);
+    });
   };
 
   const getSignById = () => {
@@ -227,16 +215,12 @@ const EmployeeEdit = (props: Props) => {
       roleId: location.state.roleId,
     };
 
-    api
-      .post( `EmpMaster/GetEmpmaster`, collectData)
-      .then((res) => {
-        console.log(
-          "result" + JSON.stringify(res.data.data[0]["signatureFile"])
-        );
+    api.post(`EmpMaster/GetEmpmaster`, collectData).then((res) => {
+      console.log("result" + JSON.stringify(res.data.data[0]["signatureFile"]));
 
-        const Doc = res.data.data[0]["signatureFile"];
-        formik.setFieldValue("signatureFile", Doc);
-      });
+      const Doc = res.data.data[0]["signatureFile"];
+      formik.setFieldValue("signatureFile", Doc);
+    });
   };
 
   const [panOpens, setPanOpen] = React.useState(false);
@@ -302,7 +286,6 @@ const EmployeeEdit = (props: Props) => {
   };
 
   let navigate = useNavigate();
-  
 
   const [toaster, setToaster] = useState(false);
 
@@ -347,10 +330,7 @@ const EmployeeEdit = (props: Props) => {
     ),
 
     empPanNumber: Yup.string()
-      .matches(
-        /^[A-Z]{3}[A-ZHPTCF][A-Z]\d{4}[A-Z]$/,
-        'Invalid PAN format'
-      )
+      .matches(/^[A-Z]{3}[A-ZHPTCF][A-Z]\d{4}[A-Z]$/, "Invalid PAN format")
       .required(t("text.PanNoRequired")),
 
     empDob: Yup.string().test(
@@ -402,19 +382,15 @@ const EmployeeEdit = (props: Props) => {
 
     empAddharNo: Yup.string()
       .required(t("text.AdharNoRequired"))
-      .test("len", ("Aadhaar number must be exactly 12 digits"), (val: any) =>
+      .test("len", "Aadhaar number must be exactly 12 digits", (val: any) =>
         val ? val.replace(/\D/g, "").length === 12 : true
       ),
     email: Yup.string()
       .required(t("text.reqEmail"))
-      .test(
-        "is-valid-email",
-        "Invalid email format",
-        function (value: any) {
-          const trimmedValue = value.trim();
-          return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedValue);
-        }
-      ),
+      .test("is-valid-email", "Invalid email format", function (value: any) {
+        const trimmedValue = value.trim();
+        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedValue);
+      }),
   });
 
   const formik = useFormik({
@@ -433,7 +409,9 @@ const EmployeeEdit = (props: Props) => {
       empAddharNo: location.state.empAddharNo,
       empDob: dayjs(location.state.empDob).format("YYYY-MM-DD"),
       empJoiningDate: dayjs(location.state.empJoiningDate).format("YYYY-MM-DD"),
-      empretirementDate: dayjs(location.state.empretirementDate).format("YYYY-MM-DD"),
+      empretirementDate: dayjs(location.state.empretirementDate).format(
+        "YYYY-MM-DD"
+      ),
 
       empPincode: location.state.empPincode,
       roleId: location.state.roleId,
@@ -454,13 +432,12 @@ const EmployeeEdit = (props: Props) => {
 
     validationSchema: validationSchema,
     onSubmit: async (values) => {
-
       const filteredValues = Object.fromEntries(
         Object.entries(values).filter(([_, value]) => value !== "")
       );
 
       const response = await api.post(
-          `EmpMaster/AddUpdateEmpmaster`,
+        `EmpMaster/AddUpdateEmpmaster`,
         filteredValues
       );
       if (response.data.isSuccess) {
@@ -487,7 +464,7 @@ const EmployeeEdit = (props: Props) => {
     "empDeptId",
     "empAddharNo",
     "email",
-    "empPincode"
+    "empPincode",
   ];
 
   const back = useNavigate();
@@ -540,7 +517,7 @@ const EmployeeEdit = (props: Props) => {
                   name="empName"
                   label={
                     <span>
-                      {t("text.EnterEmployeeName")} {" "}
+                      {t("text.EnterEmployeeName")}{" "}
                       {requiredFields.includes("empName") && (
                         <span
                           style={{
@@ -579,7 +556,7 @@ const EmployeeEdit = (props: Props) => {
                   name="empCode"
                   label={
                     <span>
-                      {t("text.EnterEmployeeCode")} {" "}
+                      {t("text.EnterEmployeeCode")}{" "}
                       {requiredFields.includes("empCode") && (
                         <span
                           style={{
@@ -618,11 +595,13 @@ const EmployeeEdit = (props: Props) => {
                   name="empFatherName"
                   label={
                     <span>
-                      {t("text.EnterFatherName")} {" "}
+                      {t("text.EnterFatherName")}{" "}
                       {requiredFields.includes("empFatherName") && (
                         <span
                           style={{
-                            color: formik.values.empFatherName ? "green" : "red",
+                            color: formik.values.empFatherName
+                              ? "green"
+                              : "red",
                           }}
                         >
                           *
@@ -682,12 +661,11 @@ const EmployeeEdit = (props: Props) => {
                 <TextField
                   id="empMobileNo"
                   name="empMobileNo"
-                  inputProps={{  min: "0",maxLength: 10 }}
+                  inputProps={{ min: "0", maxLength: 10 }}
                   type="number"
-                  
                   label={
                     <span>
-                      {t("text.EnterMobileNo")} {" "}
+                      {t("text.EnterMobileNo")}{" "}
                       {requiredFields.includes("empMobileNo") && (
                         <span
                           style={{
@@ -720,15 +698,13 @@ const EmployeeEdit = (props: Props) => {
                 ) : null}
               </Grid>
 
-
-
               <Grid item lg={4} xs={12}>
                 <TextField
                   id="email"
                   name="email"
                   label={
                     <span>
-                      {t("text.EnterEmail")} {" "}
+                      {t("text.EnterEmail")}{" "}
                       {requiredFields.includes("email") && (
                         <span
                           style={{
@@ -763,7 +739,7 @@ const EmployeeEdit = (props: Props) => {
                   name="empPanNumber"
                   label={
                     <span>
-                      {t("text.EnterPanNo")} {" "}
+                      {t("text.EnterPanNo")}{" "}
                       {requiredFields.includes("empPanNumber") && (
                         <span
                           style={{
@@ -802,7 +778,7 @@ const EmployeeEdit = (props: Props) => {
                   name="empAddharNo"
                   label={
                     <span>
-                      {t("text.EnterAdharNumber")} {" "}
+                      {t("text.EnterAdharNumber")}{" "}
                       {requiredFields.includes("empAddharNo") && (
                         <span
                           style={{
@@ -838,7 +814,7 @@ const EmployeeEdit = (props: Props) => {
                   name="empDob"
                   label={
                     <span>
-                      {t("text.EnterDOB")} {" "}
+                      {t("text.EnterDOB")}{" "}
                       {requiredFields.includes("empDob") && (
                         <span
                           style={{
@@ -880,7 +856,7 @@ const EmployeeEdit = (props: Props) => {
                   InputLabelProps={{ shrink: true }}
                   label={
                     <span>
-                      {t("text.EnterJoiningDate")} {" "}
+                      {t("text.EnterJoiningDate")}{" "}
                       {requiredFields.includes("empJoiningDate") && (
                         <span
                           style={{
@@ -902,7 +878,7 @@ const EmployeeEdit = (props: Props) => {
                     backgroundColor: "white",
                     borderColor:
                       formik.touched.empJoiningDate &&
-                        formik.errors.empJoiningDate
+                      formik.errors.empJoiningDate
                         ? "red"
                         : "initial",
                   }}
@@ -910,7 +886,7 @@ const EmployeeEdit = (props: Props) => {
                   onBlur={formik.handleBlur}
                 />
                 {formik.touched.empJoiningDate &&
-                  formik.errors.empJoiningDate ? (
+                formik.errors.empJoiningDate ? (
                   <div style={{ color: "red", margin: "5px" }}>
                     {formik.errors.empJoiningDate}
                   </div>
@@ -946,7 +922,8 @@ const EmployeeEdit = (props: Props) => {
                   size="small"
                   value={
                     EmpDesignation.find(
-                      (option:any) => option.value === formik.values.empDesignationId
+                      (option: any) =>
+                        option.value === formik.values.empDesignationId
                     ) || null
                   }
                   onChange={(event, newValue: any) => {
@@ -959,7 +936,7 @@ const EmployeeEdit = (props: Props) => {
                       {...params}
                       label={
                         <span>
-                          {t("text.SelectDesignation")} {" "}
+                          {t("text.SelectDesignation")}{" "}
                           {requiredFields.includes("empDesignationId") && (
                             <span
                               style={{
@@ -977,7 +954,7 @@ const EmployeeEdit = (props: Props) => {
                   )}
                 />
                 {formik.touched.empDesignationId &&
-                  formik.errors.empDesignationId ? (
+                formik.errors.empDesignationId ? (
                   <div style={{ color: "red", margin: "5px" }}>
                     {String(formik.errors.empDesignationId)}
                   </div>
@@ -991,11 +968,11 @@ const EmployeeEdit = (props: Props) => {
                   options={Department}
                   fullWidth
                   size="small"
-                   value={
+                  value={
                     Department.find(
-                       (option:any) => option.value === formik.values.empDeptId
-                     ) || null
-                   }
+                      (option: any) => option.value === formik.values.empDeptId
+                    ) || null
+                  }
                   onChange={(event, newValue: any) => {
                     formik.setFieldValue("empDeptId", newValue?.value);
                     formik.setFieldTouched("empDeptId", true);
@@ -1006,12 +983,13 @@ const EmployeeEdit = (props: Props) => {
                       {...params}
                       label={
                         <span>
-                          {t("text.SelectDepartment")} {" "}
+                          {t("text.SelectDepartment")}{" "}
                           {requiredFields.includes("empDeptId") && (
                             <span
                               style={{
                                 color: formik.values.empDeptId
-                                  ? "green" : "red",
+                                  ? "green"
+                                  : "red",
                               }}
                             >
                               *
@@ -1038,8 +1016,9 @@ const EmployeeEdit = (props: Props) => {
                   size="small"
                   value={
                     Country.find(
-                     (option:any) => option.value === formik.values.empCountryID
-                   ) || null
+                      (option: any) =>
+                        option.value === formik.values.empCountryID
+                    ) || null
                   }
                   onChange={(event, newValue: any) => {
                     formik.setFieldValue("empCountryID", newValue?.value);
@@ -1051,7 +1030,7 @@ const EmployeeEdit = (props: Props) => {
                       {...params}
                       label={
                         <span>
-                          {t("text.SelectCountry")}  {""}
+                          {t("text.SelectCountry")} {""}
                           {requiredFields.includes("empCountryID") && (
                             <span
                               style={{
@@ -1084,8 +1063,8 @@ const EmployeeEdit = (props: Props) => {
                   size="small"
                   value={
                     StateOption.find(
-                  (option:any) => option.value === formik.values.empStateId
-                  ) || null
+                      (option: any) => option.value === formik.values.empStateId
+                    ) || null
                   }
                   onChange={(event, newValue: any) => {
                     formik.setFieldValue("empStateId", newValue?.value);
@@ -1160,10 +1139,7 @@ const EmployeeEdit = (props: Props) => {
                     />
                   )}
                 />
-
               </Grid>
-
-
 
               <Grid item lg={4} xs={12}>
                 <Autocomplete
@@ -1209,10 +1185,6 @@ const EmployeeEdit = (props: Props) => {
                 ) : null}
               </Grid>
 
-
-
-
-
               <Grid item lg={4} xs={12}>
                 <Autocomplete
                   disablePortal
@@ -1222,7 +1194,8 @@ const EmployeeEdit = (props: Props) => {
                   size="small"
                   value={
                     Gender.find(
-                      (option: any) => option.value+"" === formik.values.gender
+                      (option: any) =>
+                        option.value + "" === formik.values.gender
                     ) || null
                   }
                   onChange={(event, newValue: any) => {
@@ -1280,7 +1253,7 @@ const EmployeeEdit = (props: Props) => {
                   name="empPerAddress"
                   label={
                     <span>
-                      {t("text.EnterPermanentAddress")} {" "}
+                      {t("text.EnterPermanentAddress")}{" "}
                       {requiredFields.includes("empPerAddress") && (
                         <span
                           style={{
@@ -1302,7 +1275,7 @@ const EmployeeEdit = (props: Props) => {
                     backgroundColor: "white",
                     borderColor:
                       formik.touched.empPerAddress &&
-                        formik.errors.empPerAddress
+                      formik.errors.empPerAddress
                         ? "red"
                         : "initial",
                   }}
@@ -1322,13 +1295,11 @@ const EmployeeEdit = (props: Props) => {
                   name="empPincode"
                   label={
                     <span>
-                      {t("text.EnterPincode")} {" "}
+                      {t("text.EnterPincode")}{" "}
                       {requiredFields.includes("empPincode") && (
                         <span
                           style={{
-                            color: formik.values.empPincode
-                              ? "green"
-                              : "red",
+                            color: formik.values.empPincode ? "green" : "red",
                           }}
                         >
                           *
@@ -1341,7 +1312,6 @@ const EmployeeEdit = (props: Props) => {
                   inputProps={{ maxLength: 6 }}
                   size="small"
                   type="number"
-                 
                   fullWidth
                   style={{ backgroundColor: "white" }}
                   onChange={formik.handleChange}
@@ -1463,7 +1433,7 @@ const EmployeeEdit = (props: Props) => {
                     InputLabelProps={{ shrink: true }}
                     label={
                       <strong style={{ color: "#000" }}>
-                         {t("text.AttachedSignature")}
+                        {t("text.AttachedSignature")}
                       </strong>
                     }
                     size="small"
@@ -1520,7 +1490,6 @@ const EmployeeEdit = (props: Props) => {
                   </Grid>
                 </Grid>
 
-
                 <Modal open={Opens} onClose={handlePanClose1}>
                   <Box sx={style}>
                     {Img == "" ? (
@@ -1576,7 +1545,6 @@ const EmployeeEdit = (props: Props) => {
                   {t("text.reset")}
                 </Button>
               </Grid>
-
             </Grid>
           </form>
         </CardContent>

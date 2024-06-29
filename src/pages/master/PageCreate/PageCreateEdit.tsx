@@ -11,7 +11,7 @@ import nopdf from '../../../assets/images/nopdf.png'
 import dayjs, { Dayjs } from "dayjs";
 import api from '../../../utils/Url';
 import AddIcon from '@mui/icons-material/Add';
-import { toast } from "react-toastify";
+import { toast,ToastContainer } from "react-toastify";
 import ToastApp from "../../../ToastApp";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
@@ -469,7 +469,7 @@ const PageCreateEdit = (props: Props) => {
                 values
             );
             if (response.data.isSuccess) {
-                setToaster(false);
+                setToaster(true);
 
 
                 toast.success(response.data.mesg);
@@ -701,6 +701,7 @@ const PageCreateEdit = (props: Props) => {
                     <br />
                     <form onSubmit={formik.handleSubmit}>
                         {toaster === false ? "" : <ToastApp />}
+                        <ToastContainer />
                         <Grid item xs={12} container spacing={2}>
                             <Grid item sm={6} md={6} xs={12}>
                                     <FormControl 

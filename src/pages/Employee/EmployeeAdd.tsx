@@ -41,10 +41,7 @@ const style = {
 type Props = {};
 
 const EmployeeAdd = (props: Props) => {
-
   const { i18n, t } = useTranslation();
-
-
 
   const [EmpDesignation, setEmpDesignation] = useState<any>([
     { value: "-1", label: t("text.SelectDesignation") },
@@ -58,11 +55,15 @@ const EmployeeAdd = (props: Props) => {
   const [Country, setCountry] = useState<any>([
     { value: "-1", label: t("text.SelectCountry") },
   ]);
-  const [City, setCity] = useState<any>([{ value: "-1", label: t("text.SelectCity") }]);
+  const [City, setCity] = useState<any>([
+    { value: "-1", label: t("text.SelectCity") },
+  ]);
   const [Gender, setGender] = useState<any>([
     { value: "-1", label: t("text.SelectGender") },
   ]);
-  const [Role, setRole] = useState<any>([{ value: "-1", label: t("text.SelectRole") }]);
+  const [Role, setRole] = useState<any>([
+    { value: "-1", label: t("text.SelectRole") },
+  ]);
 
   useEffect(() => {
     getEmpDesignation();
@@ -78,108 +79,94 @@ const EmployeeAdd = (props: Props) => {
     const collectData = {
       designationId: -1,
     };
-    api
-      .post(
-        `Designation/GetDesignationmaster`,
-        collectData
-      )
-      .then((res) => {
-        const arr = res.data.data.map((item: any) => ({
-          label: item.designationName,
-          value: item.designationId,
-        }));
-        setEmpDesignation(arr);
-      });
+    api.post(`Designation/GetDesignationmaster`, collectData).then((res) => {
+      const arr = res.data.data.map((item: any) => ({
+        label: item.designationName,
+        value: item.designationId,
+      }));
+      setEmpDesignation(arr);
+    });
   };
 
   const getDepartment = () => {
     const collectData = {
       departmentId: -1,
+      departmentName: "",
     };
-    api
-      .post(`Department/GetDepartmentmaster`, collectData)
-      .then((res) => {
-        const arr = res.data.data.map((item: any) => ({
-          label: item.departmentName,
-          value: item.departmentId,
-        }));
-        setDepartment(arr);
-      });
+    api.post(`Department/GetDepartmentmaster`, collectData).then((res) => {
+      const arr = res.data.data.map((item: any) => ({
+        label: item.departmentName,
+        value: item.departmentId,
+      }));
+      setDepartment(arr);
+    });
   };
 
+ 
   const getState = () => {
     const collectData = {
       stateId: -1,
+      countryId: formik.values.empCountryID,
     };
-    api
-      .post(`State/GetStateMaster`, collectData)
-      .then((res) => {
-        const arr = res.data.data.map((item: any) => ({
-          label: item.stateName,
-          value: item.stateId,
-        }));
-        setStateOption(arr);
-      });
+    api.post(`State/GetStateMaster`, collectData).then((res) => {
+      const arr = res.data.data.map((item: any) => ({
+        label: item.stateName,
+        value: item.stateId,
+      }));
+      setStateOption(arr);
+    });
   };
 
   const getCountry = () => {
     const collectData = {
       countryId: -1,
     };
-    api
-      .post(`Country/GetCountryMaster`, collectData)
-      .then((res) => {
-        const arr = res.data.data.map((item: any) => ({
-          label: item.countryName,
-          value: item.countryId,
-        }));
-        setCountry(arr);
-      });
+    api.post(`Country/GetCountryMaster`, collectData).then((res) => {
+      const arr = res.data.data.map((item: any) => ({
+        label: item.countryName,
+        value: item.countryId,
+      }));
+      setCountry(arr);
+    });
   };
 
   const getCity = () => {
     const collectData = {
-      countryId: -1,
+      cityId: -1,
+      stateId:formik.values.empStateId,
     };
-    api
-      .post(`M10_District/GetDistrictMaster`, collectData)
-      .then((res) => {
-        const arr = res.data.data.map((item: any) => ({
-          label: item.cityName,
-          value: item.cityId,
-        }));
-        setCity(arr);
-      });
+    api.post(`M10_District/GetDistrictMaster`, collectData).then((res) => {
+      const arr = res.data.data.map((item: any) => ({
+        label: item.cityName,
+        value: item.cityId,
+      }));
+      setCity(arr);
+    });
   };
-
   const getGender = () => {
     const collectData = {
       genderID: -1,
     };
-    api
-      .post(`Gender/GetGenderMaster`, collectData)
-      .then((res) => {
-        const arr = res.data.data.map((item: any) => ({
-          label: item.genderName,
-          value: item.genderID,
-        }));
-        setGender(arr);
-      });
+    api.post(`Gender/GetGenderMaster`, collectData).then((res) => {
+      const arr = res.data.data.map((item: any) => ({
+        label: item.genderName,
+        value: item.genderID,
+      }));
+      setGender(arr);
+    });
   };
 
   const getRole = () => {
     const collectData = {
       roleId: "-1",
     };
-    api
-      .post(`Auth/GetRoleMaster`, collectData)
-      .then((res) => {
-        const arr = res.data.data.map((item: any) => ({
-          label: item.roleName,
-          value: item.roleId,
-        }));
-        setRole(arr);
-      });
+    api.post(`Auth/GetRoleMaster`, collectData).then((res) => {
+      const arr = res.data.data.map((item: any) => ({
+        label: item.roleName,
+        value: item.roleId,
+      }));
+      setRole(arr);
+    });
   };
 
   const [panOpens, setPanOpen] = React.useState(false);
@@ -251,8 +238,8 @@ const EmployeeAdd = (props: Props) => {
       const base64 = await ConvertBase64(file);
       formik.setFieldValue(params, base64);
       console.log(base64);
-    };
-  }
+    }
+  };
   let navigate = useNavigate();
 
   const [toaster, setToaster] = useState(false);
@@ -298,10 +285,7 @@ const EmployeeAdd = (props: Props) => {
     ),
 
     empPanNumber: Yup.string()
-      .matches(
-        /^[A-Z]{3}[A-ZHPTCF][A-Z]\d{4}[A-Z]$/,
-        'Invalid PAN format'
-      )
+      .matches(/^[A-Z]{3}[A-ZHPTCF][A-Z]\d{4}[A-Z]$/, "Invalid PAN format")
       .required(t("text.PanNoRequired")),
 
     empDob: Yup.string().test(
@@ -353,21 +337,16 @@ const EmployeeAdd = (props: Props) => {
 
     empAddharNo: Yup.string()
       .required(t("text.AdharNoRequired"))
-      .test("len", ("Aadhaar number must be exactly 12 digits"), (val: any) =>
+      .test("len", "Aadhaar number must be exactly 12 digits", (val: any) =>
         val ? val.replace(/\D/g, "").length === 12 : true
       ),
     email: Yup.string()
       .required(t("text.reqEmail"))
-      .test(
-        "is-valid-email",
-        "Invalid email format",
-        function (value: any) {
-          const trimmedValue = value.trim();
-          return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedValue);
-        }
-      ),
+      .test("is-valid-email", "Invalid email format", function (value: any) {
+        const trimmedValue = value.trim();
+        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedValue);
+      }),
   });
-
 
   const formik = useFormik({
     initialValues: {
@@ -449,7 +428,7 @@ const EmployeeAdd = (props: Props) => {
     "empDeptId",
     "empAddharNo",
     "email",
-    "empPincode"
+    "empPincode",
   ];
 
   const back = useNavigate();
@@ -500,7 +479,12 @@ const EmployeeAdd = (props: Props) => {
                 <TextField
                   id="empName"
                   name="empName"
-                  label={<CustomLabel text={t("text.EnterEmployeeName")} required={requiredFields.includes('empName')} />}
+                  label={
+                    <CustomLabel
+                      text={t("text.EnterEmployeeName")}
+                      required={requiredFields.includes("empName")}
+                    />
+                  }
                   value={formik.values.empName}
                   placeholder={t("text.EnterEmployeeName")}
                   size="small"
@@ -526,7 +510,12 @@ const EmployeeAdd = (props: Props) => {
                 <TextField
                   id="empCode"
                   name="empCode"
-                  label={<CustomLabel text={t("text.EnterEmployeeCode")} required={requiredFields.includes('empCode')} />}
+                  label={
+                    <CustomLabel
+                      text={t("text.EnterEmployeeCode")}
+                      required={requiredFields.includes("empCode")}
+                    />
+                  }
                   value={formik.values.empCode}
                   placeholder={t("text.EnterEmployeeCode")}
                   size="small"
@@ -552,7 +541,12 @@ const EmployeeAdd = (props: Props) => {
                 <TextField
                   id="empFatherName"
                   name="empFatherName"
-                  label={<CustomLabel text={t("text.EnterFatherName")} required={requiredFields.includes('empFatherName')} />}
+                  label={
+                    <CustomLabel
+                      text={t("text.EnterFatherName")}
+                      required={requiredFields.includes("empFatherName")}
+                    />
+                  }
                   value={formik.values.empFatherName}
                   placeholder={t("text.EnterFatherName")}
                   size="small"
@@ -575,7 +569,12 @@ const EmployeeAdd = (props: Props) => {
                 <TextField
                   id="empspauseName"
                   name="empspauseName"
-                  label={<CustomLabel text={t("text.EnterSpauseName")} required={requiredFields.includes('empspauseName')} />}
+                  label={
+                    <CustomLabel
+                      text={t("text.EnterSpauseName")}
+                      required={requiredFields.includes("empspauseName")}
+                    />
+                  }
                   value={formik.values.empspauseName}
                   placeholder={t("text.EnterSpauseName")}
                   size="small"
@@ -606,11 +605,15 @@ const EmployeeAdd = (props: Props) => {
                   id="empMobileNo"
                   name="empMobileNo"
                   inputProps={{ min: "0", maxLength: 10 }}
-                  label={<CustomLabel text={t("text.EnterMobileNo")} required={requiredFields.includes('empMobileNo')} />}
+                  label={
+                    <CustomLabel
+                      text={t("text.EnterMobileNo")}
+                      required={requiredFields.includes("empMobileNo")}
+                    />
+                  }
                   value={formik.values.empMobileNo}
                   placeholder={t("text.EnterMobileNo")}
                   type="number"
-
                   size="small"
                   fullWidth
                   style={{
@@ -630,13 +633,16 @@ const EmployeeAdd = (props: Props) => {
                 ) : null}
               </Grid>
 
-
-
               <Grid item lg={4} xs={12}>
                 <TextField
                   id="email"
                   name="email"
-                  label={<CustomLabel text={t("text.EnterEmail")} required={requiredFields.includes('email')} />}
+                  label={
+                    <CustomLabel
+                      text={t("text.EnterEmail")}
+                      required={requiredFields.includes("email")}
+                    />
+                  }
                   value={formik.values.email}
                   placeholder={t("text.EnterEmail")}
                   inputProps={{}}
@@ -658,7 +664,12 @@ const EmployeeAdd = (props: Props) => {
                 <TextField
                   id="empPanNumber"
                   name="empPanNumber"
-                  label={<CustomLabel text={t("text.EnterPanNo")} required={requiredFields.includes('empPanNumber')} />}
+                  label={
+                    <CustomLabel
+                      text={t("text.EnterPanNo")}
+                      required={requiredFields.includes("empPanNumber")}
+                    />
+                  }
                   value={formik.values.empPanNumber}
                   placeholder={t("text.EnterPanNo")}
                   size="small"
@@ -684,13 +695,16 @@ const EmployeeAdd = (props: Props) => {
                 <TextField
                   id="empAddharNo"
                   name="empAddharNo"
-                  label={<CustomLabel text={t("text.EnterAdharNumber")} required={requiredFields.includes('empAddharNo')} />}
+                  label={
+                    <CustomLabel
+                      text={t("text.EnterAdharNumber")}
+                      required={requiredFields.includes("empAddharNo")}
+                    />
+                  }
                   value={formik.values.empAddharNo}
                   placeholder={t("text.EnterAdharNumber")}
                   size="small"
                   type="number"
-
-
                   fullWidth
                   style={{ backgroundColor: "white" }}
                   onChange={formik.handleChange}
@@ -709,7 +723,12 @@ const EmployeeAdd = (props: Props) => {
                   id="empDob"
                   type="date"
                   name="empDob"
-                  label={<CustomLabel text={t("text.EnterDOB")} required={requiredFields.includes('empDob')} />}
+                  label={
+                    <CustomLabel
+                      text={t("text.EnterDOB")}
+                      required={requiredFields.includes("empDob")}
+                    />
+                  }
                   value={formik.values.empDob}
                   placeholder={t("text.EnterDOB")}
                   size="small"
@@ -738,7 +757,12 @@ const EmployeeAdd = (props: Props) => {
                   name="empJoiningDate"
                   type="date"
                   InputLabelProps={{ shrink: true }}
-                  label={<CustomLabel text={t("text.EnterJoiningDate")} required={requiredFields.includes('empJoiningDate')} />}
+                  label={
+                    <CustomLabel
+                      text={t("text.EnterJoiningDate")}
+                      required={requiredFields.includes("empJoiningDate")}
+                    />
+                  }
                   value={formik.values.empJoiningDate}
                   placeholder={t("text.EnterJoiningDate")}
                   size="small"
@@ -747,7 +771,7 @@ const EmployeeAdd = (props: Props) => {
                     backgroundColor: "white",
                     borderColor:
                       formik.touched.empJoiningDate &&
-                        formik.errors.empJoiningDate
+                      formik.errors.empJoiningDate
                         ? "red"
                         : "initial",
                   }}
@@ -755,7 +779,7 @@ const EmployeeAdd = (props: Props) => {
                   onBlur={formik.handleBlur}
                 />
                 {formik.touched.empJoiningDate &&
-                  formik.errors.empJoiningDate ? (
+                formik.errors.empJoiningDate ? (
                   <div style={{ color: "red", margin: "5px" }}>
                     {formik.errors.empJoiningDate}
                   </div>
@@ -802,12 +826,17 @@ const EmployeeAdd = (props: Props) => {
                   renderInput={(params) => (
                     <TextField
                       {...params}
-                      label={<CustomLabel text={t("text.SelectDesignation")} required={requiredFields.includes('empDesignationId')} />}
+                      label={
+                        <CustomLabel
+                          text={t("text.SelectDesignation")}
+                          required={requiredFields.includes("empDesignationId")}
+                        />
+                      }
                     />
                   )}
                 />
                 {formik.touched.empDesignationId &&
-                  formik.errors.empDesignationId ? (
+                formik.errors.empDesignationId ? (
                   <div style={{ color: "red", margin: "5px" }}>
                     {formik.errors.empDesignationId}
                   </div>
@@ -834,7 +863,12 @@ const EmployeeAdd = (props: Props) => {
                   renderInput={(params) => (
                     <TextField
                       {...params}
-                      label={<CustomLabel text={t("text.SelectDepartment")} required={requiredFields.includes('empDeptId')} />}
+                      label={
+                        <CustomLabel
+                          text={t("text.SelectDepartment")}
+                          required={requiredFields.includes("empDeptId")}
+                        />
+                      }
                     />
                   )}
                 />
@@ -865,7 +899,12 @@ const EmployeeAdd = (props: Props) => {
                   renderInput={(params) => (
                     <TextField
                       {...params}
-                      label={<CustomLabel text={t("text.SelectCountry")} required={requiredFields.includes('empCountryID')} />}
+                      label={
+                        <CustomLabel
+                          text={t("text.SelectCountry")}
+                          required={requiredFields.includes("empCountryID")}
+                        />
+                      }
                     />
                   )}
                 />
@@ -896,7 +935,12 @@ const EmployeeAdd = (props: Props) => {
                   renderInput={(params) => (
                     <TextField
                       {...params}
-                      label={<CustomLabel text={t("text.SelectState")} required={requiredFields.includes('empStateId')} />}
+                      label={
+                        <CustomLabel
+                          text={t("text.SelectState")}
+                          required={requiredFields.includes("empStateId")}
+                        />
+                      }
                     />
                   )}
                 />
@@ -927,14 +971,16 @@ const EmployeeAdd = (props: Props) => {
                   renderInput={(params) => (
                     <TextField
                       {...params}
-                      label={<CustomLabel text={t("text.SelectCity")} required={requiredFields.includes('empCityId')} />}
+                      label={
+                        <CustomLabel
+                          text={t("text.SelectCity")}
+                          required={requiredFields.includes("empCityId")}
+                        />
+                      }
                     />
                   )}
                 />
-
               </Grid>
-
-
 
               <Grid item lg={4} xs={12}>
                 <Autocomplete
@@ -956,7 +1002,12 @@ const EmployeeAdd = (props: Props) => {
                   renderInput={(params) => (
                     <TextField
                       {...params}
-                      label={<CustomLabel text={t("text.SelectRole")} required={requiredFields.includes('roleId')} />}
+                      label={
+                        <CustomLabel
+                          text={t("text.SelectRole")}
+                          required={requiredFields.includes("roleId")}
+                        />
+                      }
                     />
                   )}
                 />
@@ -966,10 +1017,6 @@ const EmployeeAdd = (props: Props) => {
                   </div>
                 ) : null}
               </Grid>
-
-
-
-
 
               <Grid item lg={4} xs={12}>
                 <Autocomplete
@@ -991,7 +1038,12 @@ const EmployeeAdd = (props: Props) => {
                   renderInput={(params) => (
                     <TextField
                       {...params}
-                      label={<CustomLabel text={t("text.SelectGender")} required={requiredFields.includes('gender')} />}
+                      label={
+                        <CustomLabel
+                          text={t("text.SelectGender")}
+                          required={requiredFields.includes("gender")}
+                        />
+                      }
                     />
                   )}
                 />
@@ -1023,7 +1075,12 @@ const EmployeeAdd = (props: Props) => {
                 <TextField
                   id="empPerAddress"
                   name="empPerAddress"
-                  label={<CustomLabel text={t("text.EnterPermanentAddress")} required={requiredFields.includes('empPerAddress')} />}
+                  label={
+                    <CustomLabel
+                      text={t("text.EnterPermanentAddress")}
+                      required={requiredFields.includes("empPerAddress")}
+                    />
+                  }
                   value={formik.values.empPerAddress}
                   placeholder={t("text.EnterPermanentAddress")}
                   size="small"
@@ -1032,7 +1089,7 @@ const EmployeeAdd = (props: Props) => {
                     backgroundColor: "white",
                     borderColor:
                       formik.touched.empPerAddress &&
-                        formik.errors.empPerAddress
+                      formik.errors.empPerAddress
                         ? "red"
                         : "initial",
                   }}
@@ -1050,14 +1107,17 @@ const EmployeeAdd = (props: Props) => {
                 <TextField
                   id="empPincode"
                   name="empPincode"
-                  label={<CustomLabel text={t("text.EnterPincode")} required={requiredFields.includes('empPincode')} />}
+                  label={
+                    <CustomLabel
+                      text={t("text.EnterPincode")}
+                      required={requiredFields.includes("empPincode")}
+                    />
+                  }
                   value={formik.values.empPincode}
                   placeholder={t("text.EnterPincode")}
                   inputProps={{ min: "0", maxLength: 6 }}
                   type="number"
-
                   size="small"
-                  
                   fullWidth
                   style={{ backgroundColor: "white" }}
                   onChange={formik.handleChange}
@@ -1228,7 +1288,6 @@ const EmployeeAdd = (props: Props) => {
                   </Grid>
                 </Grid>
 
-
                 <Modal open={Opens} onClose={handlePanClose1}>
                   <Box sx={style}>
                     {Img == "" ? (
@@ -1284,7 +1343,6 @@ const EmployeeAdd = (props: Props) => {
                   {t("text.reset")}
                 </Button>
               </Grid>
-
             </Grid>
           </form>
         </CardContent>

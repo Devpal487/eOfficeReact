@@ -174,6 +174,10 @@ const AuthorityMail = (props: Props) => {
         { value: "-1", label: t("text.SelectSection") },
     ]);
 
+    const [FileOps, setFileOps] = useState<any>([
+        { value: "-1", label: t("text.SelectFileNo") },
+    ]);
+
     const [tableLoading, setIsTableLoading] = useState(false);
     const [Awaitopen, setAwaitopen] = useState(false);
     const [pdfView, setPdfView] = useState("");
@@ -184,11 +188,11 @@ const AuthorityMail = (props: Props) => {
         setSelectedOption(event.target.value);
     };
 
-    const [selectedValue, setSelectedValue] = useState('M');
+    const [Option, setOption] = useState('M');
 
-    const handleChange = (event: any) => {
-        setSelectedValue(event.target.value);
-    };
+    // const handleChange = (event: any) => {
+    //     setSelectedValue(event.target.value);
+    // };
 
 
     const userId = getId();
@@ -221,6 +225,7 @@ const AuthorityMail = (props: Props) => {
         formik.setFieldValue("letterBy", "M");
         formik.setFieldValue("Auth", "section");
         getTableData(1);
+        getFileNo();
 
         getSection();
         getAuthority();
@@ -261,6 +266,26 @@ const AuthorityMail = (props: Props) => {
                     value: item.id,
                 }));
                 setAuthOps(arr);
+            });
+    };
+
+
+    const getFileNo = () => {
+        const collectData = {
+            "fnId": -1,
+            "fId": -1,
+            "inst_id": -1,
+            "user_id": -1,
+            "divisionId": -1
+        };
+        api
+            .post(`FileNumber/GetFileNumber`, collectData)
+            .then((res) => {
+                const arr = res.data.data.map((item: any) => ({
+                    label: item.fileNm,
+                    value: item.fnId,
+                }));
+                setFileOps(arr);
             });
     };
 
@@ -483,14 +508,15 @@ const AuthorityMail = (props: Props) => {
             "dletterNo": "",
             "dSubject": formik.values.subject.toString() || "",
             "userid": userId,
-            "instid": instId,
+            "instid": parseInt(instId),
             "dflag": "",
-            "status": "",
+            "status": "I",
             "message": "",
             "rcipients": receiptsValue,
             "sid": sidValue,
-            "divisionid": divId,
+            "divisionid": parseInt(divId),
             "sendby": 0,
+            "fileno":formik.values.fileNo,
             "authType": formik.values.Auth.toString() || "",
             "fileName": formik.values.fileattach_name.toString() || "",
             "pdfDoc": formik.values.base64.toString() || "",
@@ -534,6 +560,12 @@ const AuthorityMail = (props: Props) => {
         setSelectedOption(value);
         formik.setFieldValue('Auth', value);
     };
+    const handleRadioChange1 = (event:any) => {
+        const value = event.target.value;
+        setOption(value);
+        formik.setFieldValue('letterBy', value);
+    };
+
 
 
 
@@ -793,10 +825,7 @@ const AuthorityMail = (props: Props) => {
                                                     aria-label="options"
                                                     name="options"
                                                     defaultValue="M"
-                                                    onChange={(event) => {
-                                                        console.log("radio value check", event.target.value);
-                                                        formik.setFieldValue("letterBy", event.target.value);
-                                                    }}
+                                                    onChange={handleRadioChange1}
                                                     style={{ display: "flex", flexDirection: "row" }}
                                                 >
                                                     <FormControlLabel value="M" control={<Radio />} label="Message" />
@@ -821,6 +850,7 @@ const AuthorityMail = (props: Props) => {
                                             </FormControl>
                                         </Grid>
 
+
                                         <Grid item xs={12}>
                                             <Autocomplete
                                                 disablePortal
@@ -843,11 +873,35 @@ const AuthorityMail = (props: Props) => {
                                             />
                                         </Grid>
 
+                                        {Option === 'L' && (
+                                        <Grid item xs={12}>
+                                            <Autocomplete
+                                                disablePortal
+                                                id="combo-box-demo"
+                                                options={FileOps}
+                                                fullWidth
+                                                size="small"
+                                                onChange={(event, newValue: any) => {
+                                                    console.log(newValue?.value);
+                                                    formik.setFieldValue("fileNo", newValue?.value);
+                                                    formik.setFieldTouched( "fileNo", true);
+                                                    formik.setFieldTouched("fileNo", false);
+                                                }}
+                                                renderInput={(params) => (
+                                                    <TextField
+                                                        {...params}
+                                                        label={<CustomLabel text={ t("text.SelectFileNo") } />}
+                                                    />
+                                                )}
+                                            />
+                                        </Grid>
+                                        )}
+
                                         <Grid item xs={12}>
                                             <TextField
                                                 label={<CustomLabel text={t('text.Subject')} />}
                                                 value={formik.values.subject}
-                                                placeholder="Subject"
+                                                placeholder={t('text.Subject')} 
                                                 size="small"
                                                 InputLabelProps={{ shrink: true }}
                                                 fullWidth
@@ -859,6 +913,8 @@ const AuthorityMail = (props: Props) => {
                                             />
                                         </Grid>
 
+
+                                       
                                         <Grid container spacing={1} item>
                                             <Grid
                                                 xs={12}

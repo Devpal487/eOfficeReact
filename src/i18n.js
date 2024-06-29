@@ -636,14 +636,7 @@ const resources = {
         Important:"Important",
         Draft:"Draft",
         Trash:"Trash",
-        Compose:"Compose"
-
-
-
-
-
-
-
+        Compose:"Compose",
 
         AddComment:"Add Comment",
         Index:"Index!",
@@ -1287,6 +1280,14 @@ const resources = {
         Draft:"प्रारूप",
         Trash:"कचरा",
          Compose:"रचना",
+         AddComment:"टिप्पणी जोडा",
+         Index:"सूचकांक!",
+         PhysicalIndex:"भौतिक सूचकांक",
+         RelatedOficer:"संबंधित अधिकारी",
+         PageNoFrom:"पृष्ठ संख्या से",
+         PageNoTo:"पृष्ठ संख्या को",
+         AddRow:"पंक्ति जोड़ें",
+         PhysicalIndex:"भौतिक सूचकांक",
 
 
 
@@ -1300,14 +1301,7 @@ const resources = {
         
  
 
-        AddComment:"टिप्पणी जोडा",
-        Index:"सूचकांक!",
-        PhysicalIndex:"भौतिक सूचकांक",
-        RelatedOficer:"संबंधित अधिकारी",
-        PageNoFrom:"पृष्ठ संख्या से",
-        PageNoTo:"पृष्ठ संख्या को",
-        AddRow:"पंक्ति जोड़ें",
-        PhysicalIndex:"भौतिक सूचकांक",
+       
 
 
         

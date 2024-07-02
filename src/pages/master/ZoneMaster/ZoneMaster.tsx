@@ -72,7 +72,7 @@ export default function ZoneMaster() {
             const pathrow = childMenudata.find(
               (x: any) => x.path === location.pathname
             );
-            console.log("data", pathrow);
+            // console.log("data", pathrow);
             if (pathrow) {
               setPermissionData(pathrow);
               fetchZonesData();
@@ -84,8 +84,6 @@ export default function ZoneMaster() {
   }, [isLoading]);
 
   const handleConversionChange = (params: any, text: string) => {
-    console.log("🚀 ~ handleConversionChange ~ params:", params)
-    console.log('Converted text:', text);
     formik.setFieldValue(params, text);
 
   };
@@ -117,9 +115,10 @@ export default function ZoneMaster() {
 
   const routeChangeEdit = (row: any) => {
     console.log(row);
+    formik.setFieldValue("zoneID", row.zoneID);
     formik.setFieldValue("zoneName", row.zoneName);
     formik.setFieldValue("zoneCode", row.zoneCode);
-
+    formik.setFieldValue("isActive", row.isActive);
     setEditId(row.id);
   };
 
@@ -379,9 +378,8 @@ export default function ZoneMaster() {
               <Grid item md={2} sx={{ padding: "20px" }}>
                 <InputModeSelector />
               </Grid>
-
-
-              <Divider />
+{/* 
+              <Divider /> */}
 
               <Box height={10} />
 
@@ -399,7 +397,6 @@ export default function ZoneMaster() {
                       size="small"
                       fullWidth={true}
                       onChange={(text: any) => handleConversionChange("zoneName", text)}
-                    // onBlur={formik.handleBlur}
                     />
                     {formik.touched.zoneName && formik.errors.zoneName ? (
                       <div style={{ color: "red", margin: "5px" }}>{formik.errors.zoneName}</div>
@@ -440,8 +437,12 @@ export default function ZoneMaster() {
               </form>
             </InputModeProvider>
 
-
           </Grid>
+
+          <br/>
+          <Divider/>
+          <br/>
+
           {isLoading ? (
             <div
               style={{

@@ -1,12 +1,9 @@
 import Box from "@mui/material/Box";
 import SwipeableDrawer from "@mui/material/SwipeableDrawer";
-
-
-
 import React, { useState, useEffect } from "react";
 import {
-    Card,
-    Divider,
+  IconButton,
+  Divider,
     Paper,
 } from "@mui/material";
 import Collapse from "@mui/material/Collapse";
@@ -18,6 +15,8 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import dayjs from "dayjs";
 import { styled } from '@mui/material/styles';
+import CloseIcon from "@mui/icons-material/Close";
+
 
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
@@ -51,7 +50,6 @@ function Row({ row, index }: { row: any; index: number }) {
     const [isHovered, setIsHovered] = useState(false);
 
     const renderNodeMode = (nodeMode: string) => {
-        // console.log("nodeMode:", nodeMode);
         switch (nodeMode) {
             case 'A':
                 return 'Authority';
@@ -65,6 +63,40 @@ function Row({ row, index }: { row: any; index: number }) {
                 return nodeMode;
         }
     };
+
+
+    const shouldShowDetails = (nodeMode: string) => {
+        // Determine which details to show based on nodeMode
+        switch (nodeMode) {
+          case 'A':
+            return {
+              showAuthority: true,
+              showCommittee: false,
+              showGroup: false,
+            };
+          case 'C':
+            return {
+                showAuthority: false,
+                showCommittee: true,
+                showGroup: false,
+              };
+          case 'G':
+            return {
+                showAuthority: false,
+                showCommittee: false,
+                showGroup: true,
+              };
+          default:
+            return {
+                showAuthority: false,
+                showCommittee: false,
+                showGroup: false,
+              };
+        }
+      };
+    
+      const { showAuthority, showCommittee, showGroup } = shouldShowDetails(row.nodeMode);
+    
 
     return (
         <React.Fragment>
@@ -83,14 +115,11 @@ function Row({ row, index }: { row: any; index: number }) {
                 >
                     <a
                         onClick={() => setIsOpen(!isOpen)}
-                        // onMouseEnter={() => setIsHovered(true)}
-                        // onMouseLeave={() => setIsHovered(false)}
-
                     > {renderNodeMode(row.nodeMode)}</a>
                    
                 </TableCell>
                 </StyledTableRow>
-                <TableRow>
+               {/*  <TableRow>
         <TableCell
           style={{ paddingBottom: 0, paddingTop: 0, margin: "5px" }}
           colSpan={2}
@@ -100,13 +129,69 @@ function Row({ row, index }: { row: any; index: number }) {
                         <p><b>Authority :</b> {row.authName}</p>
                         <p><b>Department :</b> {row.auth_DeptName}</p>
                         <p><b>Section :</b> {row.auth_SectionName}</p>
+                        <p><b>Committee : {row.committeeOrGroupId}</b></p>
+                        <p><b>Group : {row.committeeOrGroupId}</b></p>
                         <p><b>Email :</b> {row.email == "Y"? "Yes" : "No"}</p>
                         <p><b>SMS :</b> {row.sms== "Y"? "Yes" : "No"}</p>
                         <p><b>Message :</b> {row.message}</p>
                     </div>
                 </Collapse>
                 </TableCell>
-      </TableRow>
+      </TableRow> */}
+
+{showAuthority && (
+        <TableRow>
+          <TableCell
+            style={{ paddingBottom: 0, paddingTop: 0, margin: "5px" }}
+            colSpan={2}
+          >
+            <Collapse in={isOpen} timeout="auto" unmountOnExit>
+              <div style={{ paddingBottom: "5px", paddingTop: "5px" }}>
+                <p><b>Authority :</b> {row.authName}</p>
+                <p><b>Department :</b> {row.auth_DeptName}</p>
+                <p><b>Section :</b> {row.auth_SectionName}</p>
+                <p><b>Email :</b> {row.email === "Y" ? "Yes" : "No"}</p>
+                <p><b>SMS :</b> {row.sms === "Y" ? "Yes" : "No"}</p>
+                <p><b>Message :</b> {row.message}</p>
+              </div>
+            </Collapse>
+          </TableCell>
+        </TableRow>
+      )}
+      {showCommittee && (
+        <TableRow>
+          <TableCell
+            style={{ paddingBottom: 0, paddingTop: 0, margin: "5px" }}
+            colSpan={2}
+          >
+            <Collapse in={isOpen} timeout="auto" unmountOnExit>
+              <div style={{ paddingBottom: "5px", paddingTop: "5px" }}>
+                <p><b>Committee Name :</b> {row.committeeOrGroupId}</p>
+                <p><b>Email :</b> {row.email === "Y" ? "Yes" : "No"}</p>
+                <p><b>SMS :</b> {row.sms === "Y" ? "Yes" : "No"}</p>
+                <p><b>Message :</b> {row.message}</p>
+              </div>
+            </Collapse>
+          </TableCell>
+        </TableRow>
+      )}
+      {showGroup && (
+        <TableRow>
+          <TableCell
+            style={{ paddingBottom: 0, paddingTop: 0, margin: "5px" }}
+            colSpan={2}
+          >
+            <Collapse in={isOpen} timeout="auto" unmountOnExit>
+              <div style={{ paddingBottom: "5px", paddingTop: "5px" }}>
+                <p><b>Group :</b> {row.committeeOrGroupId}</p>
+                <p><b>Email :</b> {row.email === "Y" ? "Yes" : "No"}</p>
+                <p><b>SMS :</b> {row.sms === "Y" ? "Yes" : "No"}</p>
+                <p><b>Message :</b> {row.message}</p>
+              </div>
+            </Collapse>
+          </TableCell>
+        </TableRow>
+      )}
            
 
         </React.Fragment>
@@ -115,16 +200,17 @@ function Row({ row, index }: { row: any; index: number }) {
 
 export default function SwipeableDrawerRoute({ open, onClose, userData }: Props) {
 
+  
     return (
         <div>
             <SwipeableDrawer
                 anchor="right"
                 open={open}
-                onClose={onClose}
+                onClose={() => { }}
                 onOpen={() => { }}
                 slotProps={{
                     backdrop: {
-                        // style: { backgroundColor: "rgba(0, 0, 0, 0)" },
+                        style: { backgroundColor: "rgba(0, 0, 0, 0.2)" },
                     },
                 }}
                 PaperProps={{
@@ -140,20 +226,39 @@ export default function SwipeableDrawerRoute({ open, onClose, userData }: Props)
                 <Box sx={{ width: 300 }}>
                     {userData && userData.length > 0 && (
                         <>
+                        <div style={{
+                            display:"flex", 
+                            alignItems:"center", 
+                            justifyContent:"space-between",
+                            padding:"3vh",
+                            textAlign: "center",
+                            backgroundColor: "#00009a",
+                            color: "whitesmoke",
+                            borderBottomLeftRadius: "10px",
+                            borderBottomRightRadius: "10px",
+                            fontSize: "20px",
+                        }}>
                             <p
-                                style={{
-                                    paddingTop: "5vh",
-                                    paddingBottom: "5vh",
-                                    textAlign: "center",
-                                    backgroundColor: "#00009a",
-                                    color: "whitesmoke",
-                                    borderBottomLeftRadius: "10px",
-                                    borderBottomRightRadius: "10px",
-                                    fontSize: "20px",
-                                }}
+                                // style={{
+                                //     paddingTop: "5vh",
+                                //     paddingBottom: "5vh",
+                                //     textAlign: "center",
+                                //     backgroundColor: "#00009a",
+                                //     color: "whitesmoke",
+                                //     borderBottomLeftRadius: "10px",
+                                //     borderBottomRightRadius: "10px",
+                                //     fontSize: "20px",
+                                // }}
                             >
                                 #{userData[0]['id']} Route Details
                             </p>
+                            <IconButton
+                  onClick={onClose}
+                  aria-label="close"
+                >
+                  <CloseIcon  style={{ color: '#ffffff' }}/>
+                </IconButton>
+                </div>
 
 
                             <div style={{ margin: "15px" }}>
@@ -162,6 +267,7 @@ export default function SwipeableDrawerRoute({ open, onClose, userData }: Props)
                             <div style={{ margin: "15px" }}>
                                 <p><strong>Total Level: </strong> {userData[0]["totalLevel"]}</p>
                             </div>
+
 
                         </>)}
 

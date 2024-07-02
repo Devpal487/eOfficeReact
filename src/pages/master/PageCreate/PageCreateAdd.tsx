@@ -1467,7 +1467,7 @@ const PageCreateAdd = (props: Props) => {
                                             marginBottom: 15,
                                             backgroundColor: "info",
                                         }}
-                                        // onClick={addMoreRow}
+                                        onClick={addMoreRow}
                                     >
                                         {t("text.add")}
                                     </Button>

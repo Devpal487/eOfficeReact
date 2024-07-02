@@ -39,7 +39,7 @@ interface MenuPermission {
   isDel: boolean;
 }
 
-export default function BulkClosed() {
+export default function BulkClosed(rows: any) {
   const [totalFile, setTotalFile] = useState([]);
   const [columns, setColumns] = useState<any>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -54,50 +54,51 @@ export default function BulkClosed() {
   // console.log("🚀 ~ ViewEditFile ~ userId:", userId);
   const divId = getdivisionId();
   // console.log("🚀 ~ ViewEditFile ~ divId:", divId);
-
   const [selectAll, setSelectAll] = useState(false);
-  const [selectedRows, setSelectedRows] = useState([]);
+
+  const handleSelectAllChange = (event: any) => {
+    const isChecked = event.target.checked;
+    setSelectAll(isChecked);
+    if (isChecked) {
+      const allFileNos = rows.map((row: any) => row.cFileNo);
+      formik.setFieldValue("fileNo", allFileNos.join(","));
+    } else {
+      formik.setFieldValue("fileNo", "");
+    }
+  };
+
+  const handleCheckboxChange = (params: any, event: any) => {
+    const isChecked = event.target.checked;
+    const cFileNo = params.row.cFileNo;
+
+    if (isChecked) {
+      formik.setFieldValue("fileNo", cFileNo);
+    } else {
+      formik.setFieldValue("fileNo", "");
+    }
+  };
 
   const formik = useFormik({
     initialValues: {
-        // pdFid: -1,
-        pdfName: "",
-        docMid: 0,
-        keywords: "",
-        subFtype: "",
-        fileNo: 0,
-        fileType: 0,
-        remark: "",
-        fileName: "",
-        fId: 0,
-
+      // pdFid: -1,
+      pdfName: "",
+      docMid: 0,
+      keywords: "",
+      subFtype: "",
+      fileNo: 0,
+      fileType: 0,
+      remark: "",
+      fileName: "",
+      fId: 0,
     },
     // validationSchema: validationSchema,
     onSubmit: async (values) => {
-        // const response = await api.post(
-        //    `DocFiles/AddUpdateDocFiles`,
-        //    values
-        // );
-        
+      // const response = await api.post(
+      //    `DocFiles/AddUpdateDocFiles`,
+      //    values
+      // );
     },
-});
-
-  const handleSelectAllChange = (event: any) => {
-    const checked = event.target.checked;
-    setSelectAll(checked);
-    // if (checked) {
-    //     setSelectedRows(data.map((row:any) => row.id));
-    // } else {
-    //     setSelectedRows([]);
-    // }
-  };
-
-  const handleCheckboxChange = (params: any) => {
-    
-   
-    console.log("Row data:", params.row);
-    formik.setFieldValue('fileNo',params.row.cFileNo)
-  };
+  });
 
   useEffect(() => {
     getAuthDevision();
@@ -106,7 +107,7 @@ export default function BulkClosed() {
 
   const SubmitBulk = () => {
     const value = {
-      fileNo:formik.values.fileNo,
+      fileNo: formik.values.fileNo,
       lastStatus: "",
     };
 
@@ -184,7 +185,7 @@ export default function BulkClosed() {
               return [
                 <Checkbox
                   checked={params.value}
-                  onChange={(params: any) => handleCheckboxChange(params)}
+                  onChange={(event: any) => handleCheckboxChange(params, event)}
                 />,
               ];
             },
@@ -287,7 +288,12 @@ export default function BulkClosed() {
             variant="contained"
             size="large"
             onClick={SubmitBulk}
-            sx={{ mt: 1 }}
+            sx={{
+              mt: 1,
+              "&:hover": {
+                backgroundColor: "#2B4593", 
+              },
+            }}
           >
             {t("text.Submit")}
           </Button>

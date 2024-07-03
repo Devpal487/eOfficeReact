@@ -39,11 +39,13 @@ export default function LoginPage() {
     }
     api.post(`Institute_Master/GetInstitute_Master`,collectData)
     .then((res:any) => {
-      console.log("🚀 ~ dynamicData ~ res:", res.data.data)
+      // console.log("🚀 ~ dynamicData ~ res:", res.data.data)
       if(res.data.data.length >0){
         localStorage.setItem("sidelogo", res.data.data[0]["instLogo"]);
         localStorage.setItem("applogo", res.data.data[0]["reportheaderimg"]);
         localStorage.setItem("name", res.data.data[0]["insname"]);
+        localStorage.setItem("mclr", res.data.data[0]["mBackColor"]);
+        localStorage.setItem("oclr", res.data.data[0]["mOverColor"]);
       setData(res.data.data)
       }
     })
@@ -127,14 +129,8 @@ export default function LoginPage() {
       const response = await axios.post(HOST_URL + `Auth/USERLOGIN`, values);
       if (response.data.isSuccess) {
         localStorage.setItem("userdata", JSON.stringify(response.data.data));
-        localStorage.setItem(
-          "useR_ID",
-          JSON.stringify(response.data.data[0]["userdetail"][0]["useR_ID"])
-        );
-        sessionStorage.setItem(
-          "token",
-          JSON.stringify(response.data.data[0]["token"])
-        );
+        localStorage.setItem("useR_ID",JSON.stringify(response.data.data[0]["userdetail"][0]["useR_ID"]));
+        sessionStorage.setItem("token",JSON.stringify(response.data.data[0]["token"]));
         getNodeData(response.data.data[0]["userdetail"][0]["useR_ID"]);
         toast.success(response.data.mesg);
         formik.resetForm();

@@ -253,9 +253,9 @@ const EnglishToHindiConverter: React.FC<EnglishToHindiConverterProps> = ({ label
     const [inputText, setInputText] = useState<string>('');
     const { inputMode } = useInputMode();
 
-    React.useEffect(() => {
-        setInputText('');
-    }, [inputMode]);
+React.useEffect(() => {
+    setInputText(value);
+    }, [value]);
 
 const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = event.target;

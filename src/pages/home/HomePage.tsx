@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Card,
   Grid,
@@ -9,7 +9,6 @@ import {
   Stack,
   IconButton,
   Paper,
-  CircularProgress,
   FormControl,
   RadioGroup,
   FormControlLabel,
@@ -24,7 +23,7 @@ import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
-import { DataGrid, GridColDef, GridToolbar } from "@mui/x-data-grid";
+import { GridColDef } from "@mui/x-data-grid";
 import { ConfirmDialog } from "primereact/confirmdialog";
 import { toast } from "react-toastify";
 import ReviewOficer from "./ReviewOficer";
@@ -32,10 +31,11 @@ import { useFormik } from "formik";
 import { CloseIcons } from "../../utils/icons";
 import ToastApp from "../../ToastApp";
 import ButtonWithLoader from "../../utils/ButtonWithLoader";
-// import { green } from '@mui/material/colors';
 import { getinstId, getdivisionId, getId } from "../../utils/Constant";
 import CustomDataGrid from "../../utils/CustomDatagrid";
 import CustomLabel from "../../CustomLable";
+
+
 export const options1 = {
   pieHole: 0.25,
   is3D: false,
@@ -46,24 +46,29 @@ export const options1 = {
 export default function HomePage() {
   const { t } = useTranslation();
   const userid = getId();
-  console.log("🚀 ~ HomePage ~ userid:", userid)
+  // console.log("🚀 ~ HomePage ~ userid:", userid)
   const divId: any = getdivisionId();
-  console.log("🚀 ~ HomePage ~ divId:", divId)
+  // console.log("🚀 ~ HomePage ~ divId:", divId)
   const instId: any = getinstId();
-  console.log("🚀 ~ HomePage ~ instId:", instId)
+  // console.log("🚀 ~ HomePage ~ instId:", instId)
 
-  const [switchType, setSwitchType] = useState("1");
+  const [switchType, setSwitchType] = useState(localStorage.getItem('home') || '1');
   const [ReviewModalData, setReviewModalData] = useState(false);
-  const [referenceNo, setReferenceNo] = useState("");
-  const [year, setYear] = useState("");
   const [columns, setColumns] = useState<any>([]);
   const [totalFile, setTotalFile] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [refno, setRefNo] = useState("");
   const [refNoYr, setRefNoYr] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [success, setSuccess] = useState(false);
   const [selectedDivision, setSelectedDivision] = useState("-1");
+
+  useEffect(() => {
+    localStorage.setItem('home', switchType);
+  }, [switchType]);
+
+  const handleChange = (event:any) => {
+    const value = event.target.value;
+    setSwitchType(value);
+  };
 
   var Division: any[];
 
@@ -74,6 +79,7 @@ export default function HomePage() {
   };
 
   useEffect(() => {
+
     setTimeout(() => {
       getAuthDevision(divId);
       fetchTotalFile();
@@ -85,10 +91,10 @@ export default function HomePage() {
   const routeChangeAdd = (row: any) => {
     let path = "";
     if (row.id == -1) {
-      console.log(row)
+      // console.log(row)
       path = `/master/PageCreateAdd`;
     } else {
-      console.log(row)
+      // console.log(row)
       path = `/master/PageCreateEdit`;
     }
 
@@ -154,13 +160,21 @@ export default function HomePage() {
   };
 
   const fetchTotalFile = async () => {
-    try {
-      const collectData = {
-        inst_id: parseInt(instId),
-        divid: parseInt(divId),
-        refNoYr: newrefNoYr,
-        pstart: newrefNo || 0,
-      };
+    let collectData;
+    if(divId == null || divId == "" && instId == null || instId == ""){
+    collectData = {
+    inst_id: 1,
+    divid: 1,
+    refNoYr: newrefNoYr,
+    pstart: newrefNo || 0,
+  };}else{
+    collectData = {
+      inst_id: parseInt(instId),
+      divid: parseInt(divId),
+      refNoYr: newrefNoYr,
+      pstart: newrefNo || 0,
+  }}
+  try {
       const response = await api.post(
         `RefferenceNumber/GetRefferenceNo`,
         collectData
@@ -259,7 +273,7 @@ export default function HomePage() {
                     if (!params.row.rFileNumber) {
                       toast.error("Please first assign File Number then proceed further....")
                     } else {
-                      console.log("file number", params.row.rFileNumber)
+                      // console.log("file number", params.row.rFileNumber)
                       setReviewModalData(true);
                       setRefNo(params.row.refNo);
                       setRefNoYr(params.row.refNoYr);
@@ -330,25 +344,7 @@ export default function HomePage() {
   const [newrefNoYr, setNewrefNoYr] = useState(2024);
   const [newrefNo, setNewrefNo] = useState("");
 
-  const getReferencesave = async () => {
-    let collectData;
-    if (newrefNo !== null && newrefNo !== "" && newrefNoYr !== null) {
-      collectData = {
-        "inst_id": parseInt(instId),
-        "divid": parseInt(divId),
-        "refNoYr": newrefNoYr,
-        "pstart": newrefNo
-      };
-    } else {
-      toast.error("Please fill Ref. No and Year before proceed further...")
-    }
-    console.log("🚀 ~ getReferencesave ~ collectData:", collectData)
 
-    await api.post(`RefferenceNumber/GetRefferenceNo`, collectData)
-      .then((res) => {
-        console.log("🚀 ~ .then ~ res:", res)
-      })
-  };
 
   return (
     <div style={{
@@ -381,7 +377,6 @@ export default function HomePage() {
               flexDirection: "row",
               alignItems: "center",
               gap: 50,
-              // marginTop: "13px",
               marginLeft: "12px",
               marginRight: "12px",
             }}
@@ -396,10 +391,8 @@ export default function HomePage() {
                 row
                 aria-labelledby="demo-row-radio-buttons-group-label"
                 name="row-radio-buttons-group"
-                defaultValue="1"
-                onChange={(event: any) => {
-                  setSwitchType(event.target.value);
-                }}
+                value={switchType}
+                onChange={handleChange}
               >
                 <FormControlLabel
                   value="1"
@@ -692,4 +685,4 @@ export default function HomePage() {
       {switchType === "2" && (<ReviewOficer />)}
     </div>
   );
-}
+};

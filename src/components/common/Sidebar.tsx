@@ -53,6 +53,7 @@ import InputAdornment from "@mui/material/InputAdornment";
 import {
   TextField, Button
 } from "@mui/material";
+import logouts from '../../assets/images/logout.png'
 import api from "../../utils/Url";
 import { toast } from "react-toastify";
 import Modal from "@mui/material/Modal";
@@ -154,13 +155,17 @@ export default function MiniDrawer({ items }: any) {
   let appLogo :any = localStorage.getItem("applogo");
   let sideLogo :any = localStorage.getItem("sidelogo");
 
+  let sidebarMainColor:any = localStorage.getItem("mclr");
+  let sidebarOverColor:any  = localStorage.getItem("oclr");
+
+  
   const [open, setOpen] = React.useState(true);
   const [menuOpen, setMenuOpen] = React.useState(false);
   const [profileDrawerOpen, setProfileDrawerOpen] = React.useState(false);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [collapseIndex, setCollapseIndex] = React.useState<any>(-1);
   const [openlogo, setOpenlogo] = React.useState(true);
-  const [homeColor, setHomeColor] = React.useState("inherit");
+  const [homeColor, setHomeColor] = React.useState("sidebarMainColor");
 
   const [selectedSubMenu, setSelectedSubMenu] = React.useState(null);
 
@@ -168,6 +173,7 @@ export default function MiniDrawer({ items }: any) {
   // const [filteredItems, setFilteredItems] = React.useState([]);
   const [filteredItems, setFilteredItems] = React.useState<MenuItem[]>([]);
   const [expandedItems, setExpandedItems] = React.useState<any[]>([]);
+
 
   let navigate = useNavigate();
 
@@ -412,7 +418,7 @@ export default function MiniDrawer({ items }: any) {
   };
   const resetHomeColor = () => {
     // setHomeColor("inherit");
-    setHomeColor("#00009C");
+    setHomeColor(sidebarMainColor);
     // setHomeColor("");
   };
 
@@ -424,10 +430,10 @@ export default function MiniDrawer({ items }: any) {
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
     setMenuOpen(true);
-    setHomeColor("inherit");
+    setHomeColor("sidebarMainColor");
   };
 
-  const handleClose = () => {
+  const handleClose = () => { 
     setAnchorEl(null);
     setMenuOpen(false);
   };
@@ -562,6 +568,7 @@ export default function MiniDrawer({ items }: any) {
     window.open(path, "_blank");
   };
 
+
   return (
     <Box sx={{ display: "flex", }}>
       <AppBar position="fixed" open={open} style={{}}>
@@ -570,7 +577,7 @@ export default function MiniDrawer({ items }: any) {
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
-            background: "#00009C",
+            background: sidebarMainColor,
           }}
         >
           <div
@@ -602,7 +609,7 @@ export default function MiniDrawer({ items }: any) {
           <IconButton
             onClick={handleClick}
             size="small"
-            sx={{ ml: 2 }}
+            sx={{ ml: 2}}
             aria-controls={open ? "account-menu" : undefined}
             aria-haspopup="true"
             aria-expanded={open ? "true" : undefined}
@@ -621,7 +628,7 @@ export default function MiniDrawer({ items }: any) {
             PaperProps={{
               elevation: 0,
               sx: {
-                overflow: "visible",
+                overflow: "auto",
                 filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
                 paddingRight: "10px",
                 paddingLeft: "10px",
@@ -691,9 +698,9 @@ export default function MiniDrawer({ items }: any) {
             </MenuItem>
             <Divider />
             <MenuItem onClick={Logout}>
-              {/* <ListItemIcon>
-                <img src={logout} width={30} height={30} />
-              </ListItemIcon> */}
+              <ListItemIcon>
+                <img src={logouts} width={30} height={30} />
+              </ListItemIcon>
               Logout
             </MenuItem>
           </Menu>
@@ -706,7 +713,7 @@ export default function MiniDrawer({ items }: any) {
             alignItems: "center",
             // backgroundColor: "rgba(245,245,245,0.7)",
             // borderBottomRightRadius: "15px",
-            backgroundColor: "#00009C"
+            backgroundColor: sidebarMainColor
           }}
         >
           <div
@@ -976,7 +983,7 @@ export default function MiniDrawer({ items }: any) {
                           mr: open ? 1 : "auto",
                           justifyContent: "center",
                           color:
-                            index === collapseIndex ? "#00009C" : "inherit",
+                            index === collapseIndex ? sidebarMainColor : sidebarOverColor,
                           fontWeight: 600,
                         }}
                         title={text.name}
@@ -994,9 +1001,7 @@ export default function MiniDrawer({ items }: any) {
                           justifyContent: "center",
                           alignItems: "center",
                           marginRight: 8,
-                          // color: "Black",
-                          color:
-                            index === collapseIndex ? "#00009C" : "inherit",
+                          color:index === collapseIndex ? sidebarMainColor : sidebarOverColor,
                         }}
                         title={text.name}
                       >
@@ -1044,7 +1049,7 @@ export default function MiniDrawer({ items }: any) {
                             paddingTop: 0,
                             paddingBottom: 0,
                             backgroundColor:
-                              selectedSubMenu == index2 ? "#00009C" : "inherit",
+                              selectedSubMenu == index2 ?  sidebarMainColor : sidebarOverColor,
                             color:
                               selectedSubMenu == index2 ? "white" : "black",
                             borderRadius: "10px",
@@ -1088,11 +1093,8 @@ export default function MiniDrawer({ items }: any) {
                                 minWidth: 0,
                                 mr: open ? 3 : "auto",
                                 justifyContent: "center",
-                                color: open ? "#00009C" : "inherit",
-                                backgroundColor:
-                                  selectedSubMenu == index2
-                                    ? "#00009C"
-                                    : "inherit",
+                                color: open ?  sidebarMainColor : sidebarOverColor,
+                                backgroundColor: selectedSubMenu == index2 ?  sidebarMainColor : sidebarOverColor,
                                 Color:
                                   selectedSubMenu == index2 ? "white" : "black",
                                 borderRadius: "25px",

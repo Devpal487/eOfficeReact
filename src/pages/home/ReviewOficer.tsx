@@ -5,7 +5,7 @@ import {
     Tab,
     useMediaQuery, useTheme 
 } from "@mui/material";
-import  {  useState } from "react";
+import  {  useEffect, useState } from "react";
 import { EmailIcons, FileCopyIcons, FilemoveIcons, FolderIcons, ImportExportIcons, InboxIcons, NotificationsIcons, PendingIcons, ShareIcons, SmsIcons, UpgradeIcons } from "../../utils/icons";
 import Inbox from "./Inbox";
 import Sent from "./Sent";
@@ -30,9 +30,17 @@ const ReviewOficer = (props: Props) => {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
-    const [value, setValue] = useState<any>(0);
+    // const [value, setValue] = useState<any>(0);
+    const [value, setValue] = useState<number>(parseInt(localStorage.getItem("RIN") || "0", 10));
 
+    useEffect(() => {
+        localStorage.setItem("RIN", value.toString());
+    }, [value]);
 
+    // const handleTabChange = (event: React.ChangeEvent<{}>, newValue: number) => {
+    //     setValue(newValue);
+    // };
+    
     const handleTab = (event: any, newValue: any) => {
         console.log(newValue)
         setValue(newValue);
@@ -82,7 +90,6 @@ const ReviewOficer = (props: Props) => {
                             onChange={handleTab}
                             indicatorColor="primary"
                             textColor="primary"
-                            // centered={!isMobile}
                             variant="scrollable" 
                             scrollButtons="auto" 
                             >

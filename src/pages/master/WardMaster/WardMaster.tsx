@@ -243,6 +243,13 @@ export default function WardMaster() {
                 flex: 1,
                 headerClassName: "MuiDataGrid-colCell",
               },
+
+              {
+                field: "zoneName",
+                headerName: t("text.zoneName"),
+                flex: 1,
+                headerClassName: "MuiDataGrid-colCell",
+              },
               {
                 field: "wardName",
                 headerName: t("text.wardName"),
@@ -255,12 +262,7 @@ export default function WardMaster() {
                 flex: 1,
                 headerClassName: "MuiDataGrid-colCell",
               },
-              {
-                field: "zoneName",
-                headerName: t("text.zoneName"),
-                flex: 1,
-                headerClassName: "MuiDataGrid-colCell",
-              },
+             
               {
                 field: "isActive",
                 headerName: t("text.Status"),
@@ -398,7 +400,7 @@ export default function WardMaster() {
         style={{
           width: "100%",
           backgroundColor: "#E9FDEE",
-          border: ".5px solid #FF7722 ",
+          border: ".5px solid #2B4593 ",
           marginTop: "3vh"
         }}
       >

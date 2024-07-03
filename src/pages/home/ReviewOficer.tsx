@@ -47,16 +47,16 @@ const ReviewOficer = (props: Props) => {
     };
 
     const items = [
-        { id: 0, text: t("text.Inbox"), icon:<InboxIcons/>, },
+        { id: 0, text: t("text.Inbox"), icon:<InboxIcons/> },
         { id: 1, text:t("text.Sent"), icon:<ShareIcons/>},
         { id: 2, text:t("text.Awaited"), icon:<FolderIcons/>},
-        { id: 3, text:t("text.Workplace"), icon:<FilemoveIcons/>,  },
-        { id: 4, text:t("text.ParkedArchived"), icon:<UpgradeIcons/>,  },
+        { id: 3, text:t("text.Workplace"), icon:<FilemoveIcons/>  },
+        { id: 4, text:t("text.ParkedArchived"), icon:<UpgradeIcons/>  },
         { id: 5, text:t("text.Closed"), icon:<UpgradeIcons/>},
         { id: 6, text: t("text.BulkClosed"), icon:<PendingIcons/>},
-        { id: 7, text:t("text.MyAllFiles"), icon:<FilemoveIcons/>, },
+        { id: 7, text:t("text.MyAllFiles"), icon:<FilemoveIcons/> },
        // { id: 8, text: " Create New File", icon:<FileCopyIcons/>},
-        { id: 8, text:t("text.MeargeFile"), icon:<ImportExportIcons/>},
+        { id: 8, text:t("text.MergeFile"), icon:<ImportExportIcons/>},
         { id: 9, text: t("text.Notifications"), icon:<NotificationsIcons/>},
         { id: 10, text:t("text.Message"), icon:<SmsIcons/>},
         { id: 11, text:t("text.Letter"), icon:<EmailIcons/>},

@@ -273,7 +273,7 @@ export default function GenderMaster() {
             width: "100%",
             height: "50%",
             backgroundColor: "#E9FDEE",
-            border: ".5px solid #FF7722 ",
+            border: ".5px solid #2B4593 ",
             marginTop: "5px",
           }}
         >

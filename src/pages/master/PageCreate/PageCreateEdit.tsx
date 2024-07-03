@@ -473,13 +473,15 @@ const PageCreateEdit = (props: Props) => {
                 values
             );
             if (response.data.isSuccess) {
-                setToaster(true);
+                //setToaster(true);
 
 
-                toast.success(response.data.mesg);
+                setTimeout(() => {
+                    toast.success(response.data.mesg);
+                }, 500);
                 navigate(-1);
             } else {
-                setToaster(true);
+               // setToaster(true);
 
                 toast.error(response.data.mesg);
             }
@@ -704,7 +706,7 @@ const PageCreateEdit = (props: Props) => {
                     <Divider />
                     <br />
                     <form onSubmit={formik.handleSubmit}>
-                        {toaster === false ? "" : <ToastApp />}
+                        {/* {toaster === false ? "" : <ToastApp />} */}
                         <ToastContainer />
                         <Grid item xs={12} container spacing={2}>
                             <Grid item sm={6} md={6} xs={12}>
@@ -2386,6 +2388,7 @@ const PageCreateEdit = (props: Props) => {
                             </Grid>
                         </Grid>
                     </form>
+                    <ToastContainer />
                 </CardContent>
             </div>
         </div>

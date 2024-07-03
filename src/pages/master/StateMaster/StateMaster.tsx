@@ -140,15 +140,12 @@ export default function StateMaster() {
         `State/AddUpdateStateMaster`,
         values
       );
-      try {
+      if (response.data.isSuccess) {
         toast.success(response.data.mesg);
-        // setToaster(false);
-        // navigate('/master/StateMaster');
         fetchZonesData();
         formik.resetForm();
         setEditId(-1);
-      } catch (error) {
-        // setToaster(true);
+      } else {
         toast.error(response.data.mesg);
       }
     },
@@ -183,10 +180,10 @@ export default function StateMaster() {
       .then((response) => {
         if (response.data.isSuccess) {
           toast.success(response.data.mesg);
+          fetchZonesData();
         } else {
           toast.error(response.data.mesg);
         }
-        fetchZonesData();
       });
   };
 

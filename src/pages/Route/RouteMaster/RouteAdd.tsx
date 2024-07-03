@@ -874,16 +874,7 @@ export default function RouteAdd() {
                                 fullWidth
                                 size="small"
                                 style={{ background: "white" }}
-                                //value={selectedValue}
-                                value={
-                                  departmentOption.find(
-                                    (option) =>
-                                      option.value ===
-                                      routeMembercycles[index].auth_DeptId
-                                  ) || null
-                                }
                                 onChange={(e: any, newValue: any) => {
-                                  //setAuthDept(newValue?.value)
                                   if(newValue != "" ){
                                     routeMembercycles[index].auth_DeptId =
                                     newValue?.value;
@@ -914,19 +905,9 @@ export default function RouteAdd() {
                                 fullWidth
                                 size="small"
                                 options={sectionOption}
-                                // value={selectedValue}
-                                value={
-                                  sectionOption.find(
-                                    (option) =>
-                                      option.value ===
-                                      routeMembercycles[index].auth_SectionId
-                                  ) || null
-                                }
                                 style={{ background: "white" }}
-                                // onChange={handleAutocompleteChange}
                                 onChange={(e: any, newValue: any) => {
                                   console.log("section value", newValue);
-                                  //  setAuthSection(newValue?.value)
                                   routeMembercycles[index].auth_SectionId =
                                     newValue?.value;
                                     routeMembercycles[index].auth_SectionName =
@@ -953,13 +934,13 @@ export default function RouteAdd() {
                                 fullWidth
                                 size="small"
                                 options={authorityOption}
-                                value={
-                                  authorityOption.find(
-                                    (option) =>
-                                      option.value ===
-                                      routeMembercycles[index].authorityId
-                                  ) || null
-                                }
+                                // value={
+                                //   authorityOption.find(
+                                //     (option) =>
+                                //       option.value ===
+                                //       routeMembercycles[index].authorityId
+                                //   ) || null
+                                // }
                                 // onChange={formik.handleChange}
                                 onChange={(e: any, newValue: any) => {
                                   console.log("section value", newValue);

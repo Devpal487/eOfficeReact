@@ -12,7 +12,7 @@ import axios from "axios";
 import { Navigate, useNavigate } from "react-router-dom";
 import HOST_URL from "../../../utils/Url";
 import Autocomplete from "@mui/material/Autocomplete";
-import {useTranslation} from "react-i18next";
+import { useTranslation } from "react-i18next";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { toast } from "react-toastify";
@@ -25,22 +25,22 @@ const StateMasterAdd = (props: Props) => {
   const [toaster, setToaster] = useState(false);
 
   let navigate = useNavigate();
-  const{t}=useTranslation();
-  
+  const { t } = useTranslation();
+
   const [option, setOption] = useState([
     { value: "-1", label: t("text.SelectCountryName") },
   ]);
 
-  useEffect(()=>{
+  useEffect(() => {
     getCountryName();
-  },[])
+  }, [])
 
   const getCountryName = () => {
     const collectData = {
       countryId: -1,
     };
     api
-      .post( `Country/GetCountryMaster`, collectData)
+      .post(`Country/GetCountryMaster`, collectData)
       .then((res) => {
         const arr = [];
         //console.log("result" + JSON.stringify(res.data.data));
@@ -55,17 +55,17 @@ const StateMasterAdd = (props: Props) => {
   };
 
   const validationSchema = Yup.object({
-    countryName:  Yup.string().test(
-      'required', 
-      t('text.reqcountryName'), 
-      function (value:any) {
-        return value && value.trim() !== ''; 
-      }  ),
+    countryName: Yup.string().test(
+      'required',
+      t('text.reqcountryName'),
+      function (value: any) {
+        return value && value.trim() !== '';
+      }),
     stateName: Yup.string().test(
-      'required', 
+      'required',
       t('text.reqstateName'),
-      function (value:any) {
-        return value && value.trim() !== ''; 
+      function (value: any) {
+        return value && value.trim() !== '';
       }
     ),
   });
@@ -73,7 +73,6 @@ const StateMasterAdd = (props: Props) => {
   let ID: any = localStorage.getItem("useR_ID")
   if (ID !== null) {
     ID = ID.replace(/\D/g, '');
-    // console.log("useR_ID", parseInt(ID));
   } else {
     toast.error("User ID not Found");
   }
@@ -81,35 +80,34 @@ const StateMasterAdd = (props: Props) => {
 
   const formik = useFormik({
     initialValues: {
-      stateId : -1,
-      stateName : "",
-      stateCode : "",
-      countryId : "",
-      countryName : "",
-      createdBy : "",
-      updatedBy : "",
-      createdOn : "2024-04-09T09:38:12.623Z",
-      updatedOn : "2024-04-09T09:38:12.623Z"
+      stateId: -1,
+      stateName: "",
+      stateCode: "",
+      countryId: "",
+      countryName: "",
+      createdBy: "",
+      updatedBy: "",
+      createdOn: "2024-04-09T09:38:12.623Z",
+      updatedOn: "2024-04-09T09:38:12.623Z"
     },
     validationSchema: validationSchema,
     onSubmit: async (values) => {
-      
-      const response = await api.post(
+
+      await api.post(
         `State/AddUpdateStateMaster`,
         values
-        );
-  try {
-    toast.success(response.data.mesg);
-    setToaster(false);
-        navigate('/master/StateMaster');
-      } catch (error) {
-        setToaster(true);
-        toast.error(response.data.mesg);
-      }
+      )
+      .then((response)=>{
+        if (response.data.isSuccess) {
+          toast.success(response.data.mesg);
+        } else {
+          toast.error(response.data.mesg);
+        }
+      })
     },
   });
 
-  const requiredFields = ['stateName', "countryName"]; 
+  const requiredFields = ['stateName', "countryName"];
 
   const back = useNavigate();
   return (
@@ -129,7 +127,7 @@ const StateMasterAdd = (props: Props) => {
             textAlign="center"
             style={{ fontSize: "18px", fontWeight: 500 }}
           >
-          {t("text.CreateStateMaster")}
+            {t("text.CreateStateMaster")}
           </Typography>
 
           <Grid item sm={4} xs={12}>
@@ -152,7 +150,7 @@ const StateMasterAdd = (props: Props) => {
           <Divider />
           <br />
           <form onSubmit={formik.handleSubmit}>
-          {toaster === false ? "" : <ToastApp />}
+            {toaster === false ? "" : <ToastApp />}
             <Grid item xs={12} container spacing={2}>
               <Grid lg={6} sm={6} xs={12} item>
                 <Autocomplete
@@ -163,21 +161,21 @@ const StateMasterAdd = (props: Props) => {
                   size="small"
                   onChange={(event, newValue) => {
                     console.log(newValue);
-                    
+
                     formik.setFieldValue("countryId", newValue?.value);
                     formik.setFieldValue("countryName", newValue?.label);
                     // formik.setFieldTouched("zoneID", true); 
                   }}
                   renderInput={(params) => (
-                    <TextField {...params} 
-                    label={
-                      <span>
-                        {t("text.SelectCountryName")} {""}
-                        {requiredFields.includes('countryName') && (
-                          <span style={{ color: formik.values.countryName ? 'green' : 'red' }}>*</span>
-                        )}
-                      </span>
-                  }/>)}
+                    <TextField {...params}
+                      label={
+                        <span>
+                          {t("text.SelectCountryName")} {""}
+                          {requiredFields.includes('countryName') && (
+                            <span style={{ color: formik.values.countryName ? 'green' : 'red' }}>*</span>
+                          )}
+                        </span>
+                      } />)}
                 />
                 {formik.touched.countryName && formik.errors.countryName ? (
                   <div style={{ color: "red", margin: "5px" }}>
@@ -188,17 +186,17 @@ const StateMasterAdd = (props: Props) => {
 
               <Grid lg={6} sm={6} xs={12} item>
                 <TextField
-                label={
-                  <span>
-                        {t("text.EnterStateName")} {requiredFields.includes('stateName') && (
-                      <span style={{ color: formik.values.stateName ? 'green' : 'red' }}>*</span>
-                    )}
-                  </span>
-                }
+                  label={
+                    <span>
+                      {t("text.EnterStateName")} {requiredFields.includes('stateName') && (
+                        <span style={{ color: formik.values.stateName ? 'green' : 'red' }}>*</span>
+                      )}
+                    </span>
+                  }
                   value={formik.values.stateName}
                   name="stateName"
                   id="stateName"
-                  placeholder=  {t("text.EnterStateName")}
+                  placeholder={t("text.EnterStateName")}
                   size="small"
                   fullWidth
                   style={{ backgroundColor: "white" }}
@@ -211,7 +209,7 @@ const StateMasterAdd = (props: Props) => {
                   </div>
                 ) : null}
               </Grid>
-<br/>
+              <br />
               <Grid lg={6} sm={6} xs={12} item>
                 <TextField
                   label={t("text.EnterStateCode")}
@@ -226,9 +224,9 @@ const StateMasterAdd = (props: Props) => {
                   onBlur={formik.handleBlur}
                 />
               </Grid>
-<Grid item xs={12} container spacing={2} sx={{display:"flex", justifyContent:"space-between", alignItems:"center"}}>
-              <Grid item lg={6} sm={6} xs={12}>
-                {/* <Grid> */}
+              <Grid item xs={12} container spacing={2} sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <Grid item lg={6} sm={6} xs={12}>
+                  {/* <Grid> */}
                   <Button
                     type="submit"
                     fullWidth
@@ -238,28 +236,28 @@ const StateMasterAdd = (props: Props) => {
                       marginTop: "10px",
                     }}
                   >
-                   {t("text.save")}
+                    {t("text.save")}
                   </Button>
-                {/* </Grid> */}
-              </Grid>
+                  {/* </Grid> */}
+                </Grid>
 
-              <Grid item lg={6} sm={6} xs={12}>
-                <Button
-                  type="reset"
-                  fullWidth
-                  style={{
-                    backgroundColor: "#F43F5E",
-                    color: "white",
-                    marginTop: "10px",
-                  }}
-                  onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
-                    formik.resetForm();
-                  }}
-                >
-            {t("text.reset")}
-                </Button>
+                <Grid item lg={6} sm={6} xs={12}>
+                  <Button
+                    type="reset"
+                    fullWidth
+                    style={{
+                      backgroundColor: "#F43F5E",
+                      color: "white",
+                      marginTop: "10px",
+                    }}
+                    onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
+                      formik.resetForm();
+                    }}
+                  >
+                    {t("text.reset")}
+                  </Button>
+                </Grid>
               </Grid>
-</Grid>
             </Grid>
           </form>
         </CardContent>

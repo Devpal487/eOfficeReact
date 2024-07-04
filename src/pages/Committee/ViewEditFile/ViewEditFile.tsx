@@ -95,17 +95,15 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
 }));
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
-  
   "&:nth-of-type(odd)": {
     backgroundColor: theme.palette.action.hover,
   },
- 
+
   "&:last-child td, &:last-child th": {
     border: 0,
-    
   },
   "& td, & th": {
-    padding: "3px !important", 
+    padding: "3px !important",
   },
 }));
 
@@ -126,11 +124,10 @@ const style = {
   width: 900,
   bgcolor: "background.paper",
   border: "2px solid #000",
-  
+
   boxShadow: 24,
   p: 4,
-  borderRadius:"5px"
-  
+  borderRadius: "5px",
 };
 
 const AntennaOption = [
@@ -551,7 +548,7 @@ const ViewEditFile: React.FC = (props: Props) => {
         message: "",
       };
     } else {
-      toast.error("No Route for this File...");
+      toast.error("No Route or Authority for this File...");
     }
     // console.log("🚀 ~ farwordData ~ value:", value);
     api.post(`FileMovement/sp_movetoawait`, value).then((res) => {
@@ -565,21 +562,30 @@ const ViewEditFile: React.FC = (props: Props) => {
   };
 
   const MoveParked = () => {
-    const value = {
-      hdnFilNu: fileID,
-      inst_id: parseInt(instId),
-      userid: userId,
-      moveddate: formik.values.moveDate.toString() || "",
-      duedate: null,
-      remark: "P",
-      routeId: parseInt(route2),
-      authorityLevel: authorityLevel,
-      workPlaceFlag: "Parked/Archived",
-      remId: 0,
-      divisionId: parseInt(divId),
-      message: "",
-    };
-    // console.log("🚀 ~ farwordData ~ value:", value);
+    let value;
+    if (
+      route2 != null &&
+      route2 != "" &&
+      authorityLevel != null &&
+      authorityLevel != ""
+    ) {
+      value = {
+        hdnFilNu: formik.values.fileNo,
+        inst_id: parseInt(instId),
+        userid: userId,
+        moveddate: formik.values.moveDate.toString() || "",
+        duedate: formik.values.dueDate.toString() || "",
+        remark: "P",
+        routeId: parseInt(route2),
+        authorityLevel: authorityLevel,
+        workPlaceFlag: "Parked/Archived",
+        remId: 0,
+        divisionId: parseInt(divId),
+        message: "",
+      };
+    } else {
+      toast.error("No Route or Authority for this File...");
+    }
     api.post(`FileMovement/sp_movetoawait`, value).then((res) => {
       if (res.data.isSuccess) {
         toast.success(res.data.mesg);
@@ -591,20 +597,30 @@ const ViewEditFile: React.FC = (props: Props) => {
   };
 
   const MoveClose = () => {
-    const value = {
-        hdnFilNu: fileID,
-      inst_id: parseInt(instId),
-      userid: userId,
-      moveddate: formik.values.moveDate.toString() || "",
-      duedate:null,
-      remark: "C",
-      routeId:parseInt(route2),
-      authorityLevel: authorityLevel,
-      workPlaceFlag: "Closed",
-      remId:0,
-      divisionId:parseInt(divId),
-      message: "",
-    };
+    let value;
+    if (
+      route2 != null &&
+      route2 != "" &&
+      authorityLevel != null &&
+      authorityLevel != ""
+    ) {
+      value = {
+        hdnFilNu: formik.values.fileNo,
+        inst_id: parseInt(instId),
+        userid: userId,
+        moveddate: formik.values.moveDate.toString() || "",
+        duedate: formik.values.dueDate.toString() || "",
+        remark: "C",
+        routeId: parseInt(route2),
+        authorityLevel: authorityLevel,
+        workPlaceFlag: "Closed",
+        remId: 0,
+        divisionId: parseInt(divId),
+        message: "",
+      };
+    } else {
+      toast.error("No Route or Authority for this File...");
+    }
 
     api.post(`FileMovement/sp_movetoawait`, value).then((res) => {
       if (res.data.isSuccess) {
@@ -734,7 +750,6 @@ const ViewEditFile: React.FC = (props: Props) => {
     setMinDueDate(moveDate);
   };
 
- 
   const [cfileNm, setCfileNm] = useState("");
   const [cFileDesc, setCFileDesc] = useState("");
   const [filebase64, setFilebase64] = useState("");
@@ -777,7 +792,6 @@ const ViewEditFile: React.FC = (props: Props) => {
   };
 
   const tabStyle = {
-
     default: {
       backgroundColor: "#00009c",
       color: "#fff",
@@ -1203,7 +1217,6 @@ const ViewEditFile: React.FC = (props: Props) => {
               </Grid>
 
               <Grid item lg={3} md={4} xs={12}>
-
                 <FormControlLabel
                   control={
                     <Checkbox
@@ -1584,15 +1597,17 @@ const ViewEditFile: React.FC = (props: Props) => {
 
                     <Divider sx={{ marginY: 2 }} />
 
-                    <Grid item xs={4}>
-                      <Button
-                        variant="contained"
-                        color="primary"
-                        onClick={addNoteSheet}
-                        fullWidth
-                      >
-                        Save
-                      </Button>
+                    <Grid item xs={4} sx={{marginLeft:"30%" }}>
+                     
+                        <Button
+                          variant="contained"
+                          color="primary"
+                          onClick={addNoteSheet}
+                          fullWidth
+                        >
+                          Save
+                        </Button>
+                      
                     </Grid>
                   </Box>
                 </Modal>
@@ -1742,7 +1757,7 @@ const ViewEditFile: React.FC = (props: Props) => {
 
                     <Divider sx={{ marginY: 2 }} />
 
-                    <Grid item xs={4}>
+                    <Grid item xs={4} sx={{marginLeft:"30%" }}>
                       <Button
                         variant="contained"
                         color="primary"
@@ -1902,7 +1917,7 @@ const ViewEditFile: React.FC = (props: Props) => {
 
                     <Divider sx={{ marginY: 2 }} />
 
-                    <Grid item xs={4}>
+                    <Grid item xs={4}  sx={{marginLeft:"30%" }}>
                       <Button
                         variant="contained"
                         color="primary"
@@ -2063,7 +2078,7 @@ const ViewEditFile: React.FC = (props: Props) => {
 
                     <Divider sx={{ marginY: 2 }} />
 
-                    <Grid item xs={4}>
+                    <Grid item xs={4} sx={{marginLeft:"30%" }}>
                       <Button
                         variant="contained"
                         color="primary"

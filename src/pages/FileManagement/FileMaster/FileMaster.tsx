@@ -177,6 +177,12 @@ export default function FileMaster() {
                                 headerClassName: "MuiDataGrid-colCell",
                             },
                             {
+                                field: "fileTypeNm",
+                                headerName:"File Type",
+                                flex: 1,
+                                headerClassName: "MuiDataGrid-colCell",
+                            },
+                            {
                                 field: "fileNm",
                                 headerName:"File Number",
                                 flex: 1,

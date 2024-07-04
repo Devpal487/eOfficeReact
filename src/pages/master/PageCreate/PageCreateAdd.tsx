@@ -81,8 +81,13 @@ const PageCreateAdd = (props: Props) => {
     const { t } = useTranslation();
     const { defaultValuestime } = getISTDate();
     const [pdfView, setPdfView] = useState("");
+    const [pdfView2, setPdfView2] = useState("");
     const [LetterType, setLetterType] = useState<any>([
         { value: "-1", label: t("text.SelectLetterType") },
+    ]);
+
+    const [designationOption, setDesignationOption] = useState<any>([
+        { value: "-1", label: t("text.SelectDesignation") },
     ]);
 
     const [FileOption, setFileOption] = useState<any>([
@@ -105,11 +110,23 @@ const PageCreateAdd = (props: Props) => {
         { value: "-1", label: t("text.SelectRoot") },
     ]);
 
+    const updateStatus = [
+        {value:-1, label:"---select---"},
+        {value:1, label:"Achieved Status"},
+        {value:2, label:"Waiting"},
+
+    ];
+
+    const clarification = [
+        {value:-1, label:"---select---"},
+        {value:1, label:"Explanation"},
+        {value:2, label:"Large Scale Investigation"},
+
+    ]
+
     const [drawerOpenUser, setDrawerOpenUser] = useState(false);
 
     const [drawerData, setDrawerData] = useState<any>([]);
-
-    const [selectedOption, setSelectedOption] = useState("received");
 
     const [mergedValue, setMergedValue] = useState("");
 
@@ -117,7 +134,6 @@ const PageCreateAdd = (props: Props) => {
     const [sNo, setSNo] = useState("");
 
     const [tableData, setTableData] = useState<any>([]);
-    const [pDate, setPDate] = useState("");
     const [keywords, setKeywords] = useState("");
     const [pdf, setPDF] = useState("");
     const [fileName, setfileName] = useState("");
@@ -133,8 +149,11 @@ const PageCreateAdd = (props: Props) => {
     const [DateOfIssue, setDateOfIssue] = useState("");
     const [DateOfCheck, setDateOfCheck] = useState("");
     const [SentenceNo, setSentenceNo] = useState("");
-
+    const [dropDrownList1, setDropDrownList1] = useState<any>("");
+    const [dropDrownList2, setDropDrownList2] = useState<any>("");
+    const [dropDrownList3, setDropDrownList3] = useState<any>("");
     const [openCollaps, setopenCollaps] = useState(false);
+    const [selectedPdf, setSelectedPdf] = useState<any>(null);
 
     const handleCollapse = () => {
         setopenCollaps(prevOpen => !prevOpen);
@@ -145,11 +164,11 @@ const PageCreateAdd = (props: Props) => {
 
     const handlePanClose1 = () => {
         setShows(false);
+        setSelectedPdf(null);
     };
-    const modalOpenHandle1 = (event: any) => {
+    const modalOpenHandle1 = (pdfView2:any) => {
         setShows(true);
-
-        setImg(event);
+        setSelectedPdf(pdfView2);
     };
 
     const handleSNoChange = (event: any) => {
@@ -198,7 +217,23 @@ const PageCreateAdd = (props: Props) => {
         getSection();
         getRoot();
         getUser();
+        getDesignation();
     }, []);
+
+
+    const getDesignation = () => {
+        const collectData = {
+           "designationId": -1
+        };
+        api.post(`Designation/GetDesignationmaster`, collectData).then((res) => {
+            const arr = res.data.data.map((item: any) => ({
+                label: item.designationName,
+                value: item.designationId,
+            }));
+            setDesignationOption(arr);
+        });
+    };
+
 
     const getLetterType = () => {
         const collectData = {
@@ -225,8 +260,8 @@ const PageCreateAdd = (props: Props) => {
                 label: item.firsT_NAME,
                 value: item.useR_ID,
             }));
-            console.log("🚀 ~ arr ~ res.data.data:", res.data.data)
-            console.log("🚀 ~ arr ~ arr:", arr)
+            // console.log("🚀 ~ arr ~ res.data.data:", res.data.data)
+            // console.log("🚀 ~ arr ~ arr:", arr)
             setUserOption(arr);
         });
     };
@@ -333,12 +368,14 @@ const PageCreateAdd = (props: Props) => {
     const handlePanClose = () => {
         setPanOpen(false);
     };
+
     const modalOpenHandle = (event: any) => {
         setPanOpen(true);
         if (event === "pdfBase64") {
             setModalImg(formik.values.pdfBase64);
         }
     };
+
     const ConvertBase64 = (file: Blob) => {
         return new Promise((resolve, reject) => {
             const fileReader = new FileReader();
@@ -412,23 +449,27 @@ const PageCreateAdd = (props: Props) => {
             pdfPath: "",
             pdfBase64: "",
             fileOpenDate:new Date().toISOString().slice(0, 10),
-            types: ""
+            types: "",
+            type_EmpTypeRowTran:[],
+            multipleFileAttachTran:[]
         },
         onSubmit: async (values: any) => {
-
-
             if (values.rFileType && (!values.rFileNumber || !values.rLetterNumber)) {
                 setToaster(true);
-
                 toast.error(
                     "  If select FileType Then Please fill the File Number and Letter Number"
                 );
                 return;
-            }
+            };
 
             if (values.rPhone === "") {
                 values.rPhone = null;
-              }
+            };
+
+            values.type_EmpTypeRowTran = tableData;
+            values.multipleFileAttachTran = tableData1;
+
+            
             console.log("values check", values);
             try {
                 const response = await api.post(`ReferenceDiary/AddUpdateReferenceDiary`, values);
@@ -476,8 +517,6 @@ const PageCreateAdd = (props: Props) => {
             }
         });
     };
-    // console.log("🚀 ~ api.post ~ formik.values.FileType:", formik.values.FileType)
-
 
     const convertBase64 = (file: Blob) => {
         return new Promise((resolve, reject) => {
@@ -491,6 +530,7 @@ const PageCreateAdd = (props: Props) => {
             };
         });
     };
+
     const onTransctionChange = async (event: any) => {
         event.preventDefault();
         if (event.target.files && event.target.files[0]) {
@@ -498,7 +538,7 @@ const PageCreateAdd = (props: Props) => {
             // console.log("file name", file.name)
             const fileURL = URL.createObjectURL(file);
             // console.log("file check", fileURL);
-            setPdfView(fileURL);
+            setPdfView2(fileURL);
             setfileName(file.name);
             setPDF(URL.createObjectURL(event.target.files[0]));
             const base64 = await convertBase64(file);
@@ -514,14 +554,11 @@ const PageCreateAdd = (props: Props) => {
             pdFid: -1,
             pdfName: fileName,
             docMid: -1,
-
             subFtype: "",
-
             isMain: "",
-
             user_id: -1,
             pdfPath: pdf,
-            pdfView: pdfView,
+            pdfView2: pdfView2,
             srn: -1,
             isDelete: false,
         };
@@ -530,7 +567,6 @@ const PageCreateAdd = (props: Props) => {
             const updatedTableDataed = [...prevTableData, newRows];
             return updatedTableDataed;
         });
-        // console.log(newRows);
 
         setfileName("");
         setPDF("");
@@ -552,37 +588,30 @@ const PageCreateAdd = (props: Props) => {
     const addMoreRow1 = () => {
         const newRows = {
             id: tableData1.length + 1,
-            pdFid: -1,
-
-            docMid: -1,
-            keywords: keywords,
-            Remark: Remark,
-
-            EmpCode: EmpCode,
-            AuditNo: AuditNo,
-            SeniorityNo: SeniorityNo,
-            RetirementDate: RetirementDate,
-            DateOfApproval: DateOfApproval,
-            DateOfIssue: DateOfIssue,
-            DateOfCheck: DateOfCheck,
-            SentenceNo: SentenceNo,
-
-            isMain: "",
-
-            user_id: -1,
-
-            srn: -1,
+            hdnid: -1,
+            emp: keywords,
+            empcode: EmpCode,
+            remark: Remark,
+            audit: AuditNo,
+            seniority: SeniorityNo,
+            dofRetirementNo: RetirementDate,
+            adate: DateOfApproval,
+            sdate: DateOfIssue,
+            jdate: DateOfCheck,
+            number: SentenceNo,
+            dropDrownList1:dropDrownList1?.value,
+            Designation:dropDrownList1?.label,
+            dropDrownList2:dropDrownList2?.value,
+            UpdateStatus:dropDrownList2?.label,
+            dropDrownList3:dropDrownList3?.value,
+            Clarification:dropDrownList3?.label,
             isDelete: false,
         };
-
+        console.log("🚀 ~ addMoreRow1 ~ newRows:", newRows)
         setTableData1((prevTableData: any) => {
             const updatedTableDataed = [...prevTableData, newRows];
             return updatedTableDataed;
         });
-        // console.log(newRows);
-
-
-
         setKeywords("");
         setEmpCode("");
         setRemark("");
@@ -593,8 +622,6 @@ const PageCreateAdd = (props: Props) => {
         setDateOfIssue("");
         setDateOfCheck("");
         setSentenceNo("");
-
-
     };
 
     const removeExtraRow1 = (id: any) => {
@@ -1528,6 +1555,7 @@ const PageCreateAdd = (props: Props) => {
                                                     style={{
                                                         borderLeft: "1px solid black",
                                                         borderTop: "1px solid black",
+                                                        width:"10vw",
                                                         textAlign: "center",
                                                     }}
                                                 >
@@ -1546,7 +1574,10 @@ const PageCreateAdd = (props: Props) => {
                                                     style={{
                                                         borderLeft: "1px solid black",
                                                         borderTop: "1px solid black",
-                                                        textAlign: "center",
+                                                        // textAlign: "center",
+                                                        width:"30vw",
+                                                        paddingRight:"5px",
+                                                        paddingLeft:"5px"
                                                     }}
                                                 >
                                                     {row.pdfName}
@@ -1556,13 +1587,18 @@ const PageCreateAdd = (props: Props) => {
                                                         borderLeft: "1px solid black",
                                                         borderTop: "1px solid black",
                                                         textAlign: "center",
+                                                        width:"30vw",
+                                                        display:"flex",
+                                                        alignItems:"center",
+                                                        justifyContent:"space-around",
+                                                        padding:"2px"
                                                     }}
                                                 >
-                                                    {row.pdfView == "" ? (
+                                                    {row.pdfView2 == "" ? (
                                                         ""
                                                     ) : (
                                                         <embed
-                                                            src={row.pdfView}
+                                                            src={row.pdfView2}
                                                             style={{
                                                                 width: 150,
                                                                 height: 100,
@@ -1574,7 +1610,7 @@ const PageCreateAdd = (props: Props) => {
                                                     )}
 
                                                     <Typography
-                                                        onClick={() => modalOpenHandle1(row.pdfView)}
+                                                        onClick={() => modalOpenHandle1(row.pdfView2)}
                                                         style={{
                                                             textDecorationColor: "blue",
                                                             textDecorationLine: "underline",
@@ -1588,7 +1624,7 @@ const PageCreateAdd = (props: Props) => {
 
                                                     <Modal open={Shows} onClose={handlePanClose1}>
                                                         <Box sx={style}>
-                                                            {Img == "" ? (
+                                                        {selectedPdf  === "" ? (
                                                                 <img
                                                                     src={nopdf}
                                                                     style={{
@@ -1599,7 +1635,7 @@ const PageCreateAdd = (props: Props) => {
                                                             ) : (
                                                                 <embed
                                                                     //alt="preview image"
-                                                                    src={Img}
+                                                                    src={selectedPdf}
                                                                     style={{
                                                                         width: "170vh",
                                                                         height: "75vh",
@@ -1632,7 +1668,7 @@ const PageCreateAdd = (props: Props) => {
                                             }}
                                         >
                                             <thead
-                                                style={{ backgroundColor: "#2196f3", color: "#f5f5f5" }}
+                                                style={{ backgroundColor: "#f5f5f5", color: "#000" }}
                                             >
                                                 <tr>
                                                     <th
@@ -1675,8 +1711,8 @@ const PageCreateAdd = (props: Props) => {
                                                             width: "200px",
                                                             minWidth: "200px",
                                                             maxWidth: "200px",
-                                                            display: "table-cell"
-
+                                                            display: "table-cell",
+                                                            gap:10
 
                                                         }}
                                                     >
@@ -1989,7 +2025,7 @@ const PageCreateAdd = (props: Props) => {
                                                                 disablePortal
                                                                 id="combo-box-demo"
                                                                 style={{ backgroundColor: "white" }}
-                                                                options={LetterType}
+                                                                options={designationOption}
                                                                 // value={
                                                                 //     ZoneOption.find(
                                                                 //         (option) => option.value === formik.values.fileTypeId
@@ -2001,7 +2037,7 @@ const PageCreateAdd = (props: Props) => {
                                                                     console.log(newValue?.value);
 
                                                                     formik.setFieldValue("rlId", newValue?.value);
-
+                                                                    setDropDrownList1(newValue);
                                                                     formik.setFieldTouched("rlId", true);
                                                                     formik.setFieldTouched("rlId", false);
                                                                 }}
@@ -2041,7 +2077,7 @@ const PageCreateAdd = (props: Props) => {
                                                                 disablePortal
                                                                 id="combo-box-demo"
                                                                 style={{ backgroundColor: "white" }}
-                                                                options={LetterType}
+                                                                options={updateStatus}
                                                                 // value={
                                                                 //     ZoneOption.find(
                                                                 //         (option) => option.value === formik.values.fileTypeId
@@ -2053,7 +2089,7 @@ const PageCreateAdd = (props: Props) => {
                                                                     console.log(newValue?.value);
 
                                                                     formik.setFieldValue("rlId", newValue?.value);
-
+                                                                    setDropDrownList2(newValue);
                                                                     formik.setFieldTouched("rlId", true);
                                                                     formik.setFieldTouched("rlId", false);
                                                                 }}
@@ -2092,7 +2128,7 @@ const PageCreateAdd = (props: Props) => {
                                                                 disablePortal
                                                                 id="combo-box-demo"
                                                                 style={{ backgroundColor: "white" }}
-                                                                options={LetterType}
+                                                                options={clarification}
                                                                 // value={
                                                                 //     ZoneOption.find(
                                                                 //         (option) => option.value === formik.values.fileTypeId
@@ -2104,7 +2140,7 @@ const PageCreateAdd = (props: Props) => {
                                                                     console.log(newValue?.value);
 
                                                                     formik.setFieldValue("rlId", newValue?.value);
-
+                                                                    setDropDrownList3(newValue);
                                                                     formik.setFieldTouched("rlId", true);
                                                                     formik.setFieldTouched("rlId", false);
                                                                 }}
@@ -2157,7 +2193,7 @@ const PageCreateAdd = (props: Props) => {
                                                                 textAlign: "center",
                                                             }}
                                                         >
-                                                            {row.keywords}
+                                                            {row.emp}
                                                         </td>
                                                         <td
                                                             style={{
@@ -2166,7 +2202,7 @@ const PageCreateAdd = (props: Props) => {
                                                                 textAlign: "center",
                                                             }}
                                                         >
-                                                            {row.EmpCode}
+                                                            {row.empcode}
 
                                                         </td>
                                                         <td
@@ -2176,7 +2212,7 @@ const PageCreateAdd = (props: Props) => {
                                                                 textAlign: "center",
                                                             }}
                                                         >
-                                                            {row.Remark}
+                                                            {row.remark}
 
                                                         </td>
                                                         <td
@@ -2186,7 +2222,7 @@ const PageCreateAdd = (props: Props) => {
                                                                 textAlign: "center",
                                                             }}
                                                         >
-                                                            {row.AuditNo}
+                                                            {row.audit}
 
                                                         </td>
                                                         <td
@@ -2196,7 +2232,7 @@ const PageCreateAdd = (props: Props) => {
                                                                 textAlign: "center",
                                                             }}
                                                         >
-                                                            {row.SeniorityNo}
+                                                            {row.seniority}
 
                                                         </td>
                                                         <td
@@ -2206,7 +2242,7 @@ const PageCreateAdd = (props: Props) => {
                                                                 textAlign: "center",
                                                             }}
                                                         >
-                                                            {row.RetirementDate}
+                                                            {row.dofRetirementNo}
 
                                                         </td>
                                                         <td
@@ -2216,7 +2252,7 @@ const PageCreateAdd = (props: Props) => {
                                                                 textAlign: "center",
                                                             }}
                                                         >
-                                                            {row.DateOfApproval}
+                                                            {row.adate}
 
                                                         </td>
                                                         <td
@@ -2226,7 +2262,7 @@ const PageCreateAdd = (props: Props) => {
                                                                 textAlign: "center",
                                                             }}
                                                         >
-                                                            {row.DateOfIssue}
+                                                            {row.sdate}
 
                                                         </td>
                                                         <td
@@ -2236,7 +2272,7 @@ const PageCreateAdd = (props: Props) => {
                                                                 textAlign: "center",
                                                             }}
                                                         >
-                                                            {row.DateOfCheck}
+                                                            {row.jdate}
 
                                                         </td>
                                                         <td
@@ -2246,7 +2282,7 @@ const PageCreateAdd = (props: Props) => {
                                                                 textAlign: "center",
                                                             }}
                                                         >
-                                                            {row.SentenceNo}
+                                                            {row.number}
 
                                                         </td>
                                                         <td

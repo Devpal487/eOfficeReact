@@ -352,7 +352,7 @@ export default function WardMaster() {
       "wardID": -1,
       "wardName": "",
       "wardCode": "",
-      "zoneID": 0,
+      "zoneID": "",
       "isActive": true,
       "sortOrder": 0,
       "createdDt": new Date().toISOString().slice(0, 10),

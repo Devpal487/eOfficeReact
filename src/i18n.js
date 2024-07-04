@@ -643,6 +643,7 @@ const resources = {
         PageNoTo:"Page Number To",
         AddRow:"Add Row",
         PhysicalIndex:"Physical Index",
+        All:"All"
       },
 
       content: {},
@@ -1279,6 +1280,7 @@ const resources = {
          PageNoTo:"पृष्ठ संख्या को",
          AddRow:"पंक्ति जोड़ें",
          PhysicalIndex:"भौतिक सूचकांक",
+         All:"सब"
 
       },
       content: {},

@@ -366,8 +366,8 @@ export default function MiniDrawer({ items }: any) {
         : [...prevExpanded, id.toString()]
     );
 
-    console.log("Checked data:",  name);
-    console.log("Checked data:",  id );
+    // console.log("Checked data:",  name);
+    // console.log("Checked data:",  id );
     setNodeNames(name);
     setnodeId(id);   
     // handleSave(id, name);
@@ -380,7 +380,7 @@ export default function MiniDrawer({ items }: any) {
     if (nodeId != 0 || nodeNames != "" ){
       localStorage.setItem('id', nodeId);
       localStorage.setItem('nodeName', nodeNames);
-      console.log("Checked Save:", { nodeId, nodeNames })
+      // console.log("Checked Save:", { nodeId, nodeNames })
       handleCloseModal();
     }
       else{
@@ -413,7 +413,7 @@ export default function MiniDrawer({ items }: any) {
 
 
   const handleSubMenuClick = (index: any) => {
-    console.log(index);
+    // console.log(index);
     setSelectedSubMenu(index);
   };
   const resetHomeColor = () => {
@@ -1093,7 +1093,7 @@ export default function MiniDrawer({ items }: any) {
                                 minWidth: 0,
                                 mr: open ? 3 : "auto",
                                 justifyContent: "center",
-                                color: open ?  sidebarMainColor : sidebarOverColor,
+                                color: open ?  sidebarMainColor : "inherit",
                                 backgroundColor: selectedSubMenu == index2 ?  sidebarMainColor : sidebarOverColor,
                                 Color:
                                   selectedSubMenu == index2 ? "white" : "black",

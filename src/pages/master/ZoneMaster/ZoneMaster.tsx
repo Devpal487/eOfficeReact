@@ -72,8 +72,9 @@ export default function ZoneMaster() {
             const pathrow = childMenudata.find(
               (x: any) => x.path === location.pathname
             );
-            // console.log("data", pathrow);
+           
             if (pathrow) {
+            console.log("data", pathrow);
               setPermissionData(pathrow);
               fetchZonesData();
             }

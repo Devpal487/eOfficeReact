@@ -1341,10 +1341,15 @@ const ViewEditFile: React.FC = (props: Props) => {
                     alignItems: "center",
                   }}
                 >
+                  
                   <Tab
                     label="Files"
                     sx={value === 0 ? tabStyle.selected : tabStyle.default}
+                   
+                   
                   />
+
+
                   <Tab
                     label="Notesheet"
                     sx={value === 1 ? tabStyle.selected : tabStyle.default}

@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { styled, useTheme, Theme, CSSObject } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import MuiDrawer from "@mui/material/Drawer";
@@ -15,9 +15,9 @@ import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
-import { useNavigate, Navigate } from "react-router-dom";
+import { useNavigate, Navigate, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { Avatar, Stack } from "@mui/material";
+import { Avatar, CircularProgress, Stack } from "@mui/material";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import call from "../../assets/images/phone-call.png";
@@ -34,7 +34,8 @@ import trans from "../../assets/images/translation.png";
 import userIcon from "../../assets/images/profile1.png";
 import logged from "../../assets/images/permission.png";
 import logo from "../../assets/images/recyclebinLogo.png";
-import loged from "../../assets/images/DrawerLogo.png";
+import help from "../../assets/images/help.png";
+
 import CloseIcon from "@mui/icons-material/Close";
 import dayjs from "dayjs";
 import { Home } from "@mui/icons-material";
@@ -50,17 +51,19 @@ import SearchIcon from "@mui/icons-material/Search";
 import Paper from "@mui/material/Paper";
 import Autocomplete from "@mui/material/Autocomplete";
 import InputAdornment from "@mui/material/InputAdornment";
-import {
-  TextField, Button
-} from "@mui/material";
-import logouts from '../../assets/images/logout.png'
+import { TextField, Button } from "@mui/material";
+import logouts from "../../assets/images/logout.png";
 import api from "../../utils/Url";
 import { toast } from "react-toastify";
 import Modal from "@mui/material/Modal";
 import { Grid, Checkbox } from "@mui/material";
 import { SimpleTreeView } from "@mui/x-tree-view/SimpleTreeView";
 import { TreeItem, treeItemClasses } from "@mui/x-tree-view/TreeItem";
-import TreeView from '@mui/x-tree-view/TreeView';
+import TreeView from "@mui/x-tree-view/TreeView";
+import { CloseIcons } from "../../utils/icons";
+import { GridColDef } from "@mui/x-data-grid";
+import CustomDataGrid from "../../utils/CustomDatagrid";
+import { getId } from "../../utils/Constant";
 
 const drawerWidth = 225;
 
@@ -115,7 +118,6 @@ const AppBar = styled(MuiAppBar, {
   }),
 }));
 
-
 const style = {
   position: "absolute" as "absolute",
   top: "50%",
@@ -128,7 +130,18 @@ const style = {
   boxShadow: 24,
   p: 4,
   borderRadius: 10,
- 
+};
+
+const Modstyle = {
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: 800,
+  bgcolor: "background.paper",
+  border: "2px solid #000",
+  boxShadow: 24,
+  p: 4,
 };
 
 const Drawer = styled(MuiDrawer, {
@@ -150,15 +163,15 @@ const Drawer = styled(MuiDrawer, {
 
 export default function MiniDrawer({ items }: any) {
   const theme = useTheme();
+  const Userid = getId();
 
   let headerName = localStorage.getItem("name");
-  let appLogo :any = localStorage.getItem("applogo");
-  let sideLogo :any = localStorage.getItem("sidelogo");
+  let appLogo: any = localStorage.getItem("applogo");
+  let sideLogo: any = localStorage.getItem("sidelogo");
 
-  let sidebarMainColor:any = localStorage.getItem("mclr");
-  let sidebarOverColor:any  = localStorage.getItem("oclr");
+  let sidebarMainColor: any = localStorage.getItem("mclr");
+  let sidebarOverColor: any = localStorage.getItem("oclr");
 
-  
   const [open, setOpen] = React.useState(true);
   const [menuOpen, setMenuOpen] = React.useState(false);
   const [profileDrawerOpen, setProfileDrawerOpen] = React.useState(false);
@@ -174,8 +187,37 @@ export default function MiniDrawer({ items }: any) {
   const [filteredItems, setFilteredItems] = React.useState<MenuItem[]>([]);
   const [expandedItems, setExpandedItems] = React.useState<any[]>([]);
 
+  const location = useLocation();
 
   let navigate = useNavigate();
+  const [menuData, setMenuData] = React.useState<any>("");
+
+  useEffect(() => {
+    const dataString = localStorage.getItem("userdata");
+    if (dataString) {
+      const data = JSON.parse(dataString);
+      if (data && data.length > 0) {
+        const userPermissionData = data[0]?.userPermission;
+        if (userPermissionData && userPermissionData.length > 0) {
+          const menudata = userPermissionData[0]?.parentMenu;
+          for (let index = 0; index < menudata.length; index++) {
+            const childMenudata = menudata[index]?.childMenu;
+            const pathrow = childMenudata.find(
+              (x: any) => x.path === location.pathname
+            );
+
+            if (pathrow) {
+              console.log("data", pathrow);
+              setMenuData(pathrow.menuId);
+              break;
+              // setPermissionData(pathrow);
+              // fetchZonesData();
+            }
+          }
+        }
+      }
+    }
+  }, [location.pathname]);
 
   function searchMenuItems(items: any, query: string) {
     const results = [];
@@ -262,16 +304,16 @@ export default function MiniDrawer({ items }: any) {
   // console.log("data", treedata)
   const [check, setCheck] = React.useState<any>([]);
   let ID: any = localStorage.getItem("useR_ID");
-  ID = ID.replace(/^"(.*)"$/, '$1');
+  ID = ID.replace(/^"(.*)"$/, "$1");
   const handlePermissionClick = () => {
     if (ID) {
-      console.log("id check 175", ID)
+      console.log("id check 175", ID);
       getNode(ID);
     } else {
-      toast.error("ID not found")
+      toast.error("ID not found");
     }
     setIsModalOpen(true);
-    console.log("first")
+    console.log("first");
   };
 
   const handleCloseModal = () => {
@@ -299,31 +341,31 @@ export default function MiniDrawer({ items }: any) {
     };
   });
 
-
   const getNode = (id: any) => {
     const collectData = {
       id: -1,
       nodeID: -1,
       titleID: -1,
-      "user_Id": id
+      user_Id: id,
     };
-    api.post(`NewNodeMaster/GetNewNodeMasterHeirarical`, collectData).then((res: any) => {
-
-      if (res.data && res.data.data && res.data.data.length > 0) {
-        setTreedata(res.data.data);
-        const allNodeIds = getAllNodeIds(res.data.data);
-        setExpandedItems(allNodeIds);
-      } else {
-        toast.error('Data is null or empty');
-      }
-    });
+    api
+      .post(`NewNodeMaster/GetNewNodeMasterHeirarical`, collectData)
+      .then((res: any) => {
+        if (res.data && res.data.data && res.data.data.length > 0) {
+          setTreedata(res.data.data);
+          const allNodeIds = getAllNodeIds(res.data.data);
+          setExpandedItems(allNodeIds);
+        } else {
+          toast.error("Data is null or empty");
+        }
+      });
   };
 
   const getAllNodeIds = (nodes: any[]): any[] => {
     let ids: any[] = [];
 
     const collectIds = (nodes: any[]) => {
-      nodes.forEach(node => {
+      nodes.forEach((node) => {
         ids.push(node.id.toString());
         if (node.childnode) {
           collectIds(node.childnode);
@@ -335,22 +377,21 @@ export default function MiniDrawer({ items }: any) {
     return ids;
   };
 
-  const defaultSelectedNodeId = parseInt(localStorage.getItem('id') + "");
+  const defaultSelectedNodeId = parseInt(localStorage.getItem("id") + "");
 
   useEffect(() => {
     // Set default selected node here
     setCheck([defaultSelectedNodeId]);
   }, [defaultSelectedNodeId]);
 
-
   const [nodeId, setnodeId] = React.useState<any>(0);
-  const [nodeNames, setNodeNames] = React.useState<string>('');
+  const [nodeNames, setNodeNames] = React.useState<string>("");
 
   const handleToggle = (id: number, name: string) => () => {
     const currentIndex = check.indexOf(id);
-   // const newChecked = [...check];
-   const newChecked = currentIndex === -1 ? [id] : [];
-   const updatedChecked = newChecked.length === 1 ? [id] : [];
+    // const newChecked = [...check];
+    const newChecked = currentIndex === -1 ? [id] : [];
+    const updatedChecked = newChecked.length === 1 ? [id] : [];
 
     if (currentIndex === -1) {
       newChecked.push(id);
@@ -362,30 +403,28 @@ export default function MiniDrawer({ items }: any) {
 
     setExpandedItems((prevExpanded) =>
       prevExpanded.includes(id.toString())
-        ? prevExpanded.filter(item => item !== id.toString())
+        ? prevExpanded.filter((item) => item !== id.toString())
         : [...prevExpanded, id.toString()]
     );
 
-    console.log("Checked data:",  name);
-    console.log("Checked data:",  id );
+    console.log("Checked data:", name);
+    console.log("Checked data:", id);
     setNodeNames(name);
-    setnodeId(id);   
+    setnodeId(id);
     // handleSave(id, name);
   };
 
   const handleSave = () => {
     console.log("handleSave function called");
 
-    
-    if (nodeId != 0 || nodeNames != "" ){
-      localStorage.setItem('id', nodeId);
-      localStorage.setItem('nodeName', nodeNames);
-      console.log("Checked Save:", { nodeId, nodeNames })
+    if (nodeId != 0 || nodeNames != "") {
+      localStorage.setItem("id", nodeId);
+      localStorage.setItem("nodeName", nodeNames);
+      console.log("Checked Save:", { nodeId, nodeNames });
       handleCloseModal();
+    } else {
+      toast.error("Please Retry... Network Issues");
     }
-      else{
-        toast.error("Please Retry... Network Issues")
-      }
   };
 
   const renderTree = (nodes: any) => (
@@ -396,7 +435,7 @@ export default function MiniDrawer({ items }: any) {
         <div style={{ display: "flex", alignItems: "center" }}>
           <Checkbox
             checked={check.indexOf(nodes.id) !== -1}
-           // onChange={handleToggle(nodes.id)}
+            // onChange={handleToggle(nodes.id)}
             onChange={handleToggle(nodes.id, nodes.name)}
             onClick={(event: any) => event.stopPropagation()}
           />
@@ -411,9 +450,8 @@ export default function MiniDrawer({ items }: any) {
     </TreeItem>
   );
 
-
   const handleSubMenuClick = (index: any) => {
-    console.log(index);
+    // console.log(index);
     setSelectedSubMenu(index);
   };
   const resetHomeColor = () => {
@@ -433,7 +471,7 @@ export default function MiniDrawer({ items }: any) {
     setHomeColor("sidebarMainColor");
   };
 
-  const handleClose = () => { 
+  const handleClose = () => {
     setAnchorEl(null);
     setMenuOpen(false);
   };
@@ -459,11 +497,7 @@ export default function MiniDrawer({ items }: any) {
     navigate("/");
   }, [navigate]);
 
-
-
   function onClick(e: any, item: any) {
-
-
     let path = item.path;
     if (path == "" || path == null || path == "undefind") {
       window.alert("Path Not Found ????");
@@ -485,7 +519,6 @@ export default function MiniDrawer({ items }: any) {
   const { i18n, t } = useTranslation();
 
   const changeLanguage = (language: any) => {
-
     i18n.changeLanguage(language);
     localStorage.setItem("preferredLanguage", language);
   };
@@ -533,6 +566,7 @@ export default function MiniDrawer({ items }: any) {
   };
 
   const currentPathname = window.location.pathname;
+  // console.log("pathname",window.location);
   const segments = currentPathname.split("/").filter(Boolean);
   const isHomePage = segments.length === 0;
 
@@ -560,7 +594,7 @@ export default function MiniDrawer({ items }: any) {
   let nodeName = localStorage.getItem("nodeName");
 
   if (nodeName !== null) {
-    nodeName = nodeName.replace(/"/g, '');
+    nodeName = nodeName.replace(/"/g, "");
   }
 
   const handleRightClick = (path: any) => (e: any) => {
@@ -568,9 +602,8 @@ export default function MiniDrawer({ items }: any) {
     window.open(path, "_blank");
   };
 
-
   return (
-    <Box sx={{ display: "flex", }}>
+    <Box sx={{ display: "flex" }}>
       <AppBar position="fixed" open={open} style={{}}>
         <Toolbar
           style={{
@@ -602,14 +635,12 @@ export default function MiniDrawer({ items }: any) {
             {!openlogo && <img src={appLogo} width={60} height={60} />}
           </div>
 
-          <div style={{ fontSize: "25px" }}>
-            {headerName}
-          </div>
+          <div style={{ fontSize: "25px" }}>{headerName}</div>
 
           <IconButton
             onClick={handleClick}
             size="small"
-            sx={{ ml: 2}}
+            sx={{ ml: 2 }}
             aria-controls={open ? "account-menu" : undefined}
             aria-haspopup="true"
             aria-expanded={open ? "true" : undefined}
@@ -684,6 +715,22 @@ export default function MiniDrawer({ items }: any) {
               </ListItemIcon>
               Translate -- {newLanguage}
             </MenuItem>
+
+            <MenuItem
+              onClick={() => {
+                let path = "/master/HelpDesk";
+                localStorage.setItem("menuData", menuData.toString());
+                window.open(path, "_blank");
+              }}
+            >
+              <ListItemIcon>
+                <img src={help} width={30} height={30} />
+              </ListItemIcon>
+              Help Desk
+            </MenuItem>
+
+            
+
             <MenuItem onClick={handleClose}>
               <ListItemIcon>
                 <img src={settings} width={30} height={30} />
@@ -691,7 +738,7 @@ export default function MiniDrawer({ items }: any) {
               Settings
             </MenuItem>
             <MenuItem onClick={handlePermissionClick}>
-              <ListItemIcon >
+              <ListItemIcon>
                 <img src={logged} width={40} height={40} />
               </ListItemIcon>
               Permission
@@ -713,14 +760,10 @@ export default function MiniDrawer({ items }: any) {
             alignItems: "center",
             // backgroundColor: "rgba(245,245,245,0.7)",
             // borderBottomRightRadius: "15px",
-            backgroundColor: sidebarMainColor
+            backgroundColor: sidebarMainColor,
           }}
         >
-          <div
-            role="presentation"
-            onClick={handleClicked}
-            style={{}}
-          >
+          <div role="presentation" onClick={handleClicked} style={{}}>
             <Breadcrumbs aria-label="breadcrumb" sx={{ color: "#fff" }}>
               {/* <Link
                 underline="hover"
@@ -801,9 +844,16 @@ export default function MiniDrawer({ items }: any) {
               paddingRight: "15px",
             }}
           >
-            <p>{t('text.EGovernanceLevel')} : {nodeName}</p>
-            <p> {t('text.Time')} : {date.toLocaleTimeString()}</p>
-            <p>{t('text.Date')}: {formattedDate}</p>
+            <p>
+              {t("text.EGovernanceLevel")} : {nodeName}
+            </p>
+            <p>
+              {" "}
+              {t("text.Time")} : {date.toLocaleTimeString()}
+            </p>
+            <p>
+              {t("text.Date")}: {formattedDate}
+            </p>
           </div>
         </div>
       </AppBar>
@@ -964,7 +1014,7 @@ export default function MiniDrawer({ items }: any) {
                       paddingBottom: 0,
                       cursor: "pointer",
                     }}
-                  // key={text.id} component={Link} to={text.path}
+                    // key={text.id} component={Link} to={text.path}
                   >
                     {/* <ListItemIcon
                     sx={{
@@ -983,7 +1033,9 @@ export default function MiniDrawer({ items }: any) {
                           mr: open ? 1 : "auto",
                           justifyContent: "center",
                           color:
-                            index === collapseIndex ? sidebarMainColor : sidebarOverColor,
+                            index === collapseIndex
+                              ? sidebarMainColor
+                              : sidebarOverColor,
                           fontWeight: 600,
                         }}
                         title={text.name}
@@ -1001,7 +1053,10 @@ export default function MiniDrawer({ items }: any) {
                           justifyContent: "center",
                           alignItems: "center",
                           marginRight: 8,
-                          color:index === collapseIndex ? sidebarMainColor : sidebarOverColor,
+                          color:
+                            index === collapseIndex
+                              ? sidebarMainColor
+                              : sidebarOverColor,
                         }}
                         title={text.name}
                       >
@@ -1049,7 +1104,9 @@ export default function MiniDrawer({ items }: any) {
                             paddingTop: 0,
                             paddingBottom: 0,
                             backgroundColor:
-                              selectedSubMenu == index2 ?  sidebarMainColor : sidebarOverColor,
+                              selectedSubMenu == index2
+                                ? sidebarMainColor
+                                : sidebarOverColor,
                             color:
                               selectedSubMenu == index2 ? "white" : "black",
                             borderRadius: "10px",
@@ -1093,8 +1150,13 @@ export default function MiniDrawer({ items }: any) {
                                 minWidth: 0,
                                 mr: open ? 3 : "auto",
                                 justifyContent: "center",
-                                color: open ?  sidebarMainColor : sidebarOverColor,
-                                backgroundColor: selectedSubMenu == index2 ?  sidebarMainColor : sidebarOverColor,
+                                color: open
+                                  ? sidebarMainColor
+                                  : sidebarOverColor,
+                                backgroundColor:
+                                  selectedSubMenu == index2
+                                    ? sidebarMainColor
+                                    : sidebarOverColor,
                                 Color:
                                   selectedSubMenu == index2 ? "white" : "black",
                                 borderRadius: "25px",
@@ -1117,25 +1179,16 @@ export default function MiniDrawer({ items }: any) {
         </React.Fragment>
       </Drawer>
 
-
       <Modal open={isModalOpen} onClose={handleCloseModal}>
         <Box sx={style}>
-          <Typography
-            fontWeight={500}
-            fontSize={20}
-            noWrap
-            align="center"
-          >
+          <Typography fontWeight={500} fontSize={20} noWrap align="center">
             Node Permission
           </Typography>
-          <div >
+          <div>
             <Grid xs={12} item>
               <Box>
                 <div style={{ height: "400px", overflow: "auto" }}>
-                  <SimpleTreeView
-                    expandedItems={expandedItems}
-
-                  >
+                  <SimpleTreeView expandedItems={expandedItems}>
                     {Array.isArray(treedata)
                       ? treedata.map((node: any) => renderTree(node))
                       : null}
@@ -1143,7 +1196,7 @@ export default function MiniDrawer({ items }: any) {
                 </div>
               </Box>
             </Grid>
-            <Grid xs={3} item alignItems="center" justifyContent="center" >
+            <Grid xs={3} item alignItems="center" justifyContent="center">
               <Button
                 type="submit"
                 fullWidth
@@ -1161,14 +1214,13 @@ export default function MiniDrawer({ items }: any) {
         </Box>
       </Modal>
 
-
       <SwipeableDrawer
         anchor="left"
         open={profileDrawerOpen}
         onClose={() => {
           setProfileDrawerOpen(false);
         }}
-        onOpen={() => { }}
+        onOpen={() => {}}
         style={{
           zIndex: 1300,
         }}

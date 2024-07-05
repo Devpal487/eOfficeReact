@@ -643,7 +643,14 @@ const resources = {
         PageNoTo:"Page Number To",
         AddRow:"Add Row",
         PhysicalIndex:"Physical Index",
-        All:"All"
+        All:"All",
+        PageTitle:"Page Title",
+        HelpCreation:"Help Creation",
+        PageName:"Page Name",
+        Description:"Description",
+        HelpDesk:"Help Desk",
+
+
       },
 
       content: {},
@@ -1280,7 +1287,13 @@ const resources = {
          PageNoTo:"पृष्ठ संख्या को",
          AddRow:"पंक्ति जोड़ें",
          PhysicalIndex:"भौतिक सूचकांक",
-         All:"सब"
+         All:"सब",
+         PageTitle:"पृष्ठ शीर्षक",
+         HelpCreation:"सहायता निर्माण",
+         PageName:"पृष्ठ का नाम",
+         Description:"विवरण",
+         HelpDesk:"सहायता केंद्र",
+
 
       },
       content: {},

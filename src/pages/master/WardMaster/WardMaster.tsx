@@ -77,11 +77,9 @@ export default function WardMaster() {
         }
       }
     }
+    getVehicleZone();
   }, [isLoading]);
 
-  useEffect(() => {
-    getVehicleZone();
-  }, []);
 
 
   const handleSwitchChange = (
@@ -124,7 +122,7 @@ export default function WardMaster() {
       wardID: delete_id,
       user_ID: UserId,
     };
-    console.log("collectData " + JSON.stringify(collectData));
+    // console.log("collectData " + JSON.stringify(collectData));
     api
       .delete(`Ward/DeleteWardmaster`, { data: collectData })
       .then((response) => {
@@ -164,7 +162,7 @@ export default function WardMaster() {
       api
         .post(`Ward/GetWardmaster`, collectData)
         .then((res) => {
-          console.log("result" + JSON.stringify(res.data.data));
+          // console.log("result" + JSON.stringify(res.data.data));
           const data = res.data.data;
           const arr = data.map((item: any, index: any) => ({
             ...item,
@@ -309,14 +307,14 @@ export default function WardMaster() {
   const getVehicleZone = () => {
     const collectData = {
       zoneID: -1,
-      user_ID: UserId,
+      user_ID:parseInt(UserId),
       isActive: true
     };
     api
       .post(`Zone/GetZonemaster`, collectData)
       .then((res) => {
         const arr: any = [];
-        console.log("result" + JSON.stringify(res.data.data));
+        // console.log("result" + JSON.stringify(res.data.data));
         for (let index = 0; index < res.data.data.length; index++) {
           arr.push({
             label: res.data.data[index]["zoneName"],
@@ -357,7 +355,7 @@ export default function WardMaster() {
       "sortOrder": 0,
       "createdDt": new Date().toISOString().slice(0, 10),
       "modifyDt": new Date().toISOString().slice(0, 10),
-      "user_ID": UserId,
+      "user_ID": parseInt(UserId),
       "zoneName": ""
     },
     validationSchema: validationSchema,

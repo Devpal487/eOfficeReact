@@ -30,6 +30,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { getId } from '../../../utils/Constant'
 import CustomDataGrid from "../../../utils/CustomDatagrid";
 import CustomLabel from "../../../CustomLable";
+import ButtonWithLoader from "../../../utils/ButtonWithLoader";
 
 export default function LetterType() {
     const { i18n, t } = useTranslation();
@@ -39,11 +40,37 @@ export default function LetterType() {
     const [editId, setEditId] = useState(-1);
     const location = useLocation();
     const [isLoading, setIsLoading] = useState(true);
-
+    const [permissionData, setPermissionData] = useState<any>({
+        isAdd: false,
+        isEdit: false,
+        isPrint: false,
+        isDel: false,
+      });
+    
     useEffect(() => {
         const dataString = localStorage.getItem("userdata");
+        if (dataString) {
+          const data = JSON.parse(dataString);
+          if (data && data.length > 0) {
+            const userPermissionData = data[0]?.userPermission;
+            if (userPermissionData && userPermissionData.length > 0) {
+              const menudata = userPermissionData[0]?.parentMenu;
+              for (let index = 0; index < menudata.length; index++) {
+                const childMenudata = menudata[index]?.childMenu;
+                const pathrow = childMenudata.find(
+                  (x: any) => x.path === location.pathname
+                );
+                console.log("data", pathrow);
+                if (pathrow) {
+                  setPermissionData(pathrow);
+                  getList();
+                }
+              }
+            }
+          }
+        }
 
-        getList();
+      
 
     }, []);
 
@@ -119,7 +146,7 @@ export default function LetterType() {
                                             direction="row"
                                             sx={{ alignItems: "center", marginTop: "5px" }}
                                         >
-                                            {/*  {permissionData?.isEdit ? ( */}
+                                            {permissionData?.isEdit ? (
                                             <EditIcon
                                                 style={{
                                                     fontSize: "20px",
@@ -129,10 +156,10 @@ export default function LetterType() {
                                                 className="cursor-pointer"
                                                 onClick={() => routeChangeEdit(params.row)}
                                             />
-                                            {/* ) : ( */}
-                                            {/*   "" */}
-                                            {/* )} */}
-                                            {/*  {permissionData?.isDel ? ( */}
+                                           ) : (
+                                             ""
+                                           )}
+                                            {permissionData?.isDel ? (
                                             <DeleteIcon
                                                 style={{
                                                     fontSize: "20px",
@@ -143,9 +170,9 @@ export default function LetterType() {
                                                     handledeleteClick(params.row.id);
                                                 }}
                                             />
-                                            {/*  ) : ( */}
-                                            {/*  "" */}
-                                            {/* )} */}
+                                            ) : (
+                                            ""
+                                           )}
                                         </Stack>,
                                     ];
                                 },
@@ -228,6 +255,10 @@ export default function LetterType() {
 
         setEditId(row.id);
     };
+
+    const handleSubmitWrapper = async () => {
+        await formik.handleSubmit();
+      };
 
     return (
         <>
@@ -312,13 +343,21 @@ export default function LetterType() {
                                         </Grid>
 
                                         <Grid item xs={2}>
-                                            {/*  {permissionData?.isAdd == true ? ( */}
-                                            <Button type="submit" variant="contained" size="large">
-                                                {editId == -1 ? t("text.save") : t("text.update")}
-                                            </Button>
-                                            {/* ) : ( */}
-                                            {/*   "" */}
-                                            {/* )} */}
+                                        {editId === -1 && permissionData?.isAdd && (
+  <ButtonWithLoader
+    buttonText={t("text.save")}
+    onClickHandler={handleSubmitWrapper}
+    fullWidth={true}
+  />
+)}
+
+{editId !== -1 && (
+  <ButtonWithLoader
+    buttonText={t("text.update")}
+    onClickHandler={handleSubmitWrapper}
+    fullWidth={true}
+  />
+)}
                                         </Grid>
                                     </Grid>
                                 </form>

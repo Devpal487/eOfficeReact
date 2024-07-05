@@ -264,18 +264,6 @@ export default function StateMaster() {
                   ) : (
                     ""
                   )}
-                  {/* <Switch
-                    checked={Boolean(params.row.isActive)}
-                    style={{
-                      color: params.row.isActive ? "green" : "#FE0000",
-                    }}
-                    onChange={(value: any) =>
-                      handleSwitchChange(value, params.row)
-                    }
-                    inputProps={{
-                      "aria-label": "Toggle Switch",
-                    }}
-                  /> */}
                 </Stack>,
               ];
             },
@@ -304,30 +292,7 @@ export default function StateMaster() {
             headerName: t("text.CountryName"),
             flex: 1,
             headerClassName: "MuiDataGrid-colCell",
-          },
-          // {
-          //   field: "isActive",
-          //   headerName: t("text.Status"),
-          //   flex: 1,
-          //   headerClassName: "MuiDataGrid-colCell",
-          //   renderCell: (params) => [
-          //     <Stack direction="row" spacing={1}>
-          //       {params.row.isActive ? (
-          //         <Chip
-          //           label={t("text.Active")}
-          //           color="success"
-          //           style={{ fontSize: "14px" }}
-          //         />
-          //       ) : (
-          //         <Chip
-          //           label={t("text.InActive")}
-          //           color="error"
-          //           style={{ fontSize: "14px" }}
-          //         />
-          //       )}
-          //     </Stack>,
-          //   ],
-          // },
+          }
         ];
         setColumns(columns as any);
       }
@@ -345,8 +310,6 @@ export default function StateMaster() {
   const handleSubmitWrapper = async () => {
     await formik.handleSubmit();
   };
-
-
 
   return (
     <>
@@ -387,24 +350,6 @@ export default function StateMaster() {
           <Box height={10} />
 
           <Stack direction="row" spacing={2} classes="my-2 mb-2">
-            {/* {permissionData?.isAdd == true && (
-              <Button
-                onClick={routeChangeAdd}
-                variant="contained"
-                endIcon={<AddCircleIcon />}
-                size="large"
-              >
-                {t("text.add")}
-              </Button>
-            ) } */}
-
-            {/* {permissionData?.isPrint == true ? (
-              <Button variant="contained" endIcon={<PrintIcon />} size="large">
-                {t("text.print")}
-              </Button>
-            ) : (
-              ""
-            )} */}
 
           </Stack>
 
@@ -482,10 +427,26 @@ export default function StateMaster() {
               <Grid item xs={2} sx={{ m: -1 }}>
                 {/*  {permissionData?.isAdd == true ? ( */}
 
-                <ButtonWithLoader buttonText={editId == -1 ? t("text.save") : t("text.update")} onClickHandler={handleSubmitWrapper} fullWidth={true} />
+                {/* <ButtonWithLoader buttonText={editId == -1 ? t("text.save") : t("text.update")} onClickHandler={handleSubmitWrapper} fullWidth={true} /> */}
                 {/* ) : ( */}
                 {/*   "" */}
                 {/* )} */}
+
+                {editId === -1 && permissionData?.isAdd && (
+  <ButtonWithLoader
+    buttonText={t("text.save")}
+    onClickHandler={handleSubmitWrapper}
+    fullWidth={true}
+  />
+)}
+
+{editId !== -1 && (
+  <ButtonWithLoader
+    buttonText={t("text.update")}
+    onClickHandler={handleSubmitWrapper}
+    fullWidth={true}
+  />
+)}
               </Grid>
 
             </Grid>

@@ -28,6 +28,7 @@ import { usePermissionData } from "../../../usePermissionData";
 import DeleteIcon from "@mui/icons-material/Delete";
 import CustomDataGrid from "../../../utils/CustomDatagrid";
 import CustomLabel from "../../../CustomLable";
+import ButtonWithLoader from "../../../utils/ButtonWithLoader";
 
 interface MenuPermission {
     isAdd: boolean;
@@ -72,13 +73,13 @@ export default function FileGroup() {
                         console.log("location.pathname", location.pathname);
                         if (pathrow) {
                             setPermissionData(pathrow);
-                          //  getList();
+                           getList();
                         }
                     }
                 }
             }
         }
-        getList();
+        // getList();
     }, [isLoading]);
 
     let delete_id = "";
@@ -149,7 +150,7 @@ export default function FileGroup() {
                                             direction="row"
                                             sx={{ alignItems: "center", marginTop: "5px" }}
                                         >
-                                            {/*  {permissionData?.isEdit ? ( */}
+                                              {permissionData?.isEdit ? ( 
                                             <EditIcon
                                                 style={{
                                                     fontSize: "20px",
@@ -159,10 +160,10 @@ export default function FileGroup() {
                                                 className="cursor-pointer"
                                                 onClick={() => routeChangeEdit(params.row)}
                                             />
-                                            {/* ) : ( */}
-                                            {/*    "" */}
-                                            {/* )} */}
-                                            {/* {permissionData?.isDel ? ( */}
+                                             ) : ( 
+                                                "" 
+                                             )} 
+                                             {permissionData?.isDel ? ( 
                                             <DeleteIcon
                                                 style={{
                                                     fontSize: "20px",
@@ -173,9 +174,9 @@ export default function FileGroup() {
                                                     handledeleteClick(params.row.id);
                                                 }}
                                             />
-                                            {/*) : ( */}
-                                            {/*  "" */}
-                                            {/*)} */}
+                                            ) : ( 
+                                              "" 
+                                            )} 
                                         </Stack>,
                                     ];
                                 },
@@ -250,6 +251,11 @@ export default function FileGroup() {
         setEditId(row.id);
     };
 
+    const handleSubmitWrapper = async () => {
+        await formik.handleSubmit();
+      };
+    
+
     return (
         <>
             <Grid item lg={6} sm={6} xs={12} sx={{ marginTop: "3vh" }}>
@@ -320,13 +326,21 @@ export default function FileGroup() {
                                             ) : null}
                                         </Grid>
                                         <Grid item xs={2}>
-                                            {/* {permissionData?.isAdd == true ? ( */}
-                                            <Button type="submit" variant="contained" size="large">
-                                                {editId == "-1" ? t("text.save") : t("text.update")}
-                                            </Button>
-                                            {/* ) : ( */}
-                                            {/*   "" */}
-                                            {/* )} */}
+                                          {editId === "-1" && permissionData?.isAdd && (
+  <ButtonWithLoader
+    buttonText={t("text.save")}
+    onClickHandler={handleSubmitWrapper}
+    fullWidth={true}
+  />
+)}
+
+{editId !== "-1" && (
+  <ButtonWithLoader
+    buttonText={t("text.update")}
+    onClickHandler={handleSubmitWrapper}
+    fullWidth={true}
+  />
+)}
                                         </Grid>
                                     </Grid>
                                 </form>

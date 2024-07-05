@@ -27,8 +27,15 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import CustomDataGrid from "../../../utils/CustomDatagrid";
 import CustomLabel from "../../../CustomLable";
+import ButtonWithLoader from "../../../utils/ButtonWithLoader";
 
 
+interface MenuPermission {
+  isAdd: boolean;
+  isEdit: boolean;
+  isPrint: boolean;
+  isDel: boolean;
+}
 
 export default function SectionMaster() {
   const { i18n, t } = useTranslation();
@@ -48,14 +55,37 @@ export default function SectionMaster() {
     { value: "-1", label: t("text.SelectStateName") },
   ]);
 
+  const [permissionData, setPermissionData] = useState<MenuPermission>({
+    isAdd: false,
+    isEdit: false,
+    isPrint: false,
+    isDel: false,
+  });
 
 
 
   useEffect(() => {
     const dataString = localStorage.getItem("userdata");
-
-    getList();
-
+    if (dataString) {
+      const data = JSON.parse(dataString);
+      if (data && data.length > 0) {
+        const userPermissionData = data[0]?.userPermission;
+        if (userPermissionData && userPermissionData.length > 0) {
+          const menudata = userPermissionData[0]?.parentMenu;
+          for (let index = 0; index < menudata.length; index++) {
+            const childMenudata = menudata[index]?.childMenu;
+            const pathrow = childMenudata.find(
+              (x: any) => x.path === location.pathname
+            );
+            console.log("data", pathrow);
+            if (pathrow) {
+              setPermissionData(pathrow);
+              getList();
+            }
+          }
+        }
+      }
+    }
     getDepartment();
 
   }, []);
@@ -155,7 +185,7 @@ export default function SectionMaster() {
                       direction="row"
                       sx={{ alignItems: "center", marginTop: "5px" }}
                     >
-                      {/*  {permissionData?.isEdit ? ( */}
+                       {permissionData?.isEdit ? (
                       <EditIcon
                         style={{
                           fontSize: "20px",
@@ -165,10 +195,10 @@ export default function SectionMaster() {
                         className="cursor-pointer"
                         onClick={() => routeChangeEdit(params.row)}
                       />
-                      {/* ) : ( */}
-                      {/*   "" */}
-                      {/* )} */}
-                      {/*  {permissionData?.isDel ? ( */}
+                       ) : ( 
+                         "" 
+                       )} 
+                       {permissionData?.isDel ? (
                       <DeleteIcon
                         style={{
                           fontSize: "20px",
@@ -179,9 +209,9 @@ export default function SectionMaster() {
                           handledeleteClick(params.row.id);
                         }}
                       />
-                      {/*  ) : ( */}
-                      {/*  "" */}
-                      {/* )} */}
+                       ) : ( 
+                       "" 
+                      )} 
                     </Stack>,
                   ];
                 },
@@ -272,6 +302,12 @@ export default function SectionMaster() {
     setEditId(row.id);
   };
 
+  const handleSubmitWrapper = async () => {
+    await formik.handleSubmit();
+  };
+
+
+
   return (
     <>
       <Grid item lg={6} sm={6} xs={12} sx={{ marginTop: "3vh" }}>
@@ -361,9 +397,26 @@ export default function SectionMaster() {
 
                 <Grid item xs={2}>
                   {/*  {permissionData?.isAdd == true ? ( */}
-                  <Button type="submit" variant="contained" size="large">
+                  {/* <Button type="submit" variant="contained" size="large">
                     {editId == "-1" ? t("text.save") : t("text.update")}
-                  </Button>
+                  </Button> */}
+
+                  
+                {editId === -1 && permissionData?.isAdd && (
+  <ButtonWithLoader
+    buttonText={t("text.save")}
+    onClickHandler={handleSubmitWrapper}
+    fullWidth={true}
+  />
+)}
+
+{editId !== -1 && (
+  <ButtonWithLoader
+    buttonText={t("text.update")}
+    onClickHandler={handleSubmitWrapper}
+    fullWidth={true}
+  />
+)}
                   {/* ) : ( */}
                   {/*   "" */}
                   {/* )} */}

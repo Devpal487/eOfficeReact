@@ -154,12 +154,21 @@ export default function WardMaster() {
   };
 
   const getList = () => {
-    const collectData = {
+    let collectData;
+    if(UserId == 1){
+    collectData = {
       "wardID": -1,
       "zoneID": -1,
-      "user_ID": UserId,
+      "user_ID": "-1",
       // "isActive": true,
-    };
+    };}else{
+      collectData = {
+        "wardID": -1,
+        "zoneID": -1,
+        "user_ID": UserId,
+        // "isActive": true,
+      };
+    }
     try {
       api
         .post(`Ward/GetWardmaster`, collectData)
@@ -535,10 +544,26 @@ export default function WardMaster() {
               <Grid item xs={2} sx={{ m: -1 }}>
                 {/*  {permissionData?.isAdd == true ? ( */}
 
-                <ButtonWithLoader buttonText={editId == -1 ? t("text.save") : t("text.update")} onClickHandler={handleSubmitWrapper} fullWidth={true}  />
+                {/* <ButtonWithLoader buttonText={editId == -1 ? t("text.save") : t("text.update")} onClickHandler={handleSubmitWrapper} fullWidth={true}  /> */}
                 {/* ) : ( */}
                 {/*   "" */}
                 {/* )} */}
+
+                {editId === -1 && permissionData?.isAdd && (
+  <ButtonWithLoader
+    buttonText={t("text.save")}
+    onClickHandler={handleSubmitWrapper}
+    fullWidth={true}
+  />
+)}
+
+{editId !== -1 && (
+  <ButtonWithLoader
+    buttonText={t("text.update")}
+    onClickHandler={handleSubmitWrapper}
+    fullWidth={true}
+  />
+)}
               </Grid>
             </Grid>
           </form>

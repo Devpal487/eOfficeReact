@@ -68,38 +68,12 @@ export default function Institute() {
                 }
             }
         }
-    }, []);
-    // }, [isLoading]);
+    }, [isLoading]);
     const routeChangeAdd = () => {
         let path = `/master/InstituteAdd`;
         navigate(path);
     };
 
-    // const handleSwitchChange = (
-    //     event: React.ChangeEvent<HTMLInputElement>,
-    //     value: any
-    // ) => {
-    //     console.log(value)
-    //     const collectData = {
-    //         fileClassid: value.id,
-    //         classDescription: value.classDescription,
-    //         shortName: value.shortName,
-    //         weedingOutAuthority: value.weedingOutAuthority,
-    //         isActive: event.target.checked,
-    //         userID: -1,
-    //         sortOrder: 0,
-    //     };
-    //     axios
-    //         .post(HOST_URL.HOST_URL2 + `FileClass/AddUpdateFileClass`, collectData)
-    //         .then((response) => {
-    //             if (response.data.isSuccess) {
-    //                 toast.success(response.data.mesg);
-    //                 fetchZonesData();
-    //             } else {
-    //                 toast.error(response.data.mesg);
-    //             }
-    //         });
-    // };
     const routeChangeEdit = (row: any) => {
         let path = `/master/InstituteEdit`;
         navigate(path, {
@@ -185,7 +159,7 @@ export default function Institute() {
                                     direction="row"
                                     sx={{ alignItems: "center", marginTop: "5px" }}
                                 >
-                                    {/* {permissionData?.isEdit ? ( */}
+                                    {permissionData?.isEdit ? (
                                     <EditIcon
                                         style={{
                                             fontSize: "20px",
@@ -195,10 +169,10 @@ export default function Institute() {
                                         className="cursor-pointer"
                                         onClick={() => routeChangeEdit(params.row)}
                                     />
-                                    {/* ) : ( */}
-                                    {/*  "" */}
-                                    {/*)} */}
-                                    {/*{permissionData?.isDel ? ( */}
+                                     ) : ( 
+                                      "" 
+                                    )} 
+                                    {permissionData?.isDel ? (
                                     <DeleteIcon
                                         style={{
                                             fontSize: "20px",
@@ -209,40 +183,19 @@ export default function Institute() {
                                             handledeleteClick(params.row.id);
                                         }}
                                     />
-                                    {/* ) : ( */}
-                                    {/*  "" */}
-                                    {/* )} */}
-                                    {/* <Switch
-                                        checked={Boolean(params.row.isActive)}
-                                        style={{
-                                            color: params.row.isActive ? "green" : "#FE0000",
-                                        }}
-                                        onChange={(value: any) =>
-                                            handleSwitchChange(value, params.row)
-                                        }
-                                        inputProps={{
-                                            "aria-label": "Toggle Switch",
-                                        }}
-                                    /> */}
+                                     ) : ( 
+                                      "" 
+                                     )} 
                                 </Stack>,
                             ];
                         },
                     },
-
-                    // {
-                    //   field: "empid",
-                    //   headerName: "Emp Id",
-                    //   flex: 1,
-                    //   headerClassName: "MuiDataGrid-colCell",
-                    // },
-
                     {
                         field: "serialNo",
                         headerName:  t("text.SrNo"),
                         flex: 1,
                         headerClassName: "MuiDataGrid-colCell",
                     },
-                   
                     {
                         field: "insname",
                         headerName: t("text.InstituteName"),
@@ -255,34 +208,18 @@ export default function Institute() {
                         flex: 1,
                         headerClassName: "MuiDataGrid-colCell",
                     },
-
                     {
                         field: "collegeCategory",
                         headerName:t("text.CollegeCategory"),
                         flex: 1,
                         headerClassName: "MuiDataGrid-colCell",
                     },
-
                     {
                         field: "resiAddress",
                         headerName:t("text.ResidencialAddress"),
                         flex: 1,
                         headerClassName: "MuiDataGrid-colCell",
-                    },
-
-
-
-
-                    // {
-                    //     field: "entryDate",
-                    //     headerName: t("text.EntryDate"),
-                    //     flex: 1,
-                    //     headerClassName: "MuiDataGrid-colCell",
-                    //     renderCell: (params:any)=>{
-                    //         return moment(params.row.entryDate).format("DD-MM-YYYY")
-                    //       }
-                    // },
-                  
+                    }
                 ];
                 setColumns(columns as any);
             }
@@ -338,7 +275,7 @@ export default function Institute() {
                     <Box height={10} />
 
                     <Stack direction="row" spacing={2} classes="my-2 mb-2">
-                        {/*permissionData?.isAdd == true && ( */}
+                       {permissionData?.isAdd == true && (
                         <Button
                             onClick={routeChangeAdd}
                             variant="contained"
@@ -347,15 +284,7 @@ export default function Institute() {
                         >
                             {t("text.add")}
                         </Button>
-                        {/*)} */}
-
-                        {/*{permissionData?.isPrint == true ? (
-              <Button variant="contained" endIcon={<PrintIcon />} size="large">
-                {t("text.print")}
-              </Button>
-            ) : (
-              ""
-            )} */}
+                        )}
                     </Stack>
 
                     {isLoading ? (

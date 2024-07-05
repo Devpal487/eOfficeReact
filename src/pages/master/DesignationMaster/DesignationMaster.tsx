@@ -29,6 +29,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { getISTDate } from "../../../utils/Constant";
 import CustomDataGrid from "../../../utils/CustomDatagrid";
 import CustomLabel from "../../../CustomLable";
+import ButtonWithLoader from "../../../utils/ButtonWithLoader";
 
 interface MenuPermission {
   isAdd: boolean;
@@ -68,15 +69,14 @@ export default function DesignationMaster() {
             );
             console.log("data", pathrow);
             if (pathrow) {
-
               setPermissionData(pathrow);
+              getList();
               // getList();
             }
           }
         }
       }
     }
-    getList();
   }, [isLoading]);
 
   let delete_id = "";
@@ -147,7 +147,7 @@ export default function DesignationMaster() {
                       direction="row"
                       sx={{ alignItems: "center", marginTop: "5px" }}
                     >
-                      {/*  {permissionData?.isEdit ? ( */}
+                       {permissionData?.isEdit ? (
                       <EditIcon
                         style={{
                           fontSize: "20px",
@@ -157,10 +157,10 @@ export default function DesignationMaster() {
                         className="cursor-pointer"
                         onClick={() => routeChangeEdit(params.row)}
                       />
-                      {/*  ) : ( */}
-                      {/*   "" */}
-                      {/* )} */}
-                      {/*  {permissionData?.isDel ? ( */}
+                        ) : (
+                         "" 
+                      )} 
+                       {permissionData?.isDel ? (
                       <DeleteIcon
                         style={{
                           fontSize: "20px",
@@ -171,9 +171,9 @@ export default function DesignationMaster() {
                           handledeleteClick(params.row.id);
                         }}
                       />
-                      {/*  ) : ( */}
-                      {/*    "" */}
-                      {/*  )} */}
+                       ) : ( 
+                          "" 
+                        )} 
                     </Stack>,
                   ];
                 },
@@ -227,16 +227,6 @@ export default function DesignationMaster() {
       "updatedBy": "string",
       "createdOn": defaultValuestime,
       "updatedOn": defaultValuestime
-
-      // "departmentId": -1,
-      // "departmentName": "",
-      // "departmentShortname": "",
-      // "createdBy": "admin",
-      // "updatedBy": "admin",
-      // "createdOn":defaultValuestime,
-      // "updatedOn":defaultValuestime
-      
-
     },
     validationSchema: validationSchema,
     onSubmit: async (values) => {
@@ -267,6 +257,10 @@ export default function DesignationMaster() {
     formik.setFieldValue("designationName", row.designationName);
     formik.setFieldValue("designationCode", row.designationCode);
     setEditId(row.id);
+  };
+
+  const handleSubmitWrapper = async () => {
+    await formik.handleSubmit();
   };
 
   return (
@@ -307,15 +301,7 @@ export default function DesignationMaster() {
             <Divider />
 
             <Box height={10} />
-            {/* <Stack direction="row" spacing={2} classes="my-2 mb-2"> */}
-            {/* <Grid
-                                // style={{
-                                //     display: "flex",
-                                //     flexDirection: "row",
-                                //     justifyContent: "space-around",
-                                //     alignItems: "flex-start",
-                                // }}
-                            > */}
+           
             <form onSubmit={formik.handleSubmit}>
               <Grid item xs={12} container spacing={2}>
                 <Grid item xs={4}>
@@ -355,13 +341,21 @@ export default function DesignationMaster() {
                   />
                 </Grid>
                 <Grid item xs={2}>
-                  {/* {permissionData?.isAdd == true ? ( */}
-                  <Button type="submit" variant="contained" size="large">
-                    {editId == -1 ? t("text.save") : t("text.update")}
-                  </Button>
-                  {/* ) : ( */}
-                  {/*    "" */}
-                  {/* )} */}
+                 {editId === -1 && permissionData?.isAdd && (
+  <ButtonWithLoader
+    buttonText={t("text.save")}
+    onClickHandler={handleSubmitWrapper}
+    fullWidth={true}
+  />
+)}
+
+{editId !== -1 && (
+  <ButtonWithLoader
+    buttonText={t("text.update")}
+    onClickHandler={handleSubmitWrapper}
+    fullWidth={true}
+  />
+)}
                 </Grid>
               </Grid>
             </form>

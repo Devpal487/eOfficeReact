@@ -606,7 +606,7 @@ const EmployeeAdd = (props: Props) => {
                 <TextField
                   id="empMobileNo"
                   name="empMobileNo"
-                  inputProps={{ min: "0", maxLength: 10 }}
+                  inputProps={{ maxLength: 10 }}
                   label={
                     <CustomLabel
                       text={t("text.EnterMobileNo")}
@@ -615,7 +615,7 @@ const EmployeeAdd = (props: Props) => {
                   }
                   value={formik.values.empMobileNo}
                   placeholder={t("text.EnterMobileNo")}
-                  type="number"
+                  // type="number"
                   size="small"
                   fullWidth
                   style={{
@@ -625,7 +625,10 @@ const EmployeeAdd = (props: Props) => {
                         ? "red"
                         : "initial",
                   }}
-                  onChange={formik.handleChange}
+                  onChange={(e:any)=>{
+                    let num = e.target.value;
+                    formik.setFieldValue("empMobileNo", String(num));
+                  }}
                   onBlur={formik.handleBlur}
                 />
                 {formik.touched.empMobileNo && formik.errors.empMobileNo ? (
@@ -709,9 +712,12 @@ const EmployeeAdd = (props: Props) => {
                   type="number"
                   fullWidth
                   style={{ backgroundColor: "white" }}
-                  onChange={formik.handleChange}
+                  onChange={(e:any)=>{
+                    let num = e.target.value;
+                    formik.setFieldValue("empAddharNo", String(num));
+                  }}
                   onBlur={formik.handleBlur}
-                  inputProps={{ min: "0", maxLength: 12 }}
+                  inputProps={{maxLength: 12 }}
                 />
                 {formik.touched.empAddharNo && formik.errors.empAddharNo ? (
                   <div style={{ color: "red", margin: "5px" }}>
@@ -1122,7 +1128,7 @@ const EmployeeAdd = (props: Props) => {
                   }
                   value={formik.values.empPincode}
                   placeholder={t("text.EnterPincode")}
-                  inputProps={{ min: "0", maxLength: 6 }}
+                  inputProps={{maxLength: 6 }}
                   type="number"
                   size="small"
                   fullWidth

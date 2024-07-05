@@ -27,18 +27,20 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import CustomDataGrid from "../../../utils/CustomDatagrid";
 import CustomLabel from "../../../CustomLable";
+import ButtonWithLoader from "../../../utils/ButtonWithLoader";
 
-
+interface MenuPermission {
+  isAdd: boolean;
+  isEdit: boolean;
+  isPrint: boolean;
+  isDel: boolean;
+}
 
 
 export default function Jurisdiction() {
   const { i18n, t } = useTranslation();
   const { defaultValues, defaultValuestime } = getISTDate();
-
   const userId = getId();
-
-  
-
   const [columns, setColumns] = useState<any>([]);
   const [rows, setRows] = useState<any>([]);
   const [editId, setEditId] = useState<any>(-1);
@@ -49,6 +51,12 @@ export default function Jurisdiction() {
 
   const [NodeOption, setNodeOption] = useState([{ value: "-1", label: t("text.SelectNode") }]);
 
+  const [permissionData, setPermissionData] = useState<any>({
+    isAdd: false,
+    isEdit: false,
+    isPrint: false,
+    isDel: false,
+  });
 
 
   const getNode = () => {
@@ -74,21 +82,45 @@ export default function Jurisdiction() {
 
   useEffect(() => {
     const dataString = localStorage.getItem("userdata");
-    getNode();
+    if (dataString) {
+      const data = JSON.parse(dataString);
+      if (data && data.length > 0) {
+        const userPermissionData = data[0]?.userPermission;
+        if (userPermissionData && userPermissionData.length > 0) {
+          const menudata = userPermissionData[0]?.parentMenu;
+          for (let index = 0; index < menudata.length; index++) {
+            const childMenudata = menudata[index]?.childMenu;
+            console.log("childMenudata", childMenudata);
+            console.log("location.pathname", location.pathname);
 
-    getList();
+            const pathrow = childMenudata.find(
+              (x: any) => x.path === location.pathname
+            );
+            if (pathrow) {
+              console.log("data", pathrow);
+              setPermissionData(pathrow);
+              getList();
+              break;
+            }
+          }
+        }
+      }
+    }
 
+  }, [location.pathname]);
+  
+  console.log("permissionData", permissionData?.isAdd);
 
-  }, []);
-
-
+  useEffect(()=>{
+  getNode();
+},[])
 
   let delete_id = "";
   const accept = () => {
     const collectData = {
       id: delete_id,
     };
-    console.log("collectData " + JSON.stringify(collectData));
+    // console.log("collectData " + JSON.stringify(collectData));
     api
       .delete(`NewNodeMaster/DeleteNewNodeMaster`, { data: collectData })
       .then((response) => {
@@ -129,7 +161,7 @@ export default function Jurisdiction() {
       api
         .post(`NewNodeMaster/GetNewNodeMaster`, collectData)
         .then((res) => {
-          console.log("result" + JSON.stringify(res.data.data));
+          // console.log("result" + JSON.stringify(res.data.data));
           const data = res.data.data;
           const arr = data.map((item: any, index: any) => ({
             ...item,
@@ -154,7 +186,7 @@ export default function Jurisdiction() {
                       direction="row"
                       sx={{ alignItems: "center", marginTop: "5px" }}
                     >
-                      {/*  {permissionData?.isEdit ? ( */}
+                       {permissionData?.isEdit ? (
                       <EditIcon
                         style={{
                           fontSize: "20px",
@@ -164,10 +196,10 @@ export default function Jurisdiction() {
                         className="cursor-pointer"
                         onClick={() => routeChangeEdit(params.row)}
                       />
-                      {/* ) : ( */}
-                      {/*   "" */}
-                      {/* )} */}
-                      {/*  {permissionData?.isDel ? ( */}
+                      ) : (
+                        "" 
+                      )} 
+                       {permissionData?.isDel ? (
                       <DeleteIcon
                         style={{
                           fontSize: "20px",
@@ -178,9 +210,9 @@ export default function Jurisdiction() {
                           handledeleteClick(params.row.id);
                         }}
                       />
-                      {/*  ) : ( */}
-                      {/*  "" */}
-                      {/* )} */}
+                      ) : ( 
+                      ""
+                   )} 
                     </Stack>,
                   ];
                 },
@@ -193,7 +225,7 @@ export default function Jurisdiction() {
                 headerClassName: "MuiDataGrid-colCell",
               },
               {
-                field: "nodeID",
+                field: "nodeName",
                 headerName: "Node ",
                 flex: 1,
                 headerClassName: "MuiDataGrid-colCell",
@@ -209,7 +241,7 @@ export default function Jurisdiction() {
             setColumns(columns as any);
           }
         });
-      // setIsLoading(false);
+      // setIsLoading(false); 
     } catch (error) {
       console.error("Error fetching data:", error);
       // setIsLoading(false);
@@ -234,15 +266,6 @@ export default function Jurisdiction() {
       "titleID": 0,
       "user_Id": userId,
       "childnode": []
-
-
-      // "fnId": -1,
-      // "fId": "",
-      // "fileNm": "",
-      // "inst_id": 0,
-      // "user_id": 0,
-      // "createdDate": defaultValuestime,
-      // "divisionId": 0
     },
     validationSchema: validationSchema,
     onSubmit: async (values) => {
@@ -276,6 +299,12 @@ export default function Jurisdiction() {
 
     setEditId(row.id);
   };
+
+
+  const handleSubmitWrapper = async () => {
+    await formik.handleSubmit();
+  };
+
 
   return (
     <>
@@ -375,13 +404,21 @@ export default function Jurisdiction() {
                 </Grid>
 
                 <Grid item xs={2}>
-                  {/*  {permissionData?.isAdd == true ? ( */}
-                  <Button type="submit" variant="contained" size="large">
-                    {editId == "-1" ? t("text.save") : t("text.update")}
-                  </Button>
-                  {/* ) : ( */}
-                  {/*   "" */}
-                  {/* )} */}
+                {editId === -1 && permissionData?.isAdd && (
+  <ButtonWithLoader
+    buttonText={t("text.save")}
+    onClickHandler={handleSubmitWrapper}
+    fullWidth={true}
+  />
+)}
+
+{editId !== -1 && (
+  <ButtonWithLoader
+    buttonText={t("text.update")}
+    onClickHandler={handleSubmitWrapper}
+    fullWidth={true}
+  />
+)}
                 </Grid>
               </Grid>
             </form>

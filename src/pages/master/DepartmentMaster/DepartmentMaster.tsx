@@ -3,7 +3,6 @@ import Paper from "@mui/material/Paper";
 import { useEffect, useState } from "react";
 import {
   Box,
-  Button,
   Divider,
   Stack,
   TextField,
@@ -12,8 +11,6 @@ import {
 import EditIcon from "@mui/icons-material/Edit";
 import Card from "@mui/material/Card";
 import Grid from "@mui/material/Grid";
-import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
 import api from "../../../utils/Url";
 import { useLocation } from "react-router-dom";
@@ -24,11 +21,11 @@ import { useTranslation } from "react-i18next";
 import { DataGrid, GridColDef, GridToolbar } from "@mui/x-data-grid";
 import { toast } from "react-toastify";
 import ToastApp from "../../../ToastApp";
-import { usePermissionData } from "../../../usePermissionData";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { getISTDate } from "../../../utils/Constant";
 import CustomDataGrid from "../../../utils/CustomDatagrid";
 import CustomLabel from "../../../CustomLable";
+import ButtonWithLoader from "../../../utils/ButtonWithLoader";
 
 interface MenuPermission {
   isAdd: boolean;
@@ -70,13 +67,12 @@ export default function DepartmentMaster() {
             if (pathrow) {
 
               setPermissionData(pathrow);
-              // getList();
+              getList();
             }
           }
         }
       }
     }
-    getList();
   }, [isLoading]);
 
   let delete_id = "";
@@ -97,12 +93,10 @@ export default function DepartmentMaster() {
       });
   };
   const reject = () => {
-    // toast.warn({summary: 'Rejected', detail: 'You have rejected', life: 3000 });
     toast.warn("Rejected: You have rejected", { autoClose: 3000 });
   };
 
   const handledeleteClick = (del_id: any) => {
-    // console.log(del_id + " del_id ");
     delete_id = del_id;
     confirmDialog({
       message: "Do you want to delete this record ?",
@@ -148,7 +142,7 @@ export default function DepartmentMaster() {
                       direction="row"
                       sx={{ alignItems: "center", marginTop: "5px" }}
                     >
-                      {/*  {permissionData?.isEdit ? ( */}
+                       {permissionData?.isEdit ? (
                       <EditIcon
                         style={{
                           fontSize: "20px",
@@ -158,10 +152,10 @@ export default function DepartmentMaster() {
                         className="cursor-pointer"
                         onClick={() => routeChangeEdit(params.row)}
                       />
-                      {/*  ) : ( */}
-                      {/*   "" */}
-                      {/* )} */}
-                      {/*  {permissionData?.isDel ? ( */}
+                       ) : ( 
+                        "" 
+                      )} 
+                       {permissionData?.isDel ? ( 
                       <DeleteIcon
                         style={{
                           fontSize: "20px",
@@ -172,9 +166,9 @@ export default function DepartmentMaster() {
                           handledeleteClick(params.row.id);
                         }}
                       />
-                      {/*  ) : ( */}
-                      {/*    "" */}
-                      {/*  )} */}
+                       ) : ( 
+                         "" 
+                       )} 
                     </Stack>,
                   ];
                 },
@@ -262,6 +256,14 @@ export default function DepartmentMaster() {
     setEditId(row.id);
   };
 
+
+  const handleSubmitWrapper = async () => {
+    await formik.handleSubmit();
+  };
+
+
+
+
   return (
     <>
       <Grid item lg={6} sm={6} xs={12} sx={{ marginTop: "3vh" }}>
@@ -340,13 +342,21 @@ export default function DepartmentMaster() {
                   />
                 </Grid>
                 <Grid item xs={2}>
-                  {/* {permissionData?.isAdd == true ? ( */}
-                  <Button type="submit" variant="contained" size="large">
-                    {editId == -1 ? t("text.save") : t("text.update")}
-                  </Button>
-                  {/* ) : ( */}
-                  {/*    "" */}
-                  {/* )} */}
+                  {editId === -1 && permissionData?.isAdd && (
+  <ButtonWithLoader
+    buttonText={t("text.save")}
+    onClickHandler={handleSubmitWrapper}
+    fullWidth={true}
+  />
+)}
+
+{editId !== -1 && (
+  <ButtonWithLoader
+    buttonText={t("text.update")}
+    onClickHandler={handleSubmitWrapper}
+    fullWidth={true}
+  />
+)}
                 </Grid>
               </Grid>
             </form>

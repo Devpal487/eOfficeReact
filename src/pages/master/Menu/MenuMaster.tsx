@@ -1,32 +1,19 @@
-import * as React from "react";
 import Paper from "@mui/material/Paper";
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
-import TablePagination from "@mui/material/TablePagination";
-import TableRow from "@mui/material/TableRow";
 import { useEffect, useState } from "react";
 import {
   Box,
   Button,
   Divider,
   Stack,
-  TextField,
   Typography,
 } from "@mui/material";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
-import SearchIcon from "@mui/icons-material/Search";
 import Swal from "sweetalert2";
 import EditIcon from "@mui/icons-material/Edit";
-import DeleteIcon from "@mui/icons-material/Delete";
 import Card from "@mui/material/Card";
 import Grid from "@mui/material/Grid";
-import PrintIcon from "@mui/icons-material/Print";
 import { useNavigate, useLocation } from "react-router-dom";
 import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
-import axios from "axios";
 import api from "../../../utils/Url";
 import CircularProgress from "@mui/material/CircularProgress";
 import { useTranslation } from "react-i18next";
@@ -36,44 +23,21 @@ import {
   GridToolbar,
 } from "@mui/x-data-grid";
 import CustomDataGrid from "../../../utils/CustomDatagrid";
+import DeleteIcon from "@mui/icons-material/Delete";
+import { toast } from "react-toastify";
 
-function createData(
-  srno: number,
-  id: string,
-  menuName: string,
-  parentId: number,
-  parentName: string,
-  pageUrl: string,
-  icon: string,
-  displayNo: number,
-  // isMenu: boolean,
-  isAdd: boolean,
-  isEdit: boolean,
-  isDel: boolean,
-  isView: boolean,
-  isPrint: boolean,
-  isExport: boolean,
-  isRelease: boolean,
-  isPost: boolean,
-
-): any {
-  return {
-    srno, id, menuName, pageUrl, icon,
-    displayNo,
-    // isMenu,
-    isAdd, isEdit, isDel, isView, isPrint, isExport, isRelease, isPost, parentId, parentName
-  };
-}
 
 export default function MenuMaster() {
-  const [page, setPage] = useState(0);
   const [zones, setZones] = useState([]);
   const [columns, setColumns] = useState<any>([]);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
   const [rows, setRows] = useState<any>([]);
-  const [records, setRecords] = useState(rows);
   const [isLoading, setIsLoading] = useState(true);
-  const [menupermisiondata, setMenupermisiondata] = useState<any>();
+  const [permissionData, setPermissionData] = useState<any>({
+    isAdd: false,
+    isEdit: false,
+    isPrint: false,
+    isDel: false,
+  });
 
   const { i18n, t } = useTranslation();
   const location = useLocation();
@@ -100,17 +64,29 @@ export default function MenuMaster() {
 
   let delete_id = "";
   useEffect(() => {
-    getList();
-    // var data = JSON.parse(localStorage.getItem("userdata")!);
-    // var menudata = data[0]["userPermission"][0]["parentMenu"];
-    // for (let index = 0; index < menudata.length; index++) {
-    //   var childMenudata = menudata[index]["childMenu"];
-    //   var sas = childMenudata.find((x: any) => x.path == location.pathname);
-    //   if (sas != "undefined") {
-    // setMenupermisiondata(sas);
-    //     break;
-    //   }
-    // }
+    const dataString = localStorage.getItem("userdata");
+    if (dataString) {
+      const data = JSON.parse(dataString);
+      if (data && data.length > 0) {
+        const userPermissionData = data[0]?.userPermission;
+        if (userPermissionData && userPermissionData.length > 0) {
+          const menudata = userPermissionData[0]?.parentMenu;
+          for (let index = 0; index < menudata.length; index++) {
+            const childMenudata = menudata[index]?.childMenu;
+            const pathrow = childMenudata.find(
+              (x: any) => x.path === location.pathname
+            );
+            console.log("data", pathrow);
+            if (pathrow) {
+              setPermissionData(pathrow);
+              getList();
+            }
+          }
+        }
+      }
+    }
+    
+    
   }, []);
 
 
@@ -130,6 +106,40 @@ export default function MenuMaster() {
     navigate(path);
   };
 
+  
+  const accept = () => {
+    const collectData = {
+      stateId: delete_id,
+      countryId: 0,
+    };
+    console.log("collectData " + JSON.stringify(collectData));
+    api
+      .delete(`Menu/DeleteMenuMaster`, { data: collectData })
+      .then((response) => {
+        if (response.data.isSuccess) {
+          toast.success(response.data.mesg);
+          getList();
+        } else {
+          toast.error(response.data.mesg);
+        }
+      });
+  };
+
+  const reject = () => {
+    toast.warn("Rejected: You have rejected", { autoClose: 3000 });
+  };
+
+  const handledeleteClick = (del_id: any) => {
+    delete_id = del_id;
+    confirmDialog({
+      message: "Do you want to delete this record ?",
+      header: "Delete Confirmation",
+      icon: "pi pi-info-circle",
+      acceptClassName: "p=-button-danger",
+      accept,
+      reject,
+    });
+  };
 
   const getList = async () => {
     try {
@@ -164,7 +174,7 @@ export default function MenuMaster() {
                   direction="row"
                   sx={{ alignItems: "center", marginTop: "5px" }}
                 >
-                  {/* {permissionData?.isEdit ? ( */}
+                  {permissionData?.isEdit ? ( 
                   <EditIcon
                     style={{
                       fontSize: "20px",
@@ -174,11 +184,11 @@ export default function MenuMaster() {
                     className="cursor-pointer"
                     onClick={() => routeChangeEdit(params.row)}
                   />
-                  {/* ) : (
+                  ) : (
                     ""
                   )}
-                  {permissionData?.isDel ? ( */}
-                  {/* <DeleteIcon
+                  {permissionData?.isDel ? ( 
+                  <DeleteIcon
                       style={{
                         fontSize: "20px",
                         color: "red",
@@ -187,22 +197,10 @@ export default function MenuMaster() {
                       onClick={() => {
                         handledeleteClick(params.row.id);
                       }}
-                    /> */}
-                  {/* ) : (
+                    /> 
+                  ) : (
                     ""
-                  )} */}
-                  {/* <Switch
-                    checked={Boolean(params.row.isActive)}
-                    style={{
-                      color: params.row.isActive ? "green" : "#FE0000",
-                    }}
-                    onChange={(value: any) =>
-                      handleSwitchChange(value, params.row)
-                    }
-                    inputProps={{
-                      "aria-label": "Toggle Switch",
-                    }}
-                  /> */}
+                  )} 
                 </Stack>,
               ];
             },
@@ -259,6 +257,7 @@ export default function MenuMaster() {
     ...column,
   }));
 
+
   return (
     <div>
       <Grid item lg={6} sm={6} xs={12}>
@@ -298,19 +297,14 @@ export default function MenuMaster() {
             {/* Search and ADD buttone Start */}
             <Box height={10} />
             <Stack direction="row" spacing={2} classes="my-2 mb-2">
-              {/* {menupermisiondata?.isAdd == true ?( */}
+              {permissionData?.isAdd == true ?(
               <Button
                 onClick={routeChangeAdd}
                 variant="contained"
                 endIcon={<AddCircleIcon />}
               >
                 {t("text.add")}
-              </Button> {/*):""} */}
-              {/* {menupermisiondata?.isPrint == true ? (
-              <Button variant="contained" endIcon={<PrintIcon />}>
-                 {t("text.print")}
-              </Button>):""}
-              */}
+              </Button> ):""} 
 
             </Stack>
 

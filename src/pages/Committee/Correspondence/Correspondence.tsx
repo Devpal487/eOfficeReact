@@ -69,13 +69,22 @@ export default function Correspondence() {
     const [panOpens, setPanOpen] = useState(false);
     const [modalImg, setModalImg] = useState("");
     const [editorContent, setEditorContent] = useState<string>('');
+  //  const [plainTextContent, setPlainTextContent] = useState<string>("");
+
+    // const handleEditorChange = (content: any) => {
+    //     const textWithoutTags = content.replace(/<[^>]*>/g, '').trim(); // Remove HTML tags
+    //     console.log("textWithoutTags", textWithoutTags);
+    //     setEditorContent(textWithoutTags);
+    // };
+    // console.log("editorContent", editorContent)
 
     const handleEditorChange = (content: any) => {
-        const textWithoutTags = content.replace(/<[^>]*>/g, '').trim(); // Remove HTML tags
-        console.log("textWithoutTags", textWithoutTags);
-        setEditorContent(textWithoutTags);
+
+      setEditorContent(content);
+  
+     
     };
-    // console.log("editorContent", editorContent)
+  
 
     const divid = getdivisionId();
 
@@ -302,7 +311,7 @@ export default function Correspondence() {
             "fileNo": "",
             "fNid": 0,
             "fileType": "",
-            "fileCont": "",
+            "fileCont":"",
             "nodeId": 1,
             "dateSave": defaultValuestime,
             "reviewFlag": "",
@@ -315,6 +324,7 @@ export default function Correspondence() {
                 values.reviewFlag = "N"
             }
             // values.fileType = editorContent;
+            values.fileCont = editorContent;
             values.fileId = editId;
             console.log("check", values);
 
@@ -709,6 +719,7 @@ const modules = {
         ['link', 'image', 'video'],
         ['clean']
     ],
+    
 };
 
 const formats = [

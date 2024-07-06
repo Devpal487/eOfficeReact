@@ -85,6 +85,8 @@ import FileSubject from "../pages/FileManagement/FileSubject/FileSubject";
 import InstituteEdit from "../pages/master/InstitueForm/InstituteEdit";
 import AuthorityEmployeeMapping from "../pages/master/Authority Employee Mapping/AuthorityEmployeeMapping";
 import AuthorityMail from "../pages/Committee/AuthorityMail/AuthorityMail";
+import HelpCreation from "../pages/master/HelpCreation/HelpCreation";
+import HelpDesk from "../pages/master/HelpDesk/HelpDesk";
 
 const appRoutes: RouteType[] = [
   {
@@ -360,6 +362,25 @@ const appRoutes: RouteType[] = [
         element: <InstituteEdit/>,
         state: "master.InstituteEdit",
       },
+
+      {
+        path: "/master/HelpCreation",
+        element: <HelpCreation/>,
+        state: "master.HelpCreation",
+        sidebarProps: {
+          displayText: "Help Creation",
+        },
+      },
+
+      {
+        path: "/master/HelpDesk",
+        element: <HelpDesk/>,
+        state: "master.HelpDesk",
+        sidebarProps: {
+          displayText: "Help Desk",
+        },
+      },
+
 
      
 

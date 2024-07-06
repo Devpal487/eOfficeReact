@@ -29,6 +29,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { getISTDate } from "../../../utils/Constant";
 import CustomDataGrid from "../../../utils/CustomDatagrid";
 import CustomLabel from "../../../CustomLable";
+import ButtonWithLoader from "../../../utils/ButtonWithLoader";
 
 interface MenuPermission {
   isAdd: boolean;
@@ -116,7 +117,7 @@ export default function GenderMaster() {
 
   const getList = () => {
     const collectData = {
-     "genderID": -1
+      "genderID": -1
     };
     try {
       api
@@ -147,33 +148,33 @@ export default function GenderMaster() {
                       direction="row"
                       sx={{ alignItems: "center", marginTop: "5px" }}
                     >
-                      {/*  {permissionData?.isEdit ? ( */}
-                      <EditIcon
-                        style={{
-                          fontSize: "20px",
-                          color: "blue",
-                          cursor: "pointer",
-                        }}
-                        className="cursor-pointer"
-                        onClick={() => routeChangeEdit(params.row)}
-                      />
-                      {/*  ) : ( */}
-                      {/*   "" */}
-                      {/* )} */}
-                      {/*  {permissionData?.isDel ? ( */}
-                      <DeleteIcon
-                        style={{
-                          fontSize: "20px",
-                          color: "red",
-                          cursor: "pointer",
-                        }}
-                        onClick={() => {
-                          handledeleteClick(params.row.id);
-                        }}
-                      />
-                      {/*  ) : ( */}
-                      {/*    "" */}
-                      {/*  )} */}
+                      {permissionData?.isEdit ? (
+                        <EditIcon
+                          style={{
+                            fontSize: "20px",
+                            color: "blue",
+                            cursor: "pointer",
+                          }}
+                          className="cursor-pointer"
+                          onClick={() => routeChangeEdit(params.row)}
+                        />
+                      ) : (
+                        ""
+                      )}
+                      {permissionData?.isDel ? (
+                        <DeleteIcon
+                          style={{
+                            fontSize: "20px",
+                            color: "red",
+                            cursor: "pointer",
+                          }}
+                          onClick={() => {
+                            handledeleteClick(params.row.id);
+                          }}
+                        />
+                      ) : (
+                        ""
+                      )}
                     </Stack>,
                   ];
                 },
@@ -223,16 +224,6 @@ export default function GenderMaster() {
       genderID: -1,
       genderName: "",
       genderCode: ""
-
-      // countryId: -1,
-      // countryName: "",
-      // countryCode: "",
-
-      // createdBy: "",
-      // updatedBy: "",
-      // createdOn: new Date().toISOString(),
-      // updatedOn: new Date().toISOString(),
-
     },
     validationSchema: validationSchema,
     onSubmit: async (values) => {
@@ -263,6 +254,10 @@ export default function GenderMaster() {
     formik.setFieldValue("genderName", row.genderName);
     formik.setFieldValue("genderCode", row.genderCode);
     setEditId(row.id);
+  };
+
+  const handleSubmitWrapper = async () => {
+    await formik.handleSubmit();
   };
 
   return (
@@ -303,15 +298,6 @@ export default function GenderMaster() {
             <Divider />
 
             <Box height={10} />
-            {/* <Stack direction="row" spacing={2} classes="my-2 mb-2"> */}
-            {/* <Grid
-                                // style={{
-                                //     display: "flex",
-                                //     flexDirection: "row",
-                                //     justifyContent: "space-around",
-                                //     alignItems: "flex-start",
-                                // }}
-                            > */}
             <form onSubmit={formik.handleSubmit}>
               <Grid item xs={12} container spacing={2}>
                 <Grid item xs={4}>
@@ -350,13 +336,21 @@ export default function GenderMaster() {
                   />
                 </Grid>
                 <Grid item xs={2}>
-                  {/* {permissionData?.isAdd == true ? ( */}
-                  <Button type="submit" variant="contained" size="large">
-                    {editId == -1 ? t("text.save") : t("text.update")}
-                  </Button>
-                  {/* ) : ( */}
-                  {/*    "" */}
-                  {/* )} */}
+                  {editId === -1 && permissionData?.isAdd && (
+                    <ButtonWithLoader
+                      buttonText={t("text.save")}
+                      onClickHandler={handleSubmitWrapper}
+                      fullWidth={true}
+                    />
+                  )}
+
+                  {editId !== -1 && (
+                    <ButtonWithLoader
+                      buttonText={t("text.update")}
+                      onClickHandler={handleSubmitWrapper}
+                      fullWidth={true}
+                    />
+                  )}
                 </Grid>
               </Grid>
             </form>

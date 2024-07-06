@@ -29,6 +29,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { getISTDate } from "../../../utils/Constant";
 import CustomDataGrid from "../../../utils/CustomDatagrid";
 import CustomLabel from "../../../CustomLable";
+import ButtonWithLoader from "../../../utils/ButtonWithLoader";
 
 interface MenuPermission {
   isAdd: boolean;
@@ -70,13 +71,13 @@ export default function FileCategory() {
             if (pathrow) {
 
               setPermissionData(pathrow);
-              // getList();
+              getList();
             }
           }
         }
       }
     }
-    getList();
+    // getList();
   }, [isLoading]);
 
   let delete_id = "";
@@ -147,7 +148,7 @@ export default function FileCategory() {
                       direction="row"
                       sx={{ alignItems: "center", marginTop: "5px" }}
                     >
-                      {/*  {permissionData?.isEdit ? ( */}
+                       {permissionData?.isEdit ? ( 
                       <EditIcon
                         style={{
                           fontSize: "20px",
@@ -157,10 +158,10 @@ export default function FileCategory() {
                         className="cursor-pointer"
                         onClick={() => routeChangeEdit(params.row)}
                       />
-                      {/*  ) : ( */}
-                      {/*   "" */}
-                      {/* )} */}
-                      {/*  {permissionData?.isDel ? ( */}
+                       ) : ( 
+                        "" 
+                      )} 
+                       {permissionData?.isDel ? ( 
                       <DeleteIcon
                         style={{
                           fontSize: "20px",
@@ -171,9 +172,9 @@ export default function FileCategory() {
                           handledeleteClick(params.row.id);
                         }}
                       />
-                      {/*  ) : ( */}
-                      {/*    "" */}
-                      {/*  )} */}
+                       ) : ( 
+                         "" 
+                       )} 
                     </Stack>,
                   ];
                 },
@@ -255,6 +256,11 @@ export default function FileCategory() {
     setEditId(row.id);
   };
 
+  const handleSubmitWrapper = async () => {
+    await formik.handleSubmit();
+  };
+
+
   return (
     <>
       <Grid item lg={6} sm={6} xs={12} sx={{ marginTop: "3vh" }}>
@@ -293,15 +299,6 @@ export default function FileCategory() {
             <Divider />
 
             <Box height={10} />
-            {/* <Stack direction="row" spacing={2} classes="my-2 mb-2"> */}
-            {/* <Grid
-                                // style={{
-                                //     display: "flex",
-                                //     flexDirection: "row",
-                                //     justifyContent: "space-around",
-                                //     alignItems: "flex-start",
-                                // }}
-                            > */}
             <form onSubmit={formik.handleSubmit}>
               <Grid item xs={12} container spacing={2}>
                 <Grid item xs={4}>
@@ -326,13 +323,21 @@ export default function FileCategory() {
 
 
                 <Grid item xs={2}>
-                  {/* {permissionData?.isAdd == true ? ( */}
-                  <Button type="submit" variant="contained" size="large">
-                    {editId == -1 ? t("text.save") : t("text.update")}
-                  </Button>
-                  {/* ) : ( */}
-                  {/*    "" */}
-                  {/* )} */}
+                {editId === -1 && permissionData?.isAdd && (
+  <ButtonWithLoader
+    buttonText={t("text.save")}
+    onClickHandler={handleSubmitWrapper}
+    fullWidth={true}
+  />
+)}
+
+{editId !== -1 && (
+  <ButtonWithLoader
+    buttonText={t("text.update")}
+    onClickHandler={handleSubmitWrapper}
+    fullWidth={true}
+  />
+)}
                 </Grid>
               </Grid>
             </form>

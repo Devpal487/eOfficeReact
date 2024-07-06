@@ -382,7 +382,6 @@ export default function ZoneMaster() {
               <Divider /> */}
 
               <Box height={10} />
-
               <form onSubmit={formik.handleSubmit} style={{ marginLeft: "20px" }}>
                 <Grid item xs={12} container spacing={3}>
 
@@ -423,15 +422,23 @@ export default function ZoneMaster() {
 
 
                   <Grid item xs={2} sx={{ m: -1 }}>
-                    {/* {permissionData?.isAdd == true ? ( */}
 
+                    {/* <ButtonWithLoader buttonText={editId == -1 ? t("text.save") : t("text.update")} onClickHandler={handleSubmitWrapper} fullWidth={true} /> */}
+                    {editId === -1 && permissionData?.isAdd && (
+  <ButtonWithLoader
+    buttonText={t("text.save")}
+    onClickHandler={handleSubmitWrapper}
+    fullWidth={true}
+  />
+)}
 
-
-                    <ButtonWithLoader buttonText={editId == -1 ? t("text.save") : t("text.update")} onClickHandler={handleSubmitWrapper} fullWidth={true} />
-                    {/* ) : ( */}
-                    {/*   "" */}
-                    {/* )} */}
-
+{editId !== -1 && (
+  <ButtonWithLoader
+    buttonText={t("text.update")}
+    onClickHandler={handleSubmitWrapper}
+    fullWidth={true}
+  />
+)}
                   </Grid>
                 </Grid>
               </form>

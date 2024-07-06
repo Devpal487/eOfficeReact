@@ -27,6 +27,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import CustomDataGrid from "../../../utils/CustomDatagrid";
 import CustomLabel from "../../../CustomLable";
+import ButtonWithLoader from "../../../utils/ButtonWithLoader";
 
 
 
@@ -42,13 +43,36 @@ export default function FileMaster() {
 
     const [fileTypeOption, setFileTypeOption] = useState([{ value: "-1", label: t("text.SelectFileType") }]);
 
-
+    const [permissionData, setPermissionData] = useState<any>({
+        isAdd: false,
+        isEdit: false,
+        isPrint: false,
+        isDel: false,
+      });
 
 
     useEffect(() => {
         const dataString = localStorage.getItem("userdata");
-
-        getList();
+    if (dataString) {
+      const data = JSON.parse(dataString);
+      if (data && data.length > 0) {
+        const userPermissionData = data[0]?.userPermission;
+        if (userPermissionData && userPermissionData.length > 0) {
+          const menudata = userPermissionData[0]?.parentMenu;
+          for (let index = 0; index < menudata.length; index++) {
+            const childMenudata = menudata[index]?.childMenu;
+            const pathrow = childMenudata.find(
+              (x: any) => x.path === location.pathname
+            );
+            console.log("data", pathrow);
+            if (pathrow) {
+              setPermissionData(pathrow);
+              getList();
+            }
+          }
+        }
+      }
+    }
         getFileTypeData();
 
     }, []);
@@ -84,12 +108,10 @@ export default function FileMaster() {
             });
     };
     const reject = () => {
-        // toast.warn({summary: 'Rejected', detail: 'You have rejected', life: 3000 });
         toast.warn("Rejected: You have rejected", { autoClose: 3000 });
     };
 
     const handledeleteClick = (del_id: any) => {
-        // console.log(del_id + " del_id ");
         delete_id = del_id;
         confirmDialog({
             message: "Do you want to delete this record ?",
@@ -138,7 +160,7 @@ export default function FileMaster() {
                                             direction="row"
                                             sx={{ alignItems: "center", marginTop: "5px" }}
                                         >
-                                            {/*  {permissionData?.isEdit ? ( */}
+                                             {permissionData?.isEdit ? (
                                             <EditIcon
                                                 style={{
                                                     fontSize: "20px",
@@ -148,10 +170,10 @@ export default function FileMaster() {
                                                 className="cursor-pointer"
                                                 onClick={() => routeChangeEdit(params.row)}
                                             />
-                                            {/* ) : ( */}
-                                            {/*   "" */}
-                                            {/* )} */}
-                                            {/*  {permissionData?.isDel ? ( */}
+                                            ) : (
+                                              ""
+                                            )}
+                                             {permissionData?.isDel ? (
                                             <DeleteIcon
                                                 style={{
                                                     fontSize: "20px",
@@ -162,9 +184,9 @@ export default function FileMaster() {
                                                     handledeleteClick(params.row.id);
                                                 }}
                                             />
-                                            {/*  ) : ( */}
-                                            {/*  "" */}
-                                            {/* )} */}
+                                             ) : (
+                                             ""
+                                            )}
                                         </Stack>,
                                     ];
                                 },
@@ -251,6 +273,10 @@ export default function FileMaster() {
 
         setEditId(row.id);
     };
+
+    const handleSubmitWrapper = async () => {
+        await formik.handleSubmit();
+      };
 
     return (
         <>
@@ -344,13 +370,21 @@ export default function FileMaster() {
                                         </Grid>
 
                                         <Grid item xs={2}>
-                                            {/*  {permissionData?.isAdd == true ? ( */}
-                                            <Button type="submit" variant="contained" size="large">
-                                                {editId == "-1" ? t("text.save") : t("text.update")}
-                                            </Button>
-                                            {/* ) : ( */}
-                                            {/*   "" */}
-                                            {/* )} */}
+                                        {editId === -1 && permissionData?.isAdd && (
+  <ButtonWithLoader
+    buttonText={t("text.save")}
+    onClickHandler={handleSubmitWrapper}
+    fullWidth={true}
+  />
+)}
+
+{editId !== -1 && (
+  <ButtonWithLoader
+    buttonText={t("text.update")}
+    onClickHandler={handleSubmitWrapper}
+    fullWidth={true}
+  />
+)}
                                         </Grid>
                                     </Grid>
                                 </form>

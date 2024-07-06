@@ -12,8 +12,6 @@ import {
 import EditIcon from "@mui/icons-material/Edit";
 import Card from "@mui/material/Card";
 import Grid from "@mui/material/Grid";
-import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
 import api from "../../../utils/Url";
 import { useLocation } from "react-router-dom";
@@ -24,11 +22,11 @@ import { useTranslation } from "react-i18next";
 import { DataGrid, GridColDef, GridToolbar } from "@mui/x-data-grid";
 import { toast } from "react-toastify";
 import ToastApp from "../../../ToastApp";
-import { usePermissionData } from "../../../usePermissionData";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { getISTDate } from "../../../utils/Constant";
 import CustomDataGrid from "../../../utils/CustomDatagrid";
 import CustomLabel from "../../../CustomLable";
+import ButtonWithLoader from "../../../utils/ButtonWithLoader";
 
 interface MenuPermission {
     isAdd: boolean;
@@ -70,13 +68,13 @@ export default function FileType() {
                         if (pathrow) {
 
                             setPermissionData(pathrow);
-                            // getList();
+                            getList();
                         }
                     }
                 }
             }
         }
-        getList();
+        // getList();
     }, [isLoading]);
 
     let delete_id = "";
@@ -97,12 +95,10 @@ export default function FileType() {
             });
     };
     const reject = () => {
-        // toast.warn({summary: 'Rejected', detail: 'You have rejected', life: 3000 });
         toast.warn("Rejected: You have rejected", { autoClose: 3000 });
     };
 
     const handledeleteClick = (del_id: any) => {
-        // console.log(del_id + " del_id ");
         delete_id = del_id;
         confirmDialog({
             message: "Do you want to delete this record ?",
@@ -150,7 +146,7 @@ export default function FileType() {
                                             direction="row"
                                             sx={{ alignItems: "center", marginTop: "5px" }}
                                         >
-                                            {/*  {permissionData?.isEdit ? ( */}
+                                             {permissionData?.isEdit ? ( 
                                             <EditIcon
                                                 style={{
                                                     fontSize: "20px",
@@ -160,10 +156,10 @@ export default function FileType() {
                                                 className="cursor-pointer"
                                                 onClick={() => routeChangeEdit(params.row)}
                                             />
-                                            {/*  ) : ( */}
-                                            {/*   "" */}
-                                            {/* )} */}
-                                            {/*  {permissionData?.isDel ? ( */}
+                                             ) : ( 
+                                              "" 
+                                            )} 
+                                             {permissionData?.isDel ? ( 
                                             <DeleteIcon
                                                 style={{
                                                     fontSize: "20px",
@@ -174,9 +170,9 @@ export default function FileType() {
                                                     handledeleteClick(params.row.id);
                                                 }}
                                             />
-                                            {/*  ) : ( */}
-                                            {/*    "" */}
-                                            {/*  )} */}
+                                             ) : ( 
+                                               "" 
+                                             )} 
                                         </Stack>,
                                     ];
                                 },
@@ -261,6 +257,10 @@ export default function FileType() {
         setEditId(row.id);
     };
 
+    const handleSubmitWrapper = async () => {
+        await formik.handleSubmit();
+      };
+    
     return (
         <>
             <Grid item lg={6} sm={6} xs={12} sx={{ marginTop: "3vh" }}>
@@ -299,15 +299,6 @@ export default function FileType() {
                         <Divider />
 
                         <Box height={10} />
-                        {/* <Stack direction="row" spacing={2} classes="my-2 mb-2"> */}
-                        {/* <Grid
-                                // style={{
-                                //     display: "flex",
-                                //     flexDirection: "row",
-                                //     justifyContent: "space-around",
-                                //     alignItems: "flex-start",
-                                // }}
-                            > */}
                         <form onSubmit={formik.handleSubmit}>
                             <Grid item xs={12} container spacing={2}>
                                 <Grid item xs={4}>
@@ -345,13 +336,21 @@ export default function FileType() {
                                     />
                                 </Grid>
                                 <Grid item xs={2}>
-                                    {/* {permissionData?.isAdd == true ? ( */}
-                                    <Button type="submit" variant="contained" size="large">
-                                        {editId == -1 ? t("text.save") : t("text.update")}
-                                    </Button>
-                                    {/* ) : ( */}
-                                    {/*    "" */}
-                                    {/* )} */}
+                                   {editId === -1 && permissionData?.isAdd && (
+  <ButtonWithLoader
+    buttonText={t("text.save")}
+    onClickHandler={handleSubmitWrapper}
+    fullWidth={true}
+  />
+)}
+
+{editId !== -1 && (
+  <ButtonWithLoader
+    buttonText={t("text.update")}
+    onClickHandler={handleSubmitWrapper}
+    fullWidth={true}
+  />
+)}
                                 </Grid>
                             </Grid>
                         </form>

@@ -73,29 +73,40 @@ function Row({ row, index }: { row: any; index: number }) {
               showAuthority: true,
               showCommittee: false,
               showGroup: false,
+              showParameter:false
             };
           case 'C':
             return {
                 showAuthority: false,
                 showCommittee: true,
                 showGroup: false,
+                showParameter:false
               };
           case 'G':
             return {
                 showAuthority: false,
                 showCommittee: false,
                 showGroup: true,
+                showParameter:false
+              };
+          case 'P':
+            return {
+                showAuthority: false,
+                showCommittee: false,
+                showGroup: false,
+                showParameter: true,
               };
           default:
             return {
                 showAuthority: false,
                 showCommittee: false,
                 showGroup: false,
+                showParameter:false
               };
         }
       };
     
-      const { showAuthority, showCommittee, showGroup } = shouldShowDetails(row.nodeMode);
+      const { showAuthority, showCommittee, showGroup, showParameter } = shouldShowDetails(row.nodeMode);
     
 
     return (
@@ -119,26 +130,7 @@ function Row({ row, index }: { row: any; index: number }) {
                    
                 </TableCell>
                 </StyledTableRow>
-               {/*  <TableRow>
-        <TableCell
-          style={{ paddingBottom: 0, paddingTop: 0, margin: "5px" }}
-          colSpan={2}
-        >
-                <Collapse in={isOpen} timeout="auto" unmountOnExit>
-                    <div  style={{ paddingBottom: "5px", paddingTop: "5px" }}>
-                        <p><b>Authority :</b> {row.authName}</p>
-                        <p><b>Department :</b> {row.auth_DeptName}</p>
-                        <p><b>Section :</b> {row.auth_SectionName}</p>
-                        <p><b>Committee : {row.committeeOrGroupId}</b></p>
-                        <p><b>Group : {row.committeeOrGroupId}</b></p>
-                        <p><b>Email :</b> {row.email == "Y"? "Yes" : "No"}</p>
-                        <p><b>SMS :</b> {row.sms== "Y"? "Yes" : "No"}</p>
-                        <p><b>Message :</b> {row.message}</p>
-                    </div>
-                </Collapse>
-                </TableCell>
-      </TableRow> */}
-
+              
 {showAuthority && (
         <TableRow>
           <TableCell
@@ -166,7 +158,7 @@ function Row({ row, index }: { row: any; index: number }) {
           >
             <Collapse in={isOpen} timeout="auto" unmountOnExit>
               <div style={{ paddingBottom: "5px", paddingTop: "5px" }}>
-                <p><b>Committee Name :</b> {row.committeeOrGroupId}</p>
+                <p><b>Committee Name :</b> {row.committeeGroupNmae}</p>
                 <p><b>Email :</b> {row.email === "Y" ? "Yes" : "No"}</p>
                 <p><b>SMS :</b> {row.sms === "Y" ? "Yes" : "No"}</p>
                 <p><b>Message :</b> {row.message}</p>
@@ -183,9 +175,30 @@ function Row({ row, index }: { row: any; index: number }) {
           >
             <Collapse in={isOpen} timeout="auto" unmountOnExit>
               <div style={{ paddingBottom: "5px", paddingTop: "5px" }}>
-                <p><b>Group :</b> {row.committeeOrGroupId}</p>
+                <p><b>Group :</b> {row.committeeGroupNmae}</p>
                 <p><b>Email :</b> {row.email === "Y" ? "Yes" : "No"}</p>
                 <p><b>SMS :</b> {row.sms === "Y" ? "Yes" : "No"}</p>
+                <p><b>Message :</b> {row.message}</p>
+              </div>
+            </Collapse>
+          </TableCell>
+        </TableRow>
+      )}
+
+{showParameter && (
+        <TableRow>
+          <TableCell
+            style={{ paddingBottom: 0, paddingTop: 0, margin: "5px" }}
+            colSpan={2}
+          >
+            <Collapse in={isOpen} timeout="auto" unmountOnExit>
+              <div style={{ paddingBottom: "5px", paddingTop: "5px" }}>
+                <p><b>Committee :</b> {row.committee}</p>
+                <p><b>Committee Priority :</b> {row.committeePriority}</p>
+                <p><b>Group :</b> {row.memGroup}</p>
+                <p><b>Group Priority :</b> {row.groupPriority}</p>
+                <p><b>Sub Route :</b> {row.subRoute}</p>
+                <p><b>Sub Route Priority :</b> {row.parameterPriority}</p>
                 <p><b>Message :</b> {row.message}</p>
               </div>
             </Collapse>

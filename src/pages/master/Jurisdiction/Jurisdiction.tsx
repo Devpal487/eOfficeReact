@@ -193,8 +193,14 @@ export default function Jurisdiction() {
                 headerClassName: "MuiDataGrid-colCell",
               },
               {
+                field: "nodeID",
+                headerName: "Node ",
+                flex: 1,
+                headerClassName: "MuiDataGrid-colCell",
+              },
+              {
                 field: "name",
-                headerName: "Name",
+                headerName: "Jurisdiction",
                 flex: 1,
                 headerClassName: "MuiDataGrid-colCell",
               },

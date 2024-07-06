@@ -190,6 +190,11 @@ export default function FileMaster() {
                                 headerName: t("text.SrNo"),
                                 flex: 1,
                                 headerClassName: "MuiDataGrid-colCell",
+                            },  {
+                                field: "stateName",
+                                headerName:  t("text.StateName"),
+                                flex: 1,
+                                headerClassName: "MuiDataGrid-colCell",
                             },
                             {
                                 field: "cityName",
@@ -197,14 +202,6 @@ export default function FileMaster() {
                                 flex: 1,
                                 headerClassName: "MuiDataGrid-colCell",
                             },
-
-                            {
-                                field: "stateName",
-                                headerName:  t("text.StateName"),
-                                flex: 1,
-                                headerClassName: "MuiDataGrid-colCell",
-                            },
-
                         ];
                         setColumns(columns as any);
                     }
@@ -227,22 +224,13 @@ export default function FileMaster() {
     const [toaster, setToaster] = useState(false);
     const formik = useFormik({
         initialValues: {
-
             cityId: -1,
             cityName: "",
             stateId: "",
-
             createdOn: defaultValuestime,
             updatedOn: defaultValuestime,
             createdBy: "-1",
-            updatedBy: "-1",
-            // "fnId": -1,
-            // "fId": "",
-            // "fileNm": "",
-            // "inst_id": 0,
-            // "user_id": 0,
-            // "createdDate": defaultValuestime,
-            // "divisionId": 0
+            updatedBy: "-1"
         },
         validationSchema: validationSchema,
         onSubmit: async (values) => {

@@ -276,6 +276,8 @@ const ViewEditFile: React.FC = (props: Props) => {
   const [ReportOpen, setReportOpen] = useState(false);
   const [OtherOpen, setOtherOpen] = useState(false);
   const [editorContent, setEditorContent] = useState<string>("");
+  const [triggerFetch, setTriggerFetch] = useState(false); 
+
 
   const handleEditorChange = (content: any) => {
     const textWithoutTags = content.replace(/<[^>]*>/g, "").trim(); // Remove HTML tags
@@ -1021,7 +1023,7 @@ const ViewEditFile: React.FC = (props: Props) => {
       fileNo: fileName,
       fNid: fileID,
       fileType: "",
-      fileCont: "",
+      fileCont:editorContent,
       nodeId: 1,
       dateSave: defaultValuestime,
       reviewFlag: "N",
@@ -1033,6 +1035,11 @@ const ViewEditFile: React.FC = (props: Props) => {
       if (res.data.isSuccess) {
         toast.success(res.data.mesg);
         handleNoteClose();
+        setFileName("");
+        // setFileID("");
+        setEditorContent("");
+        formik.setFieldValue("uploading", "");
+        setTriggerFetch(!triggerFetch); 
       } else {
         toast.error(res.data.mesg);
       }
@@ -1045,7 +1052,7 @@ const ViewEditFile: React.FC = (props: Props) => {
       fileNo: fileName,
       fNid: fileID,
       fileType: "",
-      fileCont: "",
+      fileCont: editorContent,
       nodeId: 1,
       dateSave: defaultValuestime,
       reviewFlag: "C",
@@ -1057,6 +1064,11 @@ const ViewEditFile: React.FC = (props: Props) => {
       if (res.data.isSuccess) {
         toast.success(res.data.mesg);
         handleCoreClose();
+        setFileName("");
+        // setFileID("");.000000000000000000000000000000000000000000000000
+        setEditorContent("");
+        formik.setFieldValue("uploading", "");
+        setTriggerFetch(!triggerFetch); 
       } else {
         toast.error(res.data.mesg);
       }
@@ -1069,7 +1081,7 @@ const ViewEditFile: React.FC = (props: Props) => {
       fileNo: fileName,
       fNid: fileID,
       fileType: "",
-      fileCont: "",
+      fileCont: editorContent,
       nodeId: 1,
       dateSave: defaultValuestime,
       reviewFlag: "R",
@@ -1081,6 +1093,11 @@ const ViewEditFile: React.FC = (props: Props) => {
       if (res.data.isSuccess) {
         toast.success(res.data.mesg);
         handleReportClose();
+        setFileName("");
+        // setFileID("");
+        setEditorContent("");
+        formik.setFieldValue("uploading", "");
+        setTriggerFetch(!triggerFetch); 
       } else {
         toast.error(res.data.mesg);
       }
@@ -1093,7 +1110,7 @@ const ViewEditFile: React.FC = (props: Props) => {
       fileNo: fileName,
       fNid: fileID,
       fileType: "",
-      fileCont: "",
+      fileCont: editorContent,
       nodeId: 1,
       dateSave: defaultValuestime,
       reviewFlag: "O",
@@ -1105,6 +1122,11 @@ const ViewEditFile: React.FC = (props: Props) => {
       if (res.data.isSuccess) {
         toast.success(res.data.mesg);
         handleReportClose();
+        setFileName("");
+        // setFileID("");
+        setEditorContent("");
+        formik.setFieldValue("uploading", "");
+        setTriggerFetch(!triggerFetch); 
       } else {
         toast.error(res.data.mesg);
       }
@@ -1161,13 +1183,17 @@ const ViewEditFile: React.FC = (props: Props) => {
                   size="small"
                   onChange={(event, newValue: any) => {
                     console.log(newValue);
-                    formik.setFieldValue("fileNo", newValue?.value);
-                    if (newValue?.value != null) {
+                    if (newValue != null || newValue != "") {
+                      formik.setFieldValue("fileNo", newValue?.value);
                       getTableData(newValue?.value);
+                      setFileID(newValue?.value);
+                      setFileName(newValue?.label);
+                      formik.setFieldValue("fileLable", newValue?.lable);
+                    console.log(newValue);
+                    console.log(fileID);
+                    }else{
+                      toast.error("Please select file for further proceed....")
                     }
-                    setFileID(newValue?.value);
-                    setFileName(newValue?.label);
-                    formik.setFieldValue("fileLable", newValue?.lable);
                     formik.setFieldTouched("fileNo", true);
                     formik.setFieldTouched("fileNo", false);
                   }}
@@ -1458,6 +1484,13 @@ const ViewEditFile: React.FC = (props: Props) => {
 
                 <Modal open={NoteOpen} onClose={handleNoteClose}>
                   <Box sx={{ ...style, maxHeight: "80vh", overflowY: "auto" }}>
+                    <div 
+                    // style={{
+                    //   display:"flex", 
+                    //   alignItems:"center", 
+                    //   justifyContent:"space-between"
+                    //   }}
+                      >
                     <IconButton
                       edge="end"
                       onClick={handleNoteClose}
@@ -1473,6 +1506,7 @@ const ViewEditFile: React.FC = (props: Props) => {
                         #{fileID}-{fileName}
                       </i>{" "}
                     </Typography>
+                    </div>
                     <Divider sx={{ marginY: 2 }} />
 
                     <Grid
@@ -1557,8 +1591,8 @@ const ViewEditFile: React.FC = (props: Props) => {
                               <img
                                 src={nopdf}
                                 style={{
-                                  width: "130vh",
-                                  height: "75vh",
+                                  width: "97%",
+                                  height: "97%",
                                 }}
                               />
                             ) : (
@@ -1616,7 +1650,8 @@ const ViewEditFile: React.FC = (props: Props) => {
                     </Grid>
                   </Box>
                 </Modal>
-                <Modal open={CoreOpen} onClose={handleCoreClose}>
+
+                <Modal open={CoreOpen} onClose={(handleCoreClose)}>
                   <Box sx={{ ...style, maxHeight: "80vh", overflowY: "auto" }}>
                     <IconButton
                       edge="end"
@@ -1678,7 +1713,7 @@ const ViewEditFile: React.FC = (props: Props) => {
                               <img
                                 src={nopdf}
                                 style={{
-                                  width: 150,
+                                  // width: 150,
                                   height: 100,
                                   border: "1px solid grey",
                                   borderRadius: 10,
@@ -1717,8 +1752,8 @@ const ViewEditFile: React.FC = (props: Props) => {
                               <img
                                 src={nopdf}
                                 style={{
-                                  width: "130vh",
-                                  height: "75vh",
+                                  width: "97%",
+                                  height: "97%",
                                 }}
                               />
                             ) : (
@@ -1775,7 +1810,7 @@ const ViewEditFile: React.FC = (props: Props) => {
                   </Box>
                 </Modal>
 
-                <Modal open={ReportOpen} onClose={handleReportClose}>
+                <Modal open={ReportOpen} onClose={(handleReportClose)}>
                   <Box sx={{ ...style, maxHeight: "80vh", overflowY: "auto" }}>
                     <IconButton
                       edge="end"
@@ -1874,8 +1909,8 @@ const ViewEditFile: React.FC = (props: Props) => {
                               <img
                                 src={nopdf}
                                 style={{
-                                  width: "170vh",
-                                  height: "75vh",
+                                  width: "97%",
+                                  height: "97%",
                                 }}
                               />
                             ) : (
@@ -1935,7 +1970,7 @@ const ViewEditFile: React.FC = (props: Props) => {
                   </Box>
                 </Modal>
 
-                <Modal open={OtherOpen} onClose={handleOtherClose}>
+                <Modal open={OtherOpen} onClose={(handleOtherClose)}>
                   <Box sx={{ ...style, maxHeight: "80vh", overflowY: "auto" }}>
                     <IconButton
                       edge="end"
@@ -2035,8 +2070,8 @@ const ViewEditFile: React.FC = (props: Props) => {
                               <img
                                 src={nopdf}
                                 style={{
-                                  width: "170vh",
-                                  height: "75vh",
+                                  width: "97%",
+                                  height: "97%",
                                 }}
                               />
                             ) : (
@@ -2100,6 +2135,7 @@ const ViewEditFile: React.FC = (props: Props) => {
 
             <Divider />
             <br />
+
             {value === 0 && (
               <Grid xs={12} sm={12} item>
                 <Drawer
@@ -3128,10 +3164,12 @@ const ViewEditFile: React.FC = (props: Props) => {
                 </Drawer>
               </Grid>
             )}
-            {value === 1 && <NoteSheet fileID={fileID} />}
-            {value === 2 && <Correspondence fileID={fileID} />}
-            {value === 3 && <Report fileID={fileID} />}
-            {value === 4 && <Other fileID={fileID} />}
+
+            {value === 1 && <NoteSheet triggerFetch={triggerFetch}  fileID={fileID} />}
+            {value === 2 && <Correspondence triggerFetch={triggerFetch} fileID={fileID} />}
+            {value === 3 && <Report triggerFetch={triggerFetch} fileID={fileID} />}
+            {value === 4 && <Other triggerFetch={triggerFetch} fileID={fileID} />}
+            
           </form>
         </CardContent>
       </div>

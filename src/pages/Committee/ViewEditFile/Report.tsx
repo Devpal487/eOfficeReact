@@ -15,40 +15,27 @@ import { getinstId, getId, getdivisionId } from "../../../utils/Constant";
 import { toast } from "react-toastify";
 import CustomDataGrid from "../../../utils/CustomDatagrid";
 
-interface MenuPermission {
-    isAdd: boolean;
-    isEdit: boolean;
-    isPrint: boolean;
-    isDel: boolean;
-}
-
-
 interface ReportProps {
+    triggerFetch: boolean;
     fileID:any | null;
 }
 
 
-const Report: React.FC<ReportProps> = ({ fileID }) => {
+const Report: React.FC<ReportProps> = ({ fileID, triggerFetch }) => {
     const [totalFile, setTotalFile] = useState([]);
     const [columns, setColumns] = useState<any>([]);
     const [isLoading, setIsLoading] = useState(true);
-    const [ReviewModalData, setReviewModalData] = useState(false);
+    
     const { t } = useTranslation();
 
-    const userId = getId();
-
-    const instId = getinstId();
-    // console.log("🚀 ~ ViewEditFile ~ userId:", userId);
-    const divId = getdivisionId();
-    // console.log("🚀 ~ ViewEditFile ~ divId:", divId);
-
-    const navigate = useNavigate();
-
     useEffect(() => {
-        if (fileID !== null) {
-            fetchTotalFile(fileID);
+        console.log(fileID);
+        if (fileID == null || fileID == "" ) {
+            toast.error("Please select file for further proceed....")
+        }else{
+        fetchTotalFile(fileID);
         }
-    }, [fileID]);
+    }, [fileID, triggerFetch]);
 
 
 
@@ -91,36 +78,18 @@ const Report: React.FC<ReportProps> = ({ fileID }) => {
                     headerClassName: "MuiDataGrid-colCell",
                 },
 
-
-                // {
-                //     field: "cSubject",
-                //     headerName: "Subject ",
-                //     flex: 1,
-                //     headerClassName: "MuiDataGrid-colCell",
-                // },
-
-                // {
-                //     field: "dairyDate",
-                //     headerName: "Dairy Date",
-                //     flex: 1,
-                //     headerClassName: "MuiDataGrid-colCell",
-                // },
-                // {
-                //     field: "fileStatus",
-                //     headerName: "File Status ",
-                //     flex: 1,
-                //     headerClassName: "MuiDataGrid-colCell",
-                // },
-
-                // {
-                //     field: "createdby",
-                //     headerName: "Created By",
-                //     flex: 1,
-                //     headerClassName: "MuiDataGrid-colCell",
-                // },
-
-
-
+                {
+                    field: "fileCont",
+                    headerName: "Message ",
+                    flex: 1,
+                    headerClassName: "MuiDataGrid-colCell",
+                },
+                {
+                    field: "remark",
+                    headerName: "Remark ",
+                    flex: 1,
+                    headerClassName: "MuiDataGrid-colCell",
+                }
             ];
             setColumns(columns as any);
         }

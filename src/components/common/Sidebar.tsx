@@ -407,8 +407,10 @@ export default function MiniDrawer({ items }: any) {
         : [...prevExpanded, id.toString()]
     );
 
+
     console.log("Checked data:", name);
     console.log("Checked data:", id);
+
     setNodeNames(name);
     setnodeId(id);
     // handleSave(id, name);
@@ -417,10 +419,14 @@ export default function MiniDrawer({ items }: any) {
   const handleSave = () => {
     console.log("handleSave function called");
 
+
     if (nodeId != 0 || nodeNames != "") {
       localStorage.setItem("id", nodeId);
       localStorage.setItem("nodeName", nodeNames);
       console.log("Checked Save:", { nodeId, nodeNames });
+
+    
+ 
       handleCloseModal();
     } else {
       toast.error("Please Retry... Network Issues");
@@ -1150,6 +1156,7 @@ export default function MiniDrawer({ items }: any) {
                                 minWidth: 0,
                                 mr: open ? 3 : "auto",
                                 justifyContent: "center",
+
                                 color: open
                                   ? sidebarMainColor
                                   : sidebarOverColor,
@@ -1157,6 +1164,7 @@ export default function MiniDrawer({ items }: any) {
                                   selectedSubMenu == index2
                                     ? sidebarMainColor
                                     : sidebarOverColor,
+
                                 Color:
                                   selectedSubMenu == index2 ? "white" : "black",
                                 borderRadius: "25px",

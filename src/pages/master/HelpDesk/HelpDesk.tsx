@@ -10,6 +10,8 @@ import "react-quill/dist/quill.snow.css";
 import { Navigate, useLocation, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
+
+
 const style = {
   position: "absolute" as "absolute",
   top: "50%",
@@ -31,13 +33,10 @@ export default function HelpDesk(props: Props) {
   console.log("location", location.state);
   const { i18n, t } = useTranslation();
 
-  
-
   const [isLoading, setIsLoading] = useState(true);
   const divid = getdivisionId();
   const [PageName, setPageName] = useState<any>("");
   const [PageDesk, setPageDesk] = useState<any>("");
-  
 
   useEffect(() => {
     // const dataString = localStorage.getItem("userdata");
@@ -66,7 +65,6 @@ export default function HelpDesk(props: Props) {
 
     const menuData = localStorage.getItem("menuData");
 
-   
     if (
       menuData != null ||
       menuData != "" ||
@@ -133,20 +131,30 @@ export default function HelpDesk(props: Props) {
 
             <Box height={10} />
 
-            <Grid item xs={12} container spacing={3}>
-              <Grid xs={12} sm={4} item>
-                <Typography fontWeight="600" fontSize={20}>
-                  Page Name :- <i>{PageName}</i>{" "}
-                </Typography>
-              </Grid>
+            {PageName && PageDesk ? (
+              <Grid item xs={12} container spacing={3}>
+                <Grid xs={12} sm={4} item>
+                  <Typography fontWeight="600" fontSize={20}>
+                    Page Name :- <i>{PageName}</i>{" "}
+                  </Typography>
+                </Grid>
 
-              <Grid item sm={12} md={12}>
-                <Typography id="modal-modal-title" variant="h6" component="h2">
-                  Content :-{" "}
-                  <span dangerouslySetInnerHTML={{ __html: PageDesk }} />
-                </Typography>
+                <Grid item sm={12} md={12}>
+                  <Typography
+                    id="modal-modal-title"
+                    variant="h6"
+                    component="h2"
+                  >
+                    Content :-{" "}
+                    <span dangerouslySetInnerHTML={{ __html: PageDesk }} />
+                  </Typography>
+                </Grid>
               </Grid>
-            </Grid>
+            ) : (
+              <Typography fontWeight="530" fontSize={30}>
+                No content ?
+              </Typography>
+            )}
           </Paper>
         </Card>
       </Grid>

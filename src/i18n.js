@@ -649,6 +649,13 @@ const resources = {
         PageName:"Page Name",
         Description:"Description",
         HelpDesk:"Help Desk",
+        RollNo:"Roll Number",
+        OTP:'OTP',
+        SelectCertificate:"Select Certificate",
+        CreateCertificateApply:"Create Certificate Apply",
+        EditCertificateApply:"Edit Certificate Apply",
+        CertificateApply:"Certificate Apply",
+        
 
 
       },
@@ -1293,6 +1300,13 @@ const resources = {
          PageName:"पृष्ठ का नाम",
          Description:"विवरण",
          HelpDesk:"सहायता केंद्र",
+         RollNo:"रोल नंबर",
+         OTP:'ओ.टी.पी',
+         SelectCertificate:"प्रमाणपत्र चुनें",
+         CreateCertificateApply:"प्रमाणपत्र बनाएं लागू करें",
+         EditCertificateApply:"प्रमाणपत्र संपादित करें लागू करें",
+         CertificateApply:"प्रमाणपत्र लागू करें",
+ 
 
 
       },

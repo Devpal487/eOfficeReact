@@ -38,6 +38,7 @@ import 'react-quill/dist/quill.snow.css';
 import nopdf from '../../../assets/images/imagepreview.jpg';
 import CustomLabel from "../../../CustomLable";
 import CustomDataGrid from "../../../utils/CustomDatagrid";
+import Quill from 'quill'; 
 
 
 
@@ -552,8 +553,6 @@ export default function Correspondence() {
                                     </FormControl>
                                 </Grid>
 
-
-
                                 <Grid container spacing={1} item>
                                     <Grid
                                         xs={12}
@@ -712,19 +711,28 @@ export default function Correspondence() {
 }
 const modules = {
     toolbar: [
-        [{ 'header': '1' }, { 'header': '2' }, { 'font': [] }],
-        [{ size: [] }],
-        ['bold', 'italic', 'underline', 'strike', 'blockquote'],
-        [{ 'list': 'ordered' }, { 'list': 'bullet' }, { 'indent': '-1' }, { 'indent': '+1' }],
-        ['link', 'image', 'video'],
+        [{ 'header': '1' }, { 'header': '2' }],
+        [{ 'font': [] }],
+        [{ 'size': ['small', false, 'large', 'huge'] }],
+        ['bold', 'italic', 'underline', 'strike'],
+        [{ 'color': [] }, { 'background': [] }],
+        [{ 'script': 'sub' }, { 'script': 'super' }],
+        ['blockquote', 'code-block'],
+        [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+        [{ 'indent': '-1' }, { 'indent': '+1' }],
+        [{ 'align': [] }],
+        ['link', 'image', 'video', 'formula'],
         ['clean']
     ],
-    
 };
 
 const formats = [
     'header', 'font', 'size',
-    'bold', 'italic', 'underline', 'strike', 'blockquote',
+    'bold', 'italic', 'underline', 'strike',
+    'color', 'background',
+    'script',
     'list', 'bullet', 'indent',
-    'link', 'image', 'video'
+    'align',
+    'link', 'image', 'video', 'formula',
+    'code-block'
 ];

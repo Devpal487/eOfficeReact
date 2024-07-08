@@ -334,8 +334,8 @@ export default function GenderMaster() {
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
                   />
-                </Grid>
-                <Grid item xs={2}>
+                </Grid> 
+                <Grid item xs={2}  sx={{m:-1}}>
                   {editId === -1 && permissionData?.isAdd && (
                     <ButtonWithLoader
                       buttonText={t("text.save")}

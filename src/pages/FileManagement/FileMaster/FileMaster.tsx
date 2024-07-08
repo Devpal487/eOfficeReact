@@ -75,7 +75,7 @@ export default function FileMaster() {
     }
         getFileTypeData();
 
-    }, []);
+    }, [isLoading,location.pathname]);
 
     const getFileTypeData =async ()=>{
         const res = await api.post(`FileType/GetFileType`, {fId:-1, inst_id:-1,user_id:-1,divisionid:-1})
@@ -369,7 +369,7 @@ export default function FileMaster() {
                                             
                                         </Grid>
 
-                                        <Grid item xs={2}>
+                                        <Grid item xs={2}  sx={{m:-1}}>
                                         {editId === -1 && permissionData?.isAdd && (
   <ButtonWithLoader
     buttonText={t("text.save")}

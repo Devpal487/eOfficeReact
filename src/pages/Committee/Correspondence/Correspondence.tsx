@@ -39,7 +39,15 @@ import nopdf from '../../../assets/images/imagepreview.jpg';
 import CustomLabel from "../../../CustomLable";
 import CustomDataGrid from "../../../utils/CustomDatagrid";
 import Quill from 'quill'; 
+import ButtonWithLoader from "../../../utils/ButtonWithLoader";
 
+
+interface MenuPermission {
+    isAdd: boolean;
+    isEdit: boolean;
+    isPrint: boolean;
+    isDel: boolean;
+}
 
 
 const style = {
@@ -55,6 +63,8 @@ const style = {
     p: 4,
     borderRadius: 10,
 };
+
+
 export default function Correspondence() {
     const location = useLocation();
     const { i18n, t } = useTranslation();
@@ -62,7 +72,7 @@ export default function Correspondence() {
 
     const [columns, setColumns] = useState<any>([]);
     const [rows, setRows] = useState<any>([]);
-    const [editId, setEditId] = useState<any>(-1);
+    const [editId, setEditId] = useState<any>("-1");
     const [isLoading, setIsLoading] = useState(true);
 
     const [fileTypeOption, setFileTypeOption] = useState([{ value: "-1", label: t("text.SelectFileNo") }]);
@@ -70,14 +80,13 @@ export default function Correspondence() {
     const [panOpens, setPanOpen] = useState(false);
     const [modalImg, setModalImg] = useState("");
     const [editorContent, setEditorContent] = useState<string>('');
-  //  const [plainTextContent, setPlainTextContent] = useState<string>("");
+    const [permissionData, setPermissionData] = useState<MenuPermission>({
+        isAdd: false,
+        isEdit: false,
+        isPrint: false,
+        isDel: false,
+    });
 
-    // const handleEditorChange = (content: any) => {
-    //     const textWithoutTags = content.replace(/<[^>]*>/g, '').trim(); // Remove HTML tags
-    //     console.log("textWithoutTags", textWithoutTags);
-    //     setEditorContent(textWithoutTags);
-    // };
-    // console.log("editorContent", editorContent)
 
     const handleEditorChange = (content: any) => {
 
@@ -90,32 +99,33 @@ export default function Correspondence() {
     const divid = getdivisionId();
 
     useEffect(() => {
-        const dataString = localStorage.getItem("userdata");
-
-        getList();
         getFileTypeData();
 
     }, []);
 
-    // const getFileTypeData = async () => {
-    //     const collectData = {
-    //         "fnId": -1,
-    //         "fId": -1,
-    //         "inst_id": -1,
-    //         "user_id": -1,
-    //         "divisionId": -1
-    //     }
-    //     const res = await api.post(`FileNumber/GetFileNumber`, collectData)
-    //     // console.log("check file type", res?.data?.data)
-    //     const arr = [];
-    //     for (let index = 0; index < res.data.data.length; index++) {
-    //         arr.push({
-    //             value: res.data.data[index]["fnId"],
-    //             label: res.data.data[index]["fileNm"],
-    //         })
-    //         setFileTypeOption(arr);
-    //     }
-    // }
+    useEffect(() => {
+        const dataString = localStorage.getItem("userdata");
+        if (dataString) {
+            const data = JSON.parse(dataString);
+            if (data && data.length > 0) {
+                const userPermissionData = data[0]?.userPermission;
+                if (userPermissionData && userPermissionData.length > 0) {
+                    const menudata = userPermissionData[0]?.parentMenu;
+                    for (let index = 0; index < menudata.length; index++) {
+                        const childMenudata = menudata[index]?.childMenu;
+                        const pathrow = childMenudata.find(
+                            (x: any) => x.path === location.pathname
+                        );
+                        console.log("data", pathrow);
+                        if (pathrow) {
+                            setPermissionData(pathrow);
+                            getList();
+                        }
+                    }
+                }
+            }
+        }
+    }, [isLoading]);
 
 
     const getFileTypeData = () => {
@@ -225,7 +235,7 @@ export default function Correspondence() {
                                             direction="row"
                                             sx={{ alignItems: "center", marginTop: "5px" }}
                                         >
-                                            {/*  {permissionData?.isEdit ? ( */}
+                                             {permissionData?.isEdit ? ( 
                                             <EditIcon
                                                 style={{
                                                     fontSize: "20px",
@@ -235,10 +245,10 @@ export default function Correspondence() {
                                                 className="cursor-pointer"
                                                 onClick={() => routeChangeEdit(params.row)}
                                             />
-                                            {/* ) : ( */}
-                                            {/*   "" */}
-                                            {/* )} */}
-                                            {/*  {permissionData?.isDel ? ( */}
+                                            ) : ( 
+                                              "" 
+                                            )} 
+                                             {permissionData?.isDel ? ( 
                                             <DeleteIcon
                                                 style={{
                                                     fontSize: "20px",
@@ -249,9 +259,9 @@ export default function Correspondence() {
                                                     handledeleteClick(params.row.id);
                                                 }}
                                             />
-                                            {/*  ) : ( */}
-                                            {/*  "" */}
-                                            {/* )} */}
+                                             ) : ( 
+                                             "" 
+                                            )} 
                                         </Stack>,
                                     ];
                                 },
@@ -338,7 +348,7 @@ export default function Correspondence() {
                 toast.success(response.data.mesg);
                 formik.resetForm();
                 getList();
-                setEditId(-1);
+                setEditId("-1");
             } else {
                 setToaster(true);
                 toast.error(response.data.mesg);
@@ -400,6 +410,10 @@ export default function Correspondence() {
         }
     }, [formik.values.reviewFlag, formik.setFieldValue]);
 
+
+    const handleSubmitWrapper = async () => {
+        await formik.handleSubmit();
+      };
 
 
     return (
@@ -675,10 +689,26 @@ export default function Correspondence() {
                                 </Grid>
 
 
-                                <Grid item xs={2}>
-                                    <Button type="submit" variant="contained" size="large">
+                                <Grid item xs={2} sx={{m:-1}}>
+                                    {/* <Button type="submit" variant="contained" size="large">
                                         {editId == "-1" ? t("text.save") : t("text.update")}
-                                    </Button>
+                                    </Button> */}
+
+                                    {editId === "-1" && permissionData?.isAdd && (
+  <ButtonWithLoader
+    buttonText={t("text.save")}
+    onClickHandler={handleSubmitWrapper}
+    fullWidth={true}
+  />
+)}
+
+{editId !== "-1" && (
+  <ButtonWithLoader
+    buttonText={t("text.update")}
+    onClickHandler={handleSubmitWrapper}
+    fullWidth={true}
+  />
+)}
                                 </Grid>
                             </Grid>
                         </form>

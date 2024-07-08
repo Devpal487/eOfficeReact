@@ -87,6 +87,9 @@ import AuthorityEmployeeMapping from "../pages/master/Authority Employee Mapping
 import AuthorityMail from "../pages/Committee/AuthorityMail/AuthorityMail";
 import HelpCreation from "../pages/master/HelpCreation/HelpCreation";
 import HelpDesk from "../pages/master/HelpDesk/HelpDesk";
+import Certificate from "../pages/master/Certificate/Certificate";
+import CertificateAdd from "../pages/master/Certificate/CertificateAdd";
+import CertificateEdit from "../pages/master/Certificate/CertificateEdit";
 
 const appRoutes: RouteType[] = [
   {
@@ -380,6 +383,30 @@ const appRoutes: RouteType[] = [
           displayText: "Help Desk",
         },
       },
+
+      {
+        path: "/master/Certificate",
+        element: <Certificate/>,
+        state: "master.Certificate",
+        sidebarProps: {
+          displayText: "Certificate Apply",
+        },
+      },
+
+      {
+        path: "/master/CertificateAdd",
+        element: <CertificateAdd/>,
+        state: "master.CertificateAdd",
+      },
+
+      {
+        path: "/master/CertificateEdit",
+        element: <CertificateEdit/>,
+        state: "master.CertificateEdit",
+      },
+
+
+
 
 
      

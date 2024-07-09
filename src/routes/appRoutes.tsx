@@ -90,6 +90,7 @@ import HelpDesk from "../pages/master/HelpDesk/HelpDesk";
 import Certificate from "../pages/master/Certificate/Certificate";
 import CertificateAdd from "../pages/master/Certificate/CertificateAdd";
 import CertificateEdit from "../pages/master/Certificate/CertificateEdit";
+import StatusMaster from "../pages/master/StatusMaster/StatusMaster";
 
 const appRoutes: RouteType[] = [
   {
@@ -403,6 +404,16 @@ const appRoutes: RouteType[] = [
         path: "/master/CertificateEdit",
         element: <CertificateEdit/>,
         state: "master.CertificateEdit",
+      },
+
+
+      {
+        path: "/master/StatusMaster",
+        element: <StatusMaster/>,
+        state: "master.StatusMaster",
+        sidebarProps: {
+          displayText: "Status Master",
+        },
       },
 
 

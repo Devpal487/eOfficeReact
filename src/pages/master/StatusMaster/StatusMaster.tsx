@@ -36,7 +36,7 @@ interface MenuPermission {
   isDel: boolean;
 }
 
-export default function SectionMaster() {
+export default function StatusMaster() {
   const { i18n, t } = useTranslation();
   const { defaultValues, defaultValuestime } = getISTDate();
 
@@ -319,7 +319,7 @@ export default function SectionMaster() {
               sx={{ padding: "20px" }}
               align="left"
             >
-              {t("text.SectionMaster")}
+              {t("text.StatusMaster")}
             </Typography>
             <Divider />
 
@@ -363,9 +363,9 @@ export default function SectionMaster() {
                   <TextField
                     id="section"
                     name="section"
-                    label={<CustomLabel text={t("text.Section")} />}
+                    label={<CustomLabel text={t("text.Status")} />}
                     value={formik.values.section}
-                    placeholder={t("text.Section")}
+                    placeholder={t("text.Status")}
                     size="small"
                     fullWidth
                     style={{ backgroundColor: "white" }}

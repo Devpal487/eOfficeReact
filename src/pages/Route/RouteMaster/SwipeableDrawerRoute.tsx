@@ -233,7 +233,7 @@ export default function SwipeableDrawerRoute({ open, onClose, userData }: Props)
                     },
                 }}
                 style={{
-                    zIndex: 1300,
+                    zIndex: 1500,
                 }}
             >
                 <Box sx={{ width: 300 }}>

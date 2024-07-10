@@ -316,7 +316,7 @@ export default function WardMaster() {
   const getVehicleZone = () => {
     const collectData = {
       zoneID: -1,
-      user_ID:parseInt(UserId),
+      user_ID:(UserId),
       isActive: true
     };
     api

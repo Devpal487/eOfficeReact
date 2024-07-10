@@ -47,11 +47,9 @@ export default function Jurisdiction() {
   const location = useLocation();
   const [isLoading, setIsLoading] = useState(true);
 
-  const [fileTypeOption, setFileTypeOption] = useState([{ value: "-1", label: t("text.SelectFileType") }]);
-
   const [NodeOption, setNodeOption] = useState([{ value: "-1", label: t("text.SelectNode") }]);
 
-  const [permissionData, setPermissionData] = useState<any>({
+  const [permissionData, setPermissionData] = useState<MenuPermission>({
     isAdd: false,
     isEdit: false,
     isPrint: false,
@@ -97,19 +95,20 @@ export default function Jurisdiction() {
               (x: any) => x.path === location.pathname
             );
             if (pathrow) {
-              console.log("data", pathrow);
               setPermissionData(pathrow);
+              console.log("data", pathrow);
               getList();
-              break;
+              // break;
             }
           }
         }
       }
     }
 
-  }, [location.pathname]);
+  }, [isLoading,location.pathname]);
   
   console.log("permissionData", permissionData?.isAdd);
+  console.log("permissionData", permissionData?.isEdit);
 
   useEffect(()=>{
   getNode();
@@ -403,7 +402,7 @@ export default function Jurisdiction() {
                   ) : null}
                 </Grid>
 
-                <Grid item xs={2}>
+                <Grid item xs={2}  sx={{m:-1}}>
                 {editId === -1 && permissionData?.isAdd && (
   <ButtonWithLoader
     buttonText={t("text.save")}

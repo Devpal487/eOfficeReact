@@ -84,7 +84,10 @@ export default function SectionMaster() {
       }
     }
     getDepartment();
-  }, []);
+
+
+  }, [isLoading]);
+
 
   const getDepartment = () => {
     const collectData = {
@@ -374,7 +377,9 @@ export default function SectionMaster() {
                   />
                 </Grid>
 
-                <Grid item xs={2} >
+
+                <Grid item xs={2} sx={{m:-1}}>
+
                   {/*  {permissionData?.isAdd == true ? ( */}
                   {/* <Button type="submit" variant="contained" size="large">
                     {editId == "-1" ? t("text.save") : t("text.update")}

@@ -322,7 +322,7 @@ export default function FileCategory() {
                 </Grid>
 
 
-                <Grid item xs={2}>
+                <Grid item xs={2}  sx={{m:-1}}>
                 {editId === -1 && permissionData?.isAdd && (
   <ButtonWithLoader
     buttonText={t("text.save")}

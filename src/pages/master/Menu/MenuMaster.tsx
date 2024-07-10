@@ -87,7 +87,7 @@ export default function MenuMaster() {
     }
     
     
-  }, []);
+  }, [isLoading,location.pathname]);
 
 
   const routeChangeEdit = (row: any) => {

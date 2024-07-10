@@ -184,17 +184,15 @@ export default function UserPermissionMaster() {
         ? `${matchingUser.firsT_NAME} ${matchingUser.middlE_NAME} ${matchingUser.suR_NAME}`
         : ""
     );
-    // console.log(setEnteredEployeeName);
-    // console.log(enteredEmployeeName);
   };
 
   let delete_id = "";
 
   useEffect(() => {
-    getRole();
-    fetchZonesData();
-    getEmployeeNamebyID(selectedRoleID);
-    getEmployeeName();
+    // getRole();
+    // fetchZonesData();
+    // getEmployeeNamebyID(selectedRoleID);
+    // getEmployeeName();
 }, []);
 
   useEffect(() => {
@@ -220,7 +218,11 @@ export default function UserPermissionMaster() {
         }
       }
     }
-  }, [isLoading]);
+    getRole();
+    fetchZonesData();
+    getEmployeeNamebyID(selectedRoleID);
+    getEmployeeName();
+  }, [isLoading, location.pathname]);
 
   interface FilmOptionType {
     label: string;

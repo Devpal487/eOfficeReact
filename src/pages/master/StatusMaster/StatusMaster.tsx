@@ -36,7 +36,7 @@ interface MenuPermission {
   isDel: boolean;
 }
 
-export default function SectionMaster() {
+export default function StatusMaster() {
   const { i18n, t } = useTranslation();
   const { defaultValues, defaultValuestime } = getISTDate();
 
@@ -84,10 +84,7 @@ export default function SectionMaster() {
       }
     }
     getDepartment();
-
-
-  }, [isLoading]);
-
+  }, []);
 
   const getDepartment = () => {
     const collectData = {
@@ -322,7 +319,7 @@ export default function SectionMaster() {
               sx={{ padding: "20px" }}
               align="left"
             >
-              {t("text.SectionMaster")}
+              {t("text.StatusMaster")}
             </Typography>
             <Divider />
 
@@ -366,9 +363,9 @@ export default function SectionMaster() {
                   <TextField
                     id="section"
                     name="section"
-                    label={<CustomLabel text={t("text.Section")} />}
+                    label={<CustomLabel text={t("text.Status")} />}
                     value={formik.values.section}
-                    placeholder={t("text.Section")}
+                    placeholder={t("text.Status")}
                     size="small"
                     fullWidth
                     style={{ backgroundColor: "white" }}
@@ -377,9 +374,7 @@ export default function SectionMaster() {
                   />
                 </Grid>
 
-
-                <Grid item xs={2} sx={{m:-1}}>
-
+                <Grid item xs={2} >
                   {/*  {permissionData?.isAdd == true ? ( */}
                   {/* <Button type="submit" variant="contained" size="large">
                     {editId == "-1" ? t("text.save") : t("text.update")}

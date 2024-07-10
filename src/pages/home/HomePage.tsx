@@ -15,7 +15,7 @@ import {
   Select,
   MenuItem,
   Radio,
-  FormLabel
+  FormLabel,
 } from "@mui/material";
 import "./style.css";
 import api from "../../utils/Url";
@@ -35,13 +35,11 @@ import { getinstId, getdivisionId, getId } from "../../utils/Constant";
 import CustomDataGrid from "../../utils/CustomDatagrid";
 import CustomLabel from "../../CustomLable";
 
-
 export const options1 = {
   pieHole: 0.25,
   is3D: false,
   legend: "top",
 };
-
 
 export default function HomePage() {
   const { t } = useTranslation();
@@ -52,7 +50,9 @@ export default function HomePage() {
   const instId: any = getinstId();
   // console.log("🚀 ~ HomePage ~ instId:", instId)
 
-  const [switchType, setSwitchType] = useState(localStorage.getItem('home') || '1');
+  const [switchType, setSwitchType] = useState(
+    localStorage.getItem("home") || "1"
+  );
   const [ReviewModalData, setReviewModalData] = useState(false);
   const [columns, setColumns] = useState<any>([]);
   const [totalFile, setTotalFile] = useState([]);
@@ -62,10 +62,10 @@ export default function HomePage() {
   const [selectedDivision, setSelectedDivision] = useState("-1");
 
   useEffect(() => {
-    localStorage.setItem('home', switchType);
+    localStorage.setItem("home", switchType);
   }, [switchType]);
 
-  const handleChange = (event:any) => {
+  const handleChange = (event: any) => {
     const value = event.target.value;
     setSwitchType(value);
   };
@@ -79,7 +79,6 @@ export default function HomePage() {
   };
 
   useEffect(() => {
-
     setTimeout(() => {
       getAuthDevision(divId);
       fetchTotalFile();
@@ -118,63 +117,61 @@ export default function HomePage() {
 
   const formik = useFormik({
     initialValues: {
-      rSendAdrs: '',
+      rSendAdrs: "",
       id: "",
       rRemark: "",
       rFileNumber: "",
       rid: "",
       rDealHands: "",
-      rDealHandlabel: ""
-
+      rDealHandlabel: "",
     },
-    onSubmit: async (values) => { },
+    onSubmit: async (values) => {},
   });
-
 
   const getSpMovement = async () => {
     // setLoading(true);
     const value = {
-      "eid": userid?.toString(),
-      "hdnFileNumber": formik.values.rFileNumber.toString() || "",
-      "hdnRId": formik.values.rid.toString() || "",
-      "hdnAuth": formik.values.rDealHands.toString() || "",
-      "txtRemark": formik.values.rRemark.toString() || "",
-      "i": "1",
-      "fid": "",
+      eid: userid?.toString(),
+      hdnFileNumber: formik.values.rFileNumber.toString() || "",
+      hdnRId: formik.values.rid.toString() || "",
+      hdnAuth: formik.values.rDealHands.toString() || "",
+      txtRemark: formik.values.rRemark.toString() || "",
+      i: "1",
+      fid: "",
     };
-    await api
-      .post(`FileMovement/SP_Movefile`, value)
-      .then((res) => {
-        if (res.data.isSuccess) {
-          toast.success(res.data.mesg);
-          fetchTotalFile();
-          handleCloseReviewModal();
-          formik.setFieldValue("rRemark", "");
-          //setLoading(false); 
-        } else {
-          toast.error(res.data.mesg);
-          //setLoading(false); 
-        }
-        // setLoading(false); 
-      });
+    await api.post(`FileMovement/SP_Movefile`, value).then((res) => {
+      if (res.data.isSuccess) {
+        toast.success(res.data.mesg);
+        fetchTotalFile();
+        handleCloseReviewModal();
+        formik.setFieldValue("rRemark", "");
+        //setLoading(false);
+      } else {
+        toast.error(res.data.mesg);
+        //setLoading(false);
+      }
+      // setLoading(false);
+    });
   };
 
   const fetchTotalFile = async () => {
     let collectData;
-    if(divId == null || divId == "" && instId == null || instId == ""){
-    collectData = {
-    inst_id: 1,
-    divid: 1,
-    refNoYr: newrefNoYr,
-    pstart: newrefNo || 0,
-  };}else{
-    collectData = {
-      inst_id: parseInt(instId),
-      divid: parseInt(divId),
-      refNoYr: newrefNoYr,
-      pstart: newrefNo || 0,
-  }}
-  try {
+    if (divId == null || (divId == "" && instId == null) || instId == "") {
+      collectData = {
+        inst_id: 1,
+        divid: 1,
+        refNoYr: newrefNoYr,
+        pstart: newrefNo || 0,
+      };
+    } else {
+      collectData = {
+        inst_id: parseInt(instId),
+        divid: parseInt(divId),
+        refNoYr: newrefNoYr,
+        pstart: newrefNo || 0,
+      };
+    }
+    try {
       const response = await api.post(
         `RefferenceNumber/GetRefferenceNo`,
         collectData
@@ -187,7 +184,10 @@ export default function HomePage() {
         Division: Division,
       }));
 
-      const sortedData = DocsWithIds.sort((a: { rid: number; }, b: { rid: number; }) => (a.rid === -1 ? -1 : b.rid === -1 ? 1 : 0));
+      const sortedData = DocsWithIds.sort(
+        (a: { rid: number }, b: { rid: number }) =>
+          a.rid === -1 ? -1 : b.rid === -1 ? 1 : 0
+      );
 
       setTotalFile(sortedData);
       setIsLoading(false);
@@ -196,7 +196,7 @@ export default function HomePage() {
         const columns: GridColDef[] = [
           {
             field: "rNumber",
-            headerName: t('text.RefNo'),
+            headerName: t("text.RefNo"),
             flex: 1,
             headerClassName: "MuiDataGrid-colCell",
             renderCell: (params) => {
@@ -217,14 +217,14 @@ export default function HomePage() {
 
           {
             field: "letterBy",
-            headerName: t('text.Type'),
+            headerName: t("text.Type"),
             width: 400,
             flex: 1,
             headerClassName: "MuiDataGrid-colCell",
           },
           {
             field: "rPriority",
-            headerName: t('text.Priority'),
+            headerName: t("text.Priority"),
             flex: 1,
             headerClassName: "MuiDataGrid-colCell",
             renderCell: (params) => {
@@ -243,89 +243,102 @@ export default function HomePage() {
                   priorityText = "";
               }
               return <span>{priorityText}</span>;
-            }
+            },
           },
 
           {
             field: "rSubject",
-            headerName: t('text.Subject'),
+            headerName: t("text.Subject"),
             flex: 1,
             headerClassName: "MuiDataGrid-colCell",
           },
 
           {
             field: "fileNm",
-            headerName: t('text.FileNo'),
+            headerName: t("text.FileNo"),
             flex: 1,
             headerClassName: "MuiDataGrid-colCell",
           },
           {
             field: "",
-            headerName: t('text.MovedTo'),
+            headerName: t("text.MovedTo"),
             flex: 2,
             headerClassName: "MuiDataGrid-colCell",
             renderCell: (params) => {
-
               if (params.row.authorityType === null) {
-                return (<Select
-                  value={selectedDivision}
-                  onChange={(event) => {
-                    if (!params.row.rFileNumber) {
-                      toast.error("Please first assign File Number then proceed further....")
-                    } else {
-                      // console.log("file number", params.row.rFileNumber)
-                      setReviewModalData(true);
-                      setRefNo(params.row.refNo);
-                      setRefNoYr(params.row.refNoYr);
-                      formik.setFieldValue("id", params.row.id);
-                      formik.setFieldValue("rFileNumber", params.row.rFileNumber);
-                      formik.setFieldValue("rid", params.row.rid);
-                      const selectedDivision = params.row.Division.find(
-                        (item: any) => item.value === event.target.value
-                      );
-                      if (selectedDivision) {
-                        formik.setFieldValue("rDealHands", selectedDivision.value);
-                        formik.setFieldValue("rDealHandlabel", selectedDivision.label);
-                        // setSelectedDivision(selectedDivision.value);
+                return (
+                  <Select
+                    value={selectedDivision}
+                    onChange={(event) => {
+                      if (!params.row.rFileNumber) {
+                        toast.error(
+                          "Please first assign File Number then proceed further...."
+                        );
                       } else {
-                        formik.setFieldValue("rDealHands", "");
-                        formik.setFieldValue("rDealHandlabel", "");
-                        // setSelectedDivision("-1");
+                        // console.log("file number", params.row.rFileNumber)
+                        setReviewModalData(true);
+                        setRefNo(params.row.refNo);
+                        setRefNoYr(params.row.refNoYr);
+                        formik.setFieldValue("id", params.row.id);
+                        formik.setFieldValue(
+                          "rFileNumber",
+                          params.row.rFileNumber
+                        );
+                        formik.setFieldValue("rid", params.row.rid);
+                        const selectedDivision = params.row.Division.find(
+                          (item: any) => item.value === event.target.value
+                        );
+                        if (selectedDivision) {
+                          formik.setFieldValue(
+                            "rDealHands",
+                            selectedDivision.value
+                          );
+                          formik.setFieldValue(
+                            "rDealHandlabel",
+                            selectedDivision.label
+                          );
+                          // setSelectedDivision(selectedDivision.value);
+                        } else {
+                          formik.setFieldValue("rDealHands", "");
+                          formik.setFieldValue("rDealHandlabel", "");
+                          // setSelectedDivision("-1");
+                        }
+                        setSelectedDivision(selectedDivision.value);
                       }
-                      setSelectedDivision(selectedDivision.value);
-                    }
-                  }}
-                  fullWidth
-                  size="small"
-                >
-                  <MenuItem value="-1" >{t('text.SelectDivision')}</MenuItem>
-                  {params?.row?.Division?.map((item: any) => (
-                    <MenuItem key={item.value} value={item.value}>{item.label}</MenuItem>
-                  ))}
-                </Select>)
+                    }}
+                    fullWidth
+                    size="small"
+                  >
+                    <MenuItem value="-1">{t("text.SelectDivision")}</MenuItem>
+                    {params?.row?.Division?.map((item: any) => (
+                      <MenuItem key={item.value} value={item.value}>
+                        {item.label}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                );
               } else {
                 return params.row.authorityType;
               }
             },
           },
 
-
           {
             field: "rSendAdrs",
-            headerName: t('text.SendBy'),
+            headerName: t("text.SendBy"),
             flex: 1,
             headerClassName: "MuiDataGrid-colCell",
           },
           {
             field: "rLetterSentOn",
-            headerName: t('text.SendDate'),
+            headerName: t("text.SendDate"),
             flex: 1,
             headerClassName: "MuiDataGrid-colCell",
           },
 
           {
             field: "rReceivedDate",
-            headerName: t('text.ReceivedDate'),
+            headerName: t("text.ReceivedDate"),
             flex: 1,
             headerClassName: "MuiDataGrid-colCell",
           },
@@ -344,16 +357,16 @@ export default function HomePage() {
   const [newrefNoYr, setNewrefNoYr] = useState(2024);
   const [newrefNo, setNewrefNo] = useState("");
 
-
-
   return (
-    <div style={{
-      padding: "5px 5px",
-      backgroundColor: "#ffffff",
-      borderRadius: "5px",
-      marginTop: "5px",
-      border: ".5px solid #00009c",
-    }}>
+    <div
+      style={{
+        padding: "5px 5px",
+        backgroundColor: "#ffffff",
+        borderRadius: "5px",
+        marginTop: "5px",
+        border: ".5px solid #00009c",
+      }}
+    >
       <ToastApp />
       <div
         style={{
@@ -366,11 +379,10 @@ export default function HomePage() {
           boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
           transition: "all 0.3s ease",
           padding: "5px",
-          borderRadius: "12px"
+          borderRadius: "12px",
         }}
       >
-
-        <Grid sm={12} md={12} xs={12} >
+        <Grid sm={12} md={12} xs={12}>
           <FormControl
             style={{
               display: "flex",
@@ -382,11 +394,13 @@ export default function HomePage() {
             }}
           >
             <Grid>
-              <FormLabel>{t('text.SwitchTo')}:</FormLabel>
+              <FormLabel>{t("text.SwitchTo")}:</FormLabel>
             </Grid>
-            <Grid sx={{
-              marginLeft: "40px"
-            }} >
+            <Grid
+              sx={{
+                marginLeft: "40px",
+              }}
+            >
               <RadioGroup
                 row
                 aria-labelledby="demo-row-radio-buttons-group-label"
@@ -402,21 +416,19 @@ export default function HomePage() {
                 <FormControlLabel
                   value="2"
                   control={<Radio />}
-                  label={t('text.ReviewOficerInbox')}
+                  label={t("text.ReviewOficerInbox")}
                   sx={{
-                    marginLeft: "40px"
+                    marginLeft: "40px",
                   }}
                 />
               </RadioGroup>
             </Grid>
           </FormControl>
         </Grid>
-
       </div>
 
-
       {ReviewModalData && (
-        <Modal open={true} >
+        <Modal open={true}>
           <Card
             style={{
               width: "80%",
@@ -425,7 +437,7 @@ export default function HomePage() {
               backgroundColor: "#E9FDEE",
               border: ".5px solid #42AEEE",
               marginTop: "35vh",
-              marginLeft: "10%"
+              marginLeft: "10%",
             }}
           >
             <Paper
@@ -436,24 +448,30 @@ export default function HomePage() {
                   backgroundColor: "#42AEEE",
                   color: "#fff",
                   fontSize: 17,
-                  fontWeight: 900
-                }
+                  fontWeight: 900,
+                },
               }}
               style={{ padding: "10px", justifyContent: "center" }}
             >
-              <Grid xs={12} display="flex" alignItems="center" justifyContent="space-between" >
-
-                <Typography fontWeight={600} color="#000" fontSize="20px">Remark to {formik.values.rDealHandlabel} for the Letter {refno}--{refNoYr}</Typography>
+              <Grid
+                xs={12}
+                display="flex"
+                alignItems="center"
+                justifyContent="space-between"
+              >
+                <Typography fontWeight={600} color="#000" fontSize="20px">
+                  Remark to {formik.values.rDealHandlabel} for the Letter{" "}
+                  {refno}--{refNoYr}
+                </Typography>
                 {/* <Typography color="#000" ><CloseIcons/></Typography> */}
                 <IconButton
                   // edge="end"
                   onClick={() => {
                     handleCloseReviewModal();
                     setSelectedDivision("-1");
-
                   }}
                   aria-label="close"
-                //sx={{ color: "#fff", position: "absolute", right: 20, top: 5 }}
+                  //sx={{ color: "#fff", position: "absolute", right: 20, top: 5 }}
                 >
                   <CloseIcons />
                 </IconButton>
@@ -462,18 +480,24 @@ export default function HomePage() {
               <ConfirmDialog />
               <Divider />
               <Box height={10} />
-              <Stack direction="column" spacing={2} classes="my-2 mb-2" justifyContent={"center"}>
+              <Stack
+                direction="column"
+                spacing={2}
+                classes="my-2 mb-2"
+                justifyContent={"center"}
+              >
                 <TextField
-                  label={<CustomLabel text={t("text.Remark")} required={false} />}
+                  label={
+                    <CustomLabel text={t("text.Remark")} required={false} />
+                  }
                   // value={formik.values.rRemark}
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                   placeholder={t("text.Remark")}
                   name="rRemark"
                   id="rRemark"
-
                   size="medium"
-                  style={{ backgroundColor: "white", width: '100%' }}
+                  style={{ backgroundColor: "white", width: "100%" }}
                   fullWidth
                   multiline
                   rows={4}
@@ -540,19 +564,32 @@ export default function HomePage() {
         )}
       </Box>
     </Box> */}
-                <ButtonWithLoader buttonText="Move" onClickHandler={getSpMovement} />
+                <ButtonWithLoader
+                  buttonText="Move"
+                  onClickHandler={getSpMovement}
+                />
               </Stack>
             </Paper>
           </Card>
         </Modal>
       )}
 
-
-
       {switchType === "1" && (
         <>
-          <Grid sm={6} md={6} xs={6} sx={{ backgroundColor: "#f0f0f0", marginTop: "10px", padding: "10px", border: "1px solid #ccc", boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)", transition: "all 0.3s ease", borderRadius: "12px" }}
-          //  display="flex" alignItems="center" justifyContent="space-around"
+          <Grid
+            sm={6}
+            md={6}
+            xs={6}
+            sx={{
+              backgroundColor: "#f0f0f0",
+              marginTop: "10px",
+              padding: "10px",
+              border: "1px solid #ccc",
+              boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+              transition: "all 0.3s ease",
+              borderRadius: "12px",
+            }}
+            //  display="flex" alignItems="center" justifyContent="space-around"
           >
             {/*       <Grid xs={2}>
                       <Button
@@ -610,20 +647,24 @@ export default function HomePage() {
                     </Button>
                       </Grid>
 */}
-            <form >
+            <form>
               <Grid item xs={12} container spacing={3}>
-
                 <Grid xs={5} sm={5} item>
                   <TextField
                     // label="Enter Ref. No."
-                    label={<CustomLabel text={t('text.EnterRefNo')} required={false} />}
+                    label={
+                      <CustomLabel
+                        text={t("text.EnterRefNo")}
+                        required={false}
+                      />
+                    }
                     value={newrefNo}
-                    placeholder={t('text.EnterRefNo')}
+                    placeholder={t("text.EnterRefNo")}
                     size="small"
                     fullWidth
-                    style={{ backgroundColor: 'white' }}
+                    style={{ backgroundColor: "white" }}
                     onChange={(e: any) => {
-                      setNewrefNo(e.target.value)
+                      setNewrefNo(e.target.value);
                     }}
                   />
                 </Grid>
@@ -633,22 +674,30 @@ export default function HomePage() {
                     // id="zoneCode"
                     // name="zoneCode"
                     // label="Enter Year"
-                    label={<CustomLabel text={t('text.EnterYear')} required={false} />}
+                    label={
+                      <CustomLabel
+                        text={t("text.EnterYear")}
+                        required={false}
+                      />
+                    }
                     value={newrefNoYr}
-                    placeholder={t('text.EnterYear')}
+                    placeholder={t("text.EnterYear")}
                     size="small"
                     fullWidth
                     style={{ backgroundColor: "white" }}
                     onChange={(e: any) => {
-                      setNewrefNoYr(parseInt(e.target.value))
+                      setNewrefNoYr(parseInt(e.target.value));
                     }}
                   />
-
                 </Grid>
 
                 <Grid item xs={2}>
-                  <Button variant="contained" size="large" onClick={fetchTotalFile}>
-                    {t('text.Start')}
+                  <Button
+                    variant="contained"
+                    size="large"
+                    onClick={fetchTotalFile}
+                  >
+                    {t("text.Start")}
                   </Button>
                 </Grid>
               </Grid>
@@ -663,10 +712,10 @@ export default function HomePage() {
                 backgroundColor: "#2B4593",
                 color: "#fff",
                 fontSize: 15,
-                fontWeight: 900
+                fontWeight: 900,
               },
             }}
-            style={{ padding: "10px", }}
+            style={{ padding: "10px" }}
           >
             <ConfirmDialog />
 
@@ -677,12 +726,11 @@ export default function HomePage() {
               pageSizeOptions={[5, 10, 25, 50, 100]}
               initialPageSize={5}
             />
-
           </Paper>
         </>
       )}
 
-      {switchType === "2" && (<ReviewOficer />)}
+      {switchType === "2" && <ReviewOficer />}
     </div>
   );
-};
+}

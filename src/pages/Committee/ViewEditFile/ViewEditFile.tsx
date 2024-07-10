@@ -81,6 +81,7 @@ import Report from "./Report";
 
 import { styled } from "@mui/material/styles";
 import dayjs from "dayjs";
+import SwipeableDrawerRoute from "../../Route/RouteMaster/SwipeableDrawerRoute";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -139,30 +140,41 @@ const AntennaOption = [
 
 const modules = {
   toolbar: [
-      [{ 'header': '1' }, { 'header': '2' }, ],
-      [{ 'font': [] }],
-      [{ 'size': ['small', false, 'large', 'huge'] }],
-      ['bold', 'italic', 'underline', 'strike'],
-      [{ 'color': [] }, { 'background': [] }],
-      [{ 'script': 'sub' }, { 'script': 'super' }],
-      ['blockquote', 'code-block'],
-      [{ 'list': 'ordered' }, { 'list': 'bullet' }],
-      [{ 'indent': '-1' }, { 'indent': '+1' }],
-      [{ 'align': [] }],
-      ['link', 'image', 'video', 'formula'],
-      ['clean']
+    [{ header: "1" }, { header: "2" }],
+    [{ font: [] }],
+    [{ size: ["small", false, "large", "huge"] }],
+    ["bold", "italic", "underline", "strike"],
+    [{ color: [] }, { background: [] }],
+    [{ script: "sub" }, { script: "super" }],
+    ["blockquote", "code-block"],
+    [{ list: "ordered" }, { list: "bullet" }],
+    [{ indent: "-1" }, { indent: "+1" }],
+    [{ align: [] }],
+    ["link", "image", "video", "formula"],
+    ["clean"],
   ],
 };
 
 const formats = [
-  'header', 'font', 'size',
-  'bold', 'italic', 'underline', 'strike',
-  'color', 'background',
-  'script',
-  'list', 'bullet', 'indent',
-  'align',
-  'link', 'image', 'video', 'formula',
-  'code-block'
+  "header",
+  "font",
+  "size",
+  "bold",
+  "italic",
+  "underline",
+  "strike",
+  "color",
+  "background",
+  "script",
+  "list",
+  "bullet",
+  "indent",
+  "align",
+  "link",
+  "image",
+  "video",
+  "formula",
+  "code-block",
 ];
 
 type Props = {};
@@ -206,6 +218,9 @@ const ViewEditFile: React.FC = (props: Props) => {
 
   const [openDraggable, setOpenDraggable] = useState(false);
   const [remarkForward, setRemarkForward] = useState("");
+  const [drawerOpenUser, setDrawerOpenUser] = useState(false);
+
+  const [drawerData, setDrawerData] = useState<any>([]);
   const handleClickOpenDraggable = () => {
     setOpenDraggable(true);
   };
@@ -675,7 +690,9 @@ const ViewEditFile: React.FC = (props: Props) => {
     await api
       .post(`RouteMemberCycle/GetRouteMemberCycle`, collectData)
       .then((res: any) => {
-        setNodeId(res.data.data);
+        //setNodeId(res.data.data);
+        setDrawerData(res.data.data);
+        setDrawerOpenUser(true);
       });
   };
 
@@ -1174,6 +1191,13 @@ const ViewEditFile: React.FC = (props: Props) => {
           <br />
           <form onSubmit={formik.handleSubmit}>
             <Grid item xs={12} container spacing={1}>
+              <SwipeableDrawerRoute
+              
+                open={drawerOpenUser}
+                onClose={() => setDrawerOpenUser(!drawerOpenUser)}
+                userData={drawerData}
+              />
+
               <Grid item lg={3} md={4} xs={12}>
                 <Autocomplete
                   disablePortal
@@ -2691,7 +2715,7 @@ const ViewEditFile: React.FC = (props: Props) => {
                     </DialogActions>
                   </Dialog>
 
-                  <Dialog
+                  {/* <Dialog
                     open={openDraggable}
                     // onClose={handleClose}
                     // PaperComponent={PaperComponent}
@@ -2771,7 +2795,7 @@ const ViewEditFile: React.FC = (props: Props) => {
                         )}
                       </DialogContentText>
                     </DialogContent>
-                  </Dialog>
+                  </Dialog> */}
                 </>
                 {/* } */}
 

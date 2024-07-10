@@ -655,6 +655,7 @@ const resources = {
         CreateCertificateApply:"Create Certificate Apply",
         EditCertificateApply:"Edit Certificate Apply",
         CertificateApply:"Certificate Apply",
+        StatusMaster:"Status Master",
         
 
 
@@ -1306,6 +1307,7 @@ const resources = {
          CreateCertificateApply:"प्रमाणपत्र बनाएं लागू करें",
          EditCertificateApply:"प्रमाणपत्र संपादित करें लागू करें",
          CertificateApply:"प्रमाणपत्र लागू करें",
+         StatusMaster:"स्टेटस मास्टर",
  
 
 

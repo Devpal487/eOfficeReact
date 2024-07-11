@@ -836,7 +836,7 @@ export default function DocumentIndexing() {
       style={{
         width: "100%",
         backgroundColor: "#E9FDEE",
-        border: ".5px solid #fff ",
+        border: ".5px solid #00009c ",
         marginTop: "3vh",
       }}
     >

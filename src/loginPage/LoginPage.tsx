@@ -17,6 +17,7 @@ import MiniDrawer from "../components/common/Sidebar";
 
 export default function LoginPage() {
   const [loading, setLoading] = React.useState(false);
+  const [dataLoading, setDataLoading] = React.useState(true);
   const [success, setSuccess] = React.useState(false);
   const timer = React.useRef<ReturnType<typeof setTimeout>>();
 
@@ -26,6 +27,7 @@ export default function LoginPage() {
 
   React.useEffect(() => {
     localStorage.clear();
+    sessionStorage.clear();
     dynamicData();
     return () => {
       clearTimeout(timer.current);
@@ -37,8 +39,12 @@ export default function LoginPage() {
     const collectData = {
       id:1
     }
+    setDataLoading(true); 
     api.post(`Institute_Master/GetInstitute_Master`,collectData)
     .then((res:any) => {
+      timer.current = setTimeout(() => {
+        setDataLoading(false);
+      }, 1000);
       // console.log("🚀 ~ dynamicData ~ res:", res.data.data)
       if(res.data.data.length >0){
         localStorage.setItem("sidelogo", res.data.data[0]["instLogo"]);
@@ -102,11 +108,12 @@ export default function LoginPage() {
             setLoading(false);
           }, 1000);
         } else {
+          formik.resetForm();
           toast.error(response.data.mesg);
           setLoading(false);
         }
       } catch (error) {
-        toast.error("Login Failed");
+        // toast.error("Login Failed catch");
         setLoading(false);
       }
     }
@@ -129,6 +136,7 @@ export default function LoginPage() {
       const response = await axios.post(HOST_URL + `Auth/USERLOGIN`, values);
       if (response.data.isSuccess) {
         localStorage.setItem("userdata", JSON.stringify(response.data.data));
+        //sessionStorage.setItem("userdata", JSON.stringify(response.data.data));
         localStorage.setItem("useR_ID",JSON.stringify(response.data.data[0]["userdetail"][0]["useR_ID"]));
         sessionStorage.setItem("token",JSON.stringify(response.data.data[0]["token"]));
         getNodeData(response.data.data[0]["userdetail"][0]["useR_ID"]);
@@ -136,6 +144,7 @@ export default function LoginPage() {
         formik.resetForm();
         navigate(`/home`);
       } else {
+        formik.resetForm();
         toast.error(response.data.mesg);
       }
     },
@@ -143,16 +152,36 @@ export default function LoginPage() {
 
   return (
     <>
+    {
+          dataLoading ? (
+            <div className="loading-container" style={{display:"flex", alignItems:"center", justifyContent:"center",  minHeight: "100vh", flexDirection: "column" }}>
+        <>
+          <CircularProgress color="success" size={40} />
+          <p style={{ marginTop: "10px", textAlign: "center" }}>Loading application...</p>
+          </>
+        </div>
+      ) :
+    (
       <div
         className={`loginContainer`}
-        style={{ backgroundColor: "rgba(245,245,245,0.7)" }}
+        style={{ 
+          backgroundColor: "#fff",
+         }}
       >
         <div className="forms-container">
-          <div className="signin-signup">
+          <div className="signin-signup" >
             <form
               action="#"
               onSubmit={formik.handleSubmit}
               className="sign-in-form loginForm"
+              style={{
+                // border:"1px solid #00009c",
+                borderRadius:"15px",
+                padding:"2vh",
+                height:"80vh",
+                backgroundColor:"rgba(245,245,245,0.7)",
+                boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.5)"
+              }}
             >
                {data &&(
               <img
@@ -253,7 +282,7 @@ export default function LoginPage() {
           </div>
         </div>
         <ToastApp />
-      </div>
+      </div>)}
     </>
   );
 }

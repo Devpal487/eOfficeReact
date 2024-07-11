@@ -475,7 +475,7 @@ const EmployeeEdit = (props: Props) => {
           padding: "-5px 5px",
           backgroundColor: "#ffffff",
           borderRadius: "5px",
-          border: ".5px solid #FF7722",
+          border: ".5px solid #2B4593",
           marginTop: "3vh",
         }}
       >

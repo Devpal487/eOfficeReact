@@ -19,6 +19,7 @@ export default function LoginPage() {
   const [loading, setLoading] = React.useState(false);
   const [success, setSuccess] = React.useState(false);
   const timer = React.useRef<ReturnType<typeof setTimeout>>();
+  const [IsLoading, setIsLoading] = React.useState(false);
 
   const [data, setData] = React.useState<any>("");
 
@@ -32,24 +33,24 @@ export default function LoginPage() {
     };
   }, []);
 
-  const dynamicData =()=>{
-
+  const dynamicData = () => {
     const collectData = {
-      id:1
-    }
-    api.post(`Institute_Master/GetInstitute_Master`,collectData)
-    .then((res:any) => {
-      // console.log("🚀 ~ dynamicData ~ res:", res.data.data)
-      if(res.data.data.length >0){
-        localStorage.setItem("sidelogo", res.data.data[0]["instLogo"]);
-        localStorage.setItem("applogo", res.data.data[0]["reportheaderimg"]);
-        localStorage.setItem("name", res.data.data[0]["insname"]);
-        localStorage.setItem("mclr", res.data.data[0]["mBackColor"]);
-        localStorage.setItem("oclr", res.data.data[0]["mOverColor"]);
-      setData(res.data.data)
-      }
-    })
-  }
+      id: 1,
+    };
+    api
+      .post(`Institute_Master/GetInstitute_Master`, collectData)
+      .then((res: any) => {
+        // console.log("🚀 ~ dynamicData ~ res:", res.data.data)
+        if (res.data.data.length > 0) {
+          localStorage.setItem("sidelogo", res.data.data[0]["instLogo"]);
+          localStorage.setItem("applogo", res.data.data[0]["reportheaderimg"]);
+          localStorage.setItem("name", res.data.data[0]["insname"]);
+          localStorage.setItem("mclr", res.data.data[0]["mBackColor"]);
+          localStorage.setItem("oclr", res.data.data[0]["mOverColor"]);
+          setData(res.data.data);
+        }
+      });
+  };
 
   const getNodeData = async (id: any) => {
     const collectData = {
@@ -64,8 +65,14 @@ export default function LoginPage() {
     );
     if (response.data.isSuccess) {
       localStorage.setItem("id", JSON.stringify(response.data.data[0]["id"]));
-      localStorage.setItem("nodeID", JSON.stringify(response.data.data[0]["nodeID"]));
-      localStorage.setItem("nodeName",JSON.stringify(response.data.data[0]["name"]));
+      localStorage.setItem(
+        "nodeID",
+        JSON.stringify(response.data.data[0]["nodeID"])
+      );
+      localStorage.setItem(
+        "nodeName",
+        JSON.stringify(response.data.data[0]["name"])
+      );
       localStorage.setItem("inst_id", "1");
       // toast.success(response.data.mesg);
     } else {
@@ -124,136 +131,162 @@ export default function LoginPage() {
       collageID: "1",
       packageID: "1",
     },
+  
     validationSchema: validationSchema,
+  
     onSubmit: async (values) => {
-      const response = await axios.post(HOST_URL + `Auth/USERLOGIN`, values);
-      if (response.data.isSuccess) {
-        localStorage.setItem("userdata", JSON.stringify(response.data.data));
-        localStorage.setItem("useR_ID",JSON.stringify(response.data.data[0]["userdetail"][0]["useR_ID"]));
-        sessionStorage.setItem("token",JSON.stringify(response.data.data[0]["token"]));
-        getNodeData(response.data.data[0]["userdetail"][0]["useR_ID"]);
-        toast.success(response.data.mesg);
-        formik.resetForm();
-        navigate(`/home`);
-      } else {
-        toast.error(response.data.mesg);
+      setIsLoading(true);
+      try {
+        const response = await axios.post(HOST_URL + `Auth/USERLOGIN`, values);
+        console.log('checkResponse',response.data); // Debugging step
+        if (response.data.isSuccess) {
+          localStorage.setItem("userdata", JSON.stringify(response.data.data));
+          localStorage.setItem(
+            "useR_ID",
+            JSON.stringify(response.data.data[0]["userdetail"][0]["useR_ID"])
+          );
+          sessionStorage.setItem(
+            "token",
+            JSON.stringify(response.data.data[0]["token"])
+          );
+          getNodeData(response.data.data[0]["userdetail"][0]["useR_ID"]);
+          toast.success(response.data.mesg);
+          formik.resetForm();
+          navigate(`/home`);
+        } else {
+          toast.error(response.data.mesg);
+        }
+      } catch (error) {
+        console.error('check Error',error); // Debugging step
+        toast.error("An error occurred. Please try again.");
+      } finally {
+        setIsLoading(false);
       }
     },
   });
-
   return (
     <>
-      <div
-        className={`loginContainer`}
-        style={{ backgroundColor: "rgba(245,245,245,0.7)" }}
-      >
-        <div className="forms-container">
-          <div className="signin-signup">
-            <form
-              action="#"
-              onSubmit={formik.handleSubmit}
-              className="sign-in-form loginForm"
-            >
-               {data &&(
-              <img
-                alt="Active"
-                src={data[0]["instLogo"]}
-                style={{ height: "15vh", width: "15vh", marginBottom: "20px" }}
-              />)}
-              <div>
-                <h3 className="loginh3" style={{ fontSize: "25px" }}>
-                {data && `${data[0]["shortName"]} : ${data[0]["insname"]}` }
+      {IsLoading ? (
+        <CircularProgress size={24} style={{ color: "green" }} />
+      ) : (
+        <div
+          className={`loginContainer`}
+          style={{ backgroundColor: "rgba(245,245,245,0.7)" }}
+        >
+          <div className="forms-container">
+            <div className="signin-signup">
+              <form
+                action="#"
+                onSubmit={formik.handleSubmit}
+                className="sign-in-form loginForm"
+              >
+                {data && (
+                  <img
+                    alt="Active"
+                    src={data[0]["instLogo"]}
+                    style={{
+                      height: "15vh",
+                      width: "15vh",
+                      marginBottom: "20px",
+                    }}
+                  />
+                )}
+                <div>
+                  <h3 className="loginh3" style={{ fontSize: "25px" }}>
+                    {data && `${data[0]["shortName"]} : ${data[0]["insname"]}`}
                   </h3>
-              </div>
-              <br />
-              <div className="input-field">
-                <FontAwesomeIcon
-                  icon={faUser}
-                  className="my-auto mx-auto"
-                  style={{ alignSelf: "center", paddingLeft: "12px" }}
-                />
-                <input
-                  className="LoginInput"
-                  type="text"
-                  name="useR_ID"
-                  id="useR_ID"
-                  value={formik.values.useR_ID}
-                  required
-                  placeholder="username"
-                  onChange={formik.handleChange}
-                />
-              </div>
-              <div className="input-field">
-                <FontAwesomeIcon
-                  icon={faLock}
-                  className="my-auto mx-auto"
-                  style={{ alignSelf: "center", paddingLeft: "12px" }}
-                />
-                <input
-                  className="LoginInput"
-                  type="password"
-                  required
-                  name="password"
-                  id="password"
-                  value={formik.values.password}
-                  placeholder="password"
-                  onChange={formik.handleChange}
-                />
-              </div>
-              <div
-                className="input-field"
-                style={{
-                  display: "flex",
-                  flexDirection: "row",
-                  alignItems: "center",
-                  justifyContent: "space-around",
-                  gap: 10,
-                  backgroundColor: "rgb(250 250 250)",
-                }}
-              >
-                <Button
-                  variant="contained"
-                  color="success"
-                  disabled={loading}
-                  onClick={handleButtonClick}
+                </div>
+                <br />
+                <div className="input-field">
+                  <FontAwesomeIcon
+                    icon={faUser}
+                    className="my-auto mx-auto"
+                    style={{ alignSelf: "center", paddingLeft: "12px" }}
+                  />
+                  <input
+                    className="LoginInput"
+                    type="text"
+                    name="useR_ID"
+                    id="useR_ID"
+                    value={formik.values.useR_ID}
+                    required
+                    placeholder="username"
+                    onChange={formik.handleChange}
+                  />
+                </div>
+                <div className="input-field">
+                  <FontAwesomeIcon
+                    icon={faLock}
+                    className="my-auto mx-auto"
+                    style={{ alignSelf: "center", paddingLeft: "12px" }}
+                  />
+                  <input
+                    className="LoginInput"
+                    type="password"
+                    required
+                    name="password"
+                    id="password"
+                    value={formik.values.password}
+                    placeholder="password"
+                    onChange={formik.handleChange}
+                  />
+                </div>
+                <div
+                  className="input-field"
+                  style={{
+                    display: "flex",
+                    flexDirection: "row",
+                    alignItems: "center",
+                    justifyContent: "space-around",
+                    gap: 10,
+                    backgroundColor: "rgb(250 250 250)",
+                  }}
                 >
-                  {loading ? (
-                    <CircularProgress size={24} style={{ color: "green" }} />
-                  ) : (
-                    "Sign In"
-                  )}
-                </Button>
-                <Button
-                  variant="contained"
-                  color="error"
-                  // sx={buttonSx}
-                  disabled={loading}
-                  onClick={(e) => formik.resetForm()}
-                >
-                  Reset
-                </Button>
-              </div>
-            </form>
+                  <Button
+                    variant="contained"
+                    color="success"
+                    disabled={loading}
+                    onClick={handleButtonClick}
+                  >
+                    {loading ? (
+                      <CircularProgress size={24} style={{ color: "green" }} />
+                    ) : (
+                      "Sign In"
+                    )}
+                  </Button>
+                  <Button
+                    variant="contained"
+                    color="error"
+                    // sx={buttonSx}
+                    disabled={loading}
+                    onClick={(e) => formik.resetForm()}
+                  >
+                    Reset
+                  </Button>
+                </div>
+              </form>
+            </div>
           </div>
-        </div>
-        <div className="panels-container">
-          <div className="panel left-panel">
-            <div className="content">
-              <div
-                style={{ backgroundSize: "cover", mixBlendMode: "multiply" }}
-              >
-                {data &&
-                <img
-                  alt="Active"
-                  src={data[0]["instImage"]}
-                  style={{ height: "60vh", width: "80vh" }}
-                />}
+          <div className="panels-container">
+            <div className="panel left-panel">
+              <div className="content">
+                <div
+                  style={{ backgroundSize: "cover", mixBlendMode: "multiply" }}
+                >
+                  {data && (
+                    <img
+                      alt="Active"
+                      src={data[0]["instImage"]}
+                      style={{ height: "60vh", width: "80vh" }}
+                    />
+                  )}
+                </div>
               </div>
             </div>
           </div>
+          <ToastApp />
         </div>
-        <ToastApp />
-      </div>
+      )}
     </>
   );
 }

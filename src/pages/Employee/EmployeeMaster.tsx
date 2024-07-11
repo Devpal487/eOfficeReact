@@ -343,6 +343,7 @@ export default function EmployeeMaster() {
         style={{
           width: "100%",
           backgroundColor: "#E9FDEE",
+          border: ".5px solid #2B4593",
           marginTop: "3vh"
         }}
       >

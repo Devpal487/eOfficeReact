@@ -186,6 +186,12 @@ export default function UserType() {
                 flex: 1,
                 headerClassName: "MuiDataGrid-colCell",
               },
+              {
+                field: "useR_TYPE_CODE",
+                headerName: t("text.UserTypeCode"),
+                flex: 1,
+                headerClassName: "MuiDataGrid-colCell",
+              },
             ];
             setColumns(columns as any);
           }

@@ -27,14 +27,18 @@ import { toast } from "react-toastify";
 import ToastApp from "../../../ToastApp";
 import { usePermissionData } from "../../../usePermissionData";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { getId } from '../../../utils/Constant'
+import { getdivisionId, getId, getinstId,getISTDate } from '../../../utils/Constant'
 import CustomDataGrid from "../../../utils/CustomDatagrid";
 import CustomLabel from "../../../CustomLable";
 import ButtonWithLoader from "../../../utils/ButtonWithLoader";
+// import {defaultValuestime}
 
 export default function LetterType() {
     const { i18n, t } = useTranslation();
     const ID = getId();
+    let divId = getdivisionId();
+    let instId = getinstId();
+    let {defaultValuestime} = getISTDate();
     const [columns, setColumns] = useState<any>([]);
     const [rows, setRows] = useState<any>([]);
     const [editId, setEditId] = useState(-1);
@@ -222,10 +226,10 @@ export default function LetterType() {
             "lId": -1,
             "lName": "",
             "lNameShortNM": "",
-            "inst_id": 0,
+            "inst_id": instId,
             "user_id": ID,
-            "createdDate": "2024-05-22T09:32:11.847Z",
-            "divisionid": 0
+            "createdDate": defaultValuestime,
+            "divisionid": divId
         },
         validationSchema: validationSchema,
         onSubmit: async (values) => {
@@ -298,17 +302,8 @@ export default function LetterType() {
                         <Divider />
 
                         <Box height={10} />
-                        <Stack direction="row" spacing={2} classes="my-2 mb-2">
-                            <Grid
-                                style={{
-                                    display: "flex",
-                                    flexDirection: "row",
-                                    justifyContent: "space-around",
-                                    alignItems: "center",
-                                }}
-                            >
-                                <form onSubmit={formik.handleSubmit}>
-                                    <Grid item xs={12} container spacing={3}>
+                            <form onSubmit={formik.handleSubmit}>
+                                    <Grid item xs={12} container spacing={2}>
 
                                         <Grid xs={5} sm={5} item>
                                             <TextField
@@ -361,13 +356,11 @@ export default function LetterType() {
                                         </Grid>
                                     </Grid>
                                 </form>
-                            </Grid>
                             <Typography
                                 variant="h6"
                                 component="div"
                                 sx={{ flexGrow: 1 }}
                             ></Typography>
-                        </Stack>
                         {isLoading ? (
                             <div
                                 style={{

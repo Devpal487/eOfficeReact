@@ -745,11 +745,11 @@ export default function UserPermissionMaster() {
           toast.success(res.data.mesg);
           setEnteredRoleName(null);
           setEnteredEployeeName(null);
-
           setOpen(false);
-          let path = `/UserManagement/UserPermissionMaster`;
           getList();
-          navigate(path);
+
+          //let path = `/UserManagement/UserPermissionMaster`;
+          //navigate(path);
         } else {
           toast.error(res.data.mesg);
         }

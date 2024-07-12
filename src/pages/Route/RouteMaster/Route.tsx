@@ -26,20 +26,56 @@ import { toast } from "react-toastify";
 import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
 import SwipeableDrawerRoute from "./SwipeableDrawerRoute";
 import CustomDataGrid from "../../../utils/CustomDatagrid";
+import { useLocation } from "react-router-dom";
 
 
 export default function RouteAdd() {
     const { i18n, t } = useTranslation();
+    const location = useLocation();
     const [rows, setRows] = useState<any>([]);
     const [columns, setColumns] = useState<any>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [drawerOpenUser, setDrawerOpenUser] = useState(false);
     const [drawerData, setDrawerData] = useState<any>([]);
     const [hover, setHover] = useState(null);
+    const [permissionData, setPermissionData] = useState<any>({
+        isAdd: false,
+        isEdit: false,
+        isPrint: false,
+        isDel: false,
+      });
+
 
     useEffect(() => {
-        getList();
+        
+        // getList();
     }, [drawerOpenUser, drawerData]);
+
+       
+    useEffect(() => {
+        const dataString = localStorage.getItem("userdata");
+        if (dataString) {
+          const data = JSON.parse(dataString);
+          if (data && data.length > 0) {
+            const userPermissionData = data[0]?.userPermission;
+            if (userPermissionData && userPermissionData.length > 0) {
+              const menudata = userPermissionData[0]?.parentMenu;
+              for (let index = 0; index < menudata.length; index++) {
+                const childMenudata = menudata[index]?.childMenu;
+                const pathrow = childMenudata.find(
+                  (x: any) => x.path === location.pathname
+                );
+                console.log("data", pathrow);
+                if (pathrow) {
+                  setPermissionData(pathrow);
+                  getList();
+                }
+              }
+            }
+          }
+        }
+    }, [isLoading]);
+
 
     let navigate = useNavigate();
 
@@ -133,7 +169,7 @@ export default function RouteAdd() {
                                             direction="row"
                                             sx={{ alignItems: "center", marginTop: "5px" }}
                                         >
-                                            {/*  {permissionData?.isEdit ? ( */}
+                                         {permissionData?.isEdit ? ( 
                                             <EditIcon
                                                 style={{
                                                     fontSize: "20px",
@@ -143,10 +179,10 @@ export default function RouteAdd() {
                                                 className="cursor-pointer"
                                                 onClick={() => routeChangeEdit(params.row)}
                                             />
-                                            {/* ) : ( */}
-                                            {/*   "" */}
-                                            {/* )} */}
-                                            {/*  {permissionData?.isDel ? ( */}
+                                        ) : ( 
+                                          "" 
+                                        )} 
+                                         {permissionData?.isDel ? ( 
                                             <DeleteIcon
                                                 style={{
                                                     fontSize: "20px",
@@ -157,9 +193,9 @@ export default function RouteAdd() {
                                                     handledeleteClick(params.row.id);
                                                 }}
                                             />
-                                            {/*  ) : ( */}
-                                            {/*  "" */}
-                                            {/* )} */}
+                                         ) : ( 
+                                         "" 
+                                        )} 
                                             <SwipeableDrawerRoute
                                                 open={drawerOpenUser}
                                                 onClose={() =>

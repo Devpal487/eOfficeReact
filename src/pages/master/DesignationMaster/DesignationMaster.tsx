@@ -304,7 +304,7 @@ export default function DesignationMaster() {
            
             <form onSubmit={formik.handleSubmit}>
               <Grid item xs={12} container spacing={2}>
-                <Grid item xs={4}>
+                <Grid item xs={5}>
                 <TextField
                     id="designationName"
                     name="designationName"
@@ -326,7 +326,7 @@ export default function DesignationMaster() {
                 </Grid>
 
 
-                <Grid item xs={4}>
+                <Grid item xs={5}>
                 <TextField
                     id="designationCode"
                     name="designationCode"

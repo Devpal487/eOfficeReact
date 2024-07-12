@@ -238,7 +238,7 @@ export default function FileCategory() {
         toast.success(response.data.mesg);
         formik.resetForm();
         getList();
-        setEditId("-1");
+        setEditId(-1);
       } else {
         setToaster(true);
         toast.error(response.data.mesg);
@@ -301,7 +301,7 @@ export default function FileCategory() {
             <Box height={10} />
             <form onSubmit={formik.handleSubmit}>
               <Grid item xs={12} container spacing={2}>
-                <Grid item xs={4}>
+                <Grid item xs={10}>
                   <TextField
                     label={<CustomLabel text={t("text.EnterFileCategory")} required={requiredFields.includes('fileCatDesc')} />}
                     value={formik.values.fileCatDesc}

@@ -55,6 +55,7 @@ const CommitteeAdd = (props: Props) => {
   const [modalImg, setModalImg] = useState("");
 
   useEffect(()=>{
+    formik.setFieldValue("type", "C")
     getIP();
   },[]);
   const getIP =()=>{
@@ -157,7 +158,8 @@ const CommitteeAdd = (props: Props) => {
         }
       } catch (error) {
         toast.error("An error occurred. Please try again.");
-      }}
+     }
+    }
   });
 
   const requiredFields = ["committeeName", "foundedDate"];

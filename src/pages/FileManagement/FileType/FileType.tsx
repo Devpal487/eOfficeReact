@@ -23,7 +23,7 @@ import { DataGrid, GridColDef, GridToolbar } from "@mui/x-data-grid";
 import { toast } from "react-toastify";
 import ToastApp from "../../../ToastApp";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { getISTDate } from "../../../utils/Constant";
+import { getISTDate,getdivisionId, getId, getinstId } from "../../../utils/Constant";
 import CustomDataGrid from "../../../utils/CustomDatagrid";
 import CustomLabel from "../../../CustomLable";
 import ButtonWithLoader from "../../../utils/ButtonWithLoader";
@@ -37,7 +37,10 @@ interface MenuPermission {
 
 export default function FileType() {
     const { i18n, t } = useTranslation();
-    const { defaultValues, defaultValuestime } = getISTDate();
+    const { defaultValuestime } = getISTDate();
+    let instId = getinstId();
+    let divId = getdivisionId();
+    let userId = getId();
 
     const [columns, setColumns] = useState<any>([]);
     const [rows, setRows] = useState<any>([]);
@@ -221,10 +224,10 @@ export default function FileType() {
             "fId": -1,
             "fName": "",
             "fShortNM": "",
-            "inst_id": 0,
-            "user_id": 0,
+            "inst_id": instId,
+            "user_id": userId,
             "createdDate": defaultValuestime,
-            "divisionid": 0
+            "divisionid": divId
         },
         validationSchema: validationSchema,
         onSubmit: async (values) => {
@@ -301,7 +304,7 @@ export default function FileType() {
                         <Box height={10} />
                         <form onSubmit={formik.handleSubmit}>
                             <Grid item xs={12} container spacing={2}>
-                                <Grid item xs={4}>
+                                <Grid item xs={5}>
                                     <TextField
                                         id="fName"
                                         type="text"
@@ -321,7 +324,7 @@ export default function FileType() {
                                         </div>
                                     ) : null}
                                 </Grid>
-                                <Grid item xs={4}>
+                                <Grid item xs={5}>
                                     <TextField
                                         id="fShortNM"
                                         type="text"

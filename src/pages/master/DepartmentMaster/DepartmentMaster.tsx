@@ -305,7 +305,7 @@ export default function DepartmentMaster() {
            
             <form onSubmit={formik.handleSubmit}>
               <Grid item xs={12} container spacing={2}>
-                <Grid item xs={4}>
+                <Grid item xs={5}>
                   <TextField
                     id="departmentName"
                     name="departmentName"
@@ -327,7 +327,7 @@ export default function DepartmentMaster() {
                 </Grid>
 
 
-                <Grid item xs={4}>
+                <Grid item xs={5}>
                   <TextField
                     id="departmentShortname"
                     name="departmentShortname"

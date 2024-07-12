@@ -28,6 +28,7 @@ import { usePermissionData } from "../../../usePermissionData";
 import DeleteIcon from "@mui/icons-material/Delete";
 import api from "../../../utils/Url";
 import CustomDataGrid from "../../../utils/CustomDatagrid";
+import ButtonWithLoader from "../../../utils/ButtonWithLoader";
 
 interface MenuPermission {
   isAdd: boolean;
@@ -250,6 +251,11 @@ export default function UserType() {
     setEditId(row.id);
   };
 
+  const handleSubmitWrapper = async () => {
+    await formik.handleSubmit();
+  };
+
+
   return (
     <>
       <Grid item lg={6} sm={6} xs={12} sx={{ marginTop: "3vh" }}>
@@ -341,14 +347,30 @@ export default function UserType() {
                     inputProps={{ maxLength: 5 }}
                   />
                 </Grid>
-                <Grid item xs={2}>
-                  {permissionData?.isAdd == true ? (
+                <Grid item xs={2} sx={{m:-1}}>
+                  {/* {permissionData?.isAdd == true ? (
                     <Button type="submit" variant="contained" size="large">
                       {editId == -1 ? t("text.save") : t("text.update")}
                     </Button>
                   ) : (
                     ""
-                  )}
+                  )} */}
+
+{editId === -1 && permissionData?.isAdd && (
+  <ButtonWithLoader
+    buttonText={t("text.save")}
+    onClickHandler={handleSubmitWrapper}
+    fullWidth={true}
+  />
+)}
+
+{editId !== -1 && (
+  <ButtonWithLoader
+    buttonText={t("text.update")}
+    onClickHandler={handleSubmitWrapper}
+    fullWidth={true}
+  />
+)}
                 </Grid>
               </Grid>
             </form>

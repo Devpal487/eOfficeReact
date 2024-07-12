@@ -418,6 +418,7 @@ export default function RoleMaster() {
   };
 
   const routeChangeEdit = (row: any) => {
+    console.log("🚀 ~ 421 ~ routeChangeEdit ~ row:", row)
     // let path = `/master/TaxMasterEdit`;
     // navigate(path, {
     //   state: row,

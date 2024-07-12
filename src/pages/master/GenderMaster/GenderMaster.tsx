@@ -300,7 +300,7 @@ export default function GenderMaster() {
             <Box height={10} />
             <form onSubmit={formik.handleSubmit}>
               <Grid item xs={12} container spacing={2}>
-                <Grid item xs={4}>
+                <Grid item xs={5}>
                   <TextField
                     label={<CustomLabel text={t("text.EnterGenderName")} required={requiredFields.includes('genderName')} />}
                     value={formik.values.genderName}
@@ -321,7 +321,7 @@ export default function GenderMaster() {
                 </Grid>
 
 
-                <Grid item xs={4}>
+                <Grid item xs={5}>
                   <TextField
                     label={<CustomLabel text={t("text.EnterGenderCode")} />}
                     value={formik.values.genderCode}

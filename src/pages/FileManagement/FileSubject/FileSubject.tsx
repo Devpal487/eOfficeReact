@@ -290,7 +290,7 @@ export default function FileSubject() {
                         <Divider />
 
                         <Box height={10} />
-                        <Stack direction="row" spacing={2} classes="my-2 mb-2">
+                        {/* <Stack direction="row" spacing={2} classes="my-2 mb-2">
                             <Grid
                                 style={{
                                     display: "flex",
@@ -298,9 +298,9 @@ export default function FileSubject() {
                                     justifyContent: "space-around",
                                     alignItems: "center",
                                 }}
-                            >
+                            > */}
                                 <form onSubmit={formik.handleSubmit}>
-                                    <Grid item xs={12} container spacing={3}>
+                                    <Grid item xs={12} container spacing={2}>
                                         <Grid item xs={5}>
                                             <TextField
                                                 id="fileSubjectName"
@@ -360,13 +360,13 @@ export default function FileSubject() {
                                         </Grid>
                                     </Grid>
                                 </form>
-                            </Grid>
+                            {/* </Grid> */}
                             <Typography
                                 variant="h6"
                                 component="div"
                                 sx={{ flexGrow: 1 }}
                             ></Typography>
-                        </Stack>
+                        {/* </Stack> */}
                         {isLoading ? (
                             <div
                                 style={{

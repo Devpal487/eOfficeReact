@@ -178,7 +178,7 @@ export default function MiniDrawer({ items }: any) {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [collapseIndex, setCollapseIndex] = React.useState<any>(-1);
   const [openlogo, setOpenlogo] = React.useState(true);
-  const [homeColor, setHomeColor] = React.useState("sidebarMainColor");
+  const [homeColor, setHomeColor] = React.useState("inherit");
 
   const [selectedSubMenu, setSelectedSubMenu] = React.useState(null);
 
@@ -474,7 +474,7 @@ export default function MiniDrawer({ items }: any) {
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
     setMenuOpen(true);
-    setHomeColor("sidebarMainColor");
+    setHomeColor("#00009c");
   };
 
   const handleClose = () => {
@@ -1062,7 +1062,7 @@ export default function MiniDrawer({ items }: any) {
                           color:
                             index === collapseIndex
                               ? sidebarMainColor
-                              : sidebarOverColor,
+                              : "inherit",
                         }}
                         title={text.name}
                       >
@@ -1112,7 +1112,7 @@ export default function MiniDrawer({ items }: any) {
                             backgroundColor:
                               selectedSubMenu == index2
                                 ? sidebarMainColor
-                                : sidebarOverColor,
+                                : "inherit",
                             color:
                               selectedSubMenu == index2 ? "white" : "black",
                             borderRadius: "10px",
@@ -1159,11 +1159,11 @@ export default function MiniDrawer({ items }: any) {
 
                                 color: open
                                   ? sidebarMainColor
-                                  : sidebarOverColor,
+                                  : "inherit",
                                 backgroundColor:
                                   selectedSubMenu == index2
                                     ? sidebarMainColor
-                                    : sidebarOverColor,
+                                    : "inherit",
 
                                 Color:
                                   selectedSubMenu == index2 ? "white" : "black",

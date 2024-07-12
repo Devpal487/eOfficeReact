@@ -188,7 +188,7 @@ export default function DepartmentMaster() {
               },
               {
                 field: "departmentShortname",
-                headerName: t("text.ShortName"),
+                headerName: t("text.deptCode"),
                 flex: 1,
                 headerClassName: "MuiDataGrid-colCell",
               },

@@ -656,6 +656,7 @@ const resources = {
         EditCertificateApply:"Edit Certificate Apply",
         CertificateApply:"Certificate Apply",
         StatusMaster:"Status Master",
+        UserTypeCode:"User Type Code",
         
 
 
@@ -1308,6 +1309,7 @@ const resources = {
          EditCertificateApply:"प्रमाणपत्र संपादित करें लागू करें",
          CertificateApply:"प्रमाणपत्र लागू करें",
          StatusMaster:"स्टेटस मास्टर",
+         UserTypeCode:"उपयोगकर्ता प्रकार कोड",
  
 
 

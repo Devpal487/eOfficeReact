@@ -243,7 +243,8 @@ export default function RouteAdd() {
                     style={{
                         width: "100%",
                         height: "50%",
-                        backgroundColor: "#E9FDEE",
+        border: ".5px solid #00009c ",
+        backgroundColor: "#E9FDEE",
                         marginTop: "5px",
                     }}
                 >

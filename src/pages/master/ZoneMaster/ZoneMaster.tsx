@@ -7,13 +7,7 @@ import {
   Divider,
   Stack,
   Grid,
-  TextField,
   Typography,
-  RadioGroup,
-  FormControlLabel,
-  FormControl,
-  Radio,
-  FormLabel
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import Switch from "@mui/material/Switch";
@@ -384,7 +378,7 @@ export default function ZoneMaster() {
 
               <Box height={10} />
               <form onSubmit={formik.handleSubmit} style={{ marginLeft: "20px" }}>
-                <Grid item xs={12} container spacing={3}>
+                <Grid item xs={12} container spacing={2}>
 
                   <Grid xs={5} sm={5} item>
                     <EnglishToHindiConverter

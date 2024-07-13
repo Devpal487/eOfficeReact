@@ -44,13 +44,6 @@ export default function RouteAdd() {
         isPrint: false,
         isDel: false,
       });
-
-
-    useEffect(() => {
-        
-        // getList();
-    }, [drawerOpenUser, drawerData]);
-
        
     useEffect(() => {
         const dataString = localStorage.getItem("userdata");
@@ -74,7 +67,7 @@ export default function RouteAdd() {
             }
           }
         }
-    }, [isLoading]);
+    }, [isLoading,drawerOpenUser, drawerData]);
 
 
     let navigate = useNavigate();
@@ -260,6 +253,7 @@ export default function RouteAdd() {
         console.log(row);
         setDrawerData([row]);
         console.log(drawerData);
+        console.log("drawerOpen",drawerOpenUser)
 
         if (drawerOpenUser) {
             setDrawerOpenUser(false);
@@ -279,8 +273,8 @@ export default function RouteAdd() {
                     style={{
                         width: "100%",
                         height: "50%",
-        border: ".5px solid #00009c ",
-        backgroundColor: "#E9FDEE",
+                        border: ".5px solid #00009c ",
+                        backgroundColor: "#E9FDEE",
                         marginTop: "5px",
                     }}
                 >

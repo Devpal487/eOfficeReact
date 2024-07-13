@@ -638,7 +638,7 @@ export default function MiniDrawer({ items }: any) {
               <MenuIcon fontSize="large" />
             </IconButton>
 
-            {!openlogo && <img src={appLogo} width={60} height={60} />}
+            {!openlogo && <img src={appLogo} width={60} height={60} onClick={()=>handleClickhome()} style={{cursor:"pointer"}}/>}
           </div>
 
           <div style={{ fontSize: "25px" }}>{headerName}</div>
@@ -887,10 +887,10 @@ export default function MiniDrawer({ items }: any) {
                     paddingBottom: "25px",
                   }}
                 >
-                  <img src={sideLogo} width={100} height={100} />
+                  <img src={sideLogo} width={100} height={100} onClick={()=>handleClickhome()} style={{cursor:"pointer"}}/>
                 </div>
               ) : (
-                <div style={{ padding: 0 }}></div>
+                ""
               )}
             </Stack>
 

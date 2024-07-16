@@ -28,6 +28,10 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import CustomDataGrid from "../../../utils/CustomDatagrid";
 import CustomLabel from "../../../CustomLable";
 import ButtonWithLoader from "../../../utils/ButtonWithLoader";
+import Languages from "../../../Languages";
+import { Language, ReactTransliterate } from "react-transliterate";
+import "react-transliterate/dist/index.css";
+
 
 interface MenuPermission {
   isAdd: boolean;
@@ -46,7 +50,7 @@ export default function Jurisdiction() {
   const [editId, setEditId] = useState<any>(-1);
   const location = useLocation();
   const [isLoading, setIsLoading] = useState(true);
-
+  const [lang, setLang] = useState<Language>("en");
   const [NodeOption, setNodeOption] = useState([{ value: "-1", label: t("text.SelectNode") }]);
 
   const [permissionData, setPermissionData] = useState<MenuPermission>({
@@ -55,7 +59,6 @@ export default function Jurisdiction() {
     isPrint: false,
     isDel: false,
   });
-
 
   const getNode = () => {
     const collectData = {
@@ -74,9 +77,6 @@ export default function Jurisdiction() {
         setNodeOption(arr);
       });
   };
-
-
-
 
   useEffect(() => {
     const dataString = localStorage.getItem("userdata");
@@ -107,9 +107,6 @@ export default function Jurisdiction() {
 
   }, [isLoading,location.pathname]);
   
-  console.log("permissionData", permissionData?.isAdd);
-  console.log("permissionData", permissionData?.isEdit);
-
   useEffect(()=>{
   getNode();
 },[])
@@ -131,8 +128,8 @@ export default function Jurisdiction() {
         }
       });
   };
+
   const reject = () => {
-    // toast.warn({summary: 'Rejected', detail: 'You have rejected', life: 3000 });
     toast.warn("Rejected: You have rejected", { autoClose: 3000 });
   };
 
@@ -246,6 +243,7 @@ export default function Jurisdiction() {
       // setIsLoading(false);
     }
   };
+
   const validationSchema = Yup.object({
     nodeID: Yup.string().test(
       "required",
@@ -255,7 +253,9 @@ export default function Jurisdiction() {
       }
     ),
   });
+
   const [toaster, setToaster] = useState(false);
+
   const formik = useFormik({
     initialValues: {
 
@@ -304,6 +304,10 @@ export default function Jurisdiction() {
     await formik.handleSubmit();
   };
 
+  const handleConversionChange = (params: any, text: string) => {
+    formik.setFieldValue(params, text);
+  };
+
 
   return (
     <>
@@ -331,15 +335,34 @@ export default function Jurisdiction() {
             style={{ padding: "10px" }}
           >
             <ConfirmDialog />
+            <Grid item xs={12} container spacing={2}>
+            <Grid item lg={10} md={10} xs={12}>
             <Typography
-              gutterBottom
-              variant="h5"
-              component="div"
-              sx={{ padding: "20px" }}
-              align="left"
-            >
-              {t("text.JurisdictionMaster")}
-            </Typography>
+            gutterBottom
+            variant="h5"
+            component="div"
+            sx={{ padding: "20px" }}
+            align="left"
+          >
+            {t("text.JurisdictionMaster")}
+          </Typography>
+            </Grid>
+
+            <Grid item lg={2} md={2} xs={12} marginTop={2}>
+              <select
+                className="language-dropdown"
+                value={lang}
+                onChange={(e) => setLang(e.target.value as Language)}
+              >
+                {Languages.map((l) => (
+                  <option key={l.value} value={l.value}>
+                    {l.label}
+                  </option>
+                ))}
+              </select>
+            </Grid>
+          </Grid>
+           
             <Divider />
 
             <Box height={10} />
@@ -384,16 +407,21 @@ export default function Jurisdiction() {
                 <Grid item xs={5} sm={5}>
                   <TextField
                     type="text"
-                    name="name"
-                    id="name"
                     label={<CustomLabel text={t("text.EnterJurisdictionName")} required={requiredFields.includes('name')} />}
-                    value={formik.values.name}
-                    placeholder={t("text.EnterJurisdictionName")}
                     size="small"
                     fullWidth
                     style={{ backgroundColor: "white", borderColor: formik.touched.name && formik.errors.name ? 'red' : 'initial', }}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
+                    InputProps={{
+                      inputComponent: ReactTransliterate as any,
+                      inputProps: {
+                        value: formik.values.name,
+                        onChangeText: (text: string) =>
+                          handleConversionChange("name", text),
+                        lang,
+                        placeholder: t("text.EnterJurisdictionName"),
+                        id: "react-transliterate-input",
+                      },
+                    }}
                   />
                   {formik.touched.name && formik.errors.name ? (
                     <div style={{ color: "red", margin: "5px" }}>

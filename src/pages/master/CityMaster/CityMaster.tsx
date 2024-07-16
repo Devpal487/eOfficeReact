@@ -28,6 +28,9 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import CustomDataGrid from "../../../utils/CustomDatagrid";
 import CustomLabel from "../../../CustomLable";
 import ButtonWithLoader from "../../../utils/ButtonWithLoader";
+import Languages from "../../../Languages";
+import { Language, ReactTransliterate } from "react-transliterate";
+import "react-transliterate/dist/index.css";
 
 interface MenuPermission {
     isAdd: boolean;
@@ -36,28 +39,24 @@ interface MenuPermission {
     isDel: boolean;
 }
 
-
 export default function FileMaster() {
     const { i18n, t } = useTranslation();
     const { defaultValuestime } = getISTDate();
-
     const [columns, setColumns] = useState<any>([]);
     const [rows, setRows] = useState<any>([]);
     const [editId, setEditId] = useState<any>(-1);
     const location = useLocation();
     const [isLoading, setIsLoading] = useState(true);
-
     const [option, setOption] = useState([
         { value: "-1", label: t("text.SelectStateName") },
     ]);
-
     const [permissionData, setPermissionData] = useState<MenuPermission>({
         isAdd: false,
         isEdit: false,
         isPrint: false,
         isDel: false,
     });
-
+    const [lang, setLang] = useState<Language>("en");
 
     useEffect(() => {
         const dataString = localStorage.getItem("userdata");
@@ -84,9 +83,6 @@ export default function FileMaster() {
         getStateZone();
 
     }, [isLoading,location.pathname]);
-
-
-
 
     const getStateZone = () => {
         const collectData = {
@@ -236,6 +232,7 @@ export default function FileMaster() {
             // setIsLoading(false);
         }
     };
+
     const validationSchema = Yup.object({
         stateId: Yup.string().test(
             "required",
@@ -245,7 +242,9 @@ export default function FileMaster() {
             }
         ),
     });
+
     const [toaster, setToaster] = useState(false);
+
     const formik = useFormik({
         initialValues: {
             cityId: -1,
@@ -293,6 +292,10 @@ export default function FileMaster() {
         await formik.handleSubmit();
     };
 
+    const handleConversionChange = (params: any, text: string) => {
+        formik.setFieldValue(params, text);
+      };
+    
 
     return (
         <>
@@ -309,26 +312,39 @@ export default function FileMaster() {
                     <Paper
                         sx={{
                             width: "100%",
-                            overflow: "hidden",
-                            "& .MuiDataGrid-colCell": {
-                                backgroundColor: "#00009C",
-                                color: "#fff",
-                                fontSize: 18,
-                                fontWeight: 800,
-                            },
+                            overflow: "hidden"
                         }}
                         style={{ padding: "10px" }}
                     >
                         <ConfirmDialog />
-                        <Typography
-                            gutterBottom
-                            variant="h5"
-                            component="div"
-                            sx={{ padding: "20px" }}
-                            align="left"
-                        >
-                            {t("text.DistrictMaster")}
-                        </Typography>
+
+                        <Grid item xs={12} container spacing={2}>
+            <Grid item lg={10} md={10} xs={12}>
+            <Typography
+            gutterBottom
+            variant="h5"
+            component="div"
+            sx={{ padding: "20px" }}
+            align="left"
+          >
+            {t("text.DistrictMaster")}
+          </Typography>
+            </Grid>
+
+            <Grid item lg={2} md={2} xs={12} marginTop={2}>
+              <select
+                className="language-dropdown"
+                value={lang}
+                onChange={(e) => setLang(e.target.value as Language)}
+              >
+                {Languages.map((l) => (
+                  <option key={l.value} value={l.value}>
+                    {l.label}
+                  </option>
+                ))}
+              </select>
+            </Grid>
+          </Grid>
                         <Divider />
 
                         <Box height={10} />
@@ -370,16 +386,20 @@ export default function FileMaster() {
 
                                 <Grid item xs={5} sm={5}>
                                     <TextField
-                                        label={<CustomLabel text={t("text.EnterDistrictName")} required={requiredFields.includes('cityName')} />}
-                                        value={formik.values.cityName}
-                                        name="cityName"
-                                        id="cityName"
-                                        placeholder={t("text.EnterDistrictName")}
+                                        label={<CustomLabel text={t("text.EnterDistrictName")} required={false} />}
                                         size="small"
                                         fullWidth
-                                        style={{ backgroundColor: "white" }}
-                                        onChange={formik.handleChange}
-                                        onBlur={formik.handleBlur}
+                                        InputProps={{
+                                            inputComponent: ReactTransliterate as any,
+                                            inputProps: {
+                                              value: formik.values.cityName,
+                                              onChangeText: (text: string) =>
+                                                handleConversionChange("cityName", text),
+                                              lang,
+                                              placeholder: t("text.EnterDistrictName"),
+                                              id: "react-transliterate-input",
+                                            },
+                                          }}
                                     />
                                     {formik.touched.cityName && formik.errors.cityName ? (
                                         <div style={{ color: "red", margin: "5px" }}>

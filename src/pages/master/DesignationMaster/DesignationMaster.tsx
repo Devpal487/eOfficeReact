@@ -12,8 +12,6 @@ import {
 import EditIcon from "@mui/icons-material/Edit";
 import Card from "@mui/material/Card";
 import Grid from "@mui/material/Grid";
-import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
 import api from "../../../utils/Url";
 import { useLocation } from "react-router-dom";
@@ -24,12 +22,14 @@ import { useTranslation } from "react-i18next";
 import { DataGrid, GridColDef, GridToolbar } from "@mui/x-data-grid";
 import { toast } from "react-toastify";
 import ToastApp from "../../../ToastApp";
-import { usePermissionData } from "../../../usePermissionData";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { getISTDate } from "../../../utils/Constant";
 import CustomDataGrid from "../../../utils/CustomDatagrid";
 import CustomLabel from "../../../CustomLable";
 import ButtonWithLoader from "../../../utils/ButtonWithLoader";
+import Languages from "../../../Languages";
+import { Language, ReactTransliterate } from "react-transliterate";
+import "react-transliterate/dist/index.css";
 
 interface MenuPermission {
   isAdd: boolean;
@@ -53,6 +53,7 @@ export default function DesignationMaster() {
     isPrint: false,
     isDel: false,
   });
+  const [lang, setLang] = useState<Language>("en");
 
   useEffect(() => {
     const dataString = localStorage.getItem("userdata");
@@ -263,6 +264,11 @@ export default function DesignationMaster() {
     await formik.handleSubmit();
   };
 
+  const handleConversionChange = (params: any, text: string) => {
+    formik.setFieldValue(params, text);
+  };
+
+
   return (
     <>
       <Grid item lg={6} sm={6} xs={12} sx={{ marginTop: "3vh" }}>
@@ -289,15 +295,35 @@ export default function DesignationMaster() {
             style={{ padding: "10px" }}
           >
             <ConfirmDialog />
+
+            <Grid item xs={12} container spacing={2}>
+            <Grid item lg={10} md={10} xs={12}>
             <Typography
-              gutterBottom
-              variant="h5"
-              component="div"
-              sx={{ padding: "20px" }}
-              align="left"
-            >
-              {t("text.DesignationMaster")}
-            </Typography>
+            gutterBottom
+            variant="h5"
+            component="div"
+            sx={{ padding: "20px" }}
+            align="left"
+          >
+            {t("text.DesignationMaster")}
+          </Typography>
+            </Grid>
+
+            <Grid item lg={2} md={2} xs={12} marginTop={2}>
+              <select
+                className="language-dropdown"
+                value={lang}
+                onChange={(e) => setLang(e.target.value as Language)}
+              >
+                {Languages.map((l) => (
+                  <option key={l.value} value={l.value}>
+                    {l.label}
+                  </option>
+                ))}
+              </select>
+            </Grid>
+          </Grid>
+           
             <Divider />
 
             <Box height={10} />
@@ -306,19 +332,20 @@ export default function DesignationMaster() {
               <Grid item xs={12} container spacing={2}>
                 <Grid item xs={5}>
                 <TextField
-                    id="designationName"
-                    name="designationName"
                     label={<CustomLabel text={t("text.enterDesName")} required={requiredFields.includes('designationName')}  />}
-                    value={formik.values.designationName}
-                    placeholder={t("text.enterDesName")}
                     size="small"
                     fullWidth
-                    style={{
-                      backgroundColor: 'white',
-                      borderColor: formik.touched.designationName && formik.errors.designationName ? 'red' : 'initial',
+                    InputProps={{
+                      inputComponent: ReactTransliterate as any,
+                      inputProps: {
+                        value: formik.values.designationName,
+                        onChangeText: (text: string) =>
+                          handleConversionChange("designationName", text),
+                        lang,
+                        placeholder: t("text.enterDesName"),
+                        id: "react-transliterate-input",
+                      },
                     }}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
                   />
                   {formik.touched.designationName && formik.errors.designationName ? (
                     <div style={{color:"red", margin:"5px"}}>{formik.errors.designationName}</div>

@@ -27,6 +27,10 @@ import { getISTDate,getdivisionId, getId, getinstId } from "../../../utils/Const
 import CustomDataGrid from "../../../utils/CustomDatagrid";
 import CustomLabel from "../../../CustomLable";
 import ButtonWithLoader from "../../../utils/ButtonWithLoader";
+import Languages from "../../../Languages";
+import { Language, ReactTransliterate } from "react-transliterate";
+import "react-transliterate/dist/index.css";
+
 
 interface MenuPermission {
     isAdd: boolean;
@@ -53,6 +57,7 @@ export default function FileType() {
         isPrint: false,
         isDel: false,
     });
+    const [lang, setLang] = useState<Language>("en");
 
     useEffect(() => {
         const dataString = localStorage.getItem("userdata");
@@ -264,6 +269,11 @@ export default function FileType() {
         await formik.handleSubmit();
       };
     
+    const handleConversionChange = (params: any, text: string) => {
+    formik.setFieldValue(params, text);
+    };
+
+
     return (
         <>
             <Grid item lg={6} sm={6} xs={12} sx={{ marginTop: "3vh" }}>
@@ -279,26 +289,40 @@ export default function FileType() {
                     <Paper
                         sx={{
                             width: "100%",
-                            overflow: "hidden",
-                            "& .MuiDataGrid-colCell": {
-                                backgroundColor: "#2B4593",
-                                color: "#fff",
-                                fontSize: 18,
-                                fontWeight: 800,
-                            },
+                            overflow: "hidden"
                         }}
                         style={{ padding: "10px" }}
                     >
                         <ConfirmDialog />
-                        <Typography
-                            gutterBottom
-                            variant="h5"
-                            component="div"
-                            sx={{ padding: "20px" }}
-                            align="left"
-                        >
-                            {t("text.FileType")}
-                        </Typography>
+
+                        <Grid item xs={12} container spacing={2}>
+            <Grid item lg={10} md={10} xs={12}>
+              <Typography
+                gutterBottom
+                variant="h5"
+                component="div"
+                sx={{ padding: "20px" }}
+                align="left"
+              >
+                {t("text.FileType")}
+              </Typography>
+            </Grid>
+
+            <Grid item lg={2} md={2} xs={12} marginTop={2}>
+              <select
+                className="language-dropdown"
+                value={lang}
+                onChange={(e) => setLang(e.target.value as Language)}
+              >
+                {Languages.map((l) => (
+                  <option key={l.value} value={l.value}>
+                    {l.label}
+                  </option>
+                ))}
+              </select>
+            </Grid>
+          </Grid>
+
                         <Divider />
 
                         <Box height={10} />
@@ -306,16 +330,22 @@ export default function FileType() {
                             <Grid item xs={12} container spacing={2}>
                                 <Grid item xs={5}>
                                     <TextField
-                                        id="fName"
                                         type="text"
                                         label={<CustomLabel text={t("text.EnterFileTypeName")} required={requiredFields.includes('fName')} />}
-                                        placeholder={t("text.EnterFileTypeName")}
-                                        value={formik.values.fName}
                                         size="small"
                                         name="fName"
                                         fullWidth
-                                        onChange={formik.handleChange}
-                                        onBlur={formik.handleBlur}
+                                        InputProps={{
+                                            inputComponent: ReactTransliterate as any,
+                                            inputProps: {
+                                              value: formik.values.fName,
+                                              onChangeText: (text: string) =>
+                                                handleConversionChange("fName", text),
+                                              lang,
+                                              placeholder: t("text.EnterFileTypeName"),
+                                              id: "react-transliterate-input",
+                                            },
+                                          }}
                                     />
                                     {formik.touched.fName &&
                                         formik.errors.fName ? (

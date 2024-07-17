@@ -30,6 +30,10 @@ import { getISTDate } from "../../../utils/Constant";
 import CustomDataGrid from "../../../utils/CustomDatagrid";
 import CustomLabel from "../../../CustomLable";
 import ButtonWithLoader from "../../../utils/ButtonWithLoader";
+import Languages from "../../../Languages";
+import { Language, ReactTransliterate } from "react-transliterate";
+import "react-transliterate/dist/index.css";
+
 
 interface MenuPermission {
   isAdd: boolean;
@@ -53,6 +57,7 @@ export default function GenderMaster() {
     isPrint: false,
     isDel: false,
   });
+  const [lang, setLang] = useState<Language>("en");
 
   useEffect(() => {
     const dataString = localStorage.getItem("userdata");
@@ -97,8 +102,8 @@ export default function GenderMaster() {
         getList();
       });
   };
+
   const reject = () => {
-    // toast.warn({summary: 'Rejected', detail: 'You have rejected', life: 3000 });
     toast.warn("Rejected: You have rejected", { autoClose: 3000 });
   };
 
@@ -208,6 +213,7 @@ export default function GenderMaster() {
       // setIsLoading(false);
     }
   };
+
   const validationSchema = Yup.object({
     genderName: Yup.string().test(
       "required",
@@ -217,6 +223,7 @@ export default function GenderMaster() {
       }
     ),
   });
+
   const [toaster, setToaster] = useState(false);
   const formik = useFormik({
     initialValues: {
@@ -260,6 +267,10 @@ export default function GenderMaster() {
     await formik.handleSubmit();
   };
 
+  const handleConversionChange = (params: any, text: string) => {
+    formik.setFieldValue(params, text);
+  };
+
   return (
     <>
       <Grid item lg={6} sm={6} xs={12} sx={{ marginTop: "3vh" }}>
@@ -286,15 +297,35 @@ export default function GenderMaster() {
             style={{ padding: "10px" }}
           >
             <ConfirmDialog />
+
+            <Grid item xs={12} container spacing={2}>
+            <Grid item lg={10} md={10} xs={12}>
             <Typography
-              gutterBottom
-              variant="h5"
-              component="div"
-              sx={{ padding: "20px" }}
-              align="left"
-            >
-              {t("text.GenderMaster")}
-            </Typography>
+            gutterBottom
+            variant="h5"
+            component="div"
+            sx={{ padding: "20px" }}
+            align="left"
+          >
+            {t("text.GenderMaster")}
+          </Typography>
+            </Grid>
+
+            <Grid item lg={2} md={2} xs={12} marginTop={2}>
+              <select
+                className="language-dropdown"
+                value={lang}
+                onChange={(e) => setLang(e.target.value as Language)}
+              >
+                {Languages.map((l) => (
+                  <option key={l.value} value={l.value}>
+                    {l.label}
+                  </option>
+                ))}
+              </select>
+            </Grid>
+          </Grid>
+            
             <Divider />
 
             <Box height={10} />
@@ -306,12 +337,18 @@ export default function GenderMaster() {
                     value={formik.values.genderName}
                     placeholder={t("text.EnterGenderName")}
                     size="small"
-                    name="genderName"
-                    id="genderName"
                     fullWidth
-                    style={{ backgroundColor: "white" }}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
+                    InputProps={{
+                      inputComponent: ReactTransliterate as any,
+                      inputProps: {
+                        value: formik.values.genderName,
+                        onChangeText: (text: string) =>
+                          handleConversionChange("genderName", text),
+                        lang,
+                        placeholder: t("text.EnterGenderName"),
+                        id: "react-transliterate-input",
+                      },
+                    }}
                   />
                   {formik.touched.genderName && formik.errors.genderName ? (
                     <div style={{ color: "red", margin: "5px" }}>

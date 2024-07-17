@@ -18,7 +18,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useTranslation } from "react-i18next";
-import { DataGrid, GridColDef, GridToolbar } from "@mui/x-data-grid";
+import { GridColDef } from "@mui/x-data-grid";
 import { toast } from "react-toastify";
 import ToastApp from "../../../ToastApp";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -26,6 +26,10 @@ import { getISTDate } from "../../../utils/Constant";
 import CustomDataGrid from "../../../utils/CustomDatagrid";
 import CustomLabel from "../../../CustomLable";
 import ButtonWithLoader from "../../../utils/ButtonWithLoader";
+import Languages from "../../../Languages";
+import { Language, ReactTransliterate } from "react-transliterate";
+import "react-transliterate/dist/index.css";
+
 
 interface MenuPermission {
   isAdd: boolean;
@@ -49,6 +53,8 @@ export default function DepartmentMaster() {
     isPrint: false,
     isDel: false,
   });
+  const [lang, setLang] = useState<Language>("en");
+
 
   useEffect(() => {
     const dataString = localStorage.getItem("userdata");
@@ -261,7 +267,9 @@ export default function DepartmentMaster() {
     await formik.handleSubmit();
   };
 
-
+  const handleConversionChange = (params: any, text: string) => {
+    formik.setFieldValue(params, text);
+  };
 
 
   return (
@@ -279,26 +287,39 @@ export default function DepartmentMaster() {
           <Paper
             sx={{
               width: "100%",
-              overflow: "hidden",
-              "& .MuiDataGrid-colCell": {
-                backgroundColor: "#2B4593",
-                color: "#fff",
-                fontSize: 18,
-                fontWeight: 800,
-              },
+              overflow: "hidden"
             }}
             style={{ padding: "10px" }}
           >
             <ConfirmDialog />
+
+            <Grid item xs={12} container spacing={2}>
+            <Grid item lg={10} md={10} xs={12}>
             <Typography
-              gutterBottom
-              variant="h5"
-              component="div"
-              sx={{ padding: "20px" }}
-              align="left"
-            >
-              {t("text.deptMaster")}
-            </Typography>
+            gutterBottom
+            variant="h5"
+            component="div"
+            sx={{ padding: "20px" }}
+            align="left"
+          >
+            {t("text.deptMaster")}
+          </Typography>
+            </Grid>
+
+            <Grid item lg={2} md={2} xs={12} marginTop={2}>
+              <select
+                className="language-dropdown"
+                value={lang}
+                onChange={(e) => setLang(e.target.value as Language)}
+              >
+                {Languages.map((l) => (
+                  <option key={l.value} value={l.value}>
+                    {l.label}
+                  </option>
+                ))}
+              </select>
+            </Grid>
+          </Grid>
             <Divider />
 
             <Box height={10} />
@@ -307,19 +328,20 @@ export default function DepartmentMaster() {
               <Grid item xs={12} container spacing={2}>
                 <Grid item xs={5}>
                   <TextField
-                    id="departmentName"
-                    name="departmentName"
                     label={<CustomLabel text={t("text.enterdeptName")} required={requiredFields.includes('departmentName')} />}
-                    value={formik.values.departmentName}
-                    placeholder={t("text.enterdeptName")}
                     size="small"
                     fullWidth
-                    style={{
-                      backgroundColor: 'white',
-                      borderColor: formik.touched.departmentName && formik.errors.departmentName ? 'red' : 'initial',
+                    InputProps={{
+                      inputComponent: ReactTransliterate as any,
+                      inputProps: {
+                        value: formik.values.departmentName,
+                        onChangeText: (text: string) =>
+                          handleConversionChange("departmentName", text),
+                        lang,
+                        placeholder: t("text.enterdeptName"),
+                        id: "react-transliterate-input",
+                      },
                     }}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
                   />
                   {formik.touched.departmentName && formik.errors.departmentName ? (
                     <div style={{ color: "red", margin: "5px" }}>{formik.errors.departmentName}</div>

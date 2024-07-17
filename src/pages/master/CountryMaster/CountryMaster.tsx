@@ -27,6 +27,10 @@ import { getISTDate } from "../../../utils/Constant";
 import CustomDataGrid from "../../../utils/CustomDatagrid";
 import CustomLabel from "../../../CustomLable";
 import ButtonWithLoader from "../../../utils/ButtonWithLoader";
+import Languages from "../../../Languages";
+import { Language, ReactTransliterate } from "react-transliterate";
+import "react-transliterate/dist/index.css";
+
 
 interface MenuPermission {
   isAdd: boolean;
@@ -50,6 +54,7 @@ export default function CountryMaster() {
     isPrint: false,
     isDel: false,
   });
+  const [lang, setLang] = useState<Language>("en");
 
   useEffect(() => {
     const dataString = localStorage.getItem("userdata");
@@ -93,6 +98,7 @@ export default function CountryMaster() {
         getList();
       });
   };
+
   const reject = () => {
     // toast.warn({summary: 'Rejected', detail: 'You have rejected', life: 3000 });
     toast.warn("Rejected: You have rejected", { autoClose: 3000 });
@@ -216,16 +222,13 @@ export default function CountryMaster() {
   const [toaster, setToaster] = useState(false);
   const formik = useFormik({
     initialValues: {
-
       countryId: -1,
       countryName: "",
       countryCode: "",
-     
       createdBy: "",
       updatedBy: "",
-      createdOn:  new Date().toISOString(),
-      updatedOn:new Date().toISOString(),
-     
+      createdOn: defaultValuestime,
+      updatedOn: defaultValuestime
     },
     validationSchema: validationSchema,
     onSubmit: async (values) => {
@@ -240,7 +243,7 @@ export default function CountryMaster() {
         toast.success(response.data.mesg);
         formik.resetForm();
         getList();
-        setEditId("-1");
+        setEditId(-1);
       } else {
         setToaster(true);
         toast.error(response.data.mesg);
@@ -251,7 +254,6 @@ export default function CountryMaster() {
 
   const requiredFields = ["countryName"];
 
-
   const routeChangeEdit = (row: any) => {
     formik.setFieldValue("countryName", row.countryName);
     formik.setFieldValue("countryCode", row.countryCode);
@@ -261,6 +263,11 @@ export default function CountryMaster() {
   const handleSubmitWrapper = async () => {
     await formik.handleSubmit();
   };
+
+  const handleConversionChange = (params: any, text: string) => {
+    formik.setFieldValue(params, text);
+  };
+
 
   return (
     <>
@@ -288,15 +295,35 @@ export default function CountryMaster() {
             style={{ padding: "10px" }}
           >
             <ConfirmDialog />
+
+            <Grid item xs={12} container spacing={2}>
+            <Grid item lg={10} md={10} xs={12}>
             <Typography
-              gutterBottom
-              variant="h5"
-              component="div"
-              sx={{ padding: "20px" }}
-              align="left"
-            >
-              {t("text.CountryMaster")}
-            </Typography>
+            gutterBottom
+            variant="h5"
+            component="div"
+            sx={{ padding: "20px" }}
+            align="left"
+          >
+            {t("text.CountryMaster")}
+          </Typography>
+            </Grid>
+
+            <Grid item lg={2} md={2} xs={12} marginTop={2}>
+              <select
+                className="language-dropdown"
+                value={lang}
+                onChange={(e) => setLang(e.target.value as Language)}
+              >
+                {Languages.map((l) => (
+                  <option key={l.value} value={l.value}>
+                    {l.label}
+                  </option>
+                ))}
+              </select>
+            </Grid>
+          </Grid>
+           
             <Divider />
 
             <Box height={10} />
@@ -305,15 +332,19 @@ export default function CountryMaster() {
                 <Grid item xs={5}>
                   <TextField
                     label={<CustomLabel text={t("text.EnterCountryName")} required={requiredFields.includes('countryName')} />}
-                    value={formik.values.countryName}
-                    placeholder={t("text.EnterCountryName")}
                     size="small"
                     fullWidth
-                    name="countryName"
-                    id="countryName"
-                    style={{ backgroundColor: "white" }}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
+                    InputProps={{
+                      inputComponent: ReactTransliterate as any,
+                      inputProps: {
+                        value: formik.values.countryName,
+                        onChangeText: (text: string) =>
+                          handleConversionChange("countryName", text),
+                        lang,
+                        placeholder: t("text.EnterCountryName"),
+                        id: "react-transliterate-input",
+                      },
+                    }}
                   />
                   {formik.touched.countryName && formik.errors.countryName ? (
                     <div style={{ color: "red", margin: "5px" }}>{formik.errors.countryName}</div>

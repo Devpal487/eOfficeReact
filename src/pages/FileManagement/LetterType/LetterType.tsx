@@ -2,9 +2,7 @@ import * as React from "react";
 import Paper from "@mui/material/Paper";
 import { useEffect, useState } from "react";
 import {
-    Autocomplete,
     Box,
-    Button,
     Divider,
     Stack,
     TextField,
@@ -13,8 +11,6 @@ import {
 import EditIcon from "@mui/icons-material/Edit";
 import Card from "@mui/material/Card";
 import Grid from "@mui/material/Grid";
-import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
 import api from "../../../utils/Url";
 import { useLocation } from "react-router-dom";
@@ -25,13 +21,14 @@ import { useTranslation } from "react-i18next";
 import { DataGrid, GridColDef, GridToolbar } from "@mui/x-data-grid";
 import { toast } from "react-toastify";
 import ToastApp from "../../../ToastApp";
-import { usePermissionData } from "../../../usePermissionData";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { getdivisionId, getId, getinstId,getISTDate } from '../../../utils/Constant'
 import CustomDataGrid from "../../../utils/CustomDatagrid";
 import CustomLabel from "../../../CustomLable";
 import ButtonWithLoader from "../../../utils/ButtonWithLoader";
-// import {defaultValuestime}
+import Languages from "../../../Languages";
+import { Language, ReactTransliterate } from "react-transliterate";
+import "react-transliterate/dist/index.css";
 
 export default function LetterType() {
     const { i18n, t } = useTranslation();
@@ -50,6 +47,7 @@ export default function LetterType() {
         isPrint: false,
         isDel: false,
       });
+    const [lang, setLang] = useState<Language>("en");
     
     useEffect(() => {
         const dataString = localStorage.getItem("userdata");
@@ -211,6 +209,7 @@ export default function LetterType() {
             // setIsLoading(false);
         }
     };
+
     const validationSchema = Yup.object({
         lName: Yup.string().test(
             "required",
@@ -220,7 +219,9 @@ export default function LetterType() {
             }
         ),
     });
+
     const [toaster, setToaster] = useState(false);
+
     const formik = useFormik({
         initialValues: {
             "lId": -1,
@@ -264,6 +265,9 @@ export default function LetterType() {
         await formik.handleSubmit();
       };
 
+    const handleConversionChange = (params: any, text: string) => {
+    formik.setFieldValue(params, text);
+    };
     return (
         <>
             <Grid item lg={6} sm={6} xs={12} sx={{ marginTop: "3vh" }}>
@@ -279,26 +283,40 @@ export default function LetterType() {
                     <Paper
                         sx={{
                             width: "100%",
-                            overflow: "hidden",
-                            "& .MuiDataGrid-colCell": {
-                                backgroundColor: "#00009c",
-                                color: "#fff",
-                                fontSize: 18,
-                                fontWeight: 800,
-                            },
+                            overflow: "hidden"
                         }}
                         style={{ padding: "10px" }}
                     >
                         <ConfirmDialog />
-                        <Typography
-                            gutterBottom
-                            variant="h5"
-                            component="div"
-                            sx={{ padding: "20px" }}
-                            align="left"
-                        >
-                            {t("text.LetterType")}
-                        </Typography>
+
+                        <Grid item xs={12} container spacing={2}>
+            <Grid item lg={10} md={10} xs={12}>
+              <Typography
+                gutterBottom
+                variant="h5"
+                component="div"
+                sx={{ padding: "20px" }}
+                align="left"
+              >
+                {t("text.LetterType")}
+              </Typography>
+            </Grid>
+
+            <Grid item lg={2} md={2} xs={12} marginTop={2}>
+              <select
+                className="language-dropdown"
+                value={lang}
+                onChange={(e) => setLang(e.target.value as Language)}
+              >
+                {Languages.map((l) => (
+                  <option key={l.value} value={l.value}>
+                    {l.label}
+                  </option>
+                ))}
+              </select>
+            </Grid>
+          </Grid>
+
                         <Divider />
 
                         <Box height={10} />
@@ -307,16 +325,21 @@ export default function LetterType() {
 
                                         <Grid xs={5} sm={5} item>
                                             <TextField
-                                                id="lName"
-                                                type="text"
                                                 label={<CustomLabel text={t("text.letterName")} />}
-                                                placeholder={t("text.letterName")}
-                                                value={formik.values.lName}
                                                 size="small"
-                                                name="lName"
+                                                variant="outlined"
                                                 fullWidth
-                                                onChange={formik.handleChange}
-                                                onBlur={formik.handleBlur}
+                                                InputProps={{
+                                                    inputComponent: ReactTransliterate as any,
+                                                    inputProps: {
+                                                      value: formik.values.lName,
+                                                      onChangeText: (text: string) =>
+                                                        handleConversionChange("lName", text),
+                                                      lang,
+                                                      placeholder: t("text.letterName"),
+                                                      id: "react-transliterate-input",
+                                                    },
+                                                  }}
                                             />
 
                                         </Grid>

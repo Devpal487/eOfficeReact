@@ -8,6 +8,8 @@ import {
   Stack,
   Grid,
   Typography,
+  Input,
+  TextField,
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import Switch from "@mui/material/Switch";
@@ -26,9 +28,10 @@ import { getId } from "../../../utils/Constant";
 import ButtonWithLoader from "../../../utils/ButtonWithLoader";
 import CustomLabel from "../../../CustomLable";
 import CustomDataGrid from "../../../utils/CustomDatagrid";
-import EnglishToHindiConverter from "../../../EnglishToHindiConverter";
-import InputModeSelector from "../../../InputModeSelector";
-import { InputModeProvider } from "../../../text";
+import Languages from "../../../Languages";
+import { Language, ReactTransliterate } from "react-transliterate";
+import "react-transliterate/dist/index.css";
+
 interface MenuPermission {
   isAdd: boolean;
   isEdit: boolean;
@@ -50,6 +53,8 @@ export default function ZoneMaster() {
     isDel: false,
   });
 
+  const [lang, setLang] = useState<Language>("en");
+
   let navigate = useNavigate();
   const { t } = useTranslation();
 
@@ -66,9 +71,9 @@ export default function ZoneMaster() {
             const pathrow = childMenudata.find(
               (x: any) => x.path === location.pathname
             );
-           
+
             if (pathrow) {
-            console.log("data", pathrow);
+              console.log("data", pathrow);
               setPermissionData(pathrow);
               fetchZonesData();
             }
@@ -80,7 +85,6 @@ export default function ZoneMaster() {
 
   const handleConversionChange = (params: any, text: string) => {
     formik.setFieldValue(params, text);
-
   };
 
   const handleSwitchChange = (
@@ -96,16 +100,14 @@ export default function ZoneMaster() {
       user_ID: Userid,
       sortOrder: value.sortOrder,
     };
-    api
-      .post(`Zone/AddUpdateZonemaster`, collectData)
-      .then((response) => {
-        if (response.data.isSuccess) {
-          toast.success(response.data.mesg);
-          fetchZonesData();
-        } else {
-          toast.error(response.data.mesg);
-        }
-      });
+    api.post(`Zone/AddUpdateZonemaster`, collectData).then((response) => {
+      if (response.data.isSuccess) {
+        toast.success(response.data.mesg);
+        fetchZonesData();
+      } else {
+        toast.error(response.data.mesg);
+      }
+    });
   };
 
   const routeChangeEdit = (row: any) => {
@@ -123,7 +125,7 @@ export default function ZoneMaster() {
     const collectData = {
       zoneID: delete_id,
       user_ID: Userid,
-      "isActive": true
+      isActive: true,
     };
     console.log("collectData " + JSON.stringify(collectData));
     api
@@ -161,10 +163,7 @@ export default function ZoneMaster() {
         user_ID: Userid,
         // isActive: true
       };
-      const response = await api.post(
-        `Zone/GetZonemaster`,
-        collectData
-      );
+      const response = await api.post(`Zone/GetZonemaster`, collectData);
       const data = response.data.data;
       const zonesWithIds = data.map((zone: any, index: any) => ({
         ...zone,
@@ -277,7 +276,6 @@ export default function ZoneMaster() {
         ];
         setColumns(columns as any);
       }
-
     } catch (error) {
       console.error("Error fetching data:", error);
     }
@@ -287,20 +285,17 @@ export default function ZoneMaster() {
     ...column,
   }));
 
-
-
   const validationSchema = Yup.object({
-
     zoneName: Yup.string().test(
-      'required',
-      t('text.reqZoneName'),
+      "required",
+      t("text.reqZoneName"),
       function (value: any) {
-        return value && value.trim() !== '';
+        return value && value.trim() !== "";
       }
     ),
   });
 
-  const requiredFields = ['zoneName'];
+  const requiredFields = ["zoneName"];
 
   const formik = useFormik({
     initialValues: {
@@ -314,10 +309,9 @@ export default function ZoneMaster() {
     validationSchema: validationSchema,
     onSubmit: async (values) => {
       values.zoneID = editId;
-      const response = await api.post(
-        `Zone/AddUpdateZonemaster`,
-        values
-      );
+
+      console.log("before submitting value check", values);
+      const response = await api.post(`Zone/AddUpdateZonemaster`, values);
       if (response.data.isSuccess) {
         toast.success(response.data.mesg);
         formik.setFieldValue("zoneName", "");
@@ -326,10 +320,8 @@ export default function ZoneMaster() {
         setEditId(-1);
       } else {
         toast.error(response.data.mesg);
-
       }
-
-    }
+    },
   });
 
   const handleSubmitWrapper = async () => {
@@ -343,107 +335,121 @@ export default function ZoneMaster() {
           width: "100%",
           backgroundColor: "#E9FDEE",
           border: ".5px solid #2B4593 ",
-          marginTop: "3vh"
+          marginTop: "3vh",
         }}
       >
         <Paper
           sx={{
             width: "100%",
             overflow: "hidden",
-
           }}
-          style={{ padding: "10px", }}
+          style={{ padding: "10px" }}
         >
           <ConfirmDialog />
+          <Grid item xs={12} container spacing={2}>
+            <Grid item lg={10} md={10} xs={12}>
+              <Typography
+                gutterBottom
+                variant="h5"
+                component="div"
+                sx={{ padding: "20px" }}
+                align="left"
+              >
+                {t("text.zoneMaster")}
+              </Typography>
+            </Grid>
 
-          <Grid container spacing={2}>
-            <InputModeProvider>
-              <Grid item md={10} >
-                <Typography
-                  gutterBottom
-                  variant="h5"
-                  component="div"
-                  sx={{ padding: "20px" }}
-                  align="left"
-                >
-                  {t("text.zoneMaster")}
-                </Typography>
-              </Grid>
-
-              <Grid item md={2} sx={{ padding: "20px" }}>
-                <InputModeSelector />
-              </Grid>
-{/* 
-              <Divider /> */}
-
-              <Box height={10} />
-              <form onSubmit={formik.handleSubmit} style={{ marginLeft: "20px" }}>
-                <Grid item xs={12} container spacing={2}>
-
-                  <Grid xs={5} sm={5} item>
-                    <EnglishToHindiConverter
-                      fieldname1="zoneName"
-                      fieldname2="zoneName"
-                      textFieldLabel={<CustomLabel text={t("text.enterZoneName")} required={requiredFields.includes('zoneName')} />}
-                      value={formik.values.zoneName}
-                      englishPlaceholder={t("text.enterZoneName")}
-                      hindiPlaceholder={t("text.enterZoneName")}
-                      size="small"
-                      fullWidth={true}
-                      onChange={(text: any) => handleConversionChange("zoneName", text)}
-                    />
-                    {formik.touched.zoneName && formik.errors.zoneName ? (
-                      <div style={{ color: "red", margin: "5px" }}>{formik.errors.zoneName}</div>
-                    ) : null}
-
-                  </Grid>
-
-                  <Grid item xs={5} sm={5}>
-                    <EnglishToHindiConverter
-                      fieldname1="zoneCode"
-                      fieldname2="zoneCode"
-                      textFieldLabel={<CustomLabel text={t("text.enterZoneCode")} />}
-                      value={formik.values.zoneCode}
-                      englishPlaceholder={t("text.enterZoneCode")}
-                      hindiPlaceholder={t("text.enterZoneCode")}
-                      size="small"
-                      fullWidth={true}
-                      // style={{ backgroundColor: "white" }}
-                      onChange={(text: any) => handleConversionChange("zoneCode", text)}
-                    // onBlur={formik.handleBlur}
-                    />
-
-                  </Grid>
-
-
-                  <Grid item xs={2} sx={{ m: -1 }}>
-
-                    {/* <ButtonWithLoader buttonText={editId == -1 ? t("text.save") : t("text.update")} onClickHandler={handleSubmitWrapper} fullWidth={true} /> */}
-                    {editId === -1 && permissionData?.isAdd && (
-  <ButtonWithLoader
-    buttonText={t("text.save")}
-    onClickHandler={handleSubmitWrapper}
-    fullWidth={true}
-  />
-)}
-
-{editId !== -1 && (
-  <ButtonWithLoader
-    buttonText={t("text.update")}
-    onClickHandler={handleSubmitWrapper}
-    fullWidth={true}
-  />
-)}
-                  </Grid>
-                </Grid>
-              </form>
-            </InputModeProvider>
-
+            <Grid item lg={2} md={2} xs={12} marginTop={2}>
+              <select
+                className="language-dropdown"
+                value={lang}
+                onChange={(e) => setLang(e.target.value as Language)}
+              >
+                {Languages.map((l) => (
+                  <option key={l.value} value={l.value}>
+                    {l.label}
+                  </option>
+                ))}
+              </select>
+            </Grid>
           </Grid>
 
-          <br/>
-          <Divider/>
-          <br/>
+          <Box height={10} />
+          <form onSubmit={formik.handleSubmit} style={{ marginLeft: "20px" }}>
+            <Grid item xs={12} container spacing={2}>
+              <Grid xs={12} sm={5} lg={5} item>
+                <TextField
+                  label={
+                    <CustomLabel
+                      text={t("text.enterZoneName")}
+                      required={requiredFields.includes("zoneName")}
+                    />
+                  }
+                  variant="outlined"
+                  fullWidth
+                  size="small"
+                  InputProps={{
+                    inputComponent: ReactTransliterate as any,
+                    inputProps: {
+                      value: formik.values.zoneName,
+                      onChangeText: (text: string) =>
+                        handleConversionChange("zoneName", text),
+                      lang,
+                      placeholder: t("text.enterZoneName"),
+                      id: "react-transliterate-input",
+                    },
+                  }}
+                />
+
+                {formik.touched.zoneName && formik.errors.zoneName ? (
+                  <div style={{ color: "red", margin: "5px" }}>
+                    {formik.errors.zoneName}
+                  </div>
+                ) : null}
+              </Grid>
+
+              <Grid item xs={12} sm={5} lg={5}>
+                <TextField
+                  label={
+                    <CustomLabel
+                      text={t("text.enterZoneCode")}
+                      required={false}
+                    />
+                  }
+                  variant="outlined"
+                  fullWidth
+                  size="small"
+                  name="zoneCode"
+                  id="zoneCode"
+                  value={formik.values.zoneCode}
+                  placeholder={t("text.enterZoneCode")}
+                  onChange={formik.handleChange}
+                />
+              </Grid>
+
+              <Grid item xs={2} sx={{ m: -1 }}>
+                {editId === -1 && permissionData?.isAdd && (
+                  <ButtonWithLoader
+                    buttonText={t("text.save")}
+                    onClickHandler={handleSubmitWrapper}
+                    fullWidth={true}
+                  />
+                )}
+
+                {editId !== -1 && (
+                  <ButtonWithLoader
+                    buttonText={t("text.update")}
+                    onClickHandler={handleSubmitWrapper}
+                    fullWidth={true}
+                  />
+                )}
+              </Grid>
+            </Grid>
+          </form>
+
+          <br />
+          <Divider />
+          <br />
 
           {isLoading ? (
             <div
@@ -462,11 +468,11 @@ export default function ZoneMaster() {
               columns={adjustedColumns}
               pageSizeOptions={[5, 10, 25, 50, 100]}
               initialPageSize={5}
-            />)}
+            />
+          )}
         </Paper>
       </Card>
       <ToastApp />
-
     </>
   );
 }

@@ -26,10 +26,13 @@ import api from "../../../utils/Url";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import Autocomplete from "@mui/material/Autocomplete";
-import { getId, getISTDate } from "../../../utils/Constant";
 import CustomLabel from "../../../CustomLable";
 import ButtonWithLoader from "../../../utils/ButtonWithLoader";
 import CustomDataGrid from "../../../utils/CustomDatagrid";
+import Languages from "../../../Languages";
+import { Language, ReactTransliterate } from "react-transliterate";
+import "react-transliterate/dist/index.css";
+import {getISTDate, getId, getinstId, getdivisionId} from '../../../utils/Constant' 
 
 interface MenuPermission {
   isAdd: boolean;
@@ -53,7 +56,7 @@ export default function WardMaster() {
     isPrint: false,
     isDel: false,
   });
-
+  const [lang, setLang] = useState<Language>("en");
   const location = useLocation();
 
   useEffect(() => {
@@ -334,8 +337,6 @@ export default function WardMaster() {
       });
   };
 
- 
-
   const validationSchema = Yup.object({
     zoneID: Yup.string().test(
       'required',
@@ -352,7 +353,6 @@ export default function WardMaster() {
     ),
   });
 
-
   const formik = useFormik({
     initialValues: {
 
@@ -362,9 +362,9 @@ export default function WardMaster() {
       "zoneID": "",
       "isActive": true,
       "sortOrder": 0,
-      "createdDt": new Date().toISOString().slice(0, 10),
-      "modifyDt": new Date().toISOString().slice(0, 10),
-      "user_ID": parseInt(UserId),
+      "createdDt": defaultValuestime,
+      "modifyDt": defaultValuestime,
+      "user_ID": UserId,
       "zoneName": ""
     },
     validationSchema: validationSchema,
@@ -391,14 +391,15 @@ export default function WardMaster() {
     }
   });
 
-
   const requiredFields = ["zoneID", "wardName"];
-
 
   const handleSubmitWrapper = async () => {
     await formik.handleSubmit();
   };
 
+  const handleConversionChange = (params: any, text: string) => {
+    formik.setFieldValue(params, text);
+  };
 
   return (
     <>
@@ -415,57 +416,47 @@ export default function WardMaster() {
           sx={{
             width: "100%",
             overflow: "hidden",
-            "& .MuiDataGrid-colCell": {
-              backgroundColor: "#2B4593",
-              color: "#fff",
-              fontSize: 17,
-              fontWeight: 900
-            },
           }}
           style={{ padding: "10px", }}
         >
           <ConfirmDialog />
-          <Typography
+
+         <Grid item xs={12} container spacing={2}>
+            <Grid item lg={10} md={10} xs={12}>
+            <Typography
             gutterBottom
             variant="h5"
             component="div"
             sx={{ padding: "20px" }}
             align="left"
           >
-
             {t("text.wardMaster")}
           </Typography>
+            </Grid>
+
+            <Grid item lg={2} md={2} xs={12} marginTop={2}>
+              <select
+                className="language-dropdown"
+                value={lang}
+                onChange={(e) => setLang(e.target.value as Language)}
+              >
+                {Languages.map((l) => (
+                  <option key={l.value} value={l.value}>
+                    {l.label}
+                  </option>
+                ))}
+              </select>
+            </Grid>
+          </Grid>
+
+          
           <Divider />
 
-          {/* Search and ADD buttone Start */}
           <Box height={10} />
-          <Stack direction="row" spacing={2} classes="my-2 mb-2">
-            {/* {permissionData?.isAdd == true ? (
-                <Button
-                  onClick={routeChangeAdd}
-                  variant="contained"
-                  endIcon={<AddCircleIcon />} 
-                  size="large"
-                >
-                  {t("text.add")}
-                </Button>
-              ) : (
-                ""
-              )} */}
-            {/* {permissionData?.isPrint == true ? (
-                <Button variant="contained" 
-                endIcon={<PrintIcon />}
-                size="large">
-                  {t("text.print")}
-                </Button>
-              ) : (
-                ""
-              )} */}
-          </Stack>
+          
 
           <form onSubmit={formik.handleSubmit}>
             <Grid item xs={12} container spacing={3}>
-
 
               <Grid xs={3} sm={3} item>
                 <Autocomplete
@@ -503,16 +494,21 @@ export default function WardMaster() {
               <Grid xs={3.5} sm={3.5} item>
                 <TextField
                   type="text"
-                  name="wardName"
-                  id="wardName"
                   label={<CustomLabel text={t("text.enterWardName")} required={requiredFields.includes('wardName')} />}
-                  value={formik.values.wardName}
-                  placeholder={t("text.enterWardName")}
                   size="small"
                   fullWidth
-                  style={{ backgroundColor: "white", borderColor: formik.touched.wardName && formik.errors.wardName ? 'red' : 'initial', }}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
+                  variant="outlined"
+                  InputProps={{
+                    inputComponent: ReactTransliterate as any,
+                    inputProps: {
+                      value: formik.values.wardName,
+                      onChangeText: (text: string) =>
+                        handleConversionChange("wardName", text),
+                      lang,
+                      placeholder: t("text.enterWardName"),
+                      id: "react-transliterate-input",
+                    },
+                  }}
                 />
                 {formik.touched.wardName && formik.errors.wardName ? (
                   <div style={{ color: "red", margin: "5px" }}>

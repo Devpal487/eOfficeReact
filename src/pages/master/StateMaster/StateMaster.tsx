@@ -31,6 +31,11 @@ import { getISTDate } from "../../../utils/Constant";
 import CustomLabel from "../../../CustomLable";
 import ButtonWithLoader from "../../../utils/ButtonWithLoader";
 import CustomDataGrid from "../../../utils/CustomDatagrid";
+import Languages from "../../../Languages";
+import { Language, ReactTransliterate } from "react-transliterate";
+import "react-transliterate/dist/index.css";
+
+
 interface MenuPermission {
   isAdd: boolean;
   isEdit: boolean;
@@ -55,7 +60,7 @@ export default function StateMaster() {
     isPrint: false,
     isDel: false,
   });
-
+  const [lang, setLang] = useState<Language>("en");
   let navigate = useNavigate();
 
   useEffect(() => {
@@ -162,9 +167,8 @@ export default function StateMaster() {
     setEditId(row.id);
   };
 
-  const routeChangeAdd = () => {
-    let path = `/master/StateMasterAdd`;
-    navigate(path);
+  const handleConversionChange = (params: any, text: string) => {
+    formik.setFieldValue(params, text);
   };
 
   let delete_id = "";
@@ -336,7 +340,9 @@ export default function StateMaster() {
         >
           <ConfirmDialog />
 
-          <Typography
+          <Grid item xs={12} container spacing={2}>
+            <Grid item lg={10} md={10} xs={12}>
+            <Typography
             gutterBottom
             variant="h5"
             component="div"
@@ -345,6 +351,23 @@ export default function StateMaster() {
           >
             {t("text.StateMaster")}
           </Typography>
+            </Grid>
+
+            <Grid item lg={2} md={2} xs={12} marginTop={2}>
+              <select
+                className="language-dropdown"
+                value={lang}
+                onChange={(e) => setLang(e.target.value as Language)}
+              >
+                {Languages.map((l) => (
+                  <option key={l.value} value={l.value}>
+                    {l.label}
+                  </option>
+                ))}
+              </select>
+            </Grid>
+          </Grid>
+
           <Divider />
 
           <Box height={10} />
@@ -390,15 +413,19 @@ export default function StateMaster() {
               <Grid item xs={3.5} sm={3.5}>
                 <TextField
                   label={<CustomLabel text={t("text.EnterStateName")} required={requiredFields.includes('stateName')} />}
-                  value={formik.values.stateName}
-                  name="stateName"
-                  id="stateName"
-                  placeholder={t("text.EnterStateName")}
                   size="small"
                   fullWidth
-                  style={{ backgroundColor: "white" }}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
+                  InputProps={{
+                    inputComponent: ReactTransliterate as any,
+                    inputProps: {
+                      value: formik.values.stateName,
+                      onChangeText: (text: string) =>
+                        handleConversionChange("stateName", text),
+                      lang,
+                      placeholder: t("text.EnterStateName"),
+                      id: "react-transliterate-input",
+                    },
+                  }}
                 />
                 {formik.touched.stateName && formik.errors.stateName ? (
                   <div style={{ color: "red", margin: "5px" }}>

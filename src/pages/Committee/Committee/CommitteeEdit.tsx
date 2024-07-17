@@ -153,7 +153,7 @@ const CommitteeEdit = (props: Props) => {
       "foundedDate": dayjs(location.state.foundedDate).format("YYYY-MM-DD"),
       "officeId": location.state.officeId,
       "userId": ID,
-      "ipAddress": "",
+      "ipAddress": location.state.ipAddress,
       "uploadDate": defaultValuestime,
       "committeeLogo": location.state.committeeLogo,
       "committeeDesc": location.state.committeeDesc,

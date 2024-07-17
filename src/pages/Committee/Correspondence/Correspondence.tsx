@@ -14,7 +14,12 @@ import {
     RadioGroup,
     FormControlLabel,
     Radio,
-    FormLabel
+    DialogTitle,
+    DialogContent,
+    DialogContentText,
+    DialogActions,
+    FormLabel,
+    IconButton,
 } from "@mui/material";
 import Autocomplete from "@mui/material/Autocomplete";
 import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
@@ -35,12 +40,13 @@ import { TextareaAutosize } from "@mui/base/TextareaAutosize";
 // import QuillEditor from "../../../QuillEditor";
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
-import nopdf from '../../../assets/images/imagepreview.jpg';
+import nopdf from '../../../assets/images/nopdf.png';
 import CustomLabel from "../../../CustomLable";
 import CustomDataGrid from "../../../utils/CustomDatagrid";
 import Quill from 'quill'; 
 import ButtonWithLoader from "../../../utils/ButtonWithLoader";
-
+import Dialog, { DialogProps } from "@mui/material/Dialog";
+import CloseIcon from "@mui/icons-material/Close";
 
 interface MenuPermission {
     isAdd: boolean;
@@ -67,8 +73,8 @@ const style = {
 
 export default function Correspondence() {
     const location = useLocation();
-    const { i18n, t } = useTranslation();
-    const { defaultValues, defaultValuestime } = getISTDate();
+    const { t } = useTranslation();
+    const { defaultValuestime } = getISTDate();
 
     const [columns, setColumns] = useState<any>([]);
     const [rows, setRows] = useState<any>([]);
@@ -77,7 +83,11 @@ export default function Correspondence() {
 
     const [fileTypeOption, setFileTypeOption] = useState([{ value: "-1", label: t("text.SelectFileNo") }]);
 
+    const [fullWidth, setFullWidth] = useState(true);
+    const [maxWidth, setMaxWidth] = useState<DialogProps["maxWidth"]>("lg");
+  
     const [panOpens, setPanOpen] = useState(false);
+    const [pdfPreviewOpens, setPdfPreviewOpen] = useState(false);
     const [modalImg, setModalImg] = useState("");
     const [editorContent, setEditorContent] = useState<string>('');
     const [permissionData, setPermissionData] = useState<MenuPermission>({
@@ -86,21 +96,16 @@ export default function Correspondence() {
         isPrint: false,
         isDel: false,
     });
-
+    const [pdfPreviewFile, setPdfPreviewFile] = useState("");
+    const [pdfFileId, setPdfFileId] = useState("");
+    const [pdfFileName, setPdfFileName] = useState("");
 
     const handleEditorChange = (content: any) => {
-
       setEditorContent(content);
-  
-     
     };
   
-
-    const divid = getdivisionId();
-
     useEffect(() => {
         getFileTypeData();
-
     }, []);
 
     useEffect(() => {
@@ -148,7 +153,6 @@ export default function Correspondence() {
     };
 
 
-
     let delete_id = "";
     const accept = () => {
         const collectData = {
@@ -166,6 +170,7 @@ export default function Correspondence() {
                 }
             });
     };
+
     const reject = () => {
         // toast.warn({summary: 'Rejected', detail: 'You have rejected', life: 3000 });
         toast.warn("Rejected: You have rejected", { autoClose: 3000 });
@@ -198,6 +203,26 @@ export default function Correspondence() {
                 formik.setFieldValue("uploading", res.data.data[0]['uploading'])
             })
     };
+
+    const getFileViewById=(row:any) => {
+        setPdfPreviewOpen(true);
+        console.log("🚀 ~ getFileViewById ~ row:", row);
+        console.log("🚀 ~ getFileViewById ~ row:", row.id);
+        setPdfFileId(row.id);
+        setPdfFileName(row.fileNo);
+        const collectData = {
+            "fileId": row.id,
+            "fNid": -1,
+            "nodeId": -1,
+            "reviewFlag": ""
+        };
+        api
+            .post(`Correspondance/GetCorrespondance`, collectData)
+            .then((res) => {
+                // console.log(res.data.data[0]['uploading']);
+                setPdfPreviewFile(res.data.data[0]["uploading"]);
+            })
+    }
 
     const getList = () => {
         const collectData = {
@@ -274,12 +299,6 @@ export default function Correspondence() {
                                 headerClassName: "MuiDataGrid-colCell",
                             },
                             {
-                                field: "fileNo",
-                                headerName: t("text.FileNo"),
-                                flex: 1,
-                                headerClassName: "MuiDataGrid-colCell",
-                            },
-                            {
                                 field: "reviewFlag",
                                 headerName: t("text.Type"),
                                 flex: 1,
@@ -295,6 +314,22 @@ export default function Correspondence() {
                                     return documentType
                                 }
                             },
+                            {
+                                field: "fileNo",
+                                headerName: t("text.FileNo"),
+                                flex: 1,
+                                headerClassName: "MuiDataGrid-colCell",
+                                renderCell: (params) => {           
+                                    return (
+                                        <a
+                                        href="#"
+                                        onClick={(event) => getFileViewById(params.row)}
+                                        >
+                                            {params.row.fileNo}
+                                        </a>
+                                    );
+                                }
+                            },
 
                         ];
                         setColumns(columns as any);
@@ -306,6 +341,7 @@ export default function Correspondence() {
             // setIsLoading(false);
         }
     };
+
     const validationSchema = Yup.object({
         fId: Yup.string().test(
             "required",
@@ -315,7 +351,9 @@ export default function Correspondence() {
             }
         ),
     });
+
     const [toaster, setToaster] = useState(false);
+    
     const formik = useFormik({
         initialValues: {
             "fileId": -1,
@@ -369,6 +407,14 @@ export default function Correspondence() {
         getListbyid(row.id);
 
     };
+
+    const handlePdfPreviewClose = () => {
+        setPdfPreviewOpen(false);
+        setPdfPreviewFile("");
+        setPdfFileId("");
+        setPdfFileName("");
+    };
+
 
     const handlePanClose = () => {
         setPanOpen(false);
@@ -460,7 +506,6 @@ export default function Correspondence() {
 
                                 <Grid xs={12} sm={4} item>
 
-
                                     <Autocomplete
                                         disablePortal
                                         id="combo-box-demo"
@@ -508,7 +553,7 @@ export default function Correspondence() {
                                             
                                         </Grid> */}
 
-                                <Grid item xs={12} sm={6}>
+                                <Grid item xs={12} sm={8}>
                                     <FormControl
                                         style={{
                                             display: "flex",
@@ -712,6 +757,72 @@ export default function Correspondence() {
                                 </Grid>
                             </Grid>
                         </form>
+
+                        <Dialog open={pdfPreviewOpens}
+                        // onClose={handlePdfPreviewClose}
+                        fullWidth={fullWidth}
+                        maxWidth={maxWidth}
+                        >
+                            <DialogTitle
+                      // style={{ cursor: "move" }}
+                      // id="draggable-dialog-title"
+                      sx={{
+                        backgroundColor: "#00009c",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                        color:"#fff"
+                      }}
+                    >
+                      <Typography fontWeight="600" fontSize={20}>
+                        <i>
+                          #{pdfFileId}-{pdfFileName}
+                        </i>{" "}
+                      </Typography>
+                      <IconButton
+                        edge="end"
+                        onClick={handlePdfPreviewClose}
+                        aria-label="close"
+                        sx={{
+                          color: "#fff",
+                          position: "absolute",
+                          right: 17,
+                          top: 3,
+                        }}
+                      >
+                        <CloseIcon />
+                      </IconButton>
+                    </DialogTitle>
+
+                    <Divider />
+
+                    <DialogContent
+                      sx={{ backgroundColor: "#f4f4f5", height: "85vh" }}
+                    >
+                      <DialogContentText>
+                          {/* </Dialog><Box sx={{ ...style, overflowY: "auto" }}> */}
+                            {pdfPreviewFile == "" ? (
+                              <img
+                                src={nopdf}
+                                style={{
+                                  width: "97%",
+                                  height: "97% !important",
+                                }}
+                              />
+                            ) : (
+                              <div style={{ width: "100%", height: "75vh" }}>
+                                <embed
+                                  src={pdfPreviewFile}
+                                  width="100%"
+                                  height="100%"
+                                  style={{ borderRadius: 10 }}
+                                />
+                              </div>
+                            )}
+                          {/* </Box> */}
+                          </DialogContentText>
+                          </DialogContent>
+                        </Dialog>
 
                         {isLoading ? (
                             <div

@@ -23,6 +23,8 @@ import Autocomplete from "@mui/material/Autocomplete";
 import nopdf from "../../assets/images/imagepreview.jpg";
 import api from "../../utils/Url";
 import CustomLabel from "../../CustomLable";
+import { getId } from "../../utils/Constant";
+
 
 const style = {
   position: "absolute" as "absolute",
@@ -41,6 +43,8 @@ const style = {
 type Props = {};
 
 const EmployeeAdd = (props: Props) => {
+  let userId = getId();
+
   const { i18n, t } = useTranslation();
 
   const [EmpDesignation, setEmpDesignation] = useState<any>([
@@ -240,6 +244,7 @@ const EmployeeAdd = (props: Props) => {
       console.log(base64);
     }
   };
+
   let navigate = useNavigate();
 
   const [toaster, setToaster] = useState(false);
@@ -381,7 +386,7 @@ const EmployeeAdd = (props: Props) => {
 
       sortOrder: 0,
       isActive: true,
-      user_ID: localStorage.getItem("useR_ID")?.toString(),
+      user_ID: userId,
     },
     validationSchema: validationSchema,
 

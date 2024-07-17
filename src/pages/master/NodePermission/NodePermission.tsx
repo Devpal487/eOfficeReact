@@ -442,7 +442,7 @@ values.subNode = arrOfStringIndexes;
                 </Grid>
               </Grid> */}
 
-              <Grid xs={6} item>
+              <Grid xs={12} item>
                 <Box>
                   <div style={{ height: "300px", overflow: "auto" }}>
                     <SimpleTreeView

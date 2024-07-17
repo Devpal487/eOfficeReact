@@ -22,7 +22,7 @@ import { useTranslation } from "react-i18next";
 import { DataGrid, GridColDef, GridToolbar } from "@mui/x-data-grid";
 import { toast } from "react-toastify";
 import ToastApp from "../../../ToastApp";
-import { getISTDate } from "../../../utils/Constant";
+import { getdivisionId, getId, getinstId, getISTDate } from "../../../utils/Constant";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import CustomDataGrid from "../../../utils/CustomDatagrid";
@@ -33,7 +33,10 @@ import ButtonWithLoader from "../../../utils/ButtonWithLoader";
 
 export default function FileMaster() {
     const { i18n, t } = useTranslation();
-    const { defaultValues, defaultValuestime } = getISTDate();
+    const { defaultValuestime } = getISTDate();
+    let instId = getinstId();
+    let divId = getdivisionId();
+    let userId = getId();
 
     const [columns, setColumns] = useState<any>([]);
     const [rows, setRows] = useState<any>([]);
@@ -236,10 +239,10 @@ export default function FileMaster() {
             "fnId": -1,
             "fId": "",
             "fileNm": "",
-            "inst_id": 0,
-            "user_id": 0,
+            "inst_id": instId,
+            "user_id": userId,
             "createdDate": defaultValuestime,
-            "divisionId": 0
+            "divisionId": divId
         },
         validationSchema: validationSchema,
         onSubmit: async (values) => {

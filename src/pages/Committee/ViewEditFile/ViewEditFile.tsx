@@ -61,7 +61,6 @@ import {
 } from "../../../utils/icons";
 import CustomLabel from "../../../CustomLable";
 import moment from "moment";
-
 import { getinstId, getId, getdivisionId } from "../../../utils/Constant";
 import * as Yup from "yup";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
@@ -69,16 +68,12 @@ import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import MapIcon from "@mui/icons-material/Map";
 import AddIcon from "@mui/icons-material/Add";
 import nopdf from "../../../assets/images/imagepreview.jpg";
-
 import Paper from "@mui/material/Paper";
 import ReactQuill from "react-quill";
 import NoteSheet from "./NoteSheet";
 import Correspondence from "./Correspondence";
 import Other from "./Other";
-import Corress from "../Correspondence/Correspondence";
-
 import Report from "./Report";
-
 import { styled } from "@mui/material/styles";
 import dayjs from "dayjs";
 import SwipeableDrawerRoute from "../../Route/RouteMaster/SwipeableDrawerRoute";

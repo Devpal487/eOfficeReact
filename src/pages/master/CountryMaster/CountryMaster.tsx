@@ -302,7 +302,7 @@ export default function CountryMaster() {
             <Box height={10} />
             <form onSubmit={formik.handleSubmit}>
               <Grid item xs={12} container spacing={2}>
-                <Grid item xs={4}>
+                <Grid item xs={5}>
                   <TextField
                     label={<CustomLabel text={t("text.EnterCountryName")} required={requiredFields.includes('countryName')} />}
                     value={formik.values.countryName}
@@ -319,7 +319,7 @@ export default function CountryMaster() {
                     <div style={{ color: "red", margin: "5px" }}>{formik.errors.countryName}</div>
                   ) : null}
                 </Grid>
-                <Grid item xs={4}>
+                <Grid item xs={5}>
                 <TextField
                   label={<CustomLabel text={t("text.EnterCountryCode")}   />}
                   value={formik.values.countryCode}

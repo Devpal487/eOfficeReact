@@ -212,10 +212,13 @@ export default function SectionMaster() {
               headerClassName: "MuiDataGrid-colCell",
             },
             {
-              field: "department",
+              field: "deptName",
               headerName: t("text.Department"),
               flex: 1,
               headerClassName: "MuiDataGrid-colCell",
+              renderCell: (params) => {
+                return params.row.deptName ? params.row.deptName : "--";
+              }
             },
 
             {

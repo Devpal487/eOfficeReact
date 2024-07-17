@@ -68,7 +68,7 @@ import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import MapIcon from "@mui/icons-material/Map";
 import AddIcon from "@mui/icons-material/Add";
 import nopdf from "../../../assets/images/imagepreview.jpg";
-import Paper from "@mui/material/Paper";
+import Paper, { PaperProps } from "@mui/material/Paper";
 import ReactQuill from "react-quill";
 import NoteSheet from "./NoteSheet";
 import Correspondence from "./Correspondence";
@@ -77,7 +77,18 @@ import Report from "./Report";
 import { styled } from "@mui/material/styles";
 import dayjs from "dayjs";
 import SwipeableDrawerRoute from "../../Route/RouteMaster/SwipeableDrawerRoute";
+import Draggable from "react-draggable";
 
+function PaperComponent(props: PaperProps) {
+  return (
+    <Draggable
+      handle="#draggable-dialog-title"
+      cancel={'[class*="MuiDialogContent-root"]'}
+    >
+      <Paper {...props} />
+    </Draggable>
+  );
+}
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
     padding: "5px !important",
@@ -193,7 +204,6 @@ const ViewEditFile: React.FC = (props: Props) => {
     { value: "-1", label: t("text.SelectFileNo") },
   ]);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  const [rightDrawerOpen, setRightDrawerOpen] = useState(false);
   const [rightOpen, setRightOpen] = useState(false);
   const [open, setOpen] = useState(false);
   const [isHover1, setIsHover1] = useState(false);
@@ -220,24 +230,15 @@ const ViewEditFile: React.FC = (props: Props) => {
     setOpenDraggable(true);
   };
 
-  const handleCloseDraggable = () => {
-    setOpenDraggable(false);
-    // setNodeId("");
-  };
-
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
   const handleClose = () => {
     setOpen(false);
   };
   const handleAWaitOpen = () => {
-    console.log("await is clicked");
     setAwaitopen(true);
   };
   const handleAWaitClose = () => {
     setAwaitopen(false);
+    setIsDrawerOpen(true);
   };
 
   const handleParkOpen = () => {
@@ -245,6 +246,7 @@ const ViewEditFile: React.FC = (props: Props) => {
   };
   const handleParkClose = () => {
     setParkopen(false);
+    setIsDrawerOpen(true);
   };
 
   const handleMoveOpen = () => {
@@ -252,6 +254,7 @@ const ViewEditFile: React.FC = (props: Props) => {
   };
   const handleMoveClose = () => {
     setMoveopen(false);
+    setIsDrawerOpen(true);
   };
 
   const handleSumOpen = () => {
@@ -259,6 +262,7 @@ const ViewEditFile: React.FC = (props: Props) => {
   };
   const handleSumClose = () => {
     setSumopen(false);
+    setIsDrawerOpen(true);
   };
 
   //dialog entry
@@ -282,12 +286,6 @@ const ViewEditFile: React.FC = (props: Props) => {
   const [OtherOpen, setOtherOpen] = useState(false);
   const [editorContent, setEditorContent] = useState<string>("");
   const [triggerFetch, setTriggerFetch] = useState(false);
-
-  // const handleEditorChange = (content: any) => {
-  //   const textWithoutTags = content.replace(/<[^>]*>/g, "").trim(); // Remove HTML tags
-  //   console.log("textWithoutTags", textWithoutTags);
-  //   setEditorContent(textWithoutTags);
-  // };
 
   const handleEditorChange = (content: any) => {
     setEditorContent(content);
@@ -446,21 +444,6 @@ const ViewEditFile: React.FC = (props: Props) => {
       setMovementTableData(arr);
       setIsTableLoading(false);
     });
-  };
-
-  const getDescriptionForNodeMode = (nodeMode: any) => {
-    switch (nodeMode) {
-      case "A":
-        return "Authority";
-      case "C":
-        return "Committee ";
-      case "G":
-        return "Group";
-      case "P":
-        return "CommitteeGroup Parameters";
-      default:
-        return "";
-    }
   };
 
   const getMoveTableData = () => {
@@ -700,12 +683,6 @@ const ViewEditFile: React.FC = (props: Props) => {
     }
   };
 
-  // const handleClose = () => {
-  //     setOpen(false);
-  // };
-
-  const requiredFields = ["pdfName"];
-
   const validationSchema = Yup.object().shape({
     moveDate: Yup.date().required("Moved Date is required"),
     dueDate: Yup.date()
@@ -808,14 +785,9 @@ const ViewEditFile: React.FC = (props: Props) => {
       backgroundColor: "#00009c",
       color: "#fff",
       fontWeight: "normal",
-
-      // '&:hover': {
-      //   backgroundColor: '#f0f0f0',
-      // },
     },
     selected: {
       backgroundColor: "#f0f0f0",
-      // color: '#00009c',
       fontWeight: "bold",
     },
   };
@@ -1187,7 +1159,6 @@ const ViewEditFile: React.FC = (props: Props) => {
           <form onSubmit={formik.handleSubmit}>
             <Grid item xs={12} container spacing={1}>
               <SwipeableDrawerRoute
-              
                 open={drawerOpenUser}
                 onClose={() => setDrawerOpenUser(!drawerOpenUser)}
                 userData={drawerData}
@@ -2218,267 +2189,397 @@ const ViewEditFile: React.FC = (props: Props) => {
                 </Drawer>
 
                 {/*  Moved To Awaited */}
-                <Modal
+                <Dialog
                   open={Awaitopen}
-                  onClose={handleAWaitClose}
-                  aria-labelledby="modal-modal-title"
-                  aria-describedby="modal-modal-description"
+                  // onClose={handleAWaitClose}
+                  // aria-labelledby="modal-modal-title"
+                  // aria-describedby="modal-modal-description"
+                  fullWidth={fullWidth}
+                  maxWidth={maxWidth}
+                  PaperComponent={PaperComponent}
+                  aria-labelledby="draggable-dialog-title"
                 >
-                  <Box sx={style}>
-                    <Typography
-                      id="modal-modal-title"
-                      variant="h6"
-                      component="h2"
-                    >
-                      Moved To Awaited
+                  <DialogTitle
+                    style={{ cursor: "move" }}
+                    id="draggable-dialog-title"
+                    sx={{
+                      backgroundColor: "#00009c",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                      color: "#fff",
+                      marginBottom: "2px",
+                    }}
+                  >
+                    <Typography fontWeight="600" fontSize={17}>
+                      Moved To Awaited for :-{" "}
+                      <i>
+                        #{fileID}-{fileName}
+                      </i>{" "}
                     </Typography>
-
-                    <Grid
-                      container
-                      spacing={2}
-                      alignItems="center"
-                      sx={{ marginTop: 2 }}
+                    <IconButton
+                      edge="end"
+                      onClick={handleAWaitClose}
+                      aria-label="close"
+                      sx={{
+                        color: "#fff",
+                        position: "absolute",
+                        right: 20,
+                        top: 10,
+                      }}
                     >
-                      <Grid item xs={4}>
-                        <TextField
-                          type="date"
-                          label={<CustomLabel text="Moved Date" />}
-                          value={formik.values.moveDate}
-                          placeholder="Moved Date"
-                          size="small"
-                          InputLabelProps={{ shrink: true }}
-                          fullWidth
-                          name="moveDate"
-                          id="moveDate"
-                          style={{ backgroundColor: "white" }}
-                          onChange={handleMoveDateChange}
-                          onBlur={formik.handleBlur}
-                          error={
-                            formik.touched.moveDate &&
-                            Boolean(formik.errors.moveDate)
-                          }
-                          helperText={
-                            formik.touched.moveDate && formik.errors.moveDate
-                          }
-                        />
-                      </Grid>
+                      <CloseIcon />
+                    </IconButton>
+                  </DialogTitle>
+                  {/* <br/> */}
+                  <Divider />
+                  <DialogContent
+                    sx={{ backgroundColor: "#f4f4f5", height: "25%" }}
+                  >
+                    <DialogContentText>
+                      <Grid
+                        container
+                        xs={12}
+                        spacing={2}
+                        alignItems="center"
+                        sx={{ marginTop: 2 }}
+                      >
+                        <Grid item xs={5}>
+                          <TextField
+                            type="date"
+                            label={<CustomLabel text="Moved Date" />}
+                            value={formik.values.moveDate}
+                            placeholder="Moved Date"
+                            size="small"
+                            InputLabelProps={{ shrink: true }}
+                            fullWidth
+                            name="moveDate"
+                            id="moveDate"
+                            style={{ backgroundColor: "white" }}
+                            onChange={handleMoveDateChange}
+                            onBlur={formik.handleBlur}
+                            error={
+                              formik.touched.moveDate &&
+                              Boolean(formik.errors.moveDate)
+                            }
+                            helperText={
+                              formik.touched.moveDate && formik.errors.moveDate
+                            }
+                          />
+                        </Grid>
 
-                      <Grid item xs={4}>
-                        <TextField
-                          type="date"
-                          label={<CustomLabel text="Due Date" />}
-                          value={formik.values.dueDate}
-                          placeholder="Due Date"
-                          size="small"
-                          InputLabelProps={{ shrink: true }}
-                          fullWidth
-                          name="dueDate"
-                          id="dueDate"
-                          style={{ backgroundColor: "white" }}
-                          onChange={formik.handleChange}
-                          onBlur={formik.handleBlur}
-                          error={
-                            formik.touched.dueDate &&
-                            Boolean(formik.errors.dueDate)
-                          }
-                          helperText={
-                            formik.touched.dueDate && formik.errors.dueDate
-                          }
-                          inputProps={{ min: minDueDate }}
-                        />
-                      </Grid>
+                        <Grid item xs={5}>
+                          <TextField
+                            type="date"
+                            label={<CustomLabel text="Due Date" />}
+                            value={formik.values.dueDate}
+                            placeholder="Due Date"
+                            size="small"
+                            InputLabelProps={{ shrink: true }}
+                            fullWidth
+                            name="dueDate"
+                            id="dueDate"
+                            style={{ backgroundColor: "white" }}
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
+                            error={
+                              formik.touched.dueDate &&
+                              Boolean(formik.errors.dueDate)
+                            }
+                            helperText={
+                              formik.touched.dueDate && formik.errors.dueDate
+                            }
+                            inputProps={{ min: minDueDate }}
+                          />
+                        </Grid>
 
-                      <Grid item xs={4}>
-                        <Button
-                          variant="contained"
-                          color="primary"
-                          onClick={MoveAwait}
-                          fullWidth
-                        >
-                          Moved
-                        </Button>
+                        <Grid item xs={2}>
+                          <Button
+                            variant="contained"
+                            color="primary"
+                            onClick={MoveAwait}
+                            fullWidth
+                          >
+                            Moved
+                          </Button>
+                        </Grid>
                       </Grid>
-                    </Grid>
-                  </Box>
-                </Modal>
+                    </DialogContentText>
+                  </DialogContent>
+                </Dialog>
 
                 {/*  Moved To Parked */}
-                <Modal
+                <Dialog
                   open={Parkopen}
-                  onClose={handleParkClose}
-                  aria-labelledby="modal-modal-title"
-                  aria-describedby="modal-modal-description"
+                  //onClose={handleParkClose}
+                  fullWidth={fullWidth}
+                  maxWidth="md"
+                  PaperComponent={PaperComponent}
+                  aria-labelledby="draggable-dialog-title"
                 >
-                  <Box sx={style}>
-                    <Typography
-                      id="modal-modal-title"
-                      variant="h6"
-                      component="h2"
-                    >
-                      Moved To Parked
+                  <DialogTitle
+                    style={{ cursor: "move" }}
+                    id="draggable-dialog-title"
+                    sx={{
+                      backgroundColor: "#00009c",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                      color: "#fff",
+                      marginBottom: "2px",
+                    }}
+                  >
+                    <Typography fontWeight="600" fontSize={17}>
+                      Moved To Parked for :-{" "}
+                      <i>
+                        #{fileID}-{fileName}
+                      </i>{" "}
                     </Typography>
-                    <Grid
-                      container
-                      spacing={2}
-                      alignItems="center"
-                      sx={{ marginTop: 2 }}
+                    <IconButton
+                      edge="end"
+                      onClick={handleParkClose}
+                      aria-label="close"
+                      sx={{
+                        color: "#fff",
+                        position: "absolute",
+                        right: 20,
+                        top: 10,
+                      }}
                     >
-                      <Grid item xs={6}>
-                        <TextField
-                          type="date"
-                          label={<CustomLabel text="Moved Date" />}
-                          value={formik.values.parkDate}
-                          placeholder="Moved Date"
-                          size="small"
-                          InputLabelProps={{ shrink: true }}
-                          fullWidth
-                          name="parkDate"
-                          id="parkDate"
-                          style={{ backgroundColor: "white" }}
-                          onChange={formik.handleChange}
-                          onBlur={formik.handleBlur}
-                        />
-                      </Grid>
+                      <CloseIcon />
+                    </IconButton>
+                  </DialogTitle>
 
-                      <Grid item xs={4}>
-                        <Button
-                          variant="contained"
-                          color="primary"
-                          onClick={MoveParked}
-                          fullWidth
-                        >
-                          Moved
-                        </Button>
+                  <DialogContent
+                    sx={{ backgroundColor: "#f4f4f5", height: "25%" }}
+                  >
+                    <DialogContentText>
+                      <Grid
+                        container
+                        spacing={2}
+                        alignItems="center"
+                        sx={{ marginTop: 2 }}
+                      >
+                        <Grid item xs={10}>
+                          <TextField
+                            type="date"
+                            label={<CustomLabel text="Moved Date" />}
+                            value={formik.values.parkDate}
+                            placeholder="Moved Date"
+                            size="small"
+                            InputLabelProps={{ shrink: true }}
+                            fullWidth
+                            name="parkDate"
+                            id="parkDate"
+                            style={{ backgroundColor: "white" }}
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
+                          />
+                        </Grid>
+
+                        <Grid item xs={2}>
+                          <Button
+                            variant="contained"
+                            color="primary"
+                            onClick={MoveParked}
+                            fullWidth
+                          >
+                            Moved
+                          </Button>
+                        </Grid>
                       </Grid>
-                    </Grid>
-                  </Box>
-                </Modal>
+                    </DialogContentText>
+                  </DialogContent>
+                </Dialog>
 
                 {/* Close the file */}
-                <Modal
+                <Dialog
                   open={Moveopen}
-                  onClose={handleMoveClose}
-                  aria-labelledby="modal-modal-title"
-                  aria-describedby="modal-modal-description"
+                  //onClose={handleMoveClose}
+                  fullWidth={fullWidth}
+                  maxWidth="sm"
+                  PaperComponent={PaperComponent}
+                  aria-labelledby="draggable-dialog-title"
                 >
-                  <Box sx={style}>
-                    <Typography
-                      id="modal-modal-title"
-                      variant="h6"
-                      component="h2"
-                    >
-                      Close the file
+                  <DialogTitle
+                    style={{ cursor: "move" }}
+                    id="draggable-dialog-title"
+                    sx={{
+                      backgroundColor: "#00009c",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                      color: "#fff",
+                      marginBottom: "2px",
+                    }}
+                  >
+                    <Typography fontWeight="600" fontSize={17}>
+                      Close the file for :-{" "}
+                      <i>
+                        #{fileID}-{fileName}
+                      </i>{" "}
                     </Typography>
-                    <Grid
-                      container
-                      spacing={2}
-                      alignItems="center"
-                      sx={{ marginTop: 2 }}
+                    <IconButton
+                      edge="end"
+                      onClick={handleMoveClose}
+                      aria-label="close"
+                      sx={{
+                        color: "#fff",
+                        position: "absolute",
+                        right: 20,
+                        top: 10,
+                      }}
                     >
-                      <Grid item xs={6}>
-                        <TextField
-                          type="date"
-                          label={<CustomLabel text="Moved Date" />}
-                          value={formik.values.closeDate}
-                          placeholder="Moved Date"
-                          size="small"
-                          InputLabelProps={{ shrink: true }}
-                          fullWidth
-                          name="closeDate"
-                          id="closeDate"
-                          style={{ backgroundColor: "white" }}
-                          onChange={formik.handleChange}
-                          onBlur={formik.handleBlur}
-                        />
-                      </Grid>
+                      <CloseIcon />
+                    </IconButton>
+                  </DialogTitle>
+                  <Divider />
+                  <DialogContent
+                    sx={{ backgroundColor: "#f4f4f5", height: "25%" }}
+                  >
+                    <DialogContentText>
+                      <Grid
+                        container
+                        xs={12}
+                        spacing={2}
+                        alignItems="center"
+                        sx={{ marginTop: 2, marginBottom: 2 }}
+                      >
+                        <Grid item xs={9}>
+                          <TextField
+                            type="date"
+                            label={<CustomLabel text="Moved Date" />}
+                            value={formik.values.closeDate}
+                            placeholder="Moved Date"
+                            size="small"
+                            InputLabelProps={{ shrink: true }}
+                            fullWidth
+                            name="closeDate"
+                            id="closeDate"
+                            style={{ backgroundColor: "white" }}
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
+                          />
+                        </Grid>
 
-                      <Grid item xs={4}>
-                        <Button
-                          variant="contained"
-                          color="primary"
-                          onClick={MoveClose}
-                          fullWidth
-                        >
-                          Moved
-                        </Button>
+                        <Grid item xs={3}>
+                          <Button
+                            variant="contained"
+                            color="primary"
+                            onClick={MoveClose}
+                            fullWidth
+                          >
+                            Moved
+                          </Button>
+                        </Grid>
                       </Grid>
-                    </Grid>
-                  </Box>
-                </Modal>
+                    </DialogContentText>
+                  </DialogContent>
+                </Dialog>
 
-                <Modal
+                <Dialog
                   open={Sumopen}
-                  onClose={handleSumClose}
-                  aria-labelledby="modal-modal-title"
-                  aria-describedby="modal-modal-description"
+                  //onClose={handleSumClose}
+                  fullWidth={fullWidth}
+                  maxWidth="md"
+                  PaperComponent={PaperComponent}
+                  aria-labelledby="draggable-dialog-title"
                 >
-                  <Box sx={style}>
-                    <Typography
-                      id="modal-modal-title"
-                      variant="h6"
-                      component="h2"
-                    >
-                      File Summary/Comments (Desending Order)
+                  <DialogTitle
+                    style={{ cursor: "move" }}
+                    id="draggable-dialog-title"
+                    sx={{
+                      backgroundColor: "#00009c",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                      color: "#fff",
+                      marginBottom: "2px",
+                    }}
+                  >
+                    <Typography fontWeight="600" fontSize={17}>
+                      File Summary/Comments (Desending Order) for :-{" "}
+                      <i>
+                        #{fileID}-{fileName}
+                      </i>{" "}
                     </Typography>
-                    <Grid
-                      container
-                      spacing={2}
-                      alignItems="center"
-                      sx={{ marginTop: 2 }}
+                    <IconButton
+                      edge="end"
+                      onClick={handleSumClose}
+                      aria-label="close"
+                      sx={{
+                        color: "#fff",
+                        position: "absolute",
+                        right: 20,
+                        top: 10,
+                      }}
                     >
-                      <Grid item xs={10}>
-                        <TextField
-                          // type="date"
-                          label={<CustomLabel text="Enter Text" />}
-                          value={formik.values.SumRemark}
-                          placeholder="Enter Text Here......."
-                          size="small"
-                          // InputLabelProps={{ shrink: true }}
-                          fullWidth
-                          multiline
-                          rows={4}
-                          name="SumRemark"
-                          id="SumRemark"
-                          style={{ backgroundColor: "white" }}
-                          onChange={formik.handleChange}
-                          onBlur={formik.handleBlur}
-                        />
-                      </Grid>
+                      <CloseIcon />
+                    </IconButton>
+                  </DialogTitle>
+                  <DialogContent
+                    sx={{ backgroundColor: "#f4f4f5", height: "25%" }}
+                  >
+                    <DialogContentText>
+                      <Grid
+                        container
+                        spacing={2}
+                        alignItems="center"
+                        sx={{ marginTop: 2 }}
+                      >
+                        <Grid item xs={12}>
+                          <TextField
+                            label={<CustomLabel text="Enter Text" />}
+                            value={formik.values.SumRemark}
+                            placeholder="Enter Text Here......."
+                            size="small"
+                            fullWidth
+                            multiline
+                            rows={4}
+                            name="SumRemark"
+                            id="SumRemark"
+                            style={{ backgroundColor: "white" }}
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
+                          />
+                        </Grid>
 
-                      <Grid item xs={2}>
-                        <Button
-                          variant="contained"
-                          color="primary"
-                          onClick={UpdateSummary}
-                          fullWidth
-                        >
-                          save
-                        </Button>
+                        <Grid item xs={2}>
+                          <Button
+                            variant="contained"
+                            color="primary"
+                            onClick={UpdateSummary}
+                            fullWidth
+                          >
+                            save
+                          </Button>
+                        </Grid>
                       </Grid>
-                    </Grid>
-                  </Box>
-                </Modal>
+                    </DialogContentText>
+                  </DialogContent>
+                </Dialog>
 
-                {/* {fileID === "" ? <>{toast.error("First Select File Number then proceed further process...")}</> :  */}
                 <>
-                  {/* File Movement Details */}
                   <Dialog
                     open={fileMovementDetailopen}
                     // onClose={handlefileMovementDetailClose}
                     fullWidth={fullWidth}
                     maxWidth={maxWidth}
+                    PaperComponent={PaperComponent}
+                    aria-labelledby="draggable-dialog-title"
                   >
                     <DialogTitle
-                      // style={{ cursor: "move" }}
-                      // id="draggable-dialog-title"
+                      style={{ cursor: "move" }}
+                      id="draggable-dialog-title"
                       sx={{
-                        backgroundColor: "#f4f4f5",
+                        backgroundColor: "#00009c",
                         display: "flex",
                         alignItems: "center",
+                        color: "#fff",
                         justifyContent: "space-between",
                       }}
                     >
-                      <Typography fontWeight="600" fontSize={20}>
+                      <Typography fontWeight="600" fontSize={17}>
                         File Movement Details for :-{" "}
                         <i>
                           #{fileID}-{fileName}
@@ -2489,10 +2590,10 @@ const ViewEditFile: React.FC = (props: Props) => {
                         onClick={handlefileMovementDetailClose}
                         aria-label="close"
                         sx={{
-                          color: "#000",
+                          color: "#fff",
                           position: "absolute",
-                          right: 17,
-                          top: 3,
+                          right: 20,
+                          top: 10,
                         }}
                       >
                         <CloseIcon />
@@ -2709,90 +2810,7 @@ const ViewEditFile: React.FC = (props: Props) => {
                       </Button>
                     </DialogActions>
                   </Dialog>
-
-                  {/* <Dialog
-                    open={openDraggable}
-                    // onClose={handleClose}
-                    // PaperComponent={PaperComponent}
-                    aria-labelledby="draggable-dialog-title"
-                  >
-                    <DialogTitle
-                      // style={{ cursor: "move" }}
-                      // id="draggable-dialog-title"
-                      width="lg"
-                      sx={{
-                        backgroundColor: "#f4f4f5",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "space-between",
-                      }}
-                    >
-                      <Typography fontWeight="600" fontSize={20}>
-                        View Routes Details of :-{" "}
-                        {nodeId && nodeId.length > 0 && (
-                          <>
-                            {nodeId?.map((item: any, index: any) => (
-                              <i key={index}>
-                                #{item.id}-{item.routeName}
-                              </i>
-                            ))}
-                          </>
-                        )}
-                      </Typography>
-                      <IconButton
-                        edge="end"
-                        onClick={handleCloseDraggable}
-                        aria-label="close"
-                        sx={{
-                          color: "#000",
-                          position: "absolute",
-                          right: 17,
-                          top: 3,
-                        }}
-                      >
-                        <CloseIcon />
-                      </IconButton>
-                    </DialogTitle>
-                    <DialogContent>
-                      <DialogContentText>
-                        {nodeId && nodeId[0]?.routeMembercycless && (
-                          <div>
-                            {nodeId[0]?.routeMembercycless?.map(
-                              (item: any, index: any) => (
-                                <div key={index}>
-                                  <div
-                                    style={{
-                                      display: "flex",
-                                      gap: 20,
-                                      alignItems: "center",
-                                    }}
-                                  >
-                                    <div
-                                      style={{
-                                        display: "flex",
-                                        alignItems: "center",
-                                        justifyContent: "space-between",
-                                      }}
-                                    >
-                                      <div>Level : {item.authorityLevel}</div>
-                                      <div>
-                                        Route Name :{" "}
-                                        {getDescriptionForNodeMode(
-                                          item.nodeMode
-                                        )}
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                              )
-                            )}
-                          </div>
-                        )}
-                      </DialogContentText>
-                    </DialogContent>
-                  </Dialog> */}
                 </>
-                {/* } */}
 
                 <TableContainer
                   component={Paper}
@@ -2953,71 +2971,87 @@ const ViewEditFile: React.FC = (props: Props) => {
 
                             <Dialog
                               open={openModals}
-                              keepMounted
-                              aria-describedby="alert-dialog-slide-description"
-                              TransitionComponent={Transition}
-                              maxWidth="xl"
+                              fullWidth={fullWidth}
+                              // maxWidth=""
+                              PaperComponent={PaperComponent}
                             >
-                              <DialogTitle sx={{}}>
-                                <div
-                                  style={{
-                                    display: "flex",
-                                    alignItems: "center",
-                                    justifyContent: "space-between",
+                              <DialogTitle
+                                style={{ cursor: "move" }}
+                                sx={{
+                                  backgroundColor: "#00009c",
+                                  display: "flex",
+                                  alignItems: "center",
+                                  justifyContent: "space-between",
+                                  color: "#fff",
+                                  marginBottom: "2px",
+                                }}
+                              >
+                                <Typography fontWeight="600" fontSize={17}>
+                                  <i>
+                                    #{selectedRow ? selectedRow.cFileNm : ""}
+                                  </i>
+                                </Typography>
+                                <IconButton
+                                  edge="end"
+                                  onClick={handleCloseModals}
+                                  aria-label="close"
+                                  sx={{
+                                    color: "#fff",
+                                    position: "absolute",
+                                    right: 20,
+                                    top: 10,
                                   }}
                                 >
-                                  <>
-                                    <Typography fontWeight="600">
-                                      {/* // {row.cFileNm} */}
-                                      {selectedRow ? selectedRow.cFileNm : ""}
-                                    </Typography>
-                                  </>
-                                  <>
-                                    <IconButton
-                                      aria-label="close"
-                                      onClick={handleCloseModals}
-                                    >
-                                      <CloseIcon />
-                                    </IconButton>{" "}
-                                  </>
-                                </div>
+                                  <CloseIcon />
+                                </IconButton>
                               </DialogTitle>
-                              {isLoading ? (
-                                <div
-                                  style={{
-                                    display: "flex",
-                                    justifyContent: "center",
-                                    alignItems: "center",
-                                    margin: 10,
-                                  }}
-                                >
-                                  <CustomizedProgressBars />
-                                </div>
-                              ) : (
-                                <>
-                                  {pdfData ? (
-                                    <embed
-                                      src={pdfData}
-                                      style={{
-                                        height: "90vh",
-                                        width: "100vh",
-                                        border: "1px solid gray",
-                                      }}
-                                    />
-                                  ) : (
+                              <DialogContent
+                                sx={{
+                                  backgroundColor: "#f4f4f5",
+                                  height: "25%",
+                                }}
+                              >
+                                <DialogContentText>
+                                  {isLoading ? (
                                     <div
                                       style={{
                                         display: "flex",
                                         justifyContent: "center",
                                         alignItems: "center",
-                                        margin: 10,
+                                        // margin: 10,
+                                        //minHeight: "100vh",
+                                        flexDirection: "column",
                                       }}
                                     >
-                                      No PDF Available
+                                      <CustomizedProgressBars />
                                     </div>
+                                  ) : (
+                                    <>
+                                      {pdfData ? (
+                                        <embed
+                                          src={pdfData}
+                                          style={{
+                                            height: "90vh",
+                                            width: "95vh",
+                                            border: "1px solid gray",
+                                          }}
+                                        />
+                                      ) : (
+                                        <div
+                                          style={{
+                                            display: "flex",
+                                            justifyContent: "center",
+                                            alignItems: "center",
+                                            margin: 10,
+                                          }}
+                                        >
+                                          No PDF Available
+                                        </div>
+                                      )}
+                                    </>
                                   )}
-                                </>
-                              )}
+                                </DialogContentText>
+                              </DialogContent>
                             </Dialog>
 
                             <TableCell

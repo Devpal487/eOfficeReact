@@ -29,8 +29,9 @@ import CustomDataGrid from "../../../utils/CustomDatagrid";
 import CustomLabel from "../../../CustomLable";
 import ButtonWithLoader from "../../../utils/ButtonWithLoader";
 import Languages from "../../../Languages";
-import { Language, ReactTransliterate } from "react-transliterate";
+import { Language } from "react-transliterate";
 import "react-transliterate/dist/index.css";
+import TranslateTextField from "../../../TranslateTextField";
 
 
 interface MenuPermission {
@@ -39,7 +40,6 @@ interface MenuPermission {
   isPrint: boolean;
   isDel: boolean;
 }
-
 
 export default function Jurisdiction() {
   const { i18n, t } = useTranslation();
@@ -405,24 +405,14 @@ export default function Jurisdiction() {
                 </Grid>
 
                 <Grid item xs={5} sm={5}>
-                  <TextField
-                    type="text"
-                    label={<CustomLabel text={t("text.EnterJurisdictionName")} required={requiredFields.includes('name')} />}
-                    size="small"
-                    fullWidth
-                    style={{ backgroundColor: "white", borderColor: formik.touched.name && formik.errors.name ? 'red' : 'initial', }}
-                    InputProps={{
-                      inputComponent: ReactTransliterate as any,
-                      inputProps: {
-                        value: formik.values.name,
-                        onChangeText: (text: string) =>
-                          handleConversionChange("name", text),
-                        lang,
-                        placeholder: t("text.EnterJurisdictionName"),
-                        id: "react-transliterate-input",
-                      },
-                    }}
-                  />
+
+                <TranslateTextField
+                  label={t("text.EnterJurisdictionName")}
+                  value={formik.values.name}
+                  onChangeText={(text: string) => handleConversionChange('name', text)}
+                  required={true}
+                  lang={lang}
+                />
                   {formik.touched.name && formik.errors.name ? (
                     <div style={{ color: "red", margin: "5px" }}>
                       {formik.errors.name}

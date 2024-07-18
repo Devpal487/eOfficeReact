@@ -34,6 +34,7 @@ import CustomDataGrid from "../../../utils/CustomDatagrid";
 import Languages from "../../../Languages";
 import { Language, ReactTransliterate } from "react-transliterate";
 import "react-transliterate/dist/index.css";
+import TranslateTextField from "../../../TranslateTextField";
 
 
 interface MenuPermission {
@@ -328,13 +329,7 @@ export default function StateMaster() {
         <Paper
           sx={{
             width: "100%",
-            overflow: "hidden",
-            "& .MuiDataGrid-colCell": {
-              backgroundColor: "#2B4593",
-              color: "#fff",
-              fontSize: 17,
-              fontWeight: 900
-            },
+            overflow: "hidden"
           }}
           style={{ padding: "10px", }}
         >
@@ -411,28 +406,18 @@ export default function StateMaster() {
               </Grid>
 
               <Grid item xs={3.5} sm={3.5}>
-                <TextField
-                  label={<CustomLabel text={t("text.EnterStateName")} required={requiredFields.includes('stateName')} />}
-                  size="small"
-                  fullWidth
-                  InputProps={{
-                    inputComponent: ReactTransliterate as any,
-                    inputProps: {
-                      value: formik.values.stateName,
-                      onChangeText: (text: string) =>
-                        handleConversionChange("stateName", text),
-                      lang,
-                      placeholder: t("text.EnterStateName"),
-                      id: "react-transliterate-input",
-                    },
-                  }}
+              <TranslateTextField
+                  label={t("text.EnterStateName")}
+                  value={formik.values.stateName}
+                  onChangeText={(text: string) => handleConversionChange('stateName', text)}
+                  required={true}
+                  lang={lang}
                 />
                 {formik.touched.stateName && formik.errors.stateName ? (
                   <div style={{ color: "red", margin: "5px" }}>
                     {formik.errors.stateName}
                   </div>
                 ) : null}
-
               </Grid>
 
               <Grid xs={3.5} sm={3.5} item>

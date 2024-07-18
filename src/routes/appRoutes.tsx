@@ -543,6 +543,15 @@ const appRoutes: RouteType[] = [
           displayText: "Authority",
         },
       },
+
+      {
+        path: "/E-Office/SplitPage",
+        element: <SplitPage />,
+        state: "E-Office.SplitPage",
+        sidebarProps: {
+          displayText: "Split Page",
+        },
+      },
     ],
   },
 //   //===================End committee===================

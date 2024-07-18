@@ -78,6 +78,10 @@ import { styled } from "@mui/material/styles";
 import dayjs from "dayjs";
 import SwipeableDrawerRoute from "../../Route/RouteMaster/SwipeableDrawerRoute";
 import Draggable from "react-draggable";
+import { Language, ReactTransliterate } from "react-transliterate";
+import "react-transliterate/dist/index.css";
+import TranslateTextField from "../../../TranslateTextField";
+import Languages from "../../../Languages";
 
 function PaperComponent(props: PaperProps) {
   return (
@@ -742,6 +746,7 @@ const ViewEditFile: React.FC = (props: Props) => {
   const [cfileNm, setCfileNm] = useState("");
   const [cFileDesc, setCFileDesc] = useState("");
   const [filebase64, setFilebase64] = useState("");
+  const [lang, setLang] = useState<Language>("en");
 
   const LetterSubmit = () => {
     let value;
@@ -1116,6 +1121,17 @@ const ViewEditFile: React.FC = (props: Props) => {
       }
     });
   };
+  const handleConversionChange = (params: any, text: string) => {
+    formik.setFieldValue(params, text);
+
+    setRemarkForward(text);
+    setCFileDesc(text);
+
+    //console.log('CheckEntry',text);
+
+
+
+  };
 
   return (
     <div>
@@ -1129,30 +1145,52 @@ const ViewEditFile: React.FC = (props: Props) => {
         }}
       >
         <CardContent>
-          <Typography
-            variant="h5"
-            textAlign="center"
-            style={{ fontSize: "18px", fontWeight: 500 }}
-          >
-            {t("text.ViewEditFile")}
-          </Typography>
-
-          <Grid item sm={4} xs={12}>
-            <Typography style={{ marginTop: "-75px" }}>
+          <Grid item xs={12} container spacing={2}>
+            <Grid item lg={2} md={2} xs={2} marginTop={2}>
               <Button
                 type="submit"
                 onClick={() => back(-1)}
                 variant="contained"
                 style={{
-                  marginBottom: 15,
-                  marginTop: "45px",
                   backgroundColor: "blue",
                   width: 20,
                 }}
               >
                 <ArrowBackSharpIcon />
               </Button>
-            </Typography>
+            </Grid>
+            <Grid
+              item
+              lg={7}
+              md={7}
+              xs={7}
+              alignItems="center"
+              justifyContent="center"
+            >
+              <Typography
+                gutterBottom
+                variant="h5"
+                component="div"
+                sx={{ padding: "20px" }}
+                align="center"
+              >
+                {t("text.ViewEditFile")}
+              </Typography>
+            </Grid>
+
+            <Grid item lg={3} md={3} xs={3} marginTop={3}>
+              <select
+                className="language-dropdown"
+                value={lang}
+                onChange={(e) => setLang(e.target.value as Language)}
+              >
+                {Languages.map((l) => (
+                  <option key={l.value} value={l.value}>
+                    {l.label}
+                  </option>
+                ))}
+              </select>
+            </Grid>
           </Grid>
           <Divider />
           <br />
@@ -1605,17 +1643,14 @@ const ViewEditFile: React.FC = (props: Props) => {
                       </Grid>
 
                       <Grid item xs={12}>
-                        <TextField
-                          label={<CustomLabel text="Remark" />}
+                        <TranslateTextField
+                          label={t("text.Remark")}
                           value={formik.values.remark}
-                          placeholder="Remark"
-                          size="small"
-                          fullWidth
-                          name="remark"
-                          id="remark"
-                          style={{ backgroundColor: "white" }}
-                          onChange={formik.handleChange}
-                          onBlur={formik.handleBlur}
+                          onChangeText={(text: string) =>
+                            handleConversionChange("remark", text)
+                          }
+                          required={true}
+                          lang={lang}
                         />
                       </Grid>
                     </Grid>
@@ -1764,17 +1799,14 @@ const ViewEditFile: React.FC = (props: Props) => {
                       </Grid>
 
                       <Grid item xs={12}>
-                        <TextField
-                          label={<CustomLabel text="Remark" />}
+                      <TranslateTextField
+                          label={t("text.Remark")}
                           value={formik.values.remark}
-                          placeholder="Remark"
-                          size="small"
-                          fullWidth
-                          name="remark"
-                          id="remark"
-                          style={{ backgroundColor: "white" }}
-                          onChange={formik.handleChange}
-                          onBlur={formik.handleBlur}
+                          onChangeText={(text: string) =>
+                            handleConversionChange("remark", text)
+                          }
+                          required={true}
+                          lang={lang}
                         />
                       </Grid>
                     </Grid>
@@ -1923,18 +1955,14 @@ const ViewEditFile: React.FC = (props: Props) => {
                       </Grid>
 
                       <Grid item xs={12}>
-                        <TextField
-                          label={<CustomLabel text="Remark" />}
+                      <TranslateTextField
+                          label={t("text.Remark")}
                           value={formik.values.remark}
-                          placeholder="Remark"
-                          size="small"
-                          // InputLabelProps={{ shrink: true }}
-                          fullWidth
-                          name="remark"
-                          id="remark"
-                          style={{ backgroundColor: "white" }}
-                          onChange={formik.handleChange}
-                          onBlur={formik.handleBlur}
+                          onChangeText={(text: string) =>
+                            handleConversionChange("remark", text)
+                          }
+                          required={true}
+                          lang={lang}
                         />
                       </Grid>
                     </Grid>
@@ -2084,18 +2112,14 @@ const ViewEditFile: React.FC = (props: Props) => {
                       </Grid>
 
                       <Grid item xs={12}>
-                        <TextField
-                          label={<CustomLabel text="Remark" />}
+                      <TranslateTextField
+                          label={t("text.Remark")}
                           value={formik.values.remark}
-                          placeholder="Remark"
-                          size="small"
-                          // InputLabelProps={{ shrink: true }}
-                          fullWidth
-                          name="remark"
-                          id="remark"
-                          style={{ backgroundColor: "white" }}
-                          onChange={formik.handleChange}
-                          onBlur={formik.handleBlur}
+                          onChangeText={(text: string) =>
+                            handleConversionChange("remark", text)
+                          }
+                          required={true}
+                          lang={lang}
                         />
                       </Grid>
                     </Grid>
@@ -2528,20 +2552,15 @@ const ViewEditFile: React.FC = (props: Props) => {
                         sx={{ marginTop: 2 }}
                       >
                         <Grid item xs={12}>
-                          <TextField
-                            label={<CustomLabel text="Enter Text" />}
-                            value={formik.values.SumRemark}
-                            placeholder="Enter Text Here......."
-                            size="small"
-                            fullWidth
-                            multiline
-                            rows={4}
-                            name="SumRemark"
-                            id="SumRemark"
-                            style={{ backgroundColor: "white" }}
-                            onChange={formik.handleChange}
-                            onBlur={formik.handleBlur}
-                          />
+                        <TranslateTextField
+                          label="Enter Text"
+                          value={formik.values.SumRemark}
+                          onChangeText={(text: string) =>
+                            handleConversionChange("SumRemark", text)
+                          }
+                          required={true}
+                          lang={lang}
+                        />
                         </Grid>
 
                         <Grid item xs={2}>
@@ -2744,21 +2763,14 @@ const ViewEditFile: React.FC = (props: Props) => {
                       sx={{ backgroundColor: "#f4f4f5", width: "100%" }}
                     >
                       <Grid item>
-                        <TextField
-                          // value=
-                          size="small"
-                          label={
-                            <CustomLabel
-                              text={"Enter Remark "}
-                              required={false}
-                            />
+                      <TranslateTextField
+                          label="Enter Remark"
+                          value={formik.values.remark}
+                          onChangeText={(text: string) =>
+                            handleConversionChange("remark", text)
                           }
-                          placeholder="Enter Remark "
-                          fullWidth
-                          onChange={(e: any) => {
-                            console.log("🚀 ~ ViewEditFile ~ e:", e);
-                            setRemarkForward(e.target.value);
-                          }}
+                          required={true}
+                          lang={lang}
                         />
                       </Grid>
                     </DialogContent>
@@ -3156,20 +3168,15 @@ const ViewEditFile: React.FC = (props: Props) => {
                     </Grid>
 
                     <Grid item lg={12} xs={12} style={{ marginTop: "10%" }}>
-                      <TextField
-                        label={
-                          <CustomLabel text={t("text.EnterFileDescription")} />
-                        }
-                        placeholder={t("text.EnterFileDescription")}
-                        size="small"
-                        InputLabelProps={{ shrink: true }}
-                        fullWidth
-                        type="text"
-                        style={{ backgroundColor: "white" }}
-                        onChange={(e: any) => {
-                          setCFileDesc(e.target.value);
-                        }}
-                      />
+                    <TranslateTextField
+                          label={t("text.EnterFileDescription")}
+                          value={formik.values.FileDesc}
+                          onChangeText={(text: string) =>
+                            handleConversionChange("FileDesc", text)
+                          }
+                          required={true}
+                          lang={lang}
+                        />
                     </Grid>
                     <br></br>
                     <br></br>

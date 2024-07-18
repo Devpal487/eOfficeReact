@@ -29,6 +29,7 @@ import ButtonWithLoader from "../../../utils/ButtonWithLoader";
 import Languages from "../../../Languages";
 import { Language, ReactTransliterate } from "react-transliterate";
 import "react-transliterate/dist/index.css";
+import TranslateTextField from "../../../TranslateTextField";
 
 interface MenuPermission {
   isAdd: boolean;
@@ -94,7 +95,6 @@ export default function FileSubject() {
       });
   };
   const reject = () => {
-    // toast.warn({summary: 'Rejected', detail: 'You have rejected', life: 3000 });
     toast.warn("Rejected: You have rejected", { autoClose: 3000 });
   };
 
@@ -202,6 +202,7 @@ export default function FileSubject() {
       // setIsLoading(false);
     }
   };
+
   const validationSchema = Yup.object({
     fileSubjectName: Yup.string().test(
       "required",
@@ -211,7 +212,9 @@ export default function FileSubject() {
       }
     ),
   });
+
   const [toaster, setToaster] = useState(false);
+
   const formik = useFormik({
     initialValues: {
       id: "",
@@ -310,27 +313,14 @@ export default function FileSubject() {
             <form onSubmit={formik.handleSubmit}>
               <Grid item xs={12} container spacing={2}>
                 <Grid item xs={5}>
-                  <TextField
-                    label={
-                      <CustomLabel
-                        text={t("text.EnterFileSubjectName")}
-                        required={requiredFields.includes("fileSubjectName")}
-                      />
+                  <TranslateTextField
+                    label={t("text.EnterFileSubjectName")}
+                    value={formik.values.fileSubjectName}
+                    onChangeText={(text: string) =>
+                      handleConversionChange("fileSubjectName", text)
                     }
-                    variant="outlined"
-                    fullWidth
-                    size="small"
-                    InputProps={{
-                      inputComponent: ReactTransliterate as any,
-                      inputProps: {
-                        value: formik.values.fileSubjectName,
-                        onChangeText: (text: string) =>
-                          handleConversionChange("fileSubjectName", text),
-                        lang,
-                        placeholder: t("text.EnterFileSubjectName"),
-                        id: "react-transliterate-input",
-                      },
-                    }}
+                    required={true}
+                    lang={lang}
                   />
                   {formik.touched.fileSubjectName &&
                   formik.errors.fileSubjectName ? (
@@ -340,28 +330,16 @@ export default function FileSubject() {
                   ) : null}
                 </Grid>
                 <Grid item xs={5}>
-                  <TextField
-                    label={
-                      <CustomLabel
-                        text={t("text.EnterShortName")}
-                        required={requiredFields.includes("shortName")}
-                      />
+                  <TranslateTextField
+                    label={t("text.EnterShortName")}
+                    value={formik.values.shortName}
+                    onChangeText={(text: string) =>
+                      handleConversionChange("shortName", text)
                     }
-                    variant="outlined"
-                    fullWidth
-                    size="small"
-                    InputProps={{
-                      inputComponent: ReactTransliterate as any,
-                      inputProps: {
-                        value: formik.values.shortName,
-                        onChangeText: (text: string) =>
-                          handleConversionChange("shortName", text),
-                        lang,
-                        placeholder: t("text.EnterShortName"),
-                        id: "react-transliterate-input",
-                      },
-                    }}
+                    required={false}
+                    lang={lang}
                   />
+
                   {formik.touched.shortName && formik.errors.shortName ? (
                     <div style={{ color: "red", margin: "5px" }}>
                       {formik.errors.shortName}

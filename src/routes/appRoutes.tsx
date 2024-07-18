@@ -50,13 +50,9 @@ import SplitPage from "../pages/DocManagement/SplitPDFToJump/SplitPage";
 import SectionMaster from "../pages/master/SectionMaster/SectionMaster";
 import DocumentIndexing from "../pages/reports/DocumentReports/DocumentIndexing";
 import FileCategory from "../pages/FileManagement/FileCategory/FileCategory";
-import FileCategoryAdd from "../pages/FileManagement/FileCategory/FileCategoryAdd";
-import FileCategoryEdit from "../pages/FileManagement/FileCategory/FileCategoryEdit";
 import FileMaster from "../pages/FileManagement/FileMaster/FileMaster";
 import LetterType from "../pages/FileManagement/LetterType/LetterType";
 import FileType from "../pages/FileManagement/FileType/FileType";
-import FileClassAdd from "../pages/FileManagement/FileClass/FileClassAdd";
-import FileClassEdit from "../pages/FileManagement/FileClass/FileClassEdit";
 import FileClass from "../pages/FileManagement/FileClass/FileClass";
 import FileGroup from "../pages/FileManagement/FileGroup/FileGroup";
 import FileSubject from "../pages/FileManagement/FileSubject/FileSubject";
@@ -91,9 +87,7 @@ const appRoutes: RouteType[] = [
     path: "/home/ReviewOficer",
     sidebarProps: {
       displayText: "ReviewOficer",
-     
     },
-   
   },
   {
     path: "/master",
@@ -194,7 +188,7 @@ const appRoutes: RouteType[] = [
 
       {
         path: "/master/Jurisdiction",
-        element: <Jurisdiction/>,
+        element: <Jurisdiction />,
         state: "master.Jurisdiction",
         sidebarProps: {
           displayText: "Jurisdiction",
@@ -202,7 +196,7 @@ const appRoutes: RouteType[] = [
       },
       {
         path: "/master/NodePermission",
-        element: <NodePermission/>,
+        element: <NodePermission />,
         state: "master.NodePermission",
         sidebarProps: {
           displayText: "Node Permission",
@@ -210,7 +204,7 @@ const appRoutes: RouteType[] = [
       },
       {
         path: "/master/PageCreate",
-        element: <PageCreate/>,
+        element: <PageCreate />,
         state: "master.PageCreate",
         sidebarProps: {
           displayText: "Page Create",
@@ -219,18 +213,18 @@ const appRoutes: RouteType[] = [
 
       {
         path: "/master/PageCreateAdd",
-        element: <PageCreateAdd/>,
+        element: <PageCreateAdd />,
         state: "master.PageCreateAdd",
       },
 
       {
         path: "/master/PageCreateEdit",
-        element: <PageCreateEdit/>,
+        element: <PageCreateEdit />,
         state: "master.PageCreateEdit",
       },
       {
         path: "/master/Institute",
-        element: <Institute/>,
+        element: <Institute />,
         state: "master.Institute",
         sidebarProps: {
           displayText: "Institute Form",
@@ -239,19 +233,19 @@ const appRoutes: RouteType[] = [
 
       {
         path: "/master/InstituteAdd",
-        element: <InstituteAdd/>,
+        element: <InstituteAdd />,
         state: "master.InstituteAdd",
       },
 
       {
         path: "/master/InstituteEdit",
-        element: <InstituteEdit/>,
+        element: <InstituteEdit />,
         state: "master.InstituteEdit",
       },
 
       {
         path: "/master/HelpCreation",
-        element: <HelpCreation/>,
+        element: <HelpCreation />,
         state: "master.HelpCreation",
         sidebarProps: {
           displayText: "Help Creation",
@@ -260,7 +254,7 @@ const appRoutes: RouteType[] = [
 
       {
         path: "/master/HelpDesk",
-        element: <HelpDesk/>,
+        element: <HelpDesk />,
         state: "master.HelpDesk",
         sidebarProps: {
           displayText: "Help Desk",
@@ -269,7 +263,7 @@ const appRoutes: RouteType[] = [
 
       {
         path: "/master/Certificate",
-        element: <Certificate/>,
+        element: <Certificate />,
         state: "master.Certificate",
         sidebarProps: {
           displayText: "Certificate Apply",
@@ -278,134 +272,100 @@ const appRoutes: RouteType[] = [
 
       {
         path: "/master/CertificateAdd",
-        element: <CertificateAdd/>,
+        element: <CertificateAdd />,
         state: "master.CertificateAdd",
       },
 
       {
         path: "/master/CertificateEdit",
-        element: <CertificateEdit/>,
+        element: <CertificateEdit />,
         state: "master.CertificateEdit",
       },
 
-
       {
         path: "/master/StatusMaster",
-        element: <StatusMaster/>,
+        element: <StatusMaster />,
         state: "master.StatusMaster",
         sidebarProps: {
           displayText: "Status Master",
         },
       },
-
-
-
-
-
-     
-
-
-
     ],
   },
   //======================Master Form End========================
 
-
   //======================FileManagement Start====================
   {
-      path: "/FileManagement",
-      element: <DashboardPageLayout />,
-      state: "FileManagement",
-      child: [
-        {
-          index: true,
-          element: <DashboardIndex />,
-          state: "FileManagement.index",
+    path: "/FileManagement",
+    element: <DashboardPageLayout />,
+    state: "FileManagement",
+    child: [
+      {
+        index: true,
+        element: <DashboardIndex />,
+        state: "FileManagement.index",
+      },
+      {
+        path: "/FileManagement/FileCategory",
+        element: <FileCategory />,
+        state: "FileManagement.FileCategory",
+        sidebarProps: {
+          displayText: "File Category",
         },
-        {
-          path: "/FileManagement/FileCategory",
-          element: <FileCategory />,
-          state: "FileManagement.FileCategory",
-          sidebarProps: {
-            displayText: "File Category",
-          },
+      },
+      {
+        path: "/FileManagement/FileMaster",
+        element: <FileMaster />,
+        state: "FileManagement.FileMaster",
+        sidebarProps: {
+          displayText: "File Master",
         },
-        {
-          path: "/FileManagement/FileCategoryAdd",
-          element: <FileCategoryAdd />,
-          state: "FileManagement.FileCategoryAdd",
+      },
+      {
+        path: "/FileManagement/LetterType",
+        element: <LetterType />,
+        state: "FileManagement.LetterType",
+        sidebarProps: {
+          displayText: "Letter Type",
         },
-        {
-          path: "/FileManagement/FileCategoryEdit",
-          element: <FileCategoryEdit />,
-          state: "FileManagement.FileCategoryEdit",
+      },
+      {
+        path: "/FileManagement/FileType",
+        element: <FileType />,
+        state: "FileManagement.FileType",
+        sidebarProps: {
+          displayText: "File Type",
         },
-        {
-          path: "/FileManagement/FileMaster",
-          element: <FileMaster />,
-          state: "FileManagement.FileMaster",
-          sidebarProps: {
-            displayText: "File Master",
-          },
+      },
+      {
+        path: "/FileManagement/FileClass",
+        element: <FileClass />,
+        state: "FileManagement.FileClass",
+        sidebarProps: {
+          displayText: "File Class",
         },
-        {
-          path: "/FileManagement/LetterType",
-          element: <LetterType />,
-          state: "FileManagement.LetterType",
-          sidebarProps: {
-            displayText: "Letter Type",
-          },
+      },
+      {
+        path: "/FileManagement/FileGroup",
+        element: <FileGroup />,
+        state: "FileManagement.FileGroup",
+        sidebarProps: {
+          displayText: "File Group",
         },
-        {
-          path: "/FileManagement/FileType",
-          element: <FileType/>,
-          state: "FileManagement.FileType",
-          sidebarProps: {
-            displayText: "File Type",
-          },
+      },
+      {
+        path: "/FileManagement/FileSubject",
+        element: <FileSubject />,
+        state: "FileManagement.FileSubject",
+        sidebarProps: {
+          displayText: "File Subject",
         },
-        {
-          path: "/FileManagement/FileClass",
-          element: <FileClass/>,
-          state: "FileManagement.FileClass",
-          sidebarProps: {
-            displayText: "File Class",
-          },
-        },
-  
-        {
-          path: "/FileManagement/FileClassAdd",
-          element: <FileClassAdd/>,
-          state: "FileManagement.FileClassAdd",
-          
-        },
-        {
-          path: "/FileManagement/FileClassEdit",
-          element: <FileClassEdit/>,
-          state: "FileManagement.FileClassEdit",
-          
-        },
-        {
-          path: "/FileManagement/FileGroup",
-          element: <FileGroup/>,
-          state: "FileManagement.FileGroup",
-          sidebarProps: {
-            displayText: "File Group",
-          },
-        },
-        {
-          path: "/FileManagement/FileSubject",
-          element: <FileSubject/>,
-          state: "FileManagement.FileSubject",
-          sidebarProps: {
-            displayText: "File Subject",
-          },
-        },
-      ]},
+      },
+    ],
+  },
   //======================FileManagement End====================
 
-  
-//   //==================Start Committee====================
+  //   //==================Start Committee====================
   {
     path: "/E-Office",
     element: <DashboardPageLayout />,
@@ -453,10 +413,9 @@ const appRoutes: RouteType[] = [
         state: "E-Office.CommitteeEmployeeMappingEdit",
       },
 
-      
       {
         path: "/E-Office/ViewEditFile",
-        element: <ViewEditFile/>,
+        element: <ViewEditFile />,
         state: "E-Office.ViewEditFile",
         sidebarProps: {
           displayText: "View Edit File",
@@ -465,7 +424,7 @@ const appRoutes: RouteType[] = [
 
       {
         path: "/E-Office/AuthorityMail",
-        element: <AuthorityMail/>,
+        element: <AuthorityMail />,
         state: "E-Office.AuthorityMail",
         sidebarProps: {
           displayText: "Authority Mail",
@@ -474,7 +433,7 @@ const appRoutes: RouteType[] = [
 
       {
         path: "/E-Office/Correspondence",
-        element: <Correspondence/>,
+        element: <Correspondence />,
         state: "E-Office.Correspondence",
         sidebarProps: {
           displayText: "Correspondence",
@@ -483,21 +442,18 @@ const appRoutes: RouteType[] = [
 
       {
         path: "/E-Office/SplitPDF",
-        element: <SplitPDF/>,
+        element: <SplitPDF />,
         state: "E-Office.SplitPDF",
-       
       },
       {
         path: "/E-Office/SplitPage",
-        element: <SplitPage/>,
+        element: <SplitPage />,
         state: "E-Office.SplitPage",
-       
       },
       {
         path: "/E-Office/DocumentIndexing",
-        element: <DocumentIndexing/>,
+        element: <DocumentIndexing />,
         state: "E-Office.DocumentIndexing",
-       
       },
 
       {
@@ -521,7 +477,7 @@ const appRoutes: RouteType[] = [
 
       {
         path: "/E-Office/SectionMaster",
-        element: <SectionMaster/>,
+        element: <SectionMaster />,
         state: "E-Office.SectionMaster",
         sidebarProps: {
           displayText: "Section",
@@ -545,86 +501,83 @@ const appRoutes: RouteType[] = [
       },
     ],
   },
-//   //===================End committee===================
-
+  //   //===================End committee===================
 
   /////-------------------start ------UserManagement-----------------------
 
-{
-  path: "/UserManagement",
-  element: <DashboardPageLayout/>,
-  state: "UserManagement",
-  sidebarProps: {
-    displayText: "User Management",
-    icon: <DashboardOutlinedIcon />
-  },
-  child: [
-    {
-      index: true,
-      element: <DashboardIndex />,
-      state: "UserManagement.index",
+  {
+    path: "/UserManagement",
+    element: <DashboardPageLayout />,
+    state: "UserManagement",
+    sidebarProps: {
+      displayText: "User Management",
+      icon: <DashboardOutlinedIcon />,
     },
+    child: [
+      {
+        index: true,
+        element: <DashboardIndex />,
+        state: "UserManagement.index",
+      },
 
-    {
-      path: "/UserManagement/UserManagement",
-      element: <UserManagement/>,
-      state: "UserManagement.UserManagement",
-      sidebarProps: {
-        displayText: "User Management Master",
-      }
-    },
-    {
-      path: "/UserManagement/UserManagementAdd",
-      element: <UserManagementAdd/>,
-      state: "UserManagement.UserManagementAdd",
-      // sidebarProps: {
-      //   displayText: "Advertisement Entry Add",
-      // }
+      {
+        path: "/UserManagement/UserManagement",
+        element: <UserManagement />,
+        state: "UserManagement.UserManagement",
+        sidebarProps: {
+          displayText: "User Management Master",
+        },
+      },
+      {
+        path: "/UserManagement/UserManagementAdd",
+        element: <UserManagementAdd />,
+        state: "UserManagement.UserManagementAdd",
+        // sidebarProps: {
+        //   displayText: "Advertisement Entry Add",
+        // }
       },
       {
         path: "/UserManagement/UserManagementEdit",
-        element: <UserManagementEdit/>,
+        element: <UserManagementEdit />,
         state: "UserManagement.UserManagementEdit",
-   
+      },
+      // UserType
+      {
+        path: "/UserManagement/UserType",
+        element: <UserType />,
+        state: "UserManagement.UserType",
+        sidebarProps: {
+          displayText: "User Type",
         },
-        // UserType
-        {
-          path: "/UserManagement/UserType",
-          element: <UserType/>,
-          state: "UserManagement.UserType",
-          sidebarProps: {
-            displayText: "User Type",
-          }
+      },
+      {
+        path: "/UserManagement/RoleMaster",
+        element: <RoleMaster />,
+        state: "UserManagement.RoleMaster",
+        sidebarProps: {
+          displayText: "Role Master",
         },
-        {
-          path: "/UserManagement/RoleMaster",
-          element: <RoleMaster />,
-          state: "UserManagement.RoleMaster",
-          sidebarProps: {
-            displayText: "Role Master",
-          },
+      },
+      {
+        path: "/UserManagement/UserPermissionMaster",
+        element: <UserPermissionMaster />,
+        state: "UserManagement.UserPermissionMaster",
+        sidebarProps: {
+          displayText: "User Permission",
         },
-        {
-          path: "/UserManagement/UserPermissionMaster",
-          element: <UserPermissionMaster />,
-          state: "UserManagement.UserPermissionMaster",
-          sidebarProps: {
-            displayText: "User Permission",
-          },
+      },
+      {
+        path: "/UserManagement/NodePermission",
+        element: <NodePermission />,
+        state: "UserManagement.NodePermission",
+        sidebarProps: {
+          displayText: "Node Permission",
         },
-        {
-          path: "/UserManagement/NodePermission",
-          element: <NodePermission/>,
-          state: "UserManagement.NodePermission",
-          sidebarProps: {
-            displayText: "Node Permission",
-          },
-        },
-    ]
-
+      },
+    ],
   },
 
-//==================end========UserManagement==========
+  //==================end========UserManagement==========
 
   //==================== Start Employee Information====================
   {
@@ -659,7 +612,6 @@ const appRoutes: RouteType[] = [
         element: <EmployeeEdit />,
         state: "Employee.EmployeeEdit",
       },
-      
     ],
   },
 ];
@@ -668,4 +620,3 @@ export default appRoutes;
 function handleSuccess(message: string): void {
   throw new Error("Function not implemented.");
 }
-

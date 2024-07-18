@@ -341,6 +341,7 @@ export default function ZoneMaster() {
           sx={{
             width: "100%",
             overflow: "hidden",
+            // backgroundColor:"lightseagreen"
           }}
           style={{ padding: "10px" }}
         >
@@ -457,4 +458,4 @@ export default function ZoneMaster() {
       <ToastApp />
     </>
   );
-}
+};

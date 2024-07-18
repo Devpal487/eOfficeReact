@@ -12,8 +12,6 @@ import {
 import EditIcon from "@mui/icons-material/Edit";
 import Card from "@mui/material/Card";
 import Grid from "@mui/material/Grid";
-import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
 import api from "../../../utils/Url";
 import { useLocation } from "react-router-dom";
@@ -24,7 +22,6 @@ import { useTranslation } from "react-i18next";
 import { DataGrid, GridColDef, GridToolbar } from "@mui/x-data-grid";
 import { toast } from "react-toastify";
 import ToastApp from "../../../ToastApp";
-import { usePermissionData } from "../../../usePermissionData";
 import DeleteIcon from "@mui/icons-material/Delete";
 import CustomDataGrid from "../../../utils/CustomDatagrid";
 import CustomLabel from "../../../CustomLable";
@@ -32,6 +29,7 @@ import ButtonWithLoader from "../../../utils/ButtonWithLoader";
 import Languages from "../../../Languages";
 import { Language, ReactTransliterate } from "react-transliterate";
 import "react-transliterate/dist/index.css";
+import TranslateTextField from "../../../TranslateTextField";
 
 interface MenuPermission {
   isAdd: boolean;
@@ -105,7 +103,6 @@ export default function FileGroup() {
   };
 
   const reject = () => {
-    // toast.warn({summary: 'Rejected', detail: 'You have rejected', life: 3000 });
     toast.warn("Rejected: You have rejected", { autoClose: 3000 });
   };
 
@@ -275,12 +272,6 @@ export default function FileGroup() {
             sx={{
               width: "100%",
               overflow: "hidden",
-              "& .MuiDataGrid-colCell": {
-                backgroundColor: "#2B4593",
-                color: "#fff",
-                fontSize: 18,
-                fontWeight: 800,
-              },
             }}
             style={{ padding: "10px" }}
           >
@@ -318,27 +309,14 @@ export default function FileGroup() {
             <form onSubmit={formik.handleSubmit}>
               <Grid item xs={12} container spacing={2}>
                 <Grid item xs={10}>
-                  <TextField
-                    label={
-                      <CustomLabel
-                        text={t("text.EnterFileGroupName")}
-                        required={requiredFields.includes("fileGroupName")}
-                      />
+                  <TranslateTextField
+                    label={t("text.EnterFileGroupName")}
+                    value={formik.values.fileGroupName}
+                    onChangeText={(text: string) =>
+                      handleConversionChange("fileGroupName", text)
                     }
-                    variant="outlined"
-                    size="small"
-                    fullWidth
-                    InputProps={{
-                      inputComponent: ReactTransliterate as any,
-                      inputProps: {
-                        value: formik.values.fileGroupName,
-                        onChangeText: (text: string) =>
-                          handleConversionChange("fileGroupName", text),
-                        lang,
-                        placeholder: t("text.EnterFileGroupName"),
-                        id: "react-transliterate-input",
-                      },
-                    }}
+                    required={true}
+                    lang={lang}
                   />
                   {formik.touched.fileGroupName &&
                   formik.errors.fileGroupName ? (
@@ -398,4 +376,4 @@ export default function FileGroup() {
       <ToastApp />
     </>
   );
-};
+}

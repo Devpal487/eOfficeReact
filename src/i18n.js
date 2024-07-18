@@ -223,8 +223,8 @@ const resources = {
         ReceiptName: "Receipt Name",
         EnterReceiptName: "Enter Receipt Name",
         FileCategory: "File Category",
-        FileCatDescription: "File Category Description",
-        FileCatDescRequired: "File Category Description Required",
+        FileCatDescription: "File Category",
+        FileCatDescRequired: "File Category Required",
         CreateFileCategory: "Create File Category",
         EditFileCategory: "Edit File Category",
         EnterFileCategory: "Enter File Category",
@@ -649,7 +649,7 @@ const resources = {
         CertificateApply:"Certificate Apply",
         StatusMaster:"Status Master",
         UserTypeCode:"User Type Code",
-        
+        reqlName:"Letter name required",
 
 
       },
@@ -880,8 +880,8 @@ const resources = {
         ReceiptName: "रसीद का नाम",
         EnterReceiptName: "रसीद का नाम दर्ज करें",
         FileCategory: "फ़ाइल श्रेणी",
-        FileCatDescription: "फ़ाइल श्रेणी विवरण",
-        FileCatDescRequired: "फ़ाइल श्रेणी विवरण आवश्यक है",
+        FileCatDescription: "फ़ाइल श्रेणी",
+        FileCatDescRequired: "फ़ाइल श्रेणी आवश्यक है",
         CreateFileCategory: "फ़ाइल श्रेणी बनाएँ",
         EditFileCategory: "फ़ाइल श्रेणी संपादित करें",
         EnterFileCategory: "फ़ाइल श्रेणी दर्ज करें",
@@ -1297,7 +1297,7 @@ const resources = {
          CertificateApply:"प्रमाणपत्र लागू करें",
          StatusMaster:"स्टेटस मास्टर",
          UserTypeCode:"उपयोगकर्ता प्रकार कोड",
- 
+         reqlName:"पत्र का नाम आवश्यक है"
 
 
       },

@@ -1,44 +1,31 @@
 import Paper from "@mui/material/Paper";
-import { SetStateAction, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Button,
-  CardContent,
   Card,
   Grid,
   TextField,
   Typography,
   Divider,
-  Modal,
   Box,
-  FormControl,
-  RadioGroup,
-  FormControlLabel,
-  Radio,
-  FormLabel,
 } from "@mui/material";
 import Autocomplete from "@mui/material/Autocomplete";
-import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
+import { ConfirmDialog } from "primereact/confirmdialog";
 import api from "../../../utils/Url";
-import { useLocation } from "react-router-dom";
 import CircularProgress from "@mui/material/CircularProgress";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useTranslation } from "react-i18next";
-import { DataGrid, GridColDef, GridToolbar } from "@mui/x-data-grid";
+import { GridColDef } from "@mui/x-data-grid";
 import { toast } from "react-toastify";
 import ToastApp from "../../../ToastApp";
-import { getISTDate, getdivisionId } from "../../../utils/Constant";
-import EditIcon from "@mui/icons-material/Edit";
-import DeleteIcon from "@mui/icons-material/Delete";
-import { Avatar, Stack } from "@mui/material";
-import { TextareaAutosize } from "@mui/base/TextareaAutosize";
-// import QuillEditor from "../../../QuillEditor";
+import { getdivisionId } from "../../../utils/Constant";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
-import nopdf from "../../../assets/images/imagepreview.jpg";
 import CustomLabel from "../../../CustomLable";
 import CustomDataGrid from "../../../utils/CustomDatagrid";
-import parse from "html-react-parser";
+import { Language, ReactTransliterate } from "react-transliterate";
+import Languages from "../../../Languages";
 
 const style = {
   position: "absolute" as "absolute",
@@ -57,6 +44,7 @@ export default function HelpCreation() {
   const { i18n, t } = useTranslation();
 
   const [isLoading, setIsLoading] = useState(true);
+  const [lang, setLang] = useState<Language>("en");
 
   const [PageTitle, setPageTitle] = useState([
     { value: "-1", label: t("text.PageTitle") },
@@ -64,31 +52,17 @@ export default function HelpCreation() {
 
   const [totalFile, setTotalFile] = useState([]);
   const [columns, setColumns] = useState<any>([]);
- 
-  
-  
+
   const [editorContent, setEditorContent] = useState<string>("");
- // const [plainTextContent, setPlainTextContent] = useState<string>("");
-
-
 
   const handleEditorChange = (content: any) => {
     setEditorContent(content);
-
-   
   };
-  //   useEffect(() => {
-
-  //   }, [plainTextContent]);
-
-  //console.log("checkContext", editorContent);
 
   const divid = getdivisionId();
 
   useEffect(() => {
-    const dataString = localStorage.getItem("userdata");
     fetchTotalFile();
-    // getList();
     getFileTypeData();
   }, []);
 
@@ -123,8 +97,6 @@ export default function HelpCreation() {
         serialNo: index + 1,
         id: doc.pageTitleId,
       }));
- 
-      
 
       setTotalFile(DocsWithIds);
       setIsLoading(false);
@@ -162,6 +134,7 @@ export default function HelpCreation() {
   }));
 
   const [toaster, setToaster] = useState(false);
+
   const formik = useFormik({
     initialValues: {
       formatName: "",
@@ -190,7 +163,9 @@ export default function HelpCreation() {
       }
     },
   });
-
+  const handleTransliterateChange = (text: string) => {
+    setEditorContent(text);
+  };
   return (
     <>
       <Grid item lg={6} sm={6} xs={12} sx={{ marginTop: "3vh" }}>
@@ -207,25 +182,38 @@ export default function HelpCreation() {
             sx={{
               width: "100%",
               overflow: "hidden",
-              "& .MuiDataGrid-colCell": {
-                backgroundColor: "#00009C",
-                color: "#fff",
-                fontSize: 18,
-                fontWeight: 800,
-              },
             }}
             style={{ padding: "10px" }}
           >
             <ConfirmDialog />
-            <Typography
-              gutterBottom
-              variant="h5"
-              component="div"
-              sx={{ padding: "20px" }}
-              align="left"
-            >
-              {t("text.HelpCreation")}
-            </Typography>
+
+            <Grid item xs={12} container spacing={1}>
+            <Grid item lg={10} md={10} xs={12}>
+              <Typography
+                gutterBottom
+                variant="h5"
+                component="div"
+                sx={{ padding: "20px" }}
+                align="left"
+              >
+                 {t("text.HelpCreation")}
+              </Typography>
+            </Grid>
+
+            <Grid item lg={2} md={2} xs={12} marginTop={2}>
+              <select
+                className="language-dropdown"
+                value={lang}
+                onChange={(e) => setLang(e.target.value as Language)}
+              >
+                {Languages.map((l) => (
+                  <option key={l.value} value={l.value}>
+                    {l.label}
+                  </option>
+                ))}
+              </select>
+            </Grid>
+          </Grid>
             <Divider />
 
             <Box height={10} />
@@ -247,18 +235,19 @@ export default function HelpCreation() {
                     size="small"
                     onChange={(event, newValue: any) => {
                       console.log(newValue?.value);
-                   const rowdata =totalFile.find((x:any)=>x.pageTitleId === newValue?.value);
-                   if (rowdata) {
-                    setEditorContent(rowdata['frontDesign']);
-                  }
-                 
-                  // setEditorContent(rowdata['frontDesign']);
+                      const rowdata = totalFile.find(
+                        (x: any) => x.pageTitleId === newValue?.value
+                      );
+                      if (rowdata) {
+                        setEditorContent(rowdata["frontDesign"]);
+                      }
+
+                      // setEditorContent(rowdata['frontDesign']);
                       formik.setFieldValue("pageTitleId", newValue?.value);
                       formik.setFieldValue("page_Name", newValue?.label);
 
                       formik.setFieldTouched("pageTitleId", true);
                       formik.setFieldTouched("pageTitleId", false);
-                     
                     }}
                     renderInput={(params) => (
                       <TextField
@@ -271,11 +260,25 @@ export default function HelpCreation() {
 
                 <Grid item xs={12} sm={12}>
                   {/* <QuillEditor /> */}
-                  <ReactQuill
+                  {/* <ReactQuill
                     value={editorContent}
                     onChange={handleEditorChange}
                     modules={modules}
                     formats={formats}
+                  /> */}
+                   <ReactTransliterate
+                    renderComponent={(props: any) => (
+                      <ReactQuill
+                        {...props}
+                        value={editorContent}
+                        onChange={handleEditorChange}
+                        modules={modules}
+                        formats={formats}
+                      />
+                    )}
+                    value={editorContent}
+                    onChangeText={handleTransliterateChange}
+                    lang={lang}
                   />
                 </Grid>
 
@@ -345,28 +348,39 @@ export default function HelpCreation() {
 }
 const modules = {
   toolbar: [
-      [{ 'header': '1' }, { 'header': '2' }, ],
-      [{ 'font': [] }],
-      [{ 'size': ['small', false, 'large', 'huge'] }],
-      ['bold', 'italic', 'underline', 'strike'],
-      [{ 'color': [] }, { 'background': [] }],
-      [{ 'script': 'sub' }, { 'script': 'super' }],
-      ['blockquote', 'code-block'],
-      [{ 'list': 'ordered' }, { 'list': 'bullet' }],
-      [{ 'indent': '-1' }, { 'indent': '+1' }],
-      [{ 'align': [] }],
-      ['link', 'image', 'video', 'formula'],
-      ['clean']
+    [{ header: "1" }, { header: "2" }],
+    [{ font: [] }],
+    [{ size: ["small", false, "large", "huge"] }],
+    ["bold", "italic", "underline", "strike"],
+    [{ color: [] }, { background: [] }],
+    [{ script: "sub" }, { script: "super" }],
+    ["blockquote", "code-block"],
+    [{ list: "ordered" }, { list: "bullet" }],
+    [{ indent: "-1" }, { indent: "+1" }],
+    [{ align: [] }],
+    ["link", "image", "video", "formula"],
+    ["clean"],
   ],
 };
 
 const formats = [
-  'header', 'font', 'size',
-  'bold', 'italic', 'underline', 'strike',
-  'color', 'background',
-  'script',
-  'list', 'bullet', 'indent',
-  'align',
-  'link', 'image', 'video', 'formula',
-  'code-block'
+  "header",
+  "font",
+  "size",
+  "bold",
+  "italic",
+  "underline",
+  "strike",
+  "color",
+  "background",
+  "script",
+  "list",
+  "bullet",
+  "indent",
+  "align",
+  "link",
+  "image",
+  "video",
+  "formula",
+  "code-block",
 ];

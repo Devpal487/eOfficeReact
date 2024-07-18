@@ -36,6 +36,7 @@ import ButtonWithLoader from "../../../utils/ButtonWithLoader";
 import Languages from "../../../Languages";
 import { Language, ReactTransliterate } from "react-transliterate";
 import "react-transliterate/dist/index.css";
+import TranslateTextField from "../../../TranslateTextField";
 
 export default function FileMaster() {
   const { i18n, t } = useTranslation();
@@ -303,7 +304,7 @@ export default function FileMaster() {
           <Paper
             sx={{
               width: "100%",
-              overflow: "hidden"
+              overflow: "hidden",
             }}
             style={{ padding: "10px" }}
           >
@@ -381,27 +382,14 @@ export default function FileMaster() {
                 </Grid>
 
                 <Grid item xs={5} sm={5}>
-                  <TextField
-                    type="text"
-                    label={
-                      <CustomLabel
-                        text={t("text.FileNumber")}
-                        required={requiredFields.includes("fileNm")}
-                      />
+                  <TranslateTextField
+                    label={t("text.FileNumber")}
+                    value={formik.values.fileNm}
+                    onChangeText={(text: string) =>
+                      handleConversionChange("fileNm", text)
                     }
-                    size="small"
-                    fullWidth
-                    InputProps={{
-                      inputComponent: ReactTransliterate as any,
-                      inputProps: {
-                        value: formik.values.fileNm,
-                        onChangeText: (text: string) =>
-                          handleConversionChange("fileNm", text),
-                        lang,
-                        placeholder: t("text.FileNumber"),
-                        id: "react-transliterate-input",
-                      },
-                    }}
+                    required={true}
+                    lang={lang}
                   />
                 </Grid>
 

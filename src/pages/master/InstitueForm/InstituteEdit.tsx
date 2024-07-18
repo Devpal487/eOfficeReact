@@ -17,6 +17,10 @@ import { ColorLens as ColorLensIcon } from "@mui/icons-material";
 import { SketchPicker } from "react-color";
 import CustomLabel from '../../../CustomLable';
 import nopdf from '../../../assets/images/imagepreview.jpg';
+import Languages from "../../../Languages";
+import { Language, ReactTransliterate } from "react-transliterate";
+import "react-transliterate/dist/index.css";
+import TranslateTextField from "../../../TranslateTextField";
 
 
 const style = {
@@ -54,6 +58,7 @@ const InstituteEdit = (props: Props) => {
 
     const location = useLocation();
     console.log('location', location.state)
+    const [lang, setLang] = useState<Language>("en");
 
     const [CountryOps, setCountryOps] = useState<any>([
         { value: "-1", label: t("text.SelectCountry") },
@@ -132,8 +137,7 @@ const InstituteEdit = (props: Props) => {
         const collectData = {
             "countryId": -1
         };
-        api
-            .post(`Country/GetCountryMaster`, collectData)
+        api.post(`Country/GetCountryMaster`, collectData)
             .then((res) => {
                 const arr = res.data.data.map((item: any) => ({
                     label: item.countryName,
@@ -148,8 +152,7 @@ const InstituteEdit = (props: Props) => {
             "stateId": -1,
             "countryId": -1
         };
-        api
-            .post(`State/GetStateMaster`, collectData)
+        api.post(`State/GetStateMaster`, collectData)
             .then((res) => {
                 const arr = res.data.data.map((item: any) => ({
                     label: item.stateName,
@@ -164,8 +167,7 @@ const InstituteEdit = (props: Props) => {
             "cityId": -1,
             "stateId": -1
         };
-        api
-            .post(`M10_District/GetDistrictMaster`, collectData)
+        api.post(`M10_District/GetDistrictMaster`, collectData)
             .then((res) => {
                 const arr = res.data.data.map((item: any) => ({
                     label: item.cityName,
@@ -180,8 +182,7 @@ const InstituteEdit = (props: Props) => {
         const collectData = {
             "roleId": "-1"
         };
-        api
-            .post(`Auth/GetRoleMaster`, collectData)
+        api.post(`Auth/GetRoleMaster`, collectData)
             .then((res) => {
                 const arr = res.data.data.map((item: any) => ({
                     label: item.roleName,
@@ -196,8 +197,7 @@ const InstituteEdit = (props: Props) => {
         const collectData = {
             "roleId": "-1"
         };
-        api
-            .post(`Auth/GetRoleMaster`, collectData)
+        api.post(`Auth/GetRoleMaster`, collectData)
             .then((res) => {
                 const arr = res.data.data.map((item: any) => ({
                     label: item.roleName,
@@ -207,13 +207,11 @@ const InstituteEdit = (props: Props) => {
             });
     };
 
-
     const getParentInst = () => {
         const collectData = {
             "id": -1
         };
-        api
-            .post(`Institute_Master/GetInstitute_Master`, collectData)
+        api.post(`Institute_Master/GetInstitute_Master`, collectData)
             .then((res) => {
                 const arr = res.data.data.map((item: any) => ({
                     label: item.insname,
@@ -223,16 +221,12 @@ const InstituteEdit = (props: Props) => {
             });
     };
 
-
-
     const getLogoById = () => {
         const collectData = {
             id: location.state.id,
-
         };
 
-        api
-            .post(`Institute_Master/GetInstitute_Master`, collectData)
+        api.post(`Institute_Master/GetInstitute_Master`, collectData)
             .then((res) => {
                 const Doc = res.data.data[0]["instLogo"];
                 if (Doc) {
@@ -244,15 +238,11 @@ const InstituteEdit = (props: Props) => {
     const getimgbyid = () => {
         const collectData = {
             id: location.state.id,
-
         };
 
-        api
-            .post(`Institute_Master/GetInstitute_Master`, collectData)
+        api.post(`Institute_Master/GetInstitute_Master`, collectData)
             .then((res) => {
-                console.log("result" + JSON.stringify(res.data.data[0]["instImage"]));
-
-
+                //console.log("result" + JSON.stringify(res.data.data[0]["instImage"]));
                 const Doc = res.data.data[0]["instImage"];
                 formik.setFieldValue("instImage", Doc);
             });
@@ -261,11 +251,9 @@ const InstituteEdit = (props: Props) => {
     const getReportById = () => {
         const collectData = {
             id: location.state.id,
-
         };
 
-        api
-            .post(`Institute_Master/GetInstitute_Master`, collectData)
+        api.post(`Institute_Master/GetInstitute_Master`, collectData)
             .then((res) => {
                 const Doc = res.data.data[0]["reportheaderimg"];
                 if (Doc) {
@@ -277,11 +265,9 @@ const InstituteEdit = (props: Props) => {
     const getFooterById = () => {
         const collectData = {
             id: location.state.id,
-
         };
 
-        api
-            .post(`Institute_Master/GetInstitute_Master`, collectData)
+        api.post(`Institute_Master/GetInstitute_Master`, collectData)
             .then((res) => {
                 const Doc = res.data.data[0]["reportfooterimg"];
                 if (Doc) {
@@ -294,11 +280,8 @@ const InstituteEdit = (props: Props) => {
     const getHeaderById = () => {
         const collectData = {
             id: location.state.id,
-
         };
-
-        api
-            .post(`Institute_Master/GetInstitute_Master`, collectData)
+        api.post(`Institute_Master/GetInstitute_Master`, collectData)
             .then((res) => {
                 const Doc = res.data.data[0]["reportHeader"];
                 if (Doc) {
@@ -367,8 +350,6 @@ const InstituteEdit = (props: Props) => {
         }
     };
 
-
-
     const ConvertBase64 = (file: Blob) => {
         return new Promise((resolve, reject) => {
             const fileReader = new FileReader();
@@ -399,11 +380,8 @@ const InstituteEdit = (props: Props) => {
     };
 
     let navigate = useNavigate();
-
     const back = useNavigate();
-
     const validationSchema = Yup.object({
-
         esYear: Yup.string()
             .matches(/^[0-9]+$/, t('text.EnterNoOnly')),
         phone: Yup.string()
@@ -416,11 +394,8 @@ const InstituteEdit = (props: Props) => {
             )
             .matches(/^[0-9]+$/, t('text.EnterNoOnly'))
             .min(10, t('text.reqMinTenDigits')),
-
         noOfTeachers: Yup.string()
-
             .matches(/^[0-9]+$/, t('text.EnterNoOnly')),
-
         session_year: Yup.string()
             .test(
                 'required',
@@ -430,15 +405,10 @@ const InstituteEdit = (props: Props) => {
                 }
             )
             .matches(/^[0-9]+$/, t('text.EnterNoOnly')),
-
         reAttenDuration: Yup.string()
-
             .matches(/^[0-9]+$/, t('text.EnterNoOnly')),
-
             pincode: Yup.string()
-
             .matches(/^[0-9]+$/, t('text.EnterNoOnly')),
-
         email: Yup.string()
             .matches(
                 /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
@@ -533,13 +503,14 @@ const InstituteEdit = (props: Props) => {
                 setToaster(true);
                 toast.error(response.data.mesg);
             }
-
         }
     });
 
-
     const requiredFields = ['esYear,phone,noOfTeachers,session_year,reAttenDuration,email,pincode'];
 
+    const handleConversionChange = (params: any, text: string) => {
+        formik.setFieldValue(params, text);
+    };
 
     return (
         <div>
@@ -553,31 +524,48 @@ const InstituteEdit = (props: Props) => {
                 }}
             >
                 <CardContent>
-                    <Typography
-                        variant="h5"
-                        textAlign="center"
-                        style={{ fontSize: "18px", fontWeight: 500 }}
-                    >
-                        {t("text.EditInstitute")}
-                    </Typography>
+                    
 
-                    <Grid item sm={4} xs={12}>
-                        <Typography style={{ marginTop: "-75px" }}>
-                            <Button
-                                type="submit"
-                                onClick={() => back(-1)}
-                                variant="contained"
-                                style={{
-                                    marginBottom: 15,
-                                    marginTop: "45px",
-                                    backgroundColor: "blue",
-                                    width: 20,
-                                }}
-                            >
-                                <ArrowBackSharpIcon />
-                            </Button>
-                        </Typography>
-                    </Grid>
+                    <Grid item xs={12} container spacing={2} >
+            <Grid item lg={2} md={2} xs={2} marginTop={2}>
+              <Button
+                type="submit"
+                onClick={() => back(-1)}
+                variant="contained"
+                style={{
+                  backgroundColor: "blue",
+                  width: 20,
+                }}
+              >
+                <ArrowBackSharpIcon />
+              </Button>
+            </Grid>
+            <Grid item lg={7} md={7} xs={7} alignItems="center" justifyContent="center">
+              <Typography
+                gutterBottom
+                variant="h5"
+                component="div"
+                sx={{ padding: "20px" }}
+                align="center"
+              >
+                {t("text.EditInstitute")}
+              </Typography>
+            </Grid>
+
+            <Grid item lg={3} md={3} xs={3} marginTop={3}>
+              <select
+                className="language-dropdown"
+                value={lang}
+                onChange={(e) => setLang(e.target.value as Language)}
+              >
+                {Languages.map((l) => (
+                  <option key={l.value} value={l.value}>
+                    {l.label}
+                  </option>
+                ))}
+              </select>
+            </Grid>
+          </Grid>
                     <Divider />
                     <br />
                     <form onSubmit={formik.handleSubmit}>
@@ -695,37 +683,27 @@ const InstituteEdit = (props: Props) => {
 
 
                             <Grid md={4} item>
-                                <TextField
-
-                                    label={<CustomLabel text={t("text.InstituteName")} />}
-                                    value={formik.values.insname}
-                                    placeholder={t("text.InstituteName")}
-                                    size="small"
-
-                                    fullWidth
-                                    name="insname"
-                                    id="insname"
-                                    style={{ backgroundColor: "white" }}
-                                    onChange={formik.handleChange}
-                                    onBlur={formik.handleBlur}
-                                />
+                            <TranslateTextField
+                  label={t("text.InstituteName")}
+                  value={formik.values.insname}
+                  onChangeText={(text: string) =>
+                    handleConversionChange("insname", text)
+                  }
+                  required={false}
+                  lang={lang}
+                />
                             </Grid>
 
                             <Grid md={4} item>
-                                <TextField
-
-                                    label={<CustomLabel text={t("text.ShortName")} />}
-                                    value={formik.values.shortName}
-                                    placeholder={t("text.ShortName")}
-                                    size="small"
-
-                                    fullWidth
-                                    name="shortName"
-                                    id="shortName"
-                                    style={{ backgroundColor: "white" }}
-                                    onChange={formik.handleChange}
-                                    onBlur={formik.handleBlur}
-                                />
+                            <TranslateTextField
+                    label={t("text.ShortName")}
+                    value={formik.values.shortName}
+                    onChangeText={(text: string) =>
+                      handleConversionChange("shortName", text)
+                    }
+                    required={false}
+                    lang={lang}
+                  />
                             </Grid>
 
 
@@ -829,36 +807,26 @@ const InstituteEdit = (props: Props) => {
 
 
                             <Grid md={4} item>
-                                <TextField
-
-                                    label={<CustomLabel text={t("text.Address")} />}
-                                    value={formik.values.address}
-                                    placeholder={t("text.Address")}
-                                    size="small"
-
-                                    fullWidth
-                                    name="address"
-                                    id="address"
-                                    style={{ backgroundColor: "white" }}
-                                    onChange={formik.handleChange}
-                                    onBlur={formik.handleBlur}
-                                />
+                            <TranslateTextField
+                    label={t("text.Address")}
+                    value={formik.values.address}
+                    onChangeText={(text: string) =>
+                      handleConversionChange("address", text)
+                    }
+                    required={false}
+                    lang={lang}
+                  />
                             </Grid>
                             <Grid md={4} item>
-                                <TextField
-
-                                    label={<CustomLabel text={t("text.District")} />}
-                                    value={formik.values.district}
-                                    placeholder={t("text.District")}
-                                    size="small"
-
-                                    fullWidth
-                                    name="district"
-                                    id="district"
-                                    style={{ backgroundColor: "white" }}
-                                    onChange={formik.handleChange}
-                                    onBlur={formik.handleBlur}
-                                />
+                            <TranslateTextField
+                    label={t("text.District")}
+                    value={formik.values.district}
+                    onChangeText={(text: string) =>
+                      handleConversionChange("district", text)
+                    }
+                    required={false}
+                    lang={lang}
+                  />
                             </Grid>
 
 
@@ -888,68 +856,48 @@ const InstituteEdit = (props: Props) => {
 
 
                             <Grid md={4} item>
-                                <TextField
-
-                                    label={<CustomLabel text={t("text.Category")} />}
-                                    value={formik.values.collegeCategory}
-                                    placeholder={t("text.Category")}
-                                    size="small"
-
-                                    fullWidth
-                                    name="collegeCategory"
-                                    id="collegeCategory"
-                                    style={{ backgroundColor: "white" }}
-                                    onChange={formik.handleChange}
-                                    onBlur={formik.handleBlur}
-                                />
+                            <TranslateTextField
+                    label={t("text.Category")}
+                    value={formik.values.collegeCategory}
+                    onChangeText={(text: string) =>
+                      handleConversionChange("collegeCategory", text)
+                    }
+                    required={false}
+                    lang={lang}
+                  />
                             </Grid>
                             <Grid md={4} item>
-                                <TextField
-
-                                    label={<CustomLabel text={t("text.Principal")} />}
-                                    value={formik.values.principal}
-                                    placeholder={t("text.Principal")}
-                                    size="small"
-
-                                    fullWidth
-                                    name="principal"
-                                    id="principal"
-                                    style={{ backgroundColor: "white" }}
-                                    onChange={formik.handleChange}
-                                    onBlur={formik.handleBlur}
-                                />
+                            <TranslateTextField
+                      label={t("text.Principal")}
+                      value={formik.values.principal}
+                      onChangeText={(text: string) =>
+                        handleConversionChange("principal", text)
+                      }
+                      required={false}
+                      lang={lang}
+                    />
                             </Grid>
                             <Grid md={4} item>
-                                <TextField
-
-                                    label={<CustomLabel text={t("text.collegeStatus")} />}
-                                    value={formik.values.collegeStatus}
-                                    placeholder={t("text.collegeStatus")}
-                                    size="small"
-
-                                    fullWidth
-                                    name="collegeStatus"
-                                    id="collegeStatus"
-                                    style={{ backgroundColor: "white" }}
-                                    onChange={formik.handleChange}
-                                    onBlur={formik.handleBlur}
-                                />
+                            <TranslateTextField
+                      label={t("text.collegeStatus")}
+                      value={formik.values.collegeStatus}
+                      onChangeText={(text: string) =>
+                        handleConversionChange("collegeStatus", text)
+                      }
+                      required={false}
+                      lang={lang}
+                    />
                             </Grid>
                             <Grid md={4} item>
-                                <TextField
-
-                                    label={<CustomLabel text={t("text.ResidencialAddress")} />}
-                                    value={formik.values.resiAddress}
-                                    placeholder={t("text.ResidencialAddress")}
-                                    size="small"
-
-                                    fullWidth
-                                    name="resiAddress"
-                                    id="resiAddress"
-                                    style={{ backgroundColor: "white" }}
-                                    onChange={formik.handleChange}
-                                    onBlur={formik.handleBlur}
-                                />
+                            <TranslateTextField
+                      label={t("text.ResidencialAddress")}
+                      value={formik.values.resiAddress}
+                      onChangeText={(text: string) =>
+                        handleConversionChange("resiAddress", text)
+                      }
+                      required={false}
+                      lang={lang}
+                    />
                             </Grid>
                             <Grid md={4} item>
                                 <TextField
@@ -976,38 +924,28 @@ const InstituteEdit = (props: Props) => {
 
 
                             <Grid md={4} item>
-                                <TextField
-
-                                    label={<CustomLabel text={t("text.OficeNO")} />}
-                                    value={formik.values.officeNo}
-                                    placeholder={t("text.OficeNO")}
-                                    size="small"
-
-                                    fullWidth
-                                    name="officeNo"
-                                    id="officeNo"
-                                    style={{ backgroundColor: "white" }}
-                                    onChange={formik.handleChange}
-                                    onBlur={formik.handleBlur}
-                                />
+                            <TranslateTextField
+                        label={t("text.OficeNO")}
+                        value={formik.values.officeNo}
+                        onChangeText={(text: string) =>
+                          handleConversionChange("officeNo", text)
+                        }
+                        required={false}
+                        lang={lang}
+                      />
                             </Grid>
 
 
                             <Grid md={4} item>
-                                <TextField
-
-                                    label={<CustomLabel text={t("text.ResiNO")} />}
-                                    value={formik.values.resiNo}
-                                    placeholder={t("text.ResiNO")}
-                                    size="small"
-
-                                    fullWidth
-                                    name="resiNo"
-                                    id="resiNo"
-                                    style={{ backgroundColor: "white" }}
-                                    onChange={formik.handleChange}
-                                    onBlur={formik.handleBlur}
-                                />
+                            <TranslateTextField
+                        label={t("text.ResiNO")}
+                        value={formik.values.resiNo}
+                        onChangeText={(text: string) =>
+                          handleConversionChange("resiNo", text)
+                        }
+                        required={false}
+                        lang={lang}
+                      />
                             </Grid>
 
 
@@ -1091,53 +1029,38 @@ const InstituteEdit = (props: Props) => {
                                 />
                             </Grid>
                             <Grid md={4} item>
-                                <TextField
-
-                                    label={<CustomLabel text={t("text.DistrictArea")} />}
-                                    value={formik.values.districtArea}
-                                    placeholder={t("text.DistrictArea")}
-                                    size="small"
-
-                                    fullWidth
-                                    name="districtArea"
-                                    id="districtArea"
-                                    style={{ backgroundColor: "white" }}
-                                    onChange={formik.handleChange}
-                                    onBlur={formik.handleBlur}
-                                />
+                            <TranslateTextField
+                        label={t("text.DistrictArea")}
+                        value={formik.values.districtArea}
+                        onChangeText={(text: string) =>
+                          handleConversionChange("districtArea", text)
+                        }
+                        required={false}
+                        lang={lang}
+                      />
                             </Grid>
 
                             <Grid md={4} item>
-                                <TextField
-
-                                    label={<CustomLabel text={t("text.StatusPg")} />}
-                                    value={formik.values.statusPG}
-                                    placeholder={t("text.StatusPg")}
-                                    size="small"
-
-                                    fullWidth
-                                    name="statusPG"
-                                    id="statusPG"
-                                    style={{ backgroundColor: "white" }}
-                                    onChange={formik.handleChange}
-                                    onBlur={formik.handleBlur}
-                                />
+                            <TranslateTextField
+                        label={t("text.StatusPg")}
+                        value={formik.values.statusPG}
+                        onChangeText={(text: string) =>
+                          handleConversionChange("statusPG", text)
+                        }
+                        required={false}
+                        lang={lang}
+                      />
                             </Grid>
                             <Grid md={4} item>
-                                <TextField
-
-                                    label={<CustomLabel text={t("text.Registrar")} />}
-                                    value={formik.values.registrar}
-                                    placeholder={t("text.Registrar")}
-                                    size="small"
-
-                                    fullWidth
-                                    name="registrar"
-                                    id="registrar"
-                                    style={{ backgroundColor: "white" }}
-                                    onChange={formik.handleChange}
-                                    onBlur={formik.handleBlur}
-                                />
+                            <TranslateTextField
+                        label={t("text.Registrar")}
+                        value={formik.values.registrar}
+                        onChangeText={(text: string) =>
+                          handleConversionChange("registrar", text)
+                        }
+                        required={false}
+                        lang={lang}
+                      />
                             </Grid>
 
                             <Grid md={4} item>

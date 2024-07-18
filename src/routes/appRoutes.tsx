@@ -4,33 +4,15 @@ import DashboardIndex from "../pages/master/MasterPageIndex";
 import DashboardOutlinedIcon from "@mui/icons-material/DashboardOutlined";
 import HomeIcon from "@mui/icons-material/Home";
 import ZoneMaster from "../pages/master/ZoneMaster/ZoneMaster";
-import ZoneMasterAdd from "../pages/master/ZoneMaster/ZoneMasterAdd";
-import ZoneMasterEdit from "../pages/master/ZoneMaster/ZoneMasterEdit";
 import DepartmentMaster from "../pages/master/DepartmentMaster/DepartmentMaster";
 import DesignationMaster from "../pages/master/DesignationMaster/DesignationMaster";
-import DesignationMasterAdd from "../pages/master/DesignationMaster/DesignationMasterAdd";
-import DesignationMasterEdit from "../pages/master/DesignationMaster/DesignationMasterEdit";
 import LoginPage from "../loginPage/LoginPage";
 import HomePage from "../pages/home/HomePage";
 import WardMaster from "../pages/master/WardMaster/WardMaster";
-import WardMasterAdd from "../pages/master/WardMaster/WardMasterAdd";
-import WardMasterEdit from "../pages/master/WardMaster/WardMasterEdit";
-import DepartmentAdd from "../pages/master/DepartmentMaster/DepartmentAdd";
-import DepartmentEdit from "../pages/master/DepartmentMaster/DepartmentEdit";
-// import FileAssigning from "../pages/Library/FileAssigning/FileAssigning";
-// import IssueReturn from "../pages/Library/IssueReturn/IssueReturn";
 import CityMaster from "../pages/master/CityMaster/CityMaster";
-import CityMasterAdd from "../pages/master/CityMaster/CityMasterAdd";
-import CityMasterEdit from "../pages/master/CityMaster/CityMasterEdit";
 import StateMaster from "../pages/master/StateMaster/StateMaster";
-import StateMasterAdd from "../pages/master/StateMaster/StateMasterAdd";
-import StateMasterEdit from "../pages/master/StateMaster/StateMasterEdit";
 import GenderMaster from "../pages/master/GenderMaster/GenderMaster";
-import GenderMasterAdd from "../pages/master/GenderMaster/GenderMasterAdd";
-import GenderMasterEdit from "../pages/master/GenderMaster/GenderMasterEdit";
 import CountryMaster from "../pages/master/CountryMaster/CountryMaster";
-import CountryMasterAdd from "../pages/master/CountryMaster/CountryMasterAdd";
-import CountryMasterEdit from "../pages/master/CountryMaster/CountryMasterEdit";
 import UserManagement from "../pages/UserManagementMaster/UserManagement/UserManagement";
 import UserManagementAdd from "../pages/UserManagementMaster/UserManagement/UserManagementAdd";
 import UserManagementEdit from "../pages/UserManagementMaster/UserManagement/UserManagementEdit";
@@ -44,8 +26,6 @@ import EmployeeMaster from "../pages/Employee/EmployeeMaster";
 import EmployeeAdd from "../pages/Employee/EmployeeAdd";
 import EmployeeEdit from "../pages/Employee/EmployeeEdit";
 import Jurisdiction from "../pages/master/Jurisdiction/Jurisdiction";
-import JurisdictionMasterAdd from "../pages/master/Jurisdiction/JurisdictionMasterAdd";
-import JurisdictionMasterEdit from "../pages/master/Jurisdiction/JurisdictionMasterEdit";
 import NodePermission from "../pages/master/NodePermission/NodePermission";
 import CommitteeMaster from "../pages/Committee/Committee/CommitteeMaster";
 import CommitteeAdd from "../pages/Committee/Committee/CommitteeAdd";
@@ -68,8 +48,6 @@ import Correspondence from "../pages/Committee/Correspondence/Correspondence";
 import SplitPDF from "../pages/DocManagement/SplitPDFToJump/SplitPDF";
 import SplitPage from "../pages/DocManagement/SplitPDFToJump/SplitPage";
 import SectionMaster from "../pages/master/SectionMaster/SectionMaster";
-import SectionMasterAdd from "../pages/master/SectionMaster/SectionMasterAdd";
-import SectionMasterEdit from "../pages/master/SectionMaster/SectionMasterEdit";
 import DocumentIndexing from "../pages/reports/DocumentReports/DocumentIndexing";
 import FileCategory from "../pages/FileManagement/FileCategory/FileCategory";
 import FileCategoryAdd from "../pages/FileManagement/FileCategory/FileCategoryAdd";
@@ -140,32 +118,12 @@ const appRoutes: RouteType[] = [
         },
       },
       {
-        path: "/master/ZoneMasterAdd",
-        element: <ZoneMasterAdd />,
-        state: "master.ZoneMasterAdd",
-      },
-      {
-        path: "/master/ZoneMasterEdit",
-        element: <ZoneMasterEdit />,
-        state: "master.ZoneMasterEdit",
-      },
-      {
         path: "/master/WardMaster",
         element: <WardMaster />,
         state: "master.WardMaster",
         sidebarProps: {
           displayText: "Ward Master",
         },
-      },
-      {
-        path: "/master/WardMasterAdd",
-        element: <WardMasterAdd />,
-        state: "master.WardMasterAdd",
-      },
-      {
-        path: "/master/WardMasterEdit",
-        element: <WardMasterEdit />,
-        state: "master.WardMasterEdit",
       },
       {
         path: "/master/DepartmentMaster",
@@ -176,33 +134,12 @@ const appRoutes: RouteType[] = [
         },
       },
       {
-        path: "/master/DepartmentAdd",
-        element: <DepartmentAdd />,
-        state: "master.DepartmentAdd",
-      },
-      {
-        path: "/master/DepartmentEdit",
-        element: <DepartmentEdit/>,
-        state: "master.DepartmentEdit",
-      },
-
-      {
         path: "/master/DesignationMaster",
         element: <DesignationMaster />,
         state: "master.DesignationMaster",
         sidebarProps: {
           displayText: "Designation Master",
         },
-      },
-      {
-        path: "/master/DesignationMasterAdd",
-        element: <DesignationMasterAdd />,
-        state: "master.DesignationMasterAdd",
-      },
-      {
-        path: "/master/DesignationMasterEdit",
-        element: <DesignationMasterEdit />,
-        state: "master.DesignationMasterEdit",
       },
       {
         path: "/master/CityMaster",
@@ -213,32 +150,12 @@ const appRoutes: RouteType[] = [
         },
       },
       {
-        path: "/master/CityMasterAdd",
-        element: <CityMasterAdd />,
-        state: "master.CityMasterAdd",
-      },
-      {
-        path: "/master/CityMasterEdit",
-        element: <CityMasterEdit />,
-        state: "master.CityMasterEdit",
-      },
-      {
         path: "/master/StateMaster",
         element: <StateMaster />,
         state: "master.StateMaster",
         sidebarProps: {
           displayText: "State",
         },
-      },
-      {
-        path: "/master/StateMasterAdd",
-        element: <StateMasterAdd />,
-        state: "master.StateMasterAdd",
-      },
-      {
-        path: "/master/StateMasterEdit",
-        element: <StateMasterEdit />,
-        state: "master.StateMasterEdit",
       },
       {
         path: "/master/GenderMaster",
@@ -249,32 +166,12 @@ const appRoutes: RouteType[] = [
         },
       },
       {
-        path: "/master/GenderMasterAdd",
-        element: <GenderMasterAdd />,
-        state: "master.GenderMasterAdd",
-      },
-      {
-        path: "/master/GenderMasterEdit",
-        element: <GenderMasterEdit />,
-        state: "master.GenderMasterEdit",
-      },
-      {
         path: "/master/CountryMaster",
         element: <CountryMaster />,
         state: "master.CountryMaster",
         sidebarProps: {
           displayText: "Country",
         },
-      },
-      {
-        path: "/master/CountryMasterAdd",
-        element: <CountryMasterAdd />,
-        state: "master.CountryMasterAdd",
-      },
-      {
-        path: "/master/CountryMasterEdit",
-        element: <CountryMasterEdit />,
-        state: "master.CountryMasterEdit",
       },
       {
         path: "/master/MenuMaster",
@@ -311,21 +208,6 @@ const appRoutes: RouteType[] = [
           displayText: "Node Permission",
         },
       },
-
-      {
-        path: "/master/JurisdictionMasterAdd",
-        element: <JurisdictionMasterAdd/>,
-        state: "master.JurisdictionMasterAdd",
-      },
-
-      {
-        path: "/master/JurisdictionMasterEdit",
-        element: <JurisdictionMasterEdit/>,
-        state: "master.JurisdictionMasterEdit",
-      },
-     
-      
-      
       {
         path: "/master/PageCreate",
         element: <PageCreate/>,
@@ -645,18 +527,6 @@ const appRoutes: RouteType[] = [
           displayText: "Section",
         },
       },
-
-      {
-        path: "/E-Office/SectionMasterAdd",
-        element: <SectionMasterAdd/>,
-        state: "E-Office.SectionMasterAdd",
-      },
-
-      {
-        path: "/E-Office/SectionMasterEdit",
-        element: <SectionMasterEdit/>,
-        state: "E-Office.SectionMasterEdit",
-      },
       {
         path: "/E-Office/AuthorityEmployeeMapping",
         element: <AuthorityEmployeeMapping />,
@@ -792,31 +662,6 @@ const appRoutes: RouteType[] = [
       
     ],
   },
-  //==================Start Correction=========Desable hai===========
-
-  //==================Start Report=========Desable hai===========
-  // {
-  //   path: "/Reports",
-  //   element: <DashboardPageLayout />,
-  //   state: "Reports",
-  //   child: [
-  //     {
-  //       path: "/Reports/FileDetailsReports",
-  //       element: <FileDetailsReports />,
-  //       state: "Reports.FileDetailsReports",
-  //       sidebarProps: {
-  //         displayText: "File Details Reports",
-  //       },
-  //     },
-  //     {
-  //       path: "/Reports/FileMovementReports",
-  //       element: <FileMovementReports />,
-  //       state: "Reports.FileMovementReports",
-  //       sidebarProps: {
-  //         displayText: "File Movement Reports",
-  //       },
-  //     },]
-  //   }
 ];
 
 export default appRoutes;

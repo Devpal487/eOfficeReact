@@ -31,8 +31,9 @@ import CustomDataGrid from "../../../utils/CustomDatagrid";
 import CustomLabel from "../../../CustomLable";
 import ButtonWithLoader from "../../../utils/ButtonWithLoader";
 import Languages from "../../../Languages";
-import { Language, ReactTransliterate } from "react-transliterate";
+import { Language } from "react-transliterate";
 import "react-transliterate/dist/index.css";
+import TranslateTextField from "../../../TranslateTextField";
 
 
 interface MenuPermission {
@@ -332,24 +333,13 @@ export default function GenderMaster() {
             <form onSubmit={formik.handleSubmit}>
               <Grid item xs={12} container spacing={2}>
                 <Grid item xs={5}>
-                  <TextField
-                    label={<CustomLabel text={t("text.EnterGenderName")} required={requiredFields.includes('genderName')} />}
-                    value={formik.values.genderName}
-                    placeholder={t("text.EnterGenderName")}
-                    size="small"
-                    fullWidth
-                    InputProps={{
-                      inputComponent: ReactTransliterate as any,
-                      inputProps: {
-                        value: formik.values.genderName,
-                        onChangeText: (text: string) =>
-                          handleConversionChange("genderName", text),
-                        lang,
-                        placeholder: t("text.EnterGenderName"),
-                        id: "react-transliterate-input",
-                      },
-                    }}
-                  />
+                <TranslateTextField
+                  label={t("text.EnterGenderName")}
+                  value={formik.values.genderName}
+                  onChangeText={(text: string) => handleConversionChange('genderName', text)}
+                  required={true}
+                  lang={lang}
+                />
                   {formik.touched.genderName && formik.errors.genderName ? (
                     <div style={{ color: "red", margin: "5px" }}>
                       {formik.errors.genderName}

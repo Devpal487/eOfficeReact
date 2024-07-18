@@ -3,23 +3,21 @@ import Paper from "@mui/material/Paper";
 import { useEffect, useState } from "react";
 import {
   Box,
-  Button,
   Divider,
   Stack,
   TextField,
   Typography,
   Grid,
   Card,
-  CircularProgress
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
 import Switch from "@mui/material/Switch";
 import Chip from "@mui/material/Chip";
 import { useTranslation } from "react-i18next";
-import { DataGrid, GridColDef, GridToolbar } from "@mui/x-data-grid";
+import { GridColDef } from "@mui/x-data-grid";
 import { toast } from "react-toastify";
 import ToastApp from "../../../ToastApp";
 import api from "../../../utils/Url";
@@ -30,9 +28,10 @@ import CustomLabel from "../../../CustomLable";
 import ButtonWithLoader from "../../../utils/ButtonWithLoader";
 import CustomDataGrid from "../../../utils/CustomDatagrid";
 import Languages from "../../../Languages";
-import { Language, ReactTransliterate } from "react-transliterate";
+import { Language } from "react-transliterate";
 import "react-transliterate/dist/index.css";
-import {getISTDate, getId, getinstId, getdivisionId} from '../../../utils/Constant' 
+import {getISTDate, getId} from '../../../utils/Constant' 
+import TranslateTextField from "../../../TranslateTextField";
 
 interface MenuPermission {
   isAdd: boolean;
@@ -116,8 +115,6 @@ export default function WardMaster() {
       });
   };
 
-  // Delete Action Option
-
   let delete_id = "";
 
   const accept = () => {
@@ -125,7 +122,7 @@ export default function WardMaster() {
       wardID: delete_id,
       user_ID: UserId,
     };
-    // console.log("collectData " + JSON.stringify(collectData));
+
     api
       .delete(`Ward/DeleteWardmaster`, { data: collectData })
       .then((response) => {
@@ -142,7 +139,6 @@ export default function WardMaster() {
   };
 
   const handledeleteClick = (del_id: any) => {
-    // console.log(del_id + " del_id ");
     delete_id = del_id;
     confirmDialog({
       message: "Do you want to delete this record ?",
@@ -161,27 +157,23 @@ export default function WardMaster() {
       "wardID": -1,
       "zoneID": -1,
       "user_ID": "-1",
-      // "isActive": true,
     };}else{
       collectData = {
         "wardID": -1,
         "zoneID": -1,
         "user_ID": UserId,
-        // "isActive": true,
       };
     }
     try {
       api
         .post(`Ward/GetWardmaster`, collectData)
         .then((res) => {
-          // console.log("result" + JSON.stringify(res.data.data));
           const data = res.data.data;
           const arr = data.map((item: any, index: any) => ({
             ...item,
             serialNo: index + 1,
             id: item.wardID,
           }));
-          // console.log(arr);
           setRows(arr);
           setIsLoading(false);
 
@@ -304,7 +296,6 @@ export default function WardMaster() {
         });
     } catch (error) {
       console.error("Error fetching data:", error);
-      // setIsLoading(false);
     }
   };
 
@@ -326,7 +317,6 @@ export default function WardMaster() {
       .post(`Zone/GetZonemaster`, collectData)
       .then((res) => {
         const arr: any = [];
-        // console.log("result" + JSON.stringify(res.data.data));
         for (let index = 0; index < res.data.data.length; index++) {
           arr.push({
             label: res.data.data[index]["zoneName"],
@@ -355,7 +345,6 @@ export default function WardMaster() {
 
   const formik = useFormik({
     initialValues: {
-
       "wardID": -1,
       "wardName": "",
       "wardCode": "",
@@ -375,17 +364,12 @@ export default function WardMaster() {
         `Ward/AddUpdateWardmaster`,
         values
       );
-
       if (response.data.isSuccess == true) {
-        // setToaster(false);
         toast.success(response.data.mesg);
         formik.resetForm();
         setEditId(-1);
         getList();
-
-        // navigate("/master/WardMaster");
       } else {
-        // setToaster(true);
         toast.error(response.data.mesg);
       }
     }
@@ -492,23 +476,13 @@ export default function WardMaster() {
               </Grid>
 
               <Grid xs={3.5} sm={3.5} item>
-                <TextField
-                  type="text"
-                  label={<CustomLabel text={t("text.enterWardName")} required={requiredFields.includes('wardName')} />}
-                  size="small"
-                  fullWidth
-                  variant="outlined"
-                  InputProps={{
-                    inputComponent: ReactTransliterate as any,
-                    inputProps: {
-                      value: formik.values.wardName,
-                      onChangeText: (text: string) =>
-                        handleConversionChange("wardName", text),
-                      lang,
-                      placeholder: t("text.enterWardName"),
-                      id: "react-transliterate-input",
-                    },
-                  }}
+                
+              <TranslateTextField
+                  label={t("text.enterWardName")}
+                  value={formik.values.wardName}
+                  onChangeText={(text: string) => handleConversionChange('wardName', text)}
+                  required={true}
+                  lang={lang}
                 />
                 {formik.touched.wardName && formik.errors.wardName ? (
                   <div style={{ color: "red", margin: "5px" }}>

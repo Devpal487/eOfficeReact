@@ -28,8 +28,9 @@ import CustomDataGrid from "../../../utils/CustomDatagrid";
 import CustomLabel from "../../../CustomLable";
 import ButtonWithLoader from "../../../utils/ButtonWithLoader";
 import Languages from "../../../Languages";
-import { Language, ReactTransliterate } from "react-transliterate";
+import { Language } from "react-transliterate";
 import "react-transliterate/dist/index.css";
+import TranslateTextField from "../../../TranslateTextField";
 
 
 interface MenuPermission {
@@ -105,7 +106,6 @@ export default function CountryMaster() {
   };
 
   const handledeleteClick = (del_id: any) => {
-    // console.log(del_id + " del_id ");
     delete_id = del_id;
     confirmDialog({
       message: "Do you want to delete this record ?",
@@ -210,6 +210,7 @@ export default function CountryMaster() {
       // setIsLoading(false);
     }
   };
+
   const validationSchema = Yup.object({
     countryName: Yup.string().test(
       "required",
@@ -219,7 +220,9 @@ export default function CountryMaster() {
       }
     ),
   });
+
   const [toaster, setToaster] = useState(false);
+
   const formik = useFormik({
     initialValues: {
       countryId: -1,
@@ -330,22 +333,14 @@ export default function CountryMaster() {
             <form onSubmit={formik.handleSubmit}>
               <Grid item xs={12} container spacing={2}>
                 <Grid item xs={5}>
-                  <TextField
-                    label={<CustomLabel text={t("text.EnterCountryName")} required={requiredFields.includes('countryName')} />}
-                    size="small"
-                    fullWidth
-                    InputProps={{
-                      inputComponent: ReactTransliterate as any,
-                      inputProps: {
-                        value: formik.values.countryName,
-                        onChangeText: (text: string) =>
-                          handleConversionChange("countryName", text),
-                        lang,
-                        placeholder: t("text.EnterCountryName"),
-                        id: "react-transliterate-input",
-                      },
-                    }}
-                  />
+                <TranslateTextField
+                  label={t("text.EnterCountryName")}
+                  value={formik.values.countryName}
+                  onChangeText={(text: string) => handleConversionChange('countryName', text)}
+                  required={true}
+                  lang={lang}
+                />
+                  
                   {formik.touched.countryName && formik.errors.countryName ? (
                     <div style={{ color: "red", margin: "5px" }}>{formik.errors.countryName}</div>
                   ) : null}

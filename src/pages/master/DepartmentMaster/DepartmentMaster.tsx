@@ -27,8 +27,9 @@ import CustomDataGrid from "../../../utils/CustomDatagrid";
 import CustomLabel from "../../../CustomLable";
 import ButtonWithLoader from "../../../utils/ButtonWithLoader";
 import Languages from "../../../Languages";
-import { Language, ReactTransliterate } from "react-transliterate";
+import { Language } from "react-transliterate";
 import "react-transliterate/dist/index.css";
+import TranslateTextField from "../../../TranslateTextField";
 
 
 interface MenuPermission {
@@ -220,7 +221,6 @@ export default function DepartmentMaster() {
   const [toaster, setToaster] = useState(false);
   const formik = useFormik({
     initialValues: {
-
       "departmentId": -1,
       "departmentName": "",
       "departmentShortname": "",
@@ -228,8 +228,6 @@ export default function DepartmentMaster() {
       "updatedBy": "admin",
       "createdOn": defaultValuestime,
       "updatedOn": defaultValuestime
-      
-
     },
     validationSchema: validationSchema,
     onSubmit: async (values) => {
@@ -327,22 +325,13 @@ export default function DepartmentMaster() {
             <form onSubmit={formik.handleSubmit}>
               <Grid item xs={12} container spacing={2}>
                 <Grid item xs={5}>
-                  <TextField
-                    label={<CustomLabel text={t("text.enterdeptName")} required={requiredFields.includes('departmentName')} />}
-                    size="small"
-                    fullWidth
-                    InputProps={{
-                      inputComponent: ReactTransliterate as any,
-                      inputProps: {
-                        value: formik.values.departmentName,
-                        onChangeText: (text: string) =>
-                          handleConversionChange("departmentName", text),
-                        lang,
-                        placeholder: t("text.enterdeptName"),
-                        id: "react-transliterate-input",
-                      },
-                    }}
-                  />
+                <TranslateTextField
+                  label={t("text.enterdeptName")}
+                  value={formik.values.departmentName}
+                  onChangeText={(text: string) => handleConversionChange('departmentName', text)}
+                  required={true}
+                  lang={lang}
+                />
                   {formik.touched.departmentName && formik.errors.departmentName ? (
                     <div style={{ color: "red", margin: "5px" }}>{formik.errors.departmentName}</div>
                   ) : null}

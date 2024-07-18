@@ -29,8 +29,9 @@ import CustomDataGrid from "../../../utils/CustomDatagrid";
 import CustomLabel from "../../../CustomLable";
 import ButtonWithLoader from "../../../utils/ButtonWithLoader";
 import Languages from "../../../Languages";
-import { Language, ReactTransliterate } from "react-transliterate";
+import { Language } from "react-transliterate";
 import "react-transliterate/dist/index.css";
+import TranslateTextField from "../../../TranslateTextField";
 
 interface MenuPermission {
     isAdd: boolean;
@@ -385,22 +386,13 @@ export default function FileMaster() {
                                 </Grid>
 
                                 <Grid item xs={5} sm={5}>
-                                    <TextField
-                                        label={<CustomLabel text={t("text.EnterDistrictName")} required={false} />}
-                                        size="small"
-                                        fullWidth
-                                        InputProps={{
-                                            inputComponent: ReactTransliterate as any,
-                                            inputProps: {
-                                              value: formik.values.cityName,
-                                              onChangeText: (text: string) =>
-                                                handleConversionChange("cityName", text),
-                                              lang,
-                                              placeholder: t("text.EnterDistrictName"),
-                                              id: "react-transliterate-input",
-                                            },
-                                          }}
-                                    />
+                                    <TranslateTextField
+                                        label={t("text.EnterDistrictName")}
+                                        value={formik.values.cityName}
+                                        onChangeText={(text: string) => handleConversionChange('cityName', text)}
+                                        required={true}
+                                        lang={lang}
+                                        />
                                     {formik.touched.cityName && formik.errors.cityName ? (
                                         <div style={{ color: "red", margin: "5px" }}>
                                             {formik.errors.cityName}

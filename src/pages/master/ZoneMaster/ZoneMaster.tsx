@@ -29,8 +29,9 @@ import ButtonWithLoader from "../../../utils/ButtonWithLoader";
 import CustomLabel from "../../../CustomLable";
 import CustomDataGrid from "../../../utils/CustomDatagrid";
 import Languages from "../../../Languages";
-import { Language, ReactTransliterate } from "react-transliterate";
+import { Language } from "react-transliterate";
 import "react-transliterate/dist/index.css";
+import TranslateTextField from "../../../TranslateTextField";
 
 interface MenuPermission {
   isAdd: boolean;
@@ -46,6 +47,7 @@ export default function ZoneMaster() {
   const [columns, setColumns] = useState<any>([]);
   const [isLoading, setIsLoading] = useState(true);
   const location = useLocation();
+  const [lang, setLang] = useState<Language>("en");
   const [permissionData, setPermissionData] = useState<MenuPermission>({
     isAdd: false,
     isEdit: false,
@@ -53,9 +55,7 @@ export default function ZoneMaster() {
     isDel: false,
   });
 
-  const [lang, setLang] = useState<Language>("en");
 
-  let navigate = useNavigate();
   const { t } = useTranslation();
 
   useEffect(() => {
@@ -91,7 +91,6 @@ export default function ZoneMaster() {
     event: React.ChangeEvent<HTMLInputElement>,
     value: any
   ) => {
-    // console.log(value)
     const collectData = {
       zoneID: value.id,
       zoneName: value.zoneName,
@@ -313,10 +312,10 @@ export default function ZoneMaster() {
       console.log("before submitting value check", values);
       const response = await api.post(`Zone/AddUpdateZonemaster`, values);
       if (response.data.isSuccess) {
-        toast.success(response.data.mesg);
         formik.setFieldValue("zoneName", "");
         formik.setFieldValue("zoneCode", "");
         fetchZonesData();
+        toast.success(response.data.mesg);
         setEditId(-1);
       } else {
         toast.error(response.data.mesg);
@@ -333,8 +332,8 @@ export default function ZoneMaster() {
       <Card
         style={{
           width: "100%",
-          backgroundColor: "#E9FDEE",
-          border: ".5px solid #2B4593 ",
+          backgroundColor: "lightgreen",
+          border: ".5px solid #2B4593",
           marginTop: "3vh",
         }}
       >
@@ -346,7 +345,8 @@ export default function ZoneMaster() {
           style={{ padding: "10px" }}
         >
           <ConfirmDialog />
-          <Grid item xs={12} container spacing={2}>
+
+          <Grid item xs={12} container spacing={1}>
             <Grid item lg={10} md={10} xs={12}>
               <Typography
                 gutterBottom
@@ -374,33 +374,19 @@ export default function ZoneMaster() {
             </Grid>
           </Grid>
 
+          <Divider />
+
           <Box height={10} />
-          <form onSubmit={formik.handleSubmit} style={{ marginLeft: "20px" }}>
+          <form onSubmit={formik.handleSubmit}>
             <Grid item xs={12} container spacing={2}>
               <Grid xs={12} sm={5} lg={5} item>
-                <TextField
-                  label={
-                    <CustomLabel
-                      text={t("text.enterZoneName")}
-                      required={requiredFields.includes("zoneName")}
-                    />
-                  }
-                  variant="outlined"
-                  fullWidth
-                  size="small"
-                  InputProps={{
-                    inputComponent: ReactTransliterate as any,
-                    inputProps: {
-                      value: formik.values.zoneName,
-                      onChangeText: (text: string) =>
-                        handleConversionChange("zoneName", text),
-                      lang,
-                      placeholder: t("text.enterZoneName"),
-                      id: "react-transliterate-input",
-                    },
-                  }}
+                <TranslateTextField
+                  label={t("text.enterZoneName")}
+                  value={formik.values.zoneName}
+                  onChangeText={(text: string) => handleConversionChange('zoneName', text)}
+                  required={true}
+                  lang={lang}
                 />
-
                 {formik.touched.zoneName && formik.errors.zoneName ? (
                   <div style={{ color: "red", margin: "5px" }}>
                     {formik.errors.zoneName}
@@ -446,10 +432,6 @@ export default function ZoneMaster() {
               </Grid>
             </Grid>
           </form>
-
-          <br />
-          <Divider />
-          <br />
 
           {isLoading ? (
             <div

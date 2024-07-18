@@ -28,8 +28,9 @@ import CustomDataGrid from "../../../utils/CustomDatagrid";
 import CustomLabel from "../../../CustomLable";
 import ButtonWithLoader from "../../../utils/ButtonWithLoader";
 import Languages from "../../../Languages";
-import { Language, ReactTransliterate } from "react-transliterate";
+import { Language } from "react-transliterate";
 import "react-transliterate/dist/index.css";
+import TranslateTextField from "../../../TranslateTextField";
 
 interface MenuPermission {
   isAdd: boolean;
@@ -331,22 +332,13 @@ export default function DesignationMaster() {
             <form onSubmit={formik.handleSubmit}>
               <Grid item xs={12} container spacing={2}>
                 <Grid item xs={5}>
-                <TextField
-                    label={<CustomLabel text={t("text.enterDesName")} required={requiredFields.includes('designationName')}  />}
-                    size="small"
-                    fullWidth
-                    InputProps={{
-                      inputComponent: ReactTransliterate as any,
-                      inputProps: {
-                        value: formik.values.designationName,
-                        onChangeText: (text: string) =>
-                          handleConversionChange("designationName", text),
-                        lang,
-                        placeholder: t("text.enterDesName"),
-                        id: "react-transliterate-input",
-                      },
-                    }}
-                  />
+                <TranslateTextField
+                  label={t("text.enterDesName")}
+                  value={formik.values.designationName}
+                  onChangeText={(text: string) => handleConversionChange('designationName', text)}
+                  required={true}
+                  lang={lang}
+                />
                   {formik.touched.designationName && formik.errors.designationName ? (
                     <div style={{color:"red", margin:"5px"}}>{formik.errors.designationName}</div>
                   ) : null}

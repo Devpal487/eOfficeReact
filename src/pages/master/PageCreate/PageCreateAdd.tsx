@@ -41,6 +41,11 @@ import KeyboardArrowUpTwoToneIcon from '@mui/icons-material/KeyboardArrowUpTwoTo
 import ExpandMoreTwoToneIcon from '@mui/icons-material/ExpandMoreTwoTone';
 import SwipeableDrawerRoute from "../../Route/RouteMaster/SwipeableDrawerRoute";
 import CustomLabel from "../../../CustomLable";
+import { Language, ReactTransliterate } from "react-transliterate";
+import "react-transliterate/dist/index.css";
+import TranslateTextField from "../../../TranslateTextField";
+import Languages from "../../../Languages";
+
 
 const style = {
     position: "absolute" as "absolute",
@@ -154,6 +159,7 @@ const PageCreateAdd = (props: Props) => {
     const [dropDrownList3, setDropDrownList3] = useState<any>("");
     const [openCollaps, setopenCollaps] = useState(false);
     const [selectedPdf, setSelectedPdf] = useState<any>(null);
+    
 
     const handleCollapse = () => {
         setopenCollaps(prevOpen => !prevOpen);
@@ -368,6 +374,8 @@ const PageCreateAdd = (props: Props) => {
     const handlePanClose = () => {
         setPanOpen(false);
     };
+
+    const [lang, setLang] = useState<Language>("en");
 
     const modalOpenHandle = (event: any) => {
         setPanOpen(true);
@@ -635,6 +643,10 @@ const PageCreateAdd = (props: Props) => {
 
     const back = useNavigate();
 
+    const handleConversionChange = (params: any, text: string) => {
+        formik.setFieldValue(params, text);
+      };
+
     return (
         <div>
             <div
@@ -647,32 +659,46 @@ const PageCreateAdd = (props: Props) => {
                 }}
             >
                 <CardContent>
-                    <Typography
-                        variant="h5"
-                        textAlign="center"
-                        style={{ fontSize: "18px", fontWeight: 500 }}
-                    >
-                        {t("text.CreateLetterOrFile")}
-                    </Typography>
+                <Grid item xs={12} container spacing={2} >
+            <Grid item lg={2} md={2} xs={2} marginTop={2}>
+              <Button
+                type="submit"
+                onClick={() => back(-1)}
+                variant="contained"
+                style={{
+                  backgroundColor: "blue",
+                  width: 20,
+                }}
+              >
+                <ArrowBackSharpIcon />
+              </Button>
+            </Grid>
+            <Grid item lg={7} md={7} xs={7} alignItems="center" justifyContent="center">
+              <Typography
+                gutterBottom
+                variant="h5"
+                component="div"
+                sx={{ padding: "20px" }}
+                align="center"
+              >
+                {t("text.CreateLetterOrType")}
+              </Typography>
+            </Grid>
 
-                    <Grid item sm={4} xs={12}> 
-                        <Typography style={{ marginTop: "-75px" }}>
-                            <Button
-                                type="submit"
-                                onClick={() => back(-1)}
-                                variant="contained"
-                                style={{
-                                    marginBottom: 15,
-                                    marginTop: "45px",
-                                    backgroundColor: "blue",
-                                    width: 20,
-                                }}
-                            >
-                                <ArrowBackSharpIcon />
-                            </Button>
-                        </Typography>
-                    </Grid>
-
+            <Grid item lg={3} md={3} xs={3} marginTop={3}>
+              <select
+                className="language-dropdown"
+                value={lang}
+                onChange={(e) => setLang(e.target.value as Language)}
+              >
+                {Languages.map((l) => (
+                  <option key={l.value} value={l.value}>
+                    {l.label}
+                  </option>
+                ))}
+              </select>
+            </Grid>
+          </Grid>
                     <SwipeableDrawerRoute
                         open={drawerOpenUser}
                         onClose={() => setDrawerOpenUser(!drawerOpenUser)}
@@ -1327,54 +1353,44 @@ const PageCreateAdd = (props: Props) => {
   )}
                             
                             <Grid md={12} item>
-                                <TextField
-                                    label={<CustomLabel text={t('text.Subject')} required={false} />}
-                                    value={formik.values.rSubject}
-                                    placeholder={t("text.Subject")}
-                                    size="small"
-                                    fullWidth
-                                    name="rSubject"
-                                    id="rSubject"
-                                    type="text"
-                                    style={{ backgroundColor: "white" }}
-                                    onChange={formik.handleChange}
-                                    onBlur={formik.handleBlur}
-                                />
+                            <TranslateTextField
+                          label={t("text.Subject")}
+                          value={formik.values.rSubject}
+                          onChangeText={(text: string) =>
+                            handleConversionChange("rSubject", text)
+                          }
+                          required={true}
+                          lang={lang}
+                        />
                             </Grid>
 
                            
 
                             <Grid md={12} item>
-                                <TextField
-                                    label={<CustomLabel text={t('text.SentBy')} required={false} />}
-                                    value={formik.values.rSendAdrs}
-                                    placeholder={t("text.SentBy")}
-                                    size="small"
-                                    fullWidth
-                                    name="rSendAdrs"
-                                    id="rSendAdrs"
-                                    type="text"
-                                    style={{ backgroundColor: "white" }}
-                                    onChange={formik.handleChange}
-                                    onBlur={formik.handleBlur}
-                                />
+                            <TranslateTextField
+                          label={t("text.SentBy")}
+                          value={formik.values.rSendAdrs}
+                          onChangeText={(text: string) =>
+                            handleConversionChange("rSendAdrs", text)
+                          }
+                          required={true}
+                          lang={lang}
+                        />
+                               
                             </Grid>
 
 
                             <Grid md={12} item>
-                                <TextField
-                                    label={<CustomLabel text={t('text.Discription')} required={false} />}
-                                    value={formik.values.rRemark}
-                                    placeholder={t("text.Discription")}
-                                    size="small"
-                                    fullWidth
-                                    name="rRemark"
-                                    id="rRemark"
-                                    type="text"
-                                    style={{ backgroundColor: "white" }}
-                                    onChange={formik.handleChange}
-                                    onBlur={formik.handleBlur}
-                                />
+                            <TranslateTextField
+                          label={t("text.Discription")}
+                          value={formik.values.rRemark}
+                          onChangeText={(text: string) =>
+                            handleConversionChange("rRemark", text)
+                          }
+                          required={true}
+                          lang={lang}
+                        />
+                             
                             </Grid>
 
                             <Grid container spacing={1} item>

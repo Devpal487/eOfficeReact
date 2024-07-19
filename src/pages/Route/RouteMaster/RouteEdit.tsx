@@ -32,6 +32,11 @@ import grp from "../../../assets/images/group.png";
 import { getISTDate } from "../../../utils/Constant";
 import { toast } from "react-toastify";
 import { getdivisionId } from "../../../utils/Constant";
+import { Language, ReactTransliterate } from "react-transliterate";
+import "react-transliterate/dist/index.css";
+import TranslateTextField from "../../../TranslateTextField";
+import Languages from "../../../Languages";
+
 
 
 export default function RouteAdd() {
@@ -86,6 +91,12 @@ export default function RouteAdd() {
 
   const [commGroupdetail , setCommGroupDetail] = useState<any>([])
   const [groupdetail , setGroupDetail] = useState<any>([])
+  const [lang, setLang] = useState<Language>("en");
+
+
+  const handleConversionChange = (params: any, text: string) => {
+    formik.setFieldValue(params, text);
+  };
  
   useEffect(() => {
     if (routeMembercycles && routeMembercycles.length > 0) {
@@ -1566,30 +1577,45 @@ try{
         }}
       >
         <CardContent>
-          <Typography
-            variant="h5"
-            textAlign="center"
-            style={{ fontSize: "18px", fontWeight: 500 }}
-          >
-          {t("text.createRoute")}
-          </Typography>
-
-          <Grid item sm={4} xs={12}>
-            <Typography style={{ marginTop: "-75px" }}>
+        <Grid item xs={12} container spacing={2} >
+            <Grid item lg={2} md={2} xs={2} marginTop={2}>
               <Button
                 type="submit"
                 onClick={() => back(-1)}
                 variant="contained"
                 style={{
-                  marginBottom: 15,
-                  marginTop: "45px",
                   backgroundColor: "blue",
                   width: 20,
                 }}
               >
                 <ArrowBackSharpIcon />
               </Button>
-            </Typography>
+            </Grid>
+            <Grid item lg={7} md={7} xs={7} alignItems="center" justifyContent="center">
+              <Typography
+                gutterBottom
+                variant="h5"
+                component="div"
+                sx={{ padding: "20px" }}
+                align="center"
+              >
+                {t("text.EditRoute")}
+              </Typography>
+            </Grid>
+
+            <Grid item lg={3} md={3} xs={3} marginTop={3}>
+              <select
+                className="language-dropdown"
+                value={lang}
+                onChange={(e) => setLang(e.target.value as Language)}
+              >
+                {Languages.map((l) => (
+                  <option key={l.value} value={l.value}>
+                    {l.label}
+                  </option>
+                ))}
+              </select>
+            </Grid>
           </Grid>
           <Divider />
           <br />
@@ -1598,16 +1624,14 @@ try{
             {toaster === false ? "" : <ToastApp />}
             <Grid item xs={12} container spacing={3}>
               <Grid xs={6} item>
-                <TextField
-                  id="routeName"
-                  name="routeName"
+              <TranslateTextField
                   label="Enter Route Name"
-                  placeholder="Enter Route Name"
-                  size="small"
                   value={formik.values.routeName}
-                  style={{ background: "white" }}
-                  fullWidth
-                  onChange={formik.handleChange}
+                  onChangeText={(text: string) =>
+                    handleConversionChange("routeName", text)
+                  }
+                  required={true}
+                  lang={lang}
                 />
               </Grid>
 

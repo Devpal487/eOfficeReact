@@ -24,7 +24,7 @@ import {
 import Autocomplete from "@mui/material/Autocomplete";
 import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
 import api from "../../../utils/Url";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import CircularProgress from "@mui/material/CircularProgress";
 import { useFormik } from "formik";
 import * as Yup from "yup";
@@ -47,6 +47,13 @@ import Quill from 'quill';
 import ButtonWithLoader from "../../../utils/ButtonWithLoader";
 import Dialog, { DialogProps } from "@mui/material/Dialog";
 import CloseIcon from "@mui/icons-material/Close";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import ArrowBackSharpIcon from "@mui/icons-material/ArrowBackSharp";
+import { Language, ReactTransliterate } from "react-transliterate";
+import "react-transliterate/dist/index.css";
+import TranslateTextField from "../../../TranslateTextField";
+import Languages from "../../../Languages";
+
 
 interface MenuPermission {
     isAdd: boolean;
@@ -99,6 +106,8 @@ export default function Correspondence() {
     const [pdfPreviewFile, setPdfPreviewFile] = useState("");
     const [pdfFileId, setPdfFileId] = useState("");
     const [pdfFileName, setPdfFileName] = useState("");
+    const [lang, setLang] = useState<Language>("en");
+    const [FillRemark,setFillRemark] = useState('');
 
     const handleEditorChange = (content: any) => {
       setEditorContent(content);
@@ -131,6 +140,8 @@ export default function Correspondence() {
             }
         }
     }, [isLoading]);
+
+    const back = useNavigate();
 
 
     const getFileTypeData = () => {
@@ -365,7 +376,8 @@ export default function Correspondence() {
             "dateSave": defaultValuestime,
             "reviewFlag": "",
             "uploading": "",
-            "uploadingbyte": ""
+            "uploadingbyte": "",
+           
         },
         // validationSchema: validationSchema,
         onSubmit: async (values) => {
@@ -450,6 +462,12 @@ export default function Correspondence() {
     };
 
 
+    const handleConversionChange = (params: any, text: string) => {
+        formik.setFieldValue(params, text);
+        setFillRemark(text);
+      };
+
+
     useEffect(() => {
         if (!formik.values.reviewFlag) {
             formik.setFieldValue('reviewFlag', 'N');
@@ -488,15 +506,46 @@ export default function Correspondence() {
                         style={{ padding: "10px" }}
                     >
                         <ConfirmDialog />
-                        <Typography
-                            gutterBottom
-                            variant="h5"
-                            component="div"
-                            sx={{ padding: "20px" }}
-                            align="left"
-                        >
-                            {t("text.Correspondence")}
-                        </Typography>
+                        <Grid item xs={12} container spacing={2} >
+            <Grid item lg={2} md={2} xs={2} marginTop={2}>
+              <Button
+                type="submit"
+                onClick={() => back(-1)}
+                variant="contained"
+                style={{
+                  backgroundColor: "blue",
+                  width: 20,
+                }}
+              >
+                <ArrowBackSharpIcon />
+              </Button>
+            </Grid>
+            <Grid item lg={7} md={7} xs={7} alignItems="center" justifyContent="center">
+              <Typography
+                gutterBottom
+                variant="h5"
+                component="div"
+                sx={{ padding: "20px" }}
+                align="center"
+              >
+                {t("text.Correspondence")}
+              </Typography>
+            </Grid>
+
+            <Grid item lg={3} md={3} xs={3} marginTop={3}>
+              <select
+                className="language-dropdown"
+                value={lang}
+                onChange={(e) => setLang(e.target.value as Language)}
+              >
+                {Languages.map((l) => (
+                  <option key={l.value} value={l.value}>
+                    {l.label}
+                  </option>
+                ))}
+              </select>
+            </Grid>
+          </Grid>
                         <Divider />
 
                         <Box height={10} />
@@ -714,23 +763,15 @@ export default function Correspondence() {
                                 </Grid>
 
                                 <Grid xs={12} sm={12} item>
-                                    <TextareaAutosize
-                                        aria-label="empty textarea"
-                                        placeholder={t("text.EnterRemark")}
-                                        // name="fileCont"
-                                        // id="fileCont"
-                                        style={{
-                                            width: "100%",
-                                            fontSize: " 1.075rem",
-                                            fontWeight: "400",
-                                            // lineHeight: "5",
-                                            padding: "8px 12px",
-                                            borderRadius: "4px",
-                                        }}
-                                    //value={formik.values.fileCont}
-                                    // onChange={formik.handleChange}
-                                    //   onBlur={formik.handleBlur}
-                                    />
+                                <TranslateTextField
+                          label={t("text.EnterRemark")}
+                          value={FillRemark}
+                          onChangeText={(text: string) =>
+                            handleConversionChange("Remark", text)
+                          }
+                          required={true}
+                          lang={lang}
+                        />
                                 </Grid>
 
 

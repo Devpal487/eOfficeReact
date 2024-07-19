@@ -43,6 +43,10 @@ import { toast } from "react-toastify";
 import { styled } from "@mui/material/styles";
 import dayjs from "dayjs";
 import CustomizedProgressBars from "../../components/Loader";
+import { Language, ReactTransliterate } from "react-transliterate";
+import "react-transliterate/dist/index.css";
+import TranslateTextField from "../../TranslateTextField";
+import Languages from "../../Languages";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -96,6 +100,7 @@ export default function MergeFile() {
   const [tableLoading, setIsTableLoading] = useState(false);
 
   const [fileCheck, setFileCheck] = useState<any>("");
+  const [lang, setLang] = useState<Language>("en");
 
   const userId: any = getId();
 
@@ -106,7 +111,6 @@ export default function MergeFile() {
 
   // const [selectAll, setSelectAll] = useState(false);
   // const [Data, setData] = useState<any>([]);
-  
 
   // const handleSelectAllChange = (event:any) => {
   //   const isChecked = event.target.checked;
@@ -384,7 +388,6 @@ export default function MergeFile() {
     });
   };
 
-
   const [checkboxState, setCheckboxState] = useState<any>({});
   const [selectAll, setSelectAll] = useState(false);
 
@@ -419,20 +422,25 @@ export default function MergeFile() {
   //   });
   // };
 
-
-  const handleSelectAllChange = (event: { target: { checked: any; }; }) => {
+  const handleSelectAllChange = (event: { target: { checked: any } }) => {
     const checked = event.target.checked;
     setSelectAll(checked);
-    const newCheckboxState = totalFile.reduce((acc: { [x: string]: any; }, _: any, index: string | number) => {
-      acc[index] = checked;
-      return acc;
-    }, {});
+    const newCheckboxState = totalFile.reduce(
+      (acc: { [x: string]: any }, _: any, index: string | number) => {
+        acc[index] = checked;
+        return acc;
+      },
+      {}
+    );
     setCheckboxState(newCheckboxState);
   };
 
-  const handleCheckboxChange = (index: any, event: React.ChangeEvent<HTMLInputElement>, cFileNo: any) => {
-
-    console.log("FIle no checked", cFileNo)
+  const handleCheckboxChange = (
+    index: any,
+    event: React.ChangeEvent<HTMLInputElement>,
+    cFileNo: any
+  ) => {
+    console.log("FIle no checked", cFileNo);
     const checked = event.target.checked;
     setFileCheck(cFileNo);
     setCheckboxState((prevState: any) => {
@@ -440,6 +448,10 @@ export default function MergeFile() {
       setSelectAll(Object.values(newState).every((val) => val));
       return newState;
     });
+  };
+
+  const handleConversionChange = (params: any, text: string) => {
+    formik.setFieldValue(params, text);
   };
 
   return (
@@ -456,20 +468,45 @@ export default function MergeFile() {
       }}
       style={{ padding: "10px" }}
     >
+      <Grid item xs={12} container spacing={2}>
+        <Grid item lg={2} md={2} xs={2} marginTop={2}></Grid>
+        <Grid
+          item
+          lg={7}
+          md={7}
+          xs={7}
+          alignItems="center"
+          justifyContent="center"
+        ></Grid>
+
+        <Grid item lg={3} md={3} xs={3} marginTop={3}>
+          <select
+            className="language-dropdown"
+            value={lang}
+            onChange={(e) => setLang(e.target.value as Language)}
+          >
+            {Languages.map((l: any) => (
+              <option key={l.value} value={l.value}>
+                {l.label}
+              </option>
+            ))}
+          </select>
+        </Grid>
+      </Grid>
+
+      <Divider />
+      <br />
       <form>
         <Grid item xs={12} container spacing={3}>
           <Grid xs={6} sm={6} item>
-            <TextField
-              id="fileNm"
-              type="text"
-              label={<CustomLabel text={t("text.fileName")} />}
-              placeholder={t("text.fileName")}
+            <TranslateTextField
+              label={t("text.fileName")}
               value={formik.values.fileNm}
-              size="small"
-              name="fileNm"
-              fullWidth
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
+              onChangeText={(text: string) =>
+                handleConversionChange("fileNm", text)
+              }
+              required={true}
+              lang={lang}
             />
           </Grid>
 
@@ -503,17 +540,14 @@ export default function MergeFile() {
           </Grid>
 
           <Grid item xs={12} sm={12}>
-            <TextField
-              label={<CustomLabel text={t("text.EnterRemark")} />}
+            <TranslateTextField
+              label={t("text.EnterRemark")}
               value={formik.values.remark}
-              placeholder={t("text.EnterRemark")}
-              id="remark"
-              name="remark"
-              size="small"
-              fullWidth
-              style={{ backgroundColor: "white" }}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
+              onChangeText={(text: string) =>
+                handleConversionChange("remark", text)
+              }
+              required={true}
+              lang={lang}
             />
           </Grid>
           <Grid item xs={2}>
@@ -677,9 +711,6 @@ export default function MergeFile() {
             ) : (
               <TableBody>
                 {totalFile.map((row: any, index: any) => (
-                  
-
-
                   <StyledTableRow
                     sx={{
                       border: "1px gray grey",
@@ -714,14 +745,16 @@ export default function MergeFile() {
                         //  checked={row.selected}
                         // onChange={(event) => handleCheckboxChange(row, event)}
 */}
-                        {/* <Checkbox
+                      {/* <Checkbox
                 checked={checkboxState[row.cFileNo] || false}
                 onChange={(event) => handleCheckboxChange(row.cFileNo, event)}
               /> */}
-              <Checkbox
-                  checked={checkboxState[index] || false}
-                  onChange={(event) => handleCheckboxChange(index, event, row.cFileNo)}
-                />
+                      <Checkbox
+                        checked={checkboxState[index] || false}
+                        onChange={(event) =>
+                          handleCheckboxChange(index, event, row.cFileNo)
+                        }
+                      />
                     </TableCell>
 
                     <TableCell

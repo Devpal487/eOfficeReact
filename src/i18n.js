@@ -115,7 +115,6 @@ const resources = {
         PincodeRequired: "Pin Code Required",
         SelectDepartment: "Select Department",
         SelectDesignation: "Select Designation",
-        
         SelectCountry: "Select Country",
         SelectCity: "Select District",
         SelectState: "Select State",
@@ -196,11 +195,11 @@ const resources = {
         FileTypeName: "File Type Name",
         update: "UPDATE",
         classDescription: "class Description",
-        ReqclassDescription: " class Description Required",
+        ReqclassDescription: "Class Description Required",
         LocationObjectItems: "Location Object Items",
         Mapping: "Mapping",
-        selectParntLoc: "select Parent Location",
-        selectLoc: "select Location",
+        selectParntLoc: "Select Parent Location",
+        selectLoc: "Select Location",
         enterAddItem: "Enter Add Item",
         enterAlias: "Enter Alias",
         enterFrom: "Enter From",
@@ -626,7 +625,6 @@ const resources = {
         Draft:"Draft",
         Trash:"Trash",
         Compose:"Compose",
-
         AddComment:"Add Comment",
         Index:"Index!",
         PhysicalSerialNo:"Physical Serial Number",
@@ -649,6 +647,9 @@ const resources = {
         CertificateApply:"Certificate Apply",
         StatusMaster:"Status Master",
         UserTypeCode:"User Type Code",
+        EditRoute:"Edit Route",
+        Search:"Search",
+        
         reqlName:"Letter name required",
 
 
@@ -773,7 +774,6 @@ const resources = {
         PincodeRequired: "पिन कोड आवश्यक है",
         SelectDepartment: "विभाग का चयन करें",
         SelectDesignation: "पदनाम का चयन करें",
-        
         SelectCountry: "देश का चयन करें",
         SelectCity: "जिला का चयन करें",
         SelectState: "राज्य का चयन करें",
@@ -1297,6 +1297,9 @@ const resources = {
          CertificateApply:"प्रमाणपत्र लागू करें",
          StatusMaster:"स्टेटस मास्टर",
          UserTypeCode:"उपयोगकर्ता प्रकार कोड",
+         EditRoute:"मार्ग संपादित करें",
+         Search:"खोज",
+ 
          reqlName:"पत्र का नाम आवश्यक है"
 
 
@@ -1316,13 +1319,4 @@ i18n.use(initReactI18next).init({
   },
 });
 
-
 export default i18n;
-
-
-
-
-
-
-
-

@@ -21,6 +21,11 @@ import dayjs, { Dayjs } from "dayjs";
 import { toast, ToastContainer } from "react-toastify";
 
 import ToastApp from "../../../ToastApp";
+import Languages from "../../../Languages";
+import { Language, ReactTransliterate } from "react-transliterate";
+import "react-transliterate/dist/index.css";
+import TranslateTextField from "../../../TranslateTextField";
+
 
 type Props = {};
 
@@ -35,6 +40,7 @@ const CertificateEdit = (props: Props) => {
   const [StatusOps, setStatusOps] = useState([
     { value: "-1", label: t("text.SelectStatus") },
   ]);
+  const [lang, setLang] = useState<Language>("en");
 
   const getFileNo = () => {
     const collectData = {
@@ -120,6 +126,9 @@ const CertificateEdit = (props: Props) => {
   });
 
   const requiredFields = [""];
+  const handleConversionChange = (params: any, text: string) => {
+    formik.setFieldValue(params, text);
+  };
 
   return (
     <div>
@@ -133,30 +142,45 @@ const CertificateEdit = (props: Props) => {
         }}
       >
         <CardContent>
-          <Typography
-            variant="h5"
-            textAlign="center"
-            style={{ fontSize: "18px", fontWeight: 500 }}
-          >
-            {t("text.EditCertificateApply")}
-          </Typography>
-
-          <Grid item sm={4} xs={12}>
-            <Typography style={{ marginTop: "-75px" }}>
+        <Grid item xs={12} container spacing={2} >
+            <Grid item lg={2} md={2} xs={2} marginTop={2}>
               <Button
                 type="submit"
                 onClick={() => back(-1)}
                 variant="contained"
                 style={{
-                  marginBottom: 15,
-                  marginTop: "45px",
                   backgroundColor: "blue",
                   width: 20,
                 }}
               >
                 <ArrowBackSharpIcon />
               </Button>
-            </Typography>
+            </Grid>
+            <Grid item lg={7} md={7} xs={7} alignItems="center" justifyContent="center">
+              <Typography
+                gutterBottom
+                variant="h5"
+                component="div"
+                sx={{ padding: "20px" }}
+                align="center"
+              >
+                {t("text.EditCertificateApply")}
+              </Typography>
+            </Grid>
+
+            <Grid item lg={2} md={2} xs={12} marginTop={2}>
+              <select
+                className="language-dropdown"
+                value={lang}
+                onChange={(e) => setLang(e.target.value as Language)}
+              >
+                {Languages.map((l) => (
+                  <option key={l.value} value={l.value}>
+                    {l.label}
+                  </option>
+                ))}
+              </select>
+            </Grid>
           </Grid>
           <Divider />
           <br />
@@ -166,24 +190,14 @@ const CertificateEdit = (props: Props) => {
             {toaster === false ? "" : <ToastApp />}
            
               <Grid xs={12} sm={4} item>
-                <TextField
-                  type="text"
-                  name="name"
-                  id="name"
-                  label={<CustomLabel text={t("text.Name")} required={false} />}
+              <TranslateTextField
+                  label={t("text.Name")}
                   value={formik.values.name}
-                  placeholder={t("text.Name")}
-                  size="small"
-                  fullWidth
-                  style={{
-                    backgroundColor: "white",
-                    borderColor:
-                      formik.touched.name && formik.errors.name
-                        ? "red"
-                        : "initial",
-                  }}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
+                  onChangeText={(text: string) =>
+                    handleConversionChange("name", text)
+                  }
+                  required={true}
+                  lang={lang}
                 />
               </Grid>
 
@@ -356,24 +370,14 @@ const CertificateEdit = (props: Props) => {
               </Grid>
 
               <Grid xs={12} sm={4} item>
-                <TextField
-                  type="text"
-                  name="address"
-                  id="address"
-                  label={<CustomLabel text={t("text.Address")} />}
+              <TranslateTextField
+                  label={t("text.Address")}
                   value={formik.values.address}
-                  placeholder={t("text.Address")}
-                  size="small"
-                  fullWidth
-                  style={{
-                    backgroundColor: "white",
-                    borderColor:
-                      formik.touched.address && formik.errors.address
-                        ? "red"
-                        : "initial",
-                  }}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
+                  onChangeText={(text: string) =>
+                    handleConversionChange("address", text)
+                  }
+                  required={true}
+                  lang={lang}
                 />
               </Grid>
 

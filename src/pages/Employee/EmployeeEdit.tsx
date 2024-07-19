@@ -79,6 +79,7 @@ const EmployeeEdit = (props: Props) => {
    // getCity();
     getimgbyid();
     getSignById();
+    formik.setFieldValue("empStateId", location.state.empStateId);
   }, []);
 
   const getEmpDesignation = () => {

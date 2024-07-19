@@ -32,6 +32,7 @@ import Languages from "../../../Languages";
 import { Language } from "react-transliterate";
 import "react-transliterate/dist/index.css";
 import TranslateTextField from "../../../TranslateTextField";
+import CustomDataGrids from "../../../utils/CustomDataGrids";
 
 interface MenuPermission {
   isAdd: boolean;

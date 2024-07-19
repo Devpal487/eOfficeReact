@@ -109,8 +109,7 @@ export default function MenuMaster() {
   
   const accept = () => {
     const collectData = {
-      stateId: delete_id,
-      countryId: 0,
+      menuId: delete_id
     };
     console.log("collectData " + JSON.stringify(collectData));
     api

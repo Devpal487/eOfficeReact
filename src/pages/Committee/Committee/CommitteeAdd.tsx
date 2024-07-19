@@ -27,6 +27,11 @@ import { toast } from "react-toastify";
 import nopdf from '../../../assets/images/imagepreview.jpg';
 import CustomLabel from "../../../CustomLable";
 import * as Yup from "yup";
+import { Language, ReactTransliterate } from "react-transliterate";
+import "react-transliterate/dist/index.css";
+import TranslateTextField from "../../../TranslateTextField";
+import Languages from "../../../Languages";
+
 
 
 const style = {
@@ -53,6 +58,7 @@ const CommitteeAdd = (props: Props) => {
 
   const [panOpens, setPanOpen] = React.useState(false);
   const [modalImg, setModalImg] = useState("");
+  const [lang, setLang] = useState<Language>("en");
 
   useEffect(()=>{
     formik.setFieldValue("type", "C")
@@ -163,6 +169,9 @@ const CommitteeAdd = (props: Props) => {
   });
 
   const requiredFields = ["committeeName", "foundedDate"];
+  const handleConversionChange = (params: any, text: string) => {
+    formik.setFieldValue(params, text);
+  };
 
   const back = useNavigate();
 
@@ -178,30 +187,45 @@ const CommitteeAdd = (props: Props) => {
         }}
       >
         <CardContent>
-          <Typography
-            variant="h5"
-            textAlign="center"
-            style={{ fontSize: "18px", fontWeight: 500 }}
-          >
-            {t("text.AddCommittee")}
-          </Typography>
-
-          <Grid item sm={4} xs={12}>
-            <Typography style={{ marginTop: "-75px" }}>
+        <Grid item xs={12} container spacing={2} >
+            <Grid item lg={2} md={2} xs={2} marginTop={2}>
               <Button
                 type="submit"
                 onClick={() => back(-1)}
                 variant="contained"
                 style={{
-                  marginBottom: 15,
-                  marginTop: "45px",
                   backgroundColor: "blue",
                   width: 20,
                 }}
               >
                 <ArrowBackSharpIcon />
               </Button>
-            </Typography>
+            </Grid>
+            <Grid item lg={7} md={7} xs={7} alignItems="center" justifyContent="center">
+              <Typography
+                gutterBottom
+                variant="h5"
+                component="div"
+                sx={{ padding: "20px" }}
+                align="center"
+              >
+                {t("text.AddCommittee")}
+              </Typography>
+            </Grid>
+
+            <Grid item lg={3} md={3} xs={3} marginTop={3}>
+              <select
+                className="language-dropdown"
+                value={lang}
+                onChange={(e) => setLang(e.target.value as Language)}
+              >
+                {Languages.map((l) => (
+                  <option key={l.value} value={l.value}>
+                    {l.label}
+                  </option>
+                ))}
+              </select>
+            </Grid>
           </Grid>
           <Divider />
           <br />
@@ -251,21 +275,15 @@ const CommitteeAdd = (props: Props) => {
               </Grid>
 
               <Grid item sm={4} md={4} xs={12}>
-                <TextField
-                    id="committeeName"
-                    name="committeeName"
-                    label={<CustomLabel text={t("text.committeeName")} required={requiredFields.includes('committeeName')} />}
-                    value={formik.values.committeeName}
-                    placeholder={t("text.committeeName")}
-                    size="small"
-                    fullWidth
-                    style={{
-                      backgroundColor: 'white',
-                      borderColor: formik.touched.committeeName && formik.errors.committeeName ? 'red' : 'initial',
-                    }}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                  />
+              <TranslateTextField
+                  label={t("text.committeeName")}
+                  value={formik.values.committeeName}
+                  onChangeText={(text: string) =>
+                    handleConversionChange("committeeName", text)
+                  }
+                  required={true}
+                  lang={lang}
+                />
                   {formik.touched.committeeName && formik.errors.committeeName ? (
                     <div style={{ color: "red", margin: "5px" }}>{formik.errors.committeeName}</div>
                   ) : null}
@@ -384,22 +402,14 @@ const CommitteeAdd = (props: Props) => {
                 </Modal>
               </Grid>
               <Grid xs={12} sm={12} item>
-                <TextareaAutosize
-                  aria-label="empty textarea"
-                  placeholder={t("text.EnterDescriptionofcommittee")}
-                  name="committeeDesc"
-                  id="committeeDesc"
-                  style={{
-                    width: "100%",
-                    fontSize: " 1.075rem",
-                    fontWeight: "400",
-                    // lineHeight: "5",
-                    padding: "8px 12px",
-                    borderRadius: "4px",
-                  }}
+              <TranslateTextField
+                  label={t("text.EnterDescriptionofcommittee")}
                   value={formik.values.committeeDesc}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
+                  onChangeText={(text: string) =>
+                    handleConversionChange("committeeDesc", text)
+                  }
+                  required={true}
+                  lang={lang}
                 />
               </Grid>
               <Grid

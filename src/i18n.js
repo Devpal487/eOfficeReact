@@ -649,7 +649,12 @@ const resources = {
         CertificateApply:"Certificate Apply",
         StatusMaster:"Status Master",
         UserTypeCode:"User Type Code",
+
         reqlName:"Letter name required",
+
+        EditRoute:"Edit Route",
+        Search:"Search"
+       
 
 
       },
@@ -1297,7 +1302,13 @@ const resources = {
          CertificateApply:"प्रमाणपत्र लागू करें",
          StatusMaster:"स्टेटस मास्टर",
          UserTypeCode:"उपयोगकर्ता प्रकार कोड",
+
          reqlName:"पत्र का नाम आवश्यक है"
+
+         EditRoute:"मार्ग संपादित करें",
+         Search:"खोज"
+ 
+
 
 
       },

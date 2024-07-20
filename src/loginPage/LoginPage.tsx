@@ -99,9 +99,17 @@ export default function LoginPage() {
               "token",
               JSON.stringify(response.data[0]["token"])
             );
-            formik.resetForm();
-            navigate(`/home`);
+           
+            // navigate(`/home`);
+            // toast.success(response.data.mesg);
+
+
             toast.success(response.data.mesg);
+          //getNodeData(response.data.data[0]["userdetail"][0]["useR_ID"]);
+           setTimeout(() => {
+            
+            navigate(`/home`);
+           }, 1000);
           }
           timer.current = setTimeout(() => {
             setSuccess(true);
@@ -139,10 +147,19 @@ export default function LoginPage() {
         //sessionStorage.setItem("userdata", JSON.stringify(response.data.data));
         localStorage.setItem("useR_ID",JSON.stringify(response.data.data[0]["userdetail"][0]["useR_ID"]));
         sessionStorage.setItem("token",JSON.stringify(response.data.data[0]["token"]));
-        getNodeData(response.data.data[0]["userdetail"][0]["useR_ID"]);
+       // getNodeData(response.data.data[0]["userdetail"][0]["useR_ID"]);
         toast.success(response.data.mesg);
-        formik.resetForm();
-        navigate(`/home`);
+        
+        //navigate(`/home`);
+
+        
+          getNodeData(response.data.data[0]["userdetail"][0]["useR_ID"]);
+           setTimeout(() => {
+            
+            navigate(`/home`);
+           }, 1000);
+
+           formik.resetForm();
       } else {
         formik.resetForm();
         toast.error(response.data.mesg);

@@ -1,6 +1,5 @@
 import {
   Button,
-  Card,
   CardContent,
   Grid,
   TextField,
@@ -11,9 +10,7 @@ import {
 } from "@mui/material";
 import ArrowBackSharpIcon from "@mui/icons-material/ArrowBackSharp";
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import { useLocation, useNavigate } from "react-router-dom";
-import HOST_URL from "../../utils/Url";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useTranslation } from "react-i18next";
@@ -21,10 +18,11 @@ import { toast } from "react-toastify";
 import ToastApp from "../../ToastApp";
 import Autocomplete from "@mui/material/Autocomplete";
 import nopdf from "../../assets/images/imagepreview.jpg";
-import { Console } from "console";
 import dayjs, { Dayjs } from "dayjs";
 import api from "../../utils/Url";
-import CustomLabel from "../../CustomLable";
+import Languages from "../../Languages";
+import TranslateTextField from "../../TranslateTextField";
+import { Language } from "react-transliterate";
 
 const style = {
   position: "absolute" as "absolute",
@@ -66,6 +64,7 @@ const EmployeeEdit = (props: Props) => {
   const [Role, setRole] = useState<any>([
     { value: "-1", label: t("text.SelectRole") },
   ]);
+  const [lang, setLang] = useState<Language>("en");
 
   const location = useLocation();
   console.log("location", location.state);
@@ -80,6 +79,7 @@ const EmployeeEdit = (props: Props) => {
    // getCity();
     getimgbyid();
     getSignById();
+    formik.setFieldValue("empStateId", location.state.empStateId);
   }, []);
 
   const getEmpDesignation = () => {
@@ -258,13 +258,6 @@ const EmployeeEdit = (props: Props) => {
       };
     });
   };
-  // const otherDocChangeHandler = async (event: any, params: any) => {
-  //   if (event.target.files && event.target.files[0]) {
-  //     const file = event.target.files[0];
-  //     const base64 = await ConvertBase64(file);
-  //     formik.setFieldValue(params, base64);
-  //   }
-  // }
 
   const otherDocChangeHandler = async (event: any, params: any) => {
     if (event.target.files && event.target.files[0]) {
@@ -276,9 +269,7 @@ const EmployeeEdit = (props: Props) => {
         formik.setFieldValue(params, base64);
         console.log(base64);
       } else {
-        // Display an error message indicating that only PDF files are allowed
         alert("Only  files are allowed to be uploaded.");
-        // Optionally, you can clear the file input field
         event.target.value = null;
       }
     }
@@ -411,7 +402,6 @@ const EmployeeEdit = (props: Props) => {
       empretirementDate: dayjs(location.state.empretirementDate).format(
         "YYYY-MM-DD"
       ),
-
       empPincode: location.state.empPincode,
       roleId: location.state.roleId,
       imageFile: location.state.imageFile,
@@ -468,6 +458,11 @@ const EmployeeEdit = (props: Props) => {
 
   const back = useNavigate();
 
+  const handleConversionChange = (params: any, text: string) => {
+    formik.setFieldValue(params, text);
+  };
+
+
   return (
     <div>
       <div
@@ -482,67 +477,69 @@ const EmployeeEdit = (props: Props) => {
         }}
       >
         <CardContent>
-          <Typography
-            variant="h5"
-            textAlign="center"
-            style={{ fontSize: "18px", fontWeight: 500 }}
-          >
-            {t("text.EditEmployeeRegistration")}
-          </Typography>
 
-          <Grid item sm={4} xs={12}>
-            <Typography style={{ marginTop: "-75px" }}>
+          <Grid item xs={12} container spacing={2}>
+            <Grid item lg={2} md={2} xs={2} marginTop={2}>
               <Button
                 type="submit"
                 onClick={() => back(-1)}
                 variant="contained"
                 style={{
-                  marginBottom: 15,
-                  marginTop: "45px",
                   backgroundColor: "blue",
                   width: 20,
                 }}
               >
                 <ArrowBackSharpIcon />
               </Button>
-            </Typography>
+            </Grid>
+            <Grid
+              item
+              lg={7}
+              md={7}
+              xs={7}
+              alignItems="center"
+              justifyContent="center"
+            >
+              <Typography
+                gutterBottom
+                variant="h5"
+                component="div"
+                sx={{ padding: "20px" }}
+                align="center"
+              >
+                {t("text.EditEmployeeRegistration")}
+              </Typography>
+            </Grid>
+
+            <Grid item lg={3} md={3} xs={3} marginTop={3}>
+              <select
+                className="language-dropdown"
+                value={lang}
+                onChange={(e) => setLang(e.target.value as Language)}
+              >
+                {Languages.map((l) => (
+                  <option key={l.value} value={l.value}>
+                    {l.label}
+                  </option>
+                ))}
+              </select>
+            </Grid>
           </Grid>
+
           <Divider />
           <br />
           <form onSubmit={formik.handleSubmit}>
             {toaster === false ? "" : <ToastApp />}
             <Grid item xs={12} container spacing={2}>
               <Grid item lg={4} xs={12}>
-                <TextField
-                  id="empName"
-                  name="empName"
-                  label={
-                    <span>
-                      {t("text.EnterEmployeeName")}{" "}
-                      {requiredFields.includes("empName") && (
-                        <span
-                          style={{
-                            color: formik.values.empName ? "green" : "red",
-                          }}
-                        >
-                          *
-                        </span>
-                      )}
-                    </span>
-                  }
+              <TranslateTextField
+                  label={t("text.EnterEmployeeName")}
                   value={formik.values.empName}
-                  placeholder={t("text.EnterEmployeeName")}
-                  size="small"
-                  fullWidth
-                  style={{
-                    backgroundColor: "white",
-                    borderColor:
-                      formik.touched.empName && formik.errors.empName
-                        ? "red"
-                        : "initial",
-                  }}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
+                  onChangeText={(text: string) =>
+                    handleConversionChange("empName", text)
+                  }
+                  required={false}
+                  lang={lang}
                 />
                 {formik.touched.empName && formik.errors.empName ? (
                   <div style={{ color: "red", margin: "5px" }}>
@@ -591,35 +588,14 @@ const EmployeeEdit = (props: Props) => {
               </Grid>
 
               <Grid item lg={4} xs={12}>
-                <TextField
-                  id="empFatherName"
-                  name="empFatherName"
-                  label={
-                    <span>
-                      {t("text.EnterFatherName")}{" "}
-                      {requiredFields.includes("empFatherName") && (
-                        <span
-                          style={{
-                            color: formik.values.empFatherName
-                              ? "green"
-                              : "red",
-                          }}
-                        >
-                          *
-                        </span>
-                      )}
-                    </span>
-                  }
+                <TranslateTextField
+                  label={t("text.EnterFatherName")}
                   value={formik.values.empFatherName}
-                  placeholder={t("text.EnterFatherName")}
-                  size="small"
-                  fullWidth
-                  style={{
-                    backgroundColor: "white",
-                  }}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  inputProps={{ pattern: "[A-Za-z\\s'-]*" }}
+                  onChangeText={(text: string) =>
+                    handleConversionChange("empFatherName", text)
+                  }
+                  required={false}
+                  lang={lang}
                 />
                 {formik.touched.empFatherName && formik.errors.empFatherName ? (
                   <div style={{ color: "red", margin: "5px" }}>
@@ -629,32 +605,26 @@ const EmployeeEdit = (props: Props) => {
               </Grid>
 
               <Grid item lg={4} xs={12}>
-                <TextField
-                  id="empspauseName"
-                  name="empspauseName"
+              <TranslateTextField
                   label={t("text.EnterSpauseName")}
                   value={formik.values.empspauseName}
-                  placeholder={t("text.EnterSpauseName")}
-                  size="small"
-                  fullWidth
-                  style={{ backgroundColor: "white" }}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
+                  onChangeText={(text: string) =>
+                    handleConversionChange("empspauseName", text)
+                  }
+                  required={false}
+                  lang={lang}
                 />
               </Grid>
 
               <Grid item lg={4} xs={12}>
-                <TextField
-                  id="empMotherName"
-                  name="empMotherName"
+              <TranslateTextField
                   label={t("text.EnterMotherName")}
                   value={formik.values.empMotherName}
-                  placeholder={t("text.EnterMotherName")}
-                  size="small"
-                  fullWidth
-                  style={{ backgroundColor: "white" }}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
+                  onChangeText={(text: string) =>
+                    handleConversionChange("empMotherName", text)
+                  }
+                  required={false}
+                  lang={lang}
                 />
               </Grid>
 
@@ -1234,56 +1204,26 @@ const EmployeeEdit = (props: Props) => {
               </Grid>
 
               <Grid item lg={4} xs={12}>
-                <TextField
-                  id="empLocalAddress"
-                  name="empLocalAddress"
+              <TranslateTextField
                   label={t("text.EnterLocalAddress")}
                   value={formik.values.empLocalAddress}
-                  placeholder={t("text.EnterLocalAddress")}
-                  inputProps={{}}
-                  size="small"
-                  type="text"
-                  fullWidth
-                  style={{ backgroundColor: "white" }}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
+                  onChangeText={(text: string) =>
+                    handleConversionChange("empLocalAddress", text)
+                  }
+                  required={false}
+                  lang={lang}
                 />
               </Grid>
 
               <Grid item lg={4} xs={12}>
-                <TextField
-                  id="empPerAddress"
-                  name="empPerAddress"
-                  label={
-                    <span>
-                      {t("text.EnterPermanentAddress")}{" "}
-                      {requiredFields.includes("empPerAddress") && (
-                        <span
-                          style={{
-                            color: formik.values.empPerAddress
-                              ? "green"
-                              : "red",
-                          }}
-                        >
-                          *
-                        </span>
-                      )}
-                    </span>
-                  }
+              <TranslateTextField
+                  label={t("text.EnterPermanentAddress")}
                   value={formik.values.empPerAddress}
-                  placeholder={t("text.EnterPermanentAddress")}
-                  size="small"
-                  fullWidth
-                  style={{
-                    backgroundColor: "white",
-                    borderColor:
-                      formik.touched.empPerAddress &&
-                      formik.errors.empPerAddress
-                        ? "red"
-                        : "initial",
-                  }}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
+                  onChangeText={(text: string) =>
+                    handleConversionChange("empPerAddress", text)
+                  }
+                  required={true}
+                  lang={lang}
                 />
                 {formik.touched.empPerAddress && formik.errors.empPerAddress ? (
                   <div style={{ color: "red", margin: "5px" }}>

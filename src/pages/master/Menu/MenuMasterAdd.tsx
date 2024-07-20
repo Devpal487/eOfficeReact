@@ -104,8 +104,7 @@ const MenuMasterAdd = (props: Props) => {
         }}
       >
         <CardContent>
-
-        <Grid item xs={12} container spacing={2} >
+          <Grid item xs={12} container spacing={2}>
             <Grid item lg={2} md={2} xs={2} marginTop={2}>
               <Button
                 type="submit"
@@ -119,7 +118,14 @@ const MenuMasterAdd = (props: Props) => {
                 <ArrowBackSharpIcon />
               </Button>
             </Grid>
-            <Grid item lg={7} md={7} xs={7} alignItems="center" justifyContent="center">
+            <Grid
+              item
+              lg={7}
+              md={7}
+              xs={7}
+              alignItems="center"
+              justifyContent="center"
+            >
               <Typography
                 gutterBottom
                 variant="h5"
@@ -146,7 +152,6 @@ const MenuMasterAdd = (props: Props) => {
             </Grid>
           </Grid>
 
-          
           <Divider />
           <br />
 

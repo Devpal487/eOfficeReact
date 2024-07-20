@@ -29,6 +29,9 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import api from "../../../utils/Url";
 import CustomDataGrid from "../../../utils/CustomDatagrid";
 import ButtonWithLoader from "../../../utils/ButtonWithLoader";
+import Languages from "../../../Languages";
+import TranslateTextField from "../../../TranslateTextField";
+import { Language } from "react-transliterate";
 
 interface MenuPermission {
   isAdd: boolean;
@@ -50,6 +53,7 @@ export default function UserType() {
     isPrint: false,
     isDel: false,
   });
+  const [lang, setLang] = useState<Language>("en");
 
   useEffect(() => {
     const dataString = localStorage.getItem("userdata");
@@ -255,6 +259,9 @@ export default function UserType() {
     await formik.handleSubmit();
   };
 
+  const handleConversionChange = (params: any, text: string) => {
+    formik.setFieldValue(params, text);
+  };
 
   return (
     <>
@@ -271,26 +278,39 @@ export default function UserType() {
           <Paper
             sx={{
               width: "100%",
-              overflow: "hidden",
-              "& .MuiDataGrid-colCell": {
-                backgroundColor: "#2B4593",
-                color: "#fff",
-                fontSize: 18,
-                fontWeight: 800,
-              },
+              overflow: "hidden"
             }}
             style={{ padding: "10px" }}
           >
             <ConfirmDialog />
-            <Typography
-              gutterBottom
-              variant="h5"
-              component="div"
-              sx={{ padding: "20px" }}
-              align="left"
-            >
-              {t("text.UserTypeMaster")}
-            </Typography>
+
+            <Grid item xs={12} container spacing={1}>
+            <Grid item lg={10} md={10} xs={12}>
+              <Typography
+                gutterBottom
+                variant="h5"
+                component="div"
+                sx={{ padding: "20px" }}
+                align="left"
+              >
+                {t("text.UserTypeMaster")}
+              </Typography>
+            </Grid>
+
+            <Grid item lg={2} md={2} xs={12} marginTop={2}>
+              <select
+                className="language-dropdown"
+                value={lang}
+                onChange={(e) => setLang(e.target.value as Language)}
+              >
+                {Languages.map((l) => (
+                  <option key={l.value} value={l.value}>
+                    {l.label}
+                  </option>
+                ))}
+              </select>
+            </Grid>
+          </Grid>
             <Divider />
 
             <Box height={10} />
@@ -298,33 +318,14 @@ export default function UserType() {
             <form onSubmit={formik.handleSubmit}>
               <Grid item xs={12} container spacing={2}>
                 <Grid item xs={5}>
-                  <TextField
-                    id="useR_TYPE_NAME"
-                    type="text"
-                    label={
-                      <span>
-                        {t("text.EnterUserType")} {""}
-                        {requiredFields.includes("useR_TYPE_NAME") && (
-                          <span
-                            style={{
-                              color: formik.values.useR_TYPE_NAME
-                                ? "green"
-                                : "red",
-                            }}
-                          >
-                            *
-                          </span>
-                        )}
-                      </span>
-                    }
-                    placeholder={t("text.EnterUserType")}
-                    value={formik.values.useR_TYPE_NAME}
-                    size="small"
-                    name="useR_TYPE_NAME"
-                    fullWidth
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                  />
+                <TranslateTextField
+                  label={t("text.EnterUserType")}
+                  value={formik.values.useR_TYPE_NAME}
+                  onChangeText={(text: string) => handleConversionChange('useR_TYPE_NAME', text)}
+                  required={true}
+                  lang={lang}
+                />
+                  
                   {formik.touched.useR_TYPE_NAME &&
                     formik.errors.useR_TYPE_NAME ? (
                     <div style={{ color: "red", margin: "5px" }}>

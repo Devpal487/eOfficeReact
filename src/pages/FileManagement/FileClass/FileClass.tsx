@@ -30,6 +30,7 @@ import CustomDataGrid from "../../../utils/CustomDatagrid";
 import Languages from "../../../Languages";
 import { Language, ReactTransliterate } from "react-transliterate";
 import "react-transliterate/dist/index.css";
+import TranslateTextField from "../../../TranslateTextField";
 
 interface MenuPermission {
   isAdd: boolean;
@@ -348,27 +349,14 @@ export default function FileClass() {
           <form onSubmit={formik.handleSubmit}>
             <Grid item xs={12} container spacing={3}>
               <Grid xs={3} sm={3} item>
-                <TextField
-                  label={
-                    <CustomLabel
-                      text={t("text.EnterClassDescription")}
-                      required={requiredFields.includes("classDescription")}
-                    />
+                <TranslateTextField
+                  label={t("text.EnterClassDescription")}
+                  value={formik.values.classDescription}
+                  onChangeText={(text: string) =>
+                    handleConversionChange("classDescription", text)
                   }
-                  variant="outlined"
-                  fullWidth
-                  size="small"
-                  InputProps={{
-                    inputComponent: ReactTransliterate as any,
-                    inputProps: {
-                      value: formik.values.classDescription,
-                      onChangeText: (text: string) =>
-                        handleConversionChange("classDescription", text),
-                      lang,
-                      placeholder: t("text.EnterClassDescription"),
-                      id: "react-transliterate-input",
-                    },
-                  }}
+                  required={true}
+                  lang={lang}
                 />
                 {formik.touched.classDescription &&
                 formik.errors.classDescription ? (
@@ -379,47 +367,26 @@ export default function FileClass() {
               </Grid>
 
               <Grid item xs={3.5} sm={3.5}>
-                <TextField
-                  label={<CustomLabel text={t("text.EnterShortName")} />}
-                  variant="outlined"
-                  fullWidth
-                  size="small"
-                  InputProps={{
-                    inputComponent: ReactTransliterate as any,
-                    inputProps: {
-                      value: formik.values.shortName,
-                      onChangeText: (text: string) =>
-                        handleConversionChange("shortName", text),
-                      lang,
-                      placeholder: t("text.EnterShortName"),
-                      id: "react-transliterate-input",
-                    },
-                  }}
+                <TranslateTextField
+                  label={t("text.EnterShortName")}
+                  value={formik.values.shortName}
+                  onChangeText={(text: string) =>
+                    handleConversionChange("shortName", text)
+                  }
+                  required={false}
+                  lang={lang}
                 />
               </Grid>
 
               <Grid xs={3.5} sm={3.5} item>
-                <TextField
-                  label={
-                    <CustomLabel
-                      text={t("text.EnterWeedingOutAuthority")}
-                      required={requiredFields.includes("weedingOutAuthority")}
-                    />
+                <TranslateTextField
+                  label={t("text.EnterWeedingOutAuthority")}
+                  value={formik.values.weedingOutAuthority}
+                  onChangeText={(text: string) =>
+                    handleConversionChange("weedingOutAuthority", text)
                   }
-                  variant="outlined"
-                  fullWidth
-                  size="small"
-                  InputProps={{
-                    inputComponent: ReactTransliterate as any,
-                    inputProps: {
-                      value: formik.values.weedingOutAuthority,
-                      onChangeText: (text: string) =>
-                        handleConversionChange("weedingOutAuthority", text),
-                      lang,
-                      placeholder: t("text.EnterWeedingOutAuthority"),
-                      id: "react-transliterate-input",
-                    },
-                  }}
+                  required={false}
+                  lang={lang}
                 />
               </Grid>
 

@@ -36,6 +36,7 @@ import { getId, getdivisionId, getinstId } from "../../../utils/Constant";
 import Languages from "../../../Languages";
 import { Language, ReactTransliterate } from "react-transliterate";
 import "react-transliterate/dist/index.css";
+import TranslateTextField from "../../../TranslateTextField";
 
 const style = {
   position: "absolute" as "absolute",
@@ -449,7 +450,7 @@ const InstituteAdd = (props: Props) => {
         }}
       >
         <CardContent>
-          <Grid item xs={12} container spacing={2} >
+          <Grid item xs={12} container spacing={2}>
             <Grid item lg={2} md={2} xs={2} marginTop={2}>
               <Button
                 type="submit"
@@ -463,7 +464,14 @@ const InstituteAdd = (props: Props) => {
                 <ArrowBackSharpIcon />
               </Button>
             </Grid>
-            <Grid item lg={7} md={7} xs={7} alignItems="center" justifyContent="center">
+            <Grid
+              item
+              lg={7}
+              md={7}
+              xs={7}
+              alignItems="center"
+              justifyContent="center"
+            >
               <Typography
                 gutterBottom
                 variant="h5"
@@ -763,43 +771,26 @@ const InstituteAdd = (props: Props) => {
               </Grid>
 
               <Grid md={4} item>
-                <TextField
-                  label={<CustomLabel text={t("text.InstituteName")} />}
-                  id="insname"
-                  size="small"
-                  name="insname"
-                  fullWidth
-                  InputProps={{
-                    inputComponent: ReactTransliterate as any,
-                    inputProps: {
-                      value: formik.values.insname,
-                      onChangeText: (text: string) =>
-                        handleConversionChange("insname", text),
-                      lang,
-                      placeholder: t("text.InstituteName"),
-                      id: "react-transliterate-input",
-                    },
-                  }}
+                <TranslateTextField
+                  label={t("text.InstituteName")}
+                  value={formik.values.insname}
+                  onChangeText={(text: string) =>
+                    handleConversionChange("insname", text)
+                  }
+                  required={false}
+                  lang={lang}
                 />
               </Grid>
 
               <Grid md={4} item>
-                <TextField
-                  label={<CustomLabel text={t("text.ShortName")} />}
-                  size="small"
-                  name="shortName"
-                  fullWidth
-                  InputProps={{
-                    inputComponent: ReactTransliterate as any,
-                    inputProps: {
-                      value: formik.values.shortName,
-                      onChangeText: (text: string) =>
-                        handleConversionChange("shortName", text),
-                      lang,
-                      placeholder: t("text.ShortName"),
-                      id: "react-transliterate-input",
-                    },
-                  }}
+                <TranslateTextField
+                  label={t("text.ShortName")}
+                  value={formik.values.shortName}
+                  onChangeText={(text: string) =>
+                    handleConversionChange("shortName", text)
+                  }
+                  required={false}
+                  lang={lang}
                 />
               </Grid>
 
@@ -808,11 +799,6 @@ const InstituteAdd = (props: Props) => {
                   disablePortal
                   id="combo-box-demo"
                   options={CountryOps}
-                  // value={
-                  //     ZoneOption.find(
-                  //         (option) => option.value === formik.values.fileTypeId
-                  //     ) || null
-                  // }
                   fullWidth
                   size="small"
                   onChange={(event, newValue: any) => {
@@ -837,11 +823,6 @@ const InstituteAdd = (props: Props) => {
                   disablePortal
                   id="combo-box-demo"
                   options={StateOps}
-                  // value={
-                  //     ZoneOption.find(
-                  //         (option) => option.value === formik.values.fileTypeId
-                  //     ) || null
-                  // }
                   fullWidth
                   size="small"
                   onChange={(event, newValue: any) => {
@@ -866,11 +847,6 @@ const InstituteAdd = (props: Props) => {
                   disablePortal
                   id="combo-box-demo"
                   options={CityOps}
-                  // value={
-                  //     ZoneOption.find(
-                  //         (option) => option.value === formik.values.fileTypeId
-                  //     ) || null
-                  // }
                   fullWidth
                   size="small"
                   onChange={(event, newValue: any) => {
@@ -891,43 +867,29 @@ const InstituteAdd = (props: Props) => {
               </Grid>
 
               <Grid md={4} item>
-                <TextField
-                  label={<CustomLabel text={t("text.Address")} />}
-                  size="small"
-                  name="address"
-                  fullWidth
-                  InputProps={{
-                    inputComponent: ReactTransliterate as any,
-                    inputProps: {
-                      value: formik.values.address,
-                      onChangeText: (text: string) =>
-                        handleConversionChange("address", text),
-                      lang,
-                      placeholder: t("text.Address"),
-                      id: "react-transliterate-input",
-                    },
-                  }}
+                <TranslateTextField
+                  label={t("text.Address")}
+                  value={formik.values.address}
+                  onChangeText={(text: string) =>
+                    handleConversionChange("address", text)
+                  }
+                  required={false}
+                  lang={lang}
                 />
               </Grid>
+
               <Grid md={4} item>
-                <TextField
-                  label={<CustomLabel text={t("text.District")} />}
-                  size="small"
-                  name="district"
-                  fullWidth
-                  InputProps={{
-                    inputComponent: ReactTransliterate as any,
-                    inputProps: {
-                      value: formik.values.district,
-                      onChangeText: (text: string) =>
-                        handleConversionChange("district", text),
-                      lang,
-                      placeholder: t("text.District"),
-                      id: "react-transliterate-input",
-                    },
-                  }}
+                <TranslateTextField
+                  label={t("text.District")}
+                  value={formik.values.district}
+                  onChangeText={(text: string) =>
+                    handleConversionChange("district", text)
+                  }
+                  required={false}
+                  lang={lang}
                 />
               </Grid>
+
               <Grid md={4} item>
                 <TextField
                   id="esYear"
@@ -944,98 +906,56 @@ const InstituteAdd = (props: Props) => {
                   fullWidth
                   type="number"
                   inputProps={{ min: "0", step: "1" }}
-                  style={{
-                    backgroundColor: "white",
-                    borderColor:
-                      formik.touched.esYear && formik.errors.esYear
-                        ? "red"
-                        : "initial",
-                  }}
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                 />
-                {formik.touched.esYear && formik.errors.esYear ? (
-                  <div style={{ color: "red", margin: "5px" }}>
-                    {formik.errors.esYear}
-                  </div>
-                ) : null}
               </Grid>
+
               <Grid md={4} item>
-                <TextField
-                  label={<CustomLabel text={t("text.Category")} />}
-                  size="small"
-                  name="collegeCategory"
-                  fullWidth
-                  InputProps={{
-                    inputComponent: ReactTransliterate as any,
-                    inputProps: {
-                      value: formik.values.collegeCategory,
-                      onChangeText: (text: string) =>
-                        handleConversionChange("collegeCategory", text),
-                      lang,
-                      placeholder: t("text.Category"),
-                      id: "react-transliterate-input",
-                    },
-                  }}
+                <TranslateTextField
+                  label={t("text.Category")}
+                  value={formik.values.collegeCategory}
+                  onChangeText={(text: string) =>
+                    handleConversionChange("collegeCategory", text)
+                  }
+                  required={false}
+                  lang={lang}
                 />
               </Grid>
               <Grid md={4} item>
-                <TextField
-                  label={<CustomLabel text={t("text.Principal")} />}
-                  size="small"
-                  name="principal"
-                  fullWidth
-                  InputProps={{
-                    inputComponent: ReactTransliterate as any,
-                    inputProps: {
-                      value: formik.values.principal,
-                      onChangeText: (text: string) =>
-                        handleConversionChange("principal", text),
-                      lang,
-                      placeholder: t("text.Principal"),
-                      id: "react-transliterate-input",
-                    },
-                  }}
+                <TranslateTextField
+                  label={t("text.Principal")}
+                  value={formik.values.principal}
+                  onChangeText={(text: string) =>
+                    handleConversionChange("principal", text)
+                  }
+                  required={false}
+                  lang={lang}
                 />
               </Grid>
               <Grid md={4} item>
-                <TextField
-                  label={<CustomLabel text={t("text.collegeStatus")} />}
-                  size="small"
-                  name="collegeStatus"
-                  fullWidth
-                  InputProps={{
-                    inputComponent: ReactTransliterate as any,
-                    inputProps: {
-                      value: formik.values.collegeStatus,
-                      onChangeText: (text: string) =>
-                        handleConversionChange("collegeStatus", text),
-                      lang,
-                      placeholder: t("text.collegeStatus"),
-                      id: "react-transliterate-input",
-                    },
-                  }}
+                <TranslateTextField
+                  label={t("text.collegeStatus")}
+                  value={formik.values.collegeStatus}
+                  onChangeText={(text: string) =>
+                    handleConversionChange("collegeStatus", text)
+                  }
+                  required={false}
+                  lang={lang}
                 />
               </Grid>
               <Grid md={4} item>
-                <TextField
-                  label={<CustomLabel text={t("text.ResidencialAddress")} />}
-                  size="small"
-                  name="ResidencialAddress"
-                  fullWidth
-                  InputProps={{
-                    inputComponent: ReactTransliterate as any,
-                    inputProps: {
-                      value: formik.values.resiAddress,
-                      onChangeText: (text: string) =>
-                        handleConversionChange("resiAddress", text),
-                      lang,
-                      placeholder: t("text.ResidencialAddress"),
-                      id: "react-transliterate-input",
-                    },
-                  }}
+                <TranslateTextField
+                  label={t("text.ResidencialAddress")}
+                  value={formik.values.resiAddress}
+                  onChangeText={(text: string) =>
+                    handleConversionChange("resiAddress", text)
+                  }
+                  required={false}
+                  lang={lang}
                 />
               </Grid>
+
               <Grid md={4} item>
                 <TextField
                   id="phone"
@@ -1075,32 +995,26 @@ const InstituteAdd = (props: Props) => {
               </Grid>
 
               <Grid md={4} item>
-                <TextField
-                  label={<CustomLabel text={t("text.OficeNO")} />}
+                <TranslateTextField
+                  label={t("text.OficeNO")}
                   value={formik.values.officeNo}
-                  placeholder={t("text.OficeNO")}
-                  size="small"
-                  fullWidth
-                  name="officeNo"
-                  id="officeNo"
-                  style={{ backgroundColor: "white" }}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
+                  onChangeText={(text: string) =>
+                    handleConversionChange("officeNo", text)
+                  }
+                  required={false}
+                  lang={lang}
                 />
               </Grid>
 
               <Grid md={4} item>
-                <TextField
-                  label={<CustomLabel text={t("text.ResiNO")} />}
+                <TranslateTextField
+                  label={t("text.ResiNO")}
                   value={formik.values.resiNo}
-                  placeholder={t("text.ResiNO")}
-                  size="small"
-                  fullWidth
-                  name="resiNo"
-                  id="resiNo"
-                  style={{ backgroundColor: "white" }}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
+                  onChangeText={(text: string) =>
+                    handleConversionChange("resiNo", text)
+                  }
+                  required={false}
+                  lang={lang}
                 />
               </Grid>
 
@@ -1192,61 +1106,37 @@ const InstituteAdd = (props: Props) => {
                 />
               </Grid>
               <Grid md={4} item>
-                <TextField
-                  label={<CustomLabel text={t("text.DistrictArea")} />}
-                  size="small"
-                  name="DistrictArea"
-                  fullWidth
-                  InputProps={{
-                    inputComponent: ReactTransliterate as any,
-                    inputProps: {
-                      value: formik.values.districtArea,
-                      onChangeText: (text: string) =>
-                        handleConversionChange("districtArea", text),
-                      lang,
-                      placeholder: t("text.DistrictArea"),
-                      id: "react-transliterate-input",
-                    },
-                  }}
+                <TranslateTextField
+                  label={t("text.DistrictArea")}
+                  value={formik.values.districtArea}
+                  onChangeText={(text: string) =>
+                    handleConversionChange("districtArea", text)
+                  }
+                  required={false}
+                  lang={lang}
                 />
               </Grid>
 
               <Grid md={4} item>
-                <TextField
-                  label={<CustomLabel text={t("text.StatusPg")} />}
-                  size="small"
-                  name="statusPG"
-                  fullWidth
-                  InputProps={{
-                    inputComponent: ReactTransliterate as any,
-                    inputProps: {
-                      value: formik.values.statusPG,
-                      onChangeText: (text: string) =>
-                        handleConversionChange("statusPG", text),
-                      lang,
-                      placeholder: t("text.StatusPg"),
-                      id: "react-transliterate-input",
-                    },
-                  }}
+                <TranslateTextField
+                  label={t("text.StatusPg")}
+                  value={formik.values.statusPG}
+                  onChangeText={(text: string) =>
+                    handleConversionChange("statusPG", text)
+                  }
+                  required={false}
+                  lang={lang}
                 />
               </Grid>
               <Grid md={4} item>
-                <TextField
-                  label={<CustomLabel text={t("text.Registrar")} />}
-                  size="small"
-                  name="registrar"
-                  fullWidth
-                  InputProps={{
-                    inputComponent: ReactTransliterate as any,
-                    inputProps: {
-                      value: formik.values.registrar,
-                      onChangeText: (text: string) =>
-                        handleConversionChange("registrar", text),
-                      lang,
-                      placeholder: t("text.Registrar"),
-                      id: "react-transliterate-input",
-                    },
-                  }}
+                <TranslateTextField
+                  label={t("text.Registrar")}
+                  value={formik.values.registrar}
+                  onChangeText={(text: string) =>
+                    handleConversionChange("registrar", text)
+                  }
+                  required={false}
+                  lang={lang}
                 />
               </Grid>
 

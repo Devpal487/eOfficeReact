@@ -32,6 +32,7 @@ import Languages from "../../../Languages";
 import { Language } from "react-transliterate";
 import "react-transliterate/dist/index.css";
 import TranslateTextField from "../../../TranslateTextField";
+import CustomDataGrids from "../../../utils/CustomDataGrids";
 
 interface MenuPermission {
   isAdd: boolean;
@@ -341,6 +342,7 @@ export default function ZoneMaster() {
           sx={{
             width: "100%",
             overflow: "hidden",
+            // backgroundColor:"lightseagreen"
           }}
           style={{ padding: "10px" }}
         >
@@ -457,4 +459,4 @@ export default function ZoneMaster() {
       <ToastApp />
     </>
   );
-}
+};

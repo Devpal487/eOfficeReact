@@ -24,7 +24,9 @@ import nopdf from "../../assets/images/imagepreview.jpg";
 import api from "../../utils/Url";
 import CustomLabel from "../../CustomLable";
 import { getId } from "../../utils/Constant";
-
+import Languages from "../../Languages";
+import TranslateTextField from "../../TranslateTextField";
+import { Language } from "react-transliterate";
 
 const style = {
   position: "absolute" as "absolute",
@@ -72,9 +74,9 @@ const EmployeeAdd = (props: Props) => {
   useEffect(() => {
     getEmpDesignation();
     getDepartment();
-   // getState();
+    // getState();
     getCountry();
-   // getCity();
+    // getCity();
     getGender();
     getRole();
   }, []);
@@ -106,11 +108,10 @@ const EmployeeAdd = (props: Props) => {
     });
   };
 
- 
-  const getState = (countryId:any) => {
+  const getState = (countryId: any) => {
     const collectData = {
       stateId: -1,
-      countryId:countryId,
+      countryId: countryId,
     };
     api.post(`State/GetStateMaster`, collectData).then((res) => {
       const arr = res.data.data.map((item: any) => ({
@@ -134,10 +135,10 @@ const EmployeeAdd = (props: Props) => {
     });
   };
 
-  const getCity = (stateId:any) => {
+  const getCity = (stateId: any) => {
     const collectData = {
       cityId: -1,
-      stateId:stateId,
+      stateId: stateId,
     };
     api.post(`M10_District/GetDistrictMaster`, collectData).then((res) => {
       const arr = res.data.data.map((item: any) => ({
@@ -147,6 +148,7 @@ const EmployeeAdd = (props: Props) => {
       setCity(arr);
     });
   };
+
   const getGender = () => {
     const collectData = {
       genderID: -1,
@@ -177,9 +179,11 @@ const EmployeeAdd = (props: Props) => {
   const [modalImg, setModalImg] = useState("");
   const [Opens, setOpen] = React.useState(false);
   const [Img, setImg] = useState("");
+
   const handlePanClose = () => {
     setPanOpen(false);
   };
+
   const modalOpenHandle = (event: any) => {
     setPanOpen(true);
     if (event === "imageFile") {
@@ -190,6 +194,7 @@ const EmployeeAdd = (props: Props) => {
   const handlePanClose1 = () => {
     setOpen(false);
   };
+
   const modalOpenHandle1 = (event: any) => {
     setOpen(true);
     if (event === "signatureFile") {
@@ -212,22 +217,6 @@ const EmployeeAdd = (props: Props) => {
   };
 
   const otherDocChangeHandler = async (event: any, params: any) => {
-    console.log("check");
-    // if (event.target.files && event.target.files[0]) {
-    //   const file = event.target.files[0];
-    //   const fileNameParts = file.name.split(".");
-    //   const fileExtension = fileNameParts[fileNameParts.length - 1];
-    //   if (!fileExtension.toLowerCase().startsWith("image/")) {
-    //     const base64 = await ConvertBase64(file);
-    //     formik.setFieldValue(params, base64);
-    //     console.log(base64);
-    //   } else {
-    //     // Display an error message indicating that only PDF files are allowed
-    //     alert("Only Images are allowed to be uploaded.");
-    //     // Optionally, you can clear the file input field
-    //     event.target.value = null;
-    //   }
-    // }
 
     if (event.target.files && event.target.files[0]) {
       const file = event.target.files[0];
@@ -248,6 +237,7 @@ const EmployeeAdd = (props: Props) => {
   let navigate = useNavigate();
 
   const [toaster, setToaster] = useState(false);
+  const [lang, setLang] = useState<Language>("en");
 
   const [option, setOption] = useState([
     {
@@ -369,7 +359,6 @@ const EmployeeAdd = (props: Props) => {
       empDob: "",
       empJoiningDate: "",
       empretirementDate: "",
-
       empPincode: "",
       roleId: "",
       imageFile: "",
@@ -383,7 +372,6 @@ const EmployeeAdd = (props: Props) => {
       empStateId: "",
       empCountryID: "",
       empCityId: "",
-
       sortOrder: 0,
       isActive: true,
       user_ID: userId,
@@ -391,8 +379,6 @@ const EmployeeAdd = (props: Props) => {
     validationSchema: validationSchema,
 
     onSubmit: async (values) => {
-
-     
       // console.log("Before submission formik values", values);
 
       const filteredValues = Object.fromEntries(
@@ -440,6 +426,10 @@ const EmployeeAdd = (props: Props) => {
 
   const back = useNavigate();
 
+  const handleConversionChange = (params: any, text: string) => {
+    formik.setFieldValue(params, text);
+  };
+
   return (
     <div>
       <div
@@ -447,67 +437,77 @@ const EmployeeAdd = (props: Props) => {
           padding: "-5px 5px",
           backgroundColor: "#ffffff",
           borderRadius: "5px",
-
           border: ".5px solid #00009c",
-
           marginTop: "3vh",
         }}
       >
         <CardContent>
-          <Typography
-            variant="h5"
-            textAlign="center"
-            style={{ fontSize: "18px", fontWeight: 500 }}
-          >
-            {t("text.CreateEmployeeRegistration")}
-          </Typography>
 
-          <Grid item sm={4} xs={12}>
-            <Typography style={{ marginTop: "-75px" }}>
+          <Grid item xs={12} container spacing={2}>
+            <Grid item lg={2} md={2} xs={2} marginTop={2}>
               <Button
                 type="submit"
                 onClick={() => back(-1)}
                 variant="contained"
                 style={{
-                  marginBottom: 15,
-                  marginTop: "45px",
                   backgroundColor: "blue",
                   width: 20,
                 }}
               >
                 <ArrowBackSharpIcon />
               </Button>
-            </Typography>
+            </Grid>
+            <Grid
+              item
+              lg={7}
+              md={7}
+              xs={7}
+              alignItems="center"
+              justifyContent="center"
+            >
+              <Typography
+                gutterBottom
+                variant="h5"
+                component="div"
+                sx={{ padding: "20px" }}
+                align="center"
+              >
+                {t("text.CreateEmployeeRegistration")}
+              </Typography>
+            </Grid>
+
+            <Grid item lg={3} md={3} xs={3} marginTop={3}>
+              <select
+                className="language-dropdown"
+                value={lang}
+                onChange={(e) => setLang(e.target.value as Language)}
+              >
+                {Languages.map((l) => (
+                  <option key={l.value} value={l.value}>
+                    {l.label}
+                  </option>
+                ))}
+              </select>
+            </Grid>
           </Grid>
+
+
           <Divider />
           <br />
           <form onSubmit={formik.handleSubmit}>
             {toaster === false ? "" : <ToastApp />}
             <Grid item xs={12} container spacing={2}>
               <Grid item lg={4} xs={12}>
-                <TextField
-                  id="empName"
-                  name="empName"
-                  label={
-                    <CustomLabel
-                      text={t("text.EnterEmployeeName")}
-                      required={requiredFields.includes("empName")}
-                    />
-                  }
+              <TranslateTextField
+                  label={t("text.EnterEmployeeName")}
                   value={formik.values.empName}
-                  placeholder={t("text.EnterEmployeeName")}
-                  size="small"
-                  fullWidth
-                  style={{
-                    backgroundColor: "white",
-                    borderColor:
-                      formik.touched.empName && formik.errors.empName
-                        ? "red"
-                        : "initial",
-                  }}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
+                  onChangeText={(text: string) =>
+                    handleConversionChange("empName", text)
+                  }
+                  required={false}
+                  lang={lang}
                 />
+                
                 {formik.touched.empName && formik.errors.empName ? (
                   <div style={{ color: "red", margin: "5px" }}>
                     {formik.errors.empName}
@@ -547,26 +547,16 @@ const EmployeeAdd = (props: Props) => {
               </Grid>
 
               <Grid item lg={4} xs={12}>
-                <TextField
-                  id="empFatherName"
-                  name="empFatherName"
-                  label={
-                    <CustomLabel
-                      text={t("text.EnterFatherName")}
-                      required={requiredFields.includes("empFatherName")}
-                    />
-                  }
+              <TranslateTextField
+                  label={t("text.EnterFatherName")}
                   value={formik.values.empFatherName}
-                  placeholder={t("text.EnterFatherName")}
-                  size="small"
-                  fullWidth
-                  style={{
-                    backgroundColor: "white",
-                  }}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  inputProps={{ pattern: "[A-Za-z\\s'-]*" }}
+                  onChangeText={(text: string) =>
+                    handleConversionChange("empFatherName", text)
+                  }
+                  required={false}
+                  lang={lang}
                 />
+                
                 {formik.touched.empFatherName && formik.errors.empFatherName ? (
                   <div style={{ color: "red", margin: "5px" }}>
                     {formik.errors.empFatherName}
@@ -575,38 +565,29 @@ const EmployeeAdd = (props: Props) => {
               </Grid>
 
               <Grid item lg={4} xs={12}>
-                <TextField
-                  id="empspauseName"
-                  name="empspauseName"
-                  label={
-                    <CustomLabel
-                      text={t("text.EnterSpauseName")}
-                      required={requiredFields.includes("empspauseName")}
-                    />
-                  }
+              <TranslateTextField
+                  label={t("text.EnterSpauseName")}
                   value={formik.values.empspauseName}
-                  placeholder={t("text.EnterSpauseName")}
-                  size="small"
-                  fullWidth
-                  style={{ backgroundColor: "white" }}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
+                  onChangeText={(text: string) =>
+                    handleConversionChange("empspauseName", text)
+                  }
+                  required={false}
+                  lang={lang}
                 />
+                
               </Grid>
 
               <Grid item lg={4} xs={12}>
-                <TextField
-                  id="empMotherName"
-                  name="empMotherName"
-                  label={<CustomLabel text={t("text.EnterMotherName")} />}
+              <TranslateTextField
+                  label={t("text.EnterMotherName")}
                   value={formik.values.empMotherName}
-                  placeholder={t("text.EnterMotherName")}
-                  size="small"
-                  fullWidth
-                  style={{ backgroundColor: "white" }}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
+                  onChangeText={(text: string) =>
+                    handleConversionChange("empMotherName", text)
+                  }
+                  required={false}
+                  lang={lang}
                 />
+                
               </Grid>
 
               <Grid item lg={4} xs={12}>
@@ -632,7 +613,7 @@ const EmployeeAdd = (props: Props) => {
                         ? "red"
                         : "initial",
                   }}
-                  onChange={(e:any)=>{
+                  onChange={(e: any) => {
                     let num = e.target.value;
                     formik.setFieldValue("empMobileNo", String(num));
                   }}
@@ -719,12 +700,12 @@ const EmployeeAdd = (props: Props) => {
                   type="number"
                   fullWidth
                   style={{ backgroundColor: "white" }}
-                  onChange={(e:any)=>{
+                  onChange={(e: any) => {
                     let num = e.target.value;
                     formik.setFieldValue("empAddharNo", String(num));
                   }}
                   onBlur={formik.handleBlur}
-                  inputProps={{maxLength: 12 }}
+                  inputProps={{ maxLength: 12 }}
                 />
                 {formik.touched.empAddharNo && formik.errors.empAddharNo ? (
                   <div style={{ color: "red", margin: "5px" }}>
@@ -828,11 +809,6 @@ const EmployeeAdd = (props: Props) => {
                     backgroundColor: "white",
                   }}
                   size="small"
-                  // value={
-                  //   option.find(
-                  //     (option) => option.value === formik.values.empDesignationId
-                  //   ) || null
-                  // }
                   onChange={(event, newValue: any) => {
                     formik.setFieldValue("empDesignationId", newValue?.value);
                     formik.setFieldTouched("empDesignationId", true);
@@ -865,11 +841,6 @@ const EmployeeAdd = (props: Props) => {
                   options={Department}
                   fullWidth
                   size="small"
-                  //  value={
-                  //    option.find(
-                  //      (option) => option.value === formik.values.empDeptId
-                  //    ) || null
-                  //  }
                   onChange={(event, newValue: any) => {
                     formik.setFieldValue("empDeptId", newValue?.value);
                     formik.setFieldTouched("empDeptId", true);
@@ -901,18 +872,11 @@ const EmployeeAdd = (props: Props) => {
                   options={Country}
                   fullWidth
                   size="small"
-                  // value={
-                  // option.find(
-                  //    (option) => option.value === formik.values.empCountryID
-                  //  ) || null
-                  //}
                   onChange={(event, newValue: any) => {
-                    
                     formik.setFieldValue("empCountryID", newValue?.value);
                     formik.setFieldTouched("empCountryID", true);
                     formik.setFieldTouched("empCountryID", false);
                     getState(newValue?.value);
-                    
                   }}
                   renderInput={(params) => (
                     <TextField
@@ -940,13 +904,7 @@ const EmployeeAdd = (props: Props) => {
                   options={StateOption}
                   fullWidth
                   size="small"
-                  // value={
-                  // option.find(
-                  // (option) => option.value === formik.values.empStateId
-                  // ) || null
-                  // }
                   onChange={(event, newValue: any) => {
-                    
                     formik.setFieldValue("empStateId", newValue?.value);
                     formik.setFieldTouched("empStateId", true);
                     formik.setFieldTouched("empStateId", false);
@@ -978,11 +936,6 @@ const EmployeeAdd = (props: Props) => {
                   options={City}
                   fullWidth
                   size="small"
-                  // value={
-                  // option.find(
-                  // (option) => option.value === formik.values.empCityId
-                  // ) || null
-                  // }
                   onChange={(event, newValue: any) => {
                     formik.setFieldValue("empCityId", newValue?.value);
                     formik.setFieldTouched("empCityId", true);
@@ -1009,11 +962,6 @@ const EmployeeAdd = (props: Props) => {
                   options={Role}
                   fullWidth
                   size="small"
-                  // value={
-                  //   option.find(
-                  //     (option) => option.value === formik.values.RoleId
-                  //   ) || null
-                  // }
                   onChange={(event, newValue: any) => {
                     formik.setFieldValue("roleId", newValue?.value + "");
                     formik.setFieldTouched("roleId", true);
@@ -1045,11 +993,6 @@ const EmployeeAdd = (props: Props) => {
                   options={Gender}
                   fullWidth
                   size="small"
-                  // value={
-                  //   option.find(
-                  //     (option:any) => option.value === formik.values.gender
-                  //   ) || null
-                  // }
                   onChange={(event, newValue: any) => {
                     formik.setFieldValue("gender", newValue?.value + "");
                     formik.setFieldTouched("gender", true);
@@ -1075,46 +1018,26 @@ const EmployeeAdd = (props: Props) => {
               </Grid>
 
               <Grid item lg={4} xs={12}>
-                <TextField
-                  id="empLocalAddress"
-                  name="empLocalAddress"
-                  label={<CustomLabel text={t("text.EnterLocalAddress")} />}
+              <TranslateTextField
+                  label={t("text.EnterLocalAddress")}
                   value={formik.values.empLocalAddress}
-                  placeholder={t("text.EnterLocalAddress")}
-                  inputProps={{}}
-                  size="small"
-                  type="text"
-                  fullWidth
-                  style={{ backgroundColor: "white" }}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
+                  onChangeText={(text: string) =>
+                    handleConversionChange("empLocalAddress", text)
+                  }
+                  required={false}
+                  lang={lang}
                 />
               </Grid>
 
               <Grid item lg={4} xs={12}>
-                <TextField
-                  id="empPerAddress"
-                  name="empPerAddress"
-                  label={
-                    <CustomLabel
-                      text={t("text.EnterPermanentAddress")}
-                      required={requiredFields.includes("empPerAddress")}
-                    />
-                  }
+              <TranslateTextField
+                  label={t("text.EnterPermanentAddress")}
                   value={formik.values.empPerAddress}
-                  placeholder={t("text.EnterPermanentAddress")}
-                  size="small"
-                  fullWidth
-                  style={{
-                    backgroundColor: "white",
-                    borderColor:
-                      formik.touched.empPerAddress &&
-                      formik.errors.empPerAddress
-                        ? "red"
-                        : "initial",
-                  }}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
+                  onChangeText={(text: string) =>
+                    handleConversionChange("empPerAddress", text)
+                  }
+                  required={true}
+                  lang={lang}
                 />
                 {formik.touched.empPerAddress && formik.errors.empPerAddress ? (
                   <div style={{ color: "red", margin: "5px" }}>
@@ -1135,7 +1058,7 @@ const EmployeeAdd = (props: Props) => {
                   }
                   value={formik.values.empPincode}
                   placeholder={t("text.EnterPincode")}
-                  inputProps={{maxLength: 6 }}
+                  inputProps={{ maxLength: 6 }}
                   type="number"
                   size="small"
                   fullWidth

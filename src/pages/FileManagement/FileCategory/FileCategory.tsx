@@ -30,6 +30,7 @@ import ButtonWithLoader from "../../../utils/ButtonWithLoader";
 import Languages from "../../../Languages";
 import { Language, ReactTransliterate } from "react-transliterate";
 import "react-transliterate/dist/index.css";
+import TranslateTextField from "../../../TranslateTextField";
 
 interface MenuPermission {
   isAdd: boolean;
@@ -308,27 +309,14 @@ export default function FileCategory() {
             <form onSubmit={formik.handleSubmit}>
               <Grid item xs={12} container spacing={2}>
                 <Grid item xs={10}>
-                  <TextField
-                    label={
-                      <CustomLabel
-                        text={t("text.EnterFileCategory")}
-                        required={requiredFields.includes("fileCatDesc")}
-                      />
+                  <TranslateTextField
+                    label={t("text.EnterFileCategory")}
+                    value={formik.values.fileCatDesc}
+                    onChangeText={(text: string) =>
+                      handleConversionChange("fileCatDesc", text)
                     }
-                    size="small"
-                    variant="outlined"
-                    fullWidth
-                    InputProps={{
-                      inputComponent: ReactTransliterate as any,
-                      inputProps: {
-                        value: formik.values.fileCatDesc,
-                        onChangeText: (text: string) =>
-                          handleConversionChange("fileCatDesc", text),
-                        lang,
-                        placeholder: t("text.EnterFileCategory"),
-                        id: "react-transliterate-input",
-                      },
-                    }}
+                    required={true}
+                    lang={lang}
                   />
                   {formik.touched.fileCatDesc && formik.errors.fileCatDesc ? (
                     <div style={{ color: "red", margin: "5px" }}>
@@ -388,4 +376,4 @@ export default function FileCategory() {
       <ToastApp />
     </>
   );
-};
+}

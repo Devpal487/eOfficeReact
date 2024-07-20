@@ -28,6 +28,9 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import CustomDataGrid from "../../../utils/CustomDatagrid";
 import CustomLabel from "../../../CustomLable";
 import ButtonWithLoader from "../../../utils/ButtonWithLoader";
+import TranslateTextField from "../../../TranslateTextField";
+import { Language } from "react-transliterate";
+import Languages from "../../../Languages";
 
 interface MenuPermission {
   isAdd: boolean;
@@ -45,6 +48,7 @@ export default function SectionMaster() {
   const [editId, setEditId] = useState<any>(-1);
   const location = useLocation();
   const [isLoading, setIsLoading] = useState(true);
+  const [lang, setLang] = useState<Language>("en");
 
   const [FileOption, setFileOption] = useState<any>([
     { value: "-1", label: t("text.SelectDepartment") },
@@ -120,6 +124,7 @@ export default function SectionMaster() {
         }
       });
   };
+
   const reject = () => {
     // toast.warn({summary: 'Rejected', detail: 'You have rejected', life: 3000 });
     toast.warn("Rejected: You have rejected", { autoClose: 3000 });
@@ -247,21 +252,11 @@ export default function SectionMaster() {
       instid: 0,
       sesid: "",
       uid: "",
-
-      // cityId: -1,
-      // cityName: "",
-      // stateId: "",
-
-      // createdOn: defaultValuestime,
-      // updatedOn: defaultValuestime,
-      // createdBy: "-1",
-      // updatedBy: "-1",
     },
 
     onSubmit: async (values) => {
       values.id = editId;
       // console.log("check", values);
-
       const response = await api.post(
         `SectionMaster/AddUpdateSectionMaster`,
         values
@@ -292,6 +287,10 @@ export default function SectionMaster() {
     await formik.handleSubmit();
   };
 
+  const handleConversionChange = (params: any, text: string) => {
+    formik.setFieldValue(params, text);
+  };
+
   return (
     <>
       <Grid item lg={6} sm={6} xs={12} sx={{ marginTop: "3vh" }}>
@@ -318,15 +317,34 @@ export default function SectionMaster() {
             style={{ padding: "10px" }}
           >
             <ConfirmDialog />
-            <Typography
-              gutterBottom
-              variant="h5"
-              component="div"
-              sx={{ padding: "20px" }}
-              align="left"
-            >
-              {t("text.SectionMaster")}
-            </Typography>
+            <Grid item xs={12} container spacing={1}>
+            <Grid item lg={10} md={10} xs={12}>
+              <Typography
+                gutterBottom
+                variant="h5"
+                component="div"
+                sx={{ padding: "20px" }}
+                align="left"
+              >
+                {t("text.SectionMaster")}
+              </Typography>
+            </Grid>
+
+            <Grid item lg={2} md={2} xs={12} marginTop={2}>
+              <select
+                className="language-dropdown"
+                value={lang}
+                onChange={(e) => setLang(e.target.value as Language)}
+              >
+                {Languages.map((l) => (
+                  <option key={l.value} value={l.value}>
+                    {l.label}
+                  </option>
+                ))}
+              </select>
+            </Grid>
+          </Grid>
+           
             <Divider />
 
             <Box height={10} />
@@ -366,28 +384,17 @@ export default function SectionMaster() {
                 </Grid>
 
                 <Grid item xs={5} sm={5}>
-                  <TextField
-                    id="section"
-                    name="section"
-                    label={<CustomLabel text={t("text.Section")} />}
-                    value={formik.values.section}
-                    placeholder={t("text.Section")}
-                    size="small"
-                    fullWidth
-                    style={{ backgroundColor: "white" }}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                  />
+                <TranslateTextField
+                  label={t("text.Section")}
+                  value={formik.values.section}
+                  onChangeText={(text: string) => handleConversionChange('section', text)}
+                  required={false}
+                  lang={lang}
+                />
                 </Grid>
 
 
                 <Grid item xs={2} sx={{m:-1}}>
-
-                  {/*  {permissionData?.isAdd == true ? ( */}
-                  {/* <Button type="submit" variant="contained" size="large">
-                    {editId == "-1" ? t("text.save") : t("text.update")}
-                  </Button> */}
-
                   {editId === -1 && permissionData?.isAdd && (
                     <ButtonWithLoader
                       buttonText={t("text.save")}

@@ -1,8 +1,8 @@
-import React from 'react';
-import { TextField } from '@mui/material';
-import { ReactTransliterate } from 'react-transliterate';
-import CustomLabel from './CustomLable';
-import { useTranslation } from 'react-i18next';
+import React from "react";
+import { TextField } from "@mui/material";
+import { ReactTransliterate } from "react-transliterate";
+import CustomLabel from "./CustomLable";
+import { useTranslation } from "react-i18next";
 
 interface ReusableTextFieldProps {
   label: string;
@@ -12,17 +12,18 @@ interface ReusableTextFieldProps {
   lang: string;
 }
 
-const TranslateTextField: React.FC<ReusableTextFieldProps> = ({ label, value, onChangeText, required = false, lang }) => {
+const TranslateTextField: React.FC<ReusableTextFieldProps> = ({
+  label,
+  value,
+  onChangeText,
+  required = false,
+  lang,
+}) => {
   const { t } = useTranslation();
 
   return (
     <TextField
-      label={
-        <CustomLabel
-          text={label}
-          required={required}
-        />
-      }
+      label={<CustomLabel text={label} required={required} />}
       variant="outlined"
       fullWidth
       size="small"
@@ -57,23 +58,24 @@ const TranslateTextField: React.FC<ReusableTextFieldProps> = ({ label, value, on
           padding: "8.5px 14px",
           border: 0,
           boxSizing: "content-box",
-          height: "1.5em",
+          //height: "1.5em",
           margin: 0,
           width: "93%",
           minWidth: 0,
         },
         "& .MuiOutlinedInput-notchedOutline": {
-          position: "absolute",
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
+          // position: "absolute",
+          // top: 0,
+          // left: 0,
+          // right: 0,
+          // bottom: 0,
           border: "1px solid rgba(0, 0, 0, 0.23)",
           borderRadius: "inherit",
         },
-        "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
-          borderColor: "#1976d2",
-        },
+        "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
+          {
+            borderColor: "#1976d2",
+          },
         "& .MuiOutlinedInput-root.Mui-error .MuiOutlinedInput-notchedOutline": {
           borderColor: "red",
         },

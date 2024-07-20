@@ -17,13 +17,22 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useTranslation } from "react-i18next";
 import CustomLabel from "../../../CustomLable";
+import Languages from "../../../Languages";
+import { Language } from "react-transliterate";
+import "react-transliterate/dist/index.css";
+import TranslateTextField from "../../../TranslateTextField";
+
+
+
 type Props = {};
 
 const MenuMasterEdit = (props: Props) => {
   const location = useLocation();
   // console.log('location', location.state)
 
+  const [lang, setLang] = useState<Language>("en");
   const [option, setOption] = useState([{ value: "-1", label: "Select Menu" }]);
+
   const { i18n, t } = useTranslation();
   let navigate = useNavigate();
 
@@ -50,10 +59,10 @@ const MenuMasterEdit = (props: Props) => {
   const validationSchema = Yup.object({
     menuName:
       Yup.string().test(
-        'required', // Unique name for the test
-        t('text.reqMenuName'),// Translation for "*Menu Name is required"
+        'required', 
+        t('text.reqMenuName'),
         function (value: any) {
-          return value && value.trim() !== ''; // Your validation logic here
+          return value && value.trim() !== ''; 
         }),
 
   });
@@ -96,6 +105,10 @@ const MenuMasterEdit = (props: Props) => {
 
   const requiredFields = ["menuName"];
 
+  const handleConversionChange = (params: any, text: string) => {
+    formik.setFieldValue(params, text);
+  };
+
   return (
     <div>
       <div
@@ -108,49 +121,63 @@ const MenuMasterEdit = (props: Props) => {
         }}
       >
         <CardContent>
-          <Typography
-            variant="h5"
-            textAlign="center"
-            style={{ fontSize: "18px", fontWeight: 500 }}
-          >
-            {t("text.EditMenuMaster")}
-          </Typography>
-
-          <Grid item sm={4} xs={12}>
-            <Typography style={{ marginTop: "-75px" }}>
+        <Grid item xs={12} container spacing={2} >
+            <Grid item lg={2} md={2} xs={2} marginTop={2}>
               <Button
                 type="submit"
                 onClick={() => back(-1)}
                 variant="contained"
                 style={{
-                  marginBottom: 15,
-                  marginTop: "45px",
                   backgroundColor: "blue",
                   width: 20,
                 }}
               >
                 <ArrowBackSharpIcon />
               </Button>
-            </Typography>
+            </Grid>
+            <Grid item lg={7} md={7} xs={7} alignItems="center" justifyContent="center">
+              <Typography
+                gutterBottom
+                variant="h5"
+                component="div"
+                sx={{ padding: "20px" }}
+                align="center"
+              >
+                {t("text.EditMenuMaster")}
+              </Typography>
+            </Grid>
+
+            <Grid item lg={3} md={3} xs={3} marginTop={3}>
+              <select
+                className="language-dropdown"
+                value={lang}
+                onChange={(e) => setLang(e.target.value as Language)}
+              >
+                {Languages.map((l) => (
+                  <option key={l.value} value={l.value}>
+                    {l.label}
+                  </option>
+                ))}
+              </select>
+            </Grid>
           </Grid>
+
+          
           <Divider />
           <br />
           <form onSubmit={formik.handleSubmit}>
             <Grid container spacing={1}>
               <Grid xs={12} sm={4} item>
-                <TextField
-                  type="text"
-                  name="menuName"
-                  id="menuName"
-                  label={<CustomLabel text={t("text.EnterMenuName")} required={requiredFields.includes('menuName')} />}
+              <TranslateTextField
+                  label={t("text.EnterMenuName")}
                   value={formik.values.menuName}
-                  placeholder={t("text.EnterMenuName")}
-                  size="small"
-                  fullWidth
-                  style={{ backgroundColor: "white", borderColor: formik.touched.menuName && formik.errors.menuName ? 'red' : 'initial', }}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
+                  onChangeText={(text: string) =>
+                    handleConversionChange("menuName", text)
+                  }
+                  required={true}
+                  lang={lang}
                 />
+
                 {formik.touched.menuName && formik.errors.menuName ? (
                   <div style={{ color: "red", margin: "5px" }}>
                     {String(formik.errors.menuName)}

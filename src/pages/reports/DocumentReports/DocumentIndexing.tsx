@@ -640,25 +640,11 @@ function Row({ row, index }: { row: any; index: number }) {
           {row.fileDef}
         </TableCell>
 
-        {/* <TableCell style={{ border: "1px gray grey" }}>
-          {row.subSubject}
-        </TableCell>
-
-        <TableCell style={{ border: "1px gray grey" }}>
-          {row.keywords}
-        </TableCell> */}
-
         <TableCell  align="center" style={{ border: "1px gray grey" }}>{row.fDate}</TableCell>
 
         <TableCell  align="center" style={{ border: "1px gray grey" }}>
           {row.cDate}
         </TableCell>
-
-        {/* <TableCell style={{ border: "1px gray grey" }}>
-          {row.synopsis}
-        </TableCell>
-
-        <TableCell style={{ border: "1px gray grey" }}>{row.complt}</TableCell> */}
 
       </StyledTableRow>
     </React.Fragment>
@@ -742,12 +728,12 @@ export default function DocumentIndexing() {
   };
 
   const getFileStatusData = () => {
-    api.post("FileStatus/GetFileStatus").then((res) => {
+      api.get(`ReceiptStatus/GetReceiptStatus`,{ params :{ReceiptStatId: -1}}).then((res) => {
       const arr = [];
       console.log("result" + JSON.stringify(res.data));
       for (let index = 0; index < res.data.data.length; index++) {
         arr.push({
-          label: res.data.data[index]["fStatus"],
+          label: res.data.data[index]["recStatus"],
         });
       }
       setOptionFileStatus(arr);
@@ -756,7 +742,6 @@ export default function DocumentIndexing() {
 
   const handleFilterButtonClick = () => {
     setFilterDrawerOpen(true);
-    // console.log("value handleFilterButtonClick", filterDrawerOpen);
   };
 
   const handleCloseDrawer = () => {

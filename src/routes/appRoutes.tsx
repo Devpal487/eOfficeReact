@@ -65,6 +65,7 @@ import Certificate from "../pages/master/Certificate/Certificate";
 import CertificateAdd from "../pages/master/Certificate/CertificateAdd";
 import CertificateEdit from "../pages/master/Certificate/CertificateEdit";
 import StatusMaster from "../pages/master/StatusMaster/StatusMaster";
+import FileStatus from "../pages/FileManagement/FileStatus/FileStatus";
 
 const appRoutes: RouteType[] = [
   {
@@ -359,6 +360,14 @@ const appRoutes: RouteType[] = [
         state: "FileManagement.FileSubject",
         sidebarProps: {
           displayText: "File Subject",
+        },
+      },
+      {
+        path: "/FileManagement/FileStatus",
+        element: <FileStatus />,
+        state: "FileManagement.FileStatus",
+        sidebarProps: {
+          displayText: "File Status",
         },
       },
     ],

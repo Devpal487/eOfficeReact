@@ -224,7 +224,9 @@ const resources = {
         FileCategory: "File Category",
         FileCatDescription: "File Category",
         FileCatDescRequired: "File Category Required",
+
         FileStatusReq : "File Status Required",
+
         CreateFileCategory: "Create File Category",
         EditFileCategory: "Edit File Category",
         EnterFileCategory: "Enter File Category",
@@ -649,9 +651,9 @@ const resources = {
         CertificateApply:"Certificate Apply",
         StatusMaster:"Status Master",
         UserTypeCode:"User Type Code",
+        reqlName:"Letter name required",
         EditRoute:"Edit Route",
         Search:"Search",
-        
         reqlName:"Letter name required",
 
 
@@ -884,7 +886,9 @@ const resources = {
         FileCategory: "फ़ाइल श्रेणी",
         FileCatDescription: "फ़ाइल श्रेणी",
         FileCatDescRequired: "फ़ाइल श्रेणी आवश्यक है",
+
         FileStatusReq : "फ़ाइल स्थिति आवश्यक",
+
         CreateFileCategory: "फ़ाइल श्रेणी बनाएँ",
         EditFileCategory: "फ़ाइल श्रेणी संपादित करें",
         EnterFileCategory: "फ़ाइल श्रेणी दर्ज करें",
@@ -1301,10 +1305,14 @@ const resources = {
          CertificateApply:"प्रमाणपत्र लागू करें",
          StatusMaster:"स्टेटस मास्टर",
          UserTypeCode:"उपयोगकर्ता प्रकार कोड",
+
+         reqlName:"पत्र का नाम आवश्यक है"
+
          EditRoute:"मार्ग संपादित करें",
          Search:"खोज",
  
          reqlName:"पत्र का नाम आवश्यक है"
+
 
 
       },

@@ -303,23 +303,7 @@ function Row({ row, index }: { row: any; index: number }) {
               {row.fileNo}
 
 
-              <Grid item xs={12} container spacing={2}>
-        <Grid item lg={2} md={2} xs={2} marginTop={2}></Grid>
-       
-        <Grid item lg={3} md={3} xs={3} marginTop={3}>
-          <select
-            className="language-dropdown"
-            value={lang}
-            onChange={(e) => setLang(e.target.value as Language)}
-          >
-            {Languages.map((l: any) => (
-              <option key={l.value} value={l.value}>
-                {l.label}
-              </option>
-            ))}
-          </select>
-        </Grid>
-      </Grid>
+              
             </DialogTitle>
 
             <Grid xs={12} sm={12} item sx={{ margin: "5px" }}>
@@ -504,16 +488,15 @@ function Row({ row, index }: { row: any; index: number }) {
                           textAlign: "center",
                         }}
                       >
-                        <TranslateTextField
-                          label={t("text.Comments")}
+                        <TextField
+                          type="text"
+                          placeholder={t("text.Comments")}
+                          size="small"
+                          fullWidth
                           value={row.comments}
-                          onChangeText={(e:any) =>
-                           
+                          onChange={(e: any) =>
                             handleInputChange(e, index, "comments")
-                          
                           }
-                          required={true}
-                          lang={lang}
                         />
                       </td>
                       <td
@@ -640,25 +623,11 @@ function Row({ row, index }: { row: any; index: number }) {
           {row.fileDef}
         </TableCell>
 
-        {/* <TableCell style={{ border: "1px gray grey" }}>
-          {row.subSubject}
-        </TableCell>
-
-        <TableCell style={{ border: "1px gray grey" }}>
-          {row.keywords}
-        </TableCell> */}
-
         <TableCell  align="center" style={{ border: "1px gray grey" }}>{row.fDate}</TableCell>
 
         <TableCell  align="center" style={{ border: "1px gray grey" }}>
           {row.cDate}
         </TableCell>
-
-        {/* <TableCell style={{ border: "1px gray grey" }}>
-          {row.synopsis}
-        </TableCell>
-
-        <TableCell style={{ border: "1px gray grey" }}>{row.complt}</TableCell> */}
 
       </StyledTableRow>
     </React.Fragment>
@@ -742,12 +711,12 @@ export default function DocumentIndexing() {
   };
 
   const getFileStatusData = () => {
-    api.post("FileStatus/GetFileStatus").then((res) => {
+      api.get(`ReceiptStatus/GetReceiptStatus`,{ params :{ReceiptStatId: -1}}).then((res) => {
       const arr = [];
       console.log("result" + JSON.stringify(res.data));
       for (let index = 0; index < res.data.data.length; index++) {
         arr.push({
-          label: res.data.data[index]["fStatus"],
+          label: res.data.data[index]["recStatus"],
         });
       }
       setOptionFileStatus(arr);
@@ -756,7 +725,6 @@ export default function DocumentIndexing() {
 
   const handleFilterButtonClick = () => {
     setFilterDrawerOpen(true);
-    // console.log("value handleFilterButtonClick", filterDrawerOpen);
   };
 
   const handleCloseDrawer = () => {

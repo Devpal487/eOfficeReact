@@ -115,7 +115,6 @@ const resources = {
         PincodeRequired: "Pin Code Required",
         SelectDepartment: "Select Department",
         SelectDesignation: "Select Designation",
-        
         SelectCountry: "Select Country",
         SelectCity: "Select District",
         SelectState: "Select State",
@@ -196,11 +195,11 @@ const resources = {
         FileTypeName: "File Type Name",
         update: "UPDATE",
         classDescription: "class Description",
-        ReqclassDescription: " class Description Required",
+        ReqclassDescription: "Class Description Required",
         LocationObjectItems: "Location Object Items",
         Mapping: "Mapping",
-        selectParntLoc: "select Parent Location",
-        selectLoc: "select Location",
+        selectParntLoc: "Select Parent Location",
+        selectLoc: "Select Location",
         enterAddItem: "Enter Add Item",
         enterAlias: "Enter Alias",
         enterFrom: "Enter From",
@@ -225,6 +224,9 @@ const resources = {
         FileCategory: "File Category",
         FileCatDescription: "File Category",
         FileCatDescRequired: "File Category Required",
+
+        FileStatusReq : "File Status Required",
+
         CreateFileCategory: "Create File Category",
         EditFileCategory: "Edit File Category",
         EnterFileCategory: "Enter File Category",
@@ -593,6 +595,7 @@ const resources = {
         SwitchTo:"Switch To",
         CreatedBy:"Created By",
         FileStatus:'File Status',
+        EnterFileStatus:'Enter File Status',
         WorkPlace:"Work Place",
         Move:"Move",
         LastStatus:"Last Status",
@@ -626,7 +629,6 @@ const resources = {
         Draft:"Draft",
         Trash:"Trash",
         Compose:"Compose",
-
         AddComment:"Add Comment",
         Index:"Index!",
         PhysicalSerialNo:"Physical Serial Number",
@@ -649,12 +651,10 @@ const resources = {
         CertificateApply:"Certificate Apply",
         StatusMaster:"Status Master",
         UserTypeCode:"User Type Code",
-
         reqlName:"Letter name required",
-
         EditRoute:"Edit Route",
-        Search:"Search"
-       
+        Search:"Search",
+        reqlName:"Letter name required",
 
 
       },
@@ -778,7 +778,6 @@ const resources = {
         PincodeRequired: "पिन कोड आवश्यक है",
         SelectDepartment: "विभाग का चयन करें",
         SelectDesignation: "पदनाम का चयन करें",
-        
         SelectCountry: "देश का चयन करें",
         SelectCity: "जिला का चयन करें",
         SelectState: "राज्य का चयन करें",
@@ -887,6 +886,9 @@ const resources = {
         FileCategory: "फ़ाइल श्रेणी",
         FileCatDescription: "फ़ाइल श्रेणी",
         FileCatDescRequired: "फ़ाइल श्रेणी आवश्यक है",
+
+        FileStatusReq : "फ़ाइल स्थिति आवश्यक",
+
         CreateFileCategory: "फ़ाइल श्रेणी बनाएँ",
         EditFileCategory: "फ़ाइल श्रेणी संपादित करें",
         EnterFileCategory: "फ़ाइल श्रेणी दर्ज करें",
@@ -1247,6 +1249,7 @@ const resources = {
         SwitchTo:"स्विच करें",
         CreatedBy:"द्वारा निर्मित",
         FileStatus:'फ़ाइल स्थिति',
+        EnterFileStatus:"फ़ाइल स्थिति दर्ज करें",
         WorkPlace:"कार्य स्थल",
         Move:"ले जाएँ",
         LastStatus:"अंतिम स्थिति",
@@ -1306,8 +1309,9 @@ const resources = {
          reqlName:"पत्र का नाम आवश्यक है"
 
          EditRoute:"मार्ग संपादित करें",
-         Search:"खोज"
+         Search:"खोज",
  
+         reqlName:"पत्र का नाम आवश्यक है"
 
 
 
@@ -1327,13 +1331,4 @@ i18n.use(initReactI18next).init({
   },
 });
 
-
 export default i18n;
-
-
-
-
-
-
-
-

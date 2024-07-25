@@ -61,20 +61,13 @@ const CertificateAdd = (props: Props) => {
   };
 
   const getStatus = () => {
-    const collectData = {
-      fnId: -1,
-      fId: -1,
-      inst_id: -1,
-      user_id: -1,
-      divisionId: -1,
-    };
-    api.post(`FileNumber/GetFileNumber`, collectData).then((res) => {
+        api.get(`ReceiptStatus/GetReceiptStatus`,{ params :{ReceiptStatId: -1}}).then((res) => {
       const arr = [];
       // console.log("result" + JSON.stringify(res.data.data));
       for (let index = 0; index < res.data.data.length; index++) {
         arr.push({
-          label: res.data.data[index]["fileNm"],
-          value: res.data.data[index]["fnId"],
+          label: res.data.data[index]["recStatus"],
+          value: res.data.data[index]["receiptStatId"],
         });
       }
       setStatusOps(arr);

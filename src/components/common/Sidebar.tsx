@@ -361,8 +361,8 @@ export default function MiniDrawer({ items }: any) {
       });
   };
 
-  const getAllNodeIds = (nodes: any[]): any[] => {
-    let ids: any[] = [];
+  const getAllNodeIds = (nodes: any[]): string[] => {
+    let ids: string[] = [];
 
     const collectIds = (nodes: any[]) => {
       nodes.forEach((node) => {
@@ -374,6 +374,7 @@ export default function MiniDrawer({ items }: any) {
     };
 
     collectIds(nodes);
+
     return ids;
   };
 
@@ -381,17 +382,22 @@ export default function MiniDrawer({ items }: any) {
 
   useEffect(() => {
     // Set default selected node here
-    setCheck([defaultSelectedNodeId]);
-  }, [defaultSelectedNodeId]);
+    if (defaultSelectedNodeId) {
+      setCheck([defaultSelectedNodeId]);
+    }
+
+    const initialExpanded = getAllNodeIds(treedata);
+    setExpandedItems(initialExpanded);
+  }, [defaultSelectedNodeId, treedata]);
 
   const [nodeId, setnodeId] = React.useState<any>(0);
   const [nodeNames, setNodeNames] = React.useState<string>("");
-
+  
   const handleToggle = (id: number, name: string) => () => {
     const currentIndex = check.indexOf(id);
-    // const newChecked = [...check];
+    //const newChecked = [...check];
     const newChecked = currentIndex === -1 ? [id] : [];
-    const updatedChecked = newChecked.length === 1 ? [id] : [];
+    //const updatedChecked = currentIndex === -1 ? [id] : [];
 
     if (currentIndex === -1) {
       newChecked.push(id);
@@ -399,13 +405,15 @@ export default function MiniDrawer({ items }: any) {
       newChecked.splice(currentIndex, 1);
     }
 
-    setCheck(updatedChecked);
+    setCheck(newChecked);
 
-    setExpandedItems((prevExpanded) =>
-      prevExpanded.includes(id.toString())
-        ? prevExpanded.filter((item) => item !== id.toString())
-        : [...prevExpanded, id.toString()]
-    );
+    // setExpandedItems((prevExpanded) =>
+    //   prevExpanded.includes(id.toString())
+    //     ? prevExpanded.filter((item) => item !== id.toString())
+    //     : [...prevExpanded, id.toString()]
+    // );
+
+     
 
 
     console.log("Checked data:", name);
@@ -416,17 +424,16 @@ export default function MiniDrawer({ items }: any) {
     // handleSave(id, name);
   };
 
+ 
+
   const handleSave = () => {
     console.log("handleSave function called");
-
 
     if (nodeId != 0 || nodeNames != "") {
       localStorage.setItem("id", nodeId);
       localStorage.setItem("nodeName", nodeNames);
       console.log("Checked Save:", { nodeId, nodeNames });
 
-    
- 
       handleCloseModal();
     } else {
       toast.error("Please Retry... Network Issues");
@@ -439,9 +446,11 @@ export default function MiniDrawer({ items }: any) {
       itemId={String(nodes.id)}
       label={
         <div style={{ display: "flex", alignItems: "center" }}>
+         
           <Checkbox
             checked={check.indexOf(nodes.id) !== -1}
             // onChange={handleToggle(nodes.id)}
+
             onChange={handleToggle(nodes.id, nodes.name)}
             onClick={(event: any) => event.stopPropagation()}
           />
@@ -449,12 +458,21 @@ export default function MiniDrawer({ items }: any) {
           <div style={{ marginLeft: 8 }}>{nodes.name}</div>
         </div>
       }
+      onClick={() => toggleExpansion(nodes.id.toString())}
     >
       {Array.isArray(nodes.childnode)
         ? nodes.childnode.map((node: any) => renderTree(node))
         : null}
     </TreeItem>
   );
+
+  const toggleExpansion = (nodeId: string) => {
+    if (expandedItems.includes(nodeId)) {
+      setExpandedItems(expandedItems.filter((item) => item !== nodeId));
+    } else {
+      setExpandedItems([...expandedItems, nodeId]);
+    }
+  };
 
   const handleSubMenuClick = (index: any) => {
     // console.log(index);
@@ -638,7 +656,15 @@ export default function MiniDrawer({ items }: any) {
               <MenuIcon fontSize="large" />
             </IconButton>
 
-            {!openlogo && <img src={appLogo} width={60} height={60} onClick={()=>handleClickhome()} style={{cursor:"pointer"}}/>}
+            {!openlogo && (
+              <img
+                src={appLogo}
+                width={60}
+                height={60}
+                onClick={() => handleClickhome()}
+                style={{ cursor: "pointer" }}
+              />
+            )}
           </div>
 
           <div style={{ fontSize: "25px" }}>{headerName}</div>
@@ -734,8 +760,6 @@ export default function MiniDrawer({ items }: any) {
               </ListItemIcon>
               Help Desk
             </MenuItem>
-
-            
 
             <MenuItem onClick={handleClose}>
               <ListItemIcon>
@@ -887,7 +911,13 @@ export default function MiniDrawer({ items }: any) {
                     paddingBottom: "25px",
                   }}
                 >
-                  <img src={sideLogo} width={100} height={100} onClick={()=>handleClickhome()} style={{cursor:"pointer"}}/>
+                  <img
+                    src={sideLogo}
+                    width={100}
+                    height={100}
+                    onClick={() => handleClickhome()}
+                    style={{ cursor: "pointer" }}
+                  />
                 </div>
               ) : (
                 ""
@@ -1157,9 +1187,7 @@ export default function MiniDrawer({ items }: any) {
                                 mr: open ? 3 : "auto",
                                 justifyContent: "center",
 
-                                color: open
-                                  ? sidebarMainColor
-                                  : "inherit",
+                                color: open ? sidebarMainColor : "inherit",
                                 backgroundColor:
                                   selectedSubMenu == index2
                                     ? sidebarMainColor

@@ -130,7 +130,6 @@ const UserManagementAdd = (props: Props) => {
             dob: res.data.data[index]["empDob"],
             gendeR_ID: res.data.data[index]["gender"],
             roleId: res.data.data[index]["roleId"],
-            // useR_TYPE_ID: res.data.data[index]["useR_TYPE_ID"],
             label: res.data.data[index]["empName"],
             value: res.data.data[index]["empid"],
           });
@@ -348,7 +347,7 @@ const UserManagementAdd = (props: Props) => {
                     formik.setFieldValue("cuR_MOBILE", newValue?.cuR_MOBILE);
                     formik.setFieldValue("email", newValue?.email);
                     formik.setFieldValue("dob", newValue?.dob);
-                    formik.setFieldValue("gendeR_ID", parseInt(newValue?.gendeR_ID));
+                    formik.setFieldValue("gendeR_ID", (newValue?.gendeR_ID));
                     formik.setFieldValue("employeeID", newValue?.value)
                     formik.setFieldValue("User_NAME", newValue?.label);
                     formik.setFieldValue("ranK_ID", newValue?.roleId);
@@ -563,14 +562,11 @@ const UserManagementAdd = (props: Props) => {
                   options={option}
                   fullWidth
                   size="small"
-                  // value={
-                  //   option.find(
-                  //     (option) => option.value === formik.values.gendeR_ID
-                  //   ) || null
-                  // }
-
-                  // value={{ value: "male", label: "Male" }}
-                  
+                  value={
+                    option.find(
+                      (option) => option.value == formik.values.gendeR_ID
+                    ) || null
+                  }
                   onChange={(event, newValue) => {
                     formik.setFieldValue("gendeR_ID", newValue?.value);
                     formik.setFieldTouched("gendeR_ID", true);

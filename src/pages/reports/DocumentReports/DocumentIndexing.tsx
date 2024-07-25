@@ -303,23 +303,7 @@ function Row({ row, index }: { row: any; index: number }) {
               {row.fileNo}
 
 
-              <Grid item xs={12} container spacing={2}>
-        <Grid item lg={2} md={2} xs={2} marginTop={2}></Grid>
-       
-        <Grid item lg={3} md={3} xs={3} marginTop={3}>
-          <select
-            className="language-dropdown"
-            value={lang}
-            onChange={(e) => setLang(e.target.value as Language)}
-          >
-            {Languages.map((l: any) => (
-              <option key={l.value} value={l.value}>
-                {l.label}
-              </option>
-            ))}
-          </select>
-        </Grid>
-      </Grid>
+              
             </DialogTitle>
 
             <Grid xs={12} sm={12} item sx={{ margin: "5px" }}>
@@ -504,16 +488,15 @@ function Row({ row, index }: { row: any; index: number }) {
                           textAlign: "center",
                         }}
                       >
-                        <TranslateTextField
-                          label={t("text.Comments")}
+                        <TextField
+                          type="text"
+                          placeholder={t("text.Comments")}
+                          size="small"
+                          fullWidth
                           value={row.comments}
-                          onChangeText={(e:any) =>
-                           
+                          onChange={(e: any) =>
                             handleInputChange(e, index, "comments")
-                          
                           }
-                          required={true}
-                          lang={lang}
                         />
                       </td>
                       <td

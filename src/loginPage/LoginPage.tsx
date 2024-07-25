@@ -157,7 +157,7 @@ export default function LoginPage() {
            setTimeout(() => {
             
             navigate(`/home`);
-           }, 1000);
+           }, 500);
 
            formik.resetForm();
       } else {

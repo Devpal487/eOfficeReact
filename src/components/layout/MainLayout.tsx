@@ -6,6 +6,7 @@ import { useLocation } from 'react-router-dom';
 import FolderIcon from '@mui/icons-material/Folder';
 import { useNavigate } from "react-router-dom";
 import TouchAppIcon from '@mui/icons-material/TouchApp';
+import { useEffect, useState } from "react";
 
 
 const MainLayout = () => {
@@ -111,6 +112,11 @@ const MainLayout = () => {
 
   const items1 = items2[0]["userPermission"][0]["parentMenu"];
 
+  
+
+  
+
+ 
   for (let index = 0; index < items1.length; index++) {
    const element = items1[index];
  
@@ -159,6 +165,34 @@ const MainLayout = () => {
       }
      
   }
+
+  const [currentTheme, setCurrentTheme] = useState("light");
+  
+
+  const storedTheme = localStorage.getItem("theme");
+  console.log("test:",storedTheme);
+
+  
+  useEffect(() => {
+   
+    
+    if (storedTheme) {
+      setCurrentTheme(storedTheme);
+    }
+
+    
+  }, []);
+
+  
+
+  const boxBackground = currentTheme === "light" ? "#F2F3F4" : "#81848a";
+
+
+
+
+  
+  
+
   return (
     <div>
       {location.pathname == "/" ? <Outlet /> : <div>
@@ -173,7 +207,7 @@ const MainLayout = () => {
               py: 3,
               width: `calc(100% - ${sizeConfigs.sidebar.width})`,
               minHeight: "100vh",
-              backgroundColor:"#F2F3F4",
+              backgroundColor:boxBackground,
               backgroundSize: "cover", 
               backgroundPosition: "center" 
             }}

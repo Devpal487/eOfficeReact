@@ -389,8 +389,8 @@ export default function HomePage() {
               flexDirection: "row",
               alignItems: "center",
               gap: 50,
-              marginLeft: "12px",
-              marginRight: "12px",
+              marginLeft: "1.5vh",
+              marginRight: "1.5vh",
             }}
           >
             <Grid>
@@ -398,7 +398,7 @@ export default function HomePage() {
             </Grid>
             <Grid
               sx={{
-                marginLeft: "40px",
+                marginLeft: "4.44vh",
               }}
             >
               <RadioGroup
@@ -418,7 +418,7 @@ export default function HomePage() {
                   control={<Radio />}
                   label={t("text.ReviewOficerInbox")}
                   sx={{
-                    marginLeft: "40px",
+                    marginLeft: "3.33vw",
                   }}
                 />
               </RadioGroup>
@@ -648,59 +648,42 @@ export default function HomePage() {
                       </Grid>
 */}
             <form>
-              <Grid item xs={12} container spacing={3}>
-                <Grid xs={5} sm={5} item>
-                  <TextField
-                    // label="Enter Ref. No."
-                    label={
-                      <CustomLabel
-                        text={t("text.EnterRefNo")}
-                        required={false}
-                      />
-                    }
-                    value={newrefNo}
-                    placeholder={t("text.EnterRefNo")}
-                    size="small"
-                    fullWidth
-                    style={{ backgroundColor: "white" }}
-                    onChange={(e: any) => {
-                      setNewrefNo(e.target.value);
-                    }}
-                  />
-                </Grid>
+            <Grid container spacing={3}>
+      <Grid item xs={12} sm={5} md={5} lg={5}>
+        <TextField
+          label={<CustomLabel text={t("text.EnterRefNo")} required={false} />}
+          value={newrefNo}
+          placeholder={t("text.EnterRefNo")}
+          size="small"
+          fullWidth
+          style={{ backgroundColor: "white" }}
+          onChange={(e) => setNewrefNo(e.target.value)}
+        />
+      </Grid>
 
-                <Grid item xs={5} sm={5}>
-                  <TextField
-                    // id="zoneCode"
-                    // name="zoneCode"
-                    // label="Enter Year"
-                    label={
-                      <CustomLabel
-                        text={t("text.EnterYear")}
-                        required={false}
-                      />
-                    }
-                    value={newrefNoYr}
-                    placeholder={t("text.EnterYear")}
-                    size="small"
-                    fullWidth
-                    style={{ backgroundColor: "white" }}
-                    onChange={(e: any) => {
-                      setNewrefNoYr(parseInt(e.target.value));
-                    }}
-                  />
-                </Grid>
+      <Grid item xs={12} sm={5} md={5} lg={5}>
+        <TextField
+          label={<CustomLabel text={t("text.EnterYear")} required={false} />}
+          value={newrefNoYr}
+          placeholder={t("text.EnterYear")}
+          size="small"
+          fullWidth
+          style={{ backgroundColor: "white" }}
+          onChange={(e:any) => setNewrefNoYr(e.target.value)}
+        />
+      </Grid>
 
-                <Grid item xs={2}>
-                  <Button
-                    variant="contained"
-                    size="large"
-                    onClick={fetchTotalFile}
-                  >
-                    {t("text.Start")}
-                  </Button>
-                </Grid>
-              </Grid>
+      <Grid item xs={12} md={2} lg={2}>
+        <Button
+          variant="contained"
+          size="large"
+          onClick={fetchTotalFile}
+          fullWidth
+        >
+          {t("text.Start")}
+        </Button>
+      </Grid>
+    </Grid>
             </form>
           </Grid>
           <br />

@@ -43,6 +43,25 @@ body {
     background: url('data:image/svg+xml;utf-8, <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"><path d="M7 10l5 5 5-5z"/><path d="M0 0h24v24H0z" fill="none"/></svg>')
       98% 50% no-repeat #fff;
   }
+
+
+  /*theme */
+
+  body {
+    transition: background-color 0.3s, color 0.3s;
+  }
+  
+  /* Light theme styles */
+  body.light {
+    background-color: #ffffff;
+    color: #000000;
+  }
+  
+  /* Dark theme styles */
+  body.dark {
+    background-color: #000000;
+    color: #ffffff;
+  }
 /*   
   input,
   textarea {

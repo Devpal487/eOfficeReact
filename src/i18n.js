@@ -1306,7 +1306,7 @@ const resources = {
          StatusMaster:"स्टेटस मास्टर",
          UserTypeCode:"उपयोगकर्ता प्रकार कोड",
 
-         reqlName:"पत्र का नाम आवश्यक है"
+         reqlName:"पत्र का नाम आवश्यक है",
 
          EditRoute:"मार्ग संपादित करें",
          Search:"खोज",

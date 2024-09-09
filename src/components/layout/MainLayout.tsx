@@ -169,20 +169,6 @@ const MainLayout = () => {
   const [currentTheme, setCurrentTheme] = useState("light");
   
 
-  const storedTheme = localStorage.getItem("theme");
-  console.log("test:",storedTheme);
-
-  
-  useEffect(() => {
-   
-    
-    if (storedTheme) {
-      setCurrentTheme(storedTheme);
-    }
-
-    
-  }, []);
-
   
 
   const boxBackground = currentTheme === "light" ? "#F2F3F4" : "#81848a";
@@ -207,7 +193,7 @@ const MainLayout = () => {
               py: 3,
               width: `calc(100% - ${sizeConfigs.sidebar.width})`,
               minHeight: "100vh",
-              backgroundColor:boxBackground,
+              backgroundColor:'#F2F3F4',
               backgroundSize: "cover", 
               backgroundPosition: "center" 
             }}

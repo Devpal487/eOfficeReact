@@ -23,6 +23,7 @@ import Languages from "../../../Languages";
 import { Language, ReactTransliterate } from "react-transliterate";
 import "react-transliterate/dist/index.css";
 import TranslateTextField from "../../../TranslateTextField";
+import OtpPopup from "../../../utils/OtpPopup";
 
 type Props = {};
 
@@ -32,6 +33,8 @@ const CertificateAdd = (props: Props) => {
   const [StatusOps, setStatusOps] = useState([
     { value: "-1", label: t("text.SelectStatus") },
   ]);
+
+  const [isOtpPopupVisible, setOtpPopupVisible] = useState(false);
 
   const [option, setOption] = useState([
     { value: "-1", label: t("text.SelectCertificate") },
@@ -61,17 +64,19 @@ const CertificateAdd = (props: Props) => {
   };
 
   const getStatus = () => {
-        api.get(`ReceiptStatus/GetReceiptStatus`,{ params :{ReceiptStatId: -1}}).then((res) => {
-      const arr = [];
-      // console.log("result" + JSON.stringify(res.data.data));
-      for (let index = 0; index < res.data.data.length; index++) {
-        arr.push({
-          label: res.data.data[index]["recStatus"],
-          value: res.data.data[index]["receiptStatId"],
-        });
-      }
-      setStatusOps(arr);
-    });
+    api
+      .get(`ReceiptStatus/GetReceiptStatus`, { params: { ReceiptStatId: -1 } })
+      .then((res) => {
+        const arr = [];
+        // console.log("result" + JSON.stringify(res.data.data));
+        for (let index = 0; index < res.data.data.length; index++) {
+          arr.push({
+            label: res.data.data[index]["recStatus"],
+            value: res.data.data[index]["receiptStatId"],
+          });
+        }
+        setStatusOps(arr);
+      });
   };
 
   useEffect(() => {
@@ -103,9 +108,11 @@ const CertificateAdd = (props: Props) => {
         values
       );
       if (response.data.isSuccess) {
-        toast.success(response.data.mesg);
-        setToaster(true);
-        navigate("/master/Certificate");
+        // toast.success(response.data.mesg);
+        // setToaster(true);
+
+        setOtpPopupVisible(true);
+        //navigate("/master/Certificate");
       } else {
         setToaster(true);
         toast.error(response.data.mesg);
@@ -281,7 +288,7 @@ const CertificateAdd = (props: Props) => {
                   onBlur={formik.handleBlur}
                 />
               </Grid>
-              <Grid xs={12} sm={4} item>
+              {/* <Grid xs={12} sm={4} item>
                 <TextField
                   type="number"
                   name="otp"
@@ -301,7 +308,7 @@ const CertificateAdd = (props: Props) => {
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                 />
-              </Grid>
+              </Grid> */}
               <Grid xs={12} sm={4} item>
                 <Autocomplete
                   disablePortal
@@ -329,7 +336,7 @@ const CertificateAdd = (props: Props) => {
                   )}
                 />
               </Grid>
-              <Grid xs={12} sm={4} item>
+              {/* <Grid xs={12} sm={4} item>
                 <Autocomplete
                   disablePortal
                   id="combo-box-demo"
@@ -355,7 +362,7 @@ const CertificateAdd = (props: Props) => {
                     />
                   )}
                 />
-              </Grid>
+              </Grid> */}
               <Grid xs={12} sm={4} item>
                 <TranslateTextField
                   label={t("text.Address")}
@@ -395,6 +402,11 @@ const CertificateAdd = (props: Props) => {
                 </div>
               </Grid>
             </Grid>
+
+            <OtpPopup
+              isVisible={isOtpPopupVisible}
+              onClose={() => setOtpPopupVisible(false)}
+            />
           </form>
         </CardContent>
       </div>

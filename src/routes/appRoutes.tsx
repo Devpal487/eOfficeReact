@@ -66,6 +66,10 @@ import CertificateAdd from "../pages/master/Certificate/CertificateAdd";
 import CertificateEdit from "../pages/master/Certificate/CertificateEdit";
 import StatusMaster from "../pages/master/StatusMaster/StatusMaster";
 import FileStatus from "../pages/FileManagement/FileStatus/FileStatus";
+import ServiceMaster from "../pages/master/ServiceMaster/ServiceMaster";
+import AplicantDetails from "../pages/DocManagement/AplicantDetails/AplicantDetails";
+import AplicantDetailsAdd from "../pages/DocManagement/AplicantDetails/AplicantDetailsAdd";
+import AplicantDetailsEdit from "../pages/DocManagement/AplicantDetails/AplicantDetailsEdit";
 
 const appRoutes: RouteType[] = [
   {
@@ -290,6 +294,36 @@ const appRoutes: RouteType[] = [
         sidebarProps: {
           displayText: "Status Master",
         },
+      },
+
+      {
+        path: "/master/ServiceMaster",
+        element: <ServiceMaster/>,
+        state: "master.ServiceMaster",
+        sidebarProps: {
+          displayText: "Service Master",
+        },
+      },
+
+      {
+        path: "/master/AplicantDetails",
+        element: <AplicantDetails/>,
+        state: "master.AplicantDetails",
+        sidebarProps: {
+          displayText: "Aplicant Details",
+        },
+      },
+
+      {
+        path: "/master/AplicantDetailsAdd",
+        element: <AplicantDetailsAdd/>,
+        state: "master.AplicantDetailsAdd",
+      },
+
+      {
+        path: "/master/AplicantDetailsEdit",
+        element: <AplicantDetailsEdit/>,
+        state: "master.AplicantDetailsEdit",
       },
     ],
   },

@@ -814,7 +814,7 @@ export default function MiniDrawer({ items }: any) {
       </MenuItem>
       <MenuItem
         onClick={() => {
-          let path = "/master/HelpDesk";
+          let path = "/HelpDesk";
           localStorage.setItem("menuData", menuData.toString());
           window.open(path, "_blank");
         }}

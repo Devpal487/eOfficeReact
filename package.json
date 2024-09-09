@@ -10,6 +10,7 @@
     "@fortawesome/react-fontawesome": "^0.2.0",
     "@mui/icons-material": "^5.14.1",
     "@mui/material": "^5.15.13",
+    "@mui/styles": "^6.0.2",
     "@mui/x-charts": "^7.3.0",
     "@mui/x-data-grid": "^6.10.2",
     "@mui/x-data-grid-generator": "^6.19.4",

@@ -22,36 +22,40 @@ import { useTranslation } from "react-i18next";
 import { DataGrid, GridColDef, GridToolbar } from "@mui/x-data-grid";
 import { toast } from "react-toastify";
 import ToastApp from "../../../ToastApp";
-import { getISTDate } from "../../../utils/Constant";
+import {
+  getdivisionId,
+  getId,
+  getinstId,
+  getISTDate,
+} from "../../../utils/Constant";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import CustomDataGrid from "../../../utils/CustomDatagrid";
 import CustomLabel from "../../../CustomLable";
 import ButtonWithLoader from "../../../utils/ButtonWithLoader";
 import Languages from "../../../Languages";
-import { Language } from "react-transliterate";
+import { Language, ReactTransliterate } from "react-transliterate";
 import "react-transliterate/dist/index.css";
 import TranslateTextField from "../../../TranslateTextField";
 
-interface MenuPermission {
-  isAdd: boolean;
-  isEdit: boolean;
-  isPrint: boolean;
-  isDel: boolean;
-}
-
-export default function FileMaster() {
+export default function ServiceMaster() {
   const { i18n, t } = useTranslation();
   const { defaultValuestime } = getISTDate();
+  let instId = getinstId();
+  let divId = getdivisionId();
+  let userId = getId();
+
   const [columns, setColumns] = useState<any>([]);
   const [rows, setRows] = useState<any>([]);
   const [editId, setEditId] = useState<any>(-1);
   const location = useLocation();
   const [isLoading, setIsLoading] = useState(true);
-  const [option, setOption] = useState([
-    { value: "-1", label: t("text.SelectStateName") },
+
+  const [fileTypeOption, setFileTypeOption] = useState([
+    { value: "-1", label: t("text.SelectFileType") },
   ]);
-  const [permissionData, setPermissionData] = useState<MenuPermission>({
+
+  const [permissionData, setPermissionData] = useState<any>({
     isAdd: false,
     isEdit: false,
     isPrint: false,
@@ -81,35 +85,35 @@ export default function FileMaster() {
         }
       }
     }
-    getStateZone();
+    getFileTypeData();
   }, [isLoading, location.pathname]);
 
-  const getStateZone = () => {
-    const collectData = {
-      stateId: -1,
-      countryId: -1,
-    };
-    api.post(`State/GetStateMaster`, collectData).then((res) => {
-      const arr = [];
-      for (let index = 0; index < res.data.data.length; index++) {
-        arr.push({
-          label: res.data.data[index]["stateName"],
-          value: res.data.data[index]["stateId"],
-        });
-      }
-      setOption(arr);
+  const getFileTypeData = async () => {
+    const res = await api.post(`FileType/GetFileType`, {
+      fId: -1,
+      inst_id: -1,
+      user_id: -1,
+      divisionid: -1,
     });
+    console.log("check file type", res?.data?.data);
+    const arr = [];
+    for (let index = 0; index < res.data.data.length; index++) {
+      arr.push({
+        value: res.data.data[index]["fId"],
+        label: res.data.data[index]["fName"],
+      });
+      setFileTypeOption(arr);
+    }
   };
 
   let delete_id = "";
-
   const accept = () => {
     const collectData = {
-      cityId: delete_id,
+      fnId: delete_id,
     };
     console.log("collectData " + JSON.stringify(collectData));
     api
-      .delete(`M10_District/DeleteDistrict`, { data: collectData })
+      .delete(`FileNumber/DeleteFileNumber`, { data: collectData })
       .then((response) => {
         if (response.data.isSuccess) {
           toast.success(response.data.mesg);
@@ -119,7 +123,6 @@ export default function FileMaster() {
         }
       });
   };
-
   const reject = () => {
     toast.warn("Rejected: You have rejected", { autoClose: 3000 });
   };
@@ -138,17 +141,20 @@ export default function FileMaster() {
 
   const getList = () => {
     const collectData = {
-      cityId: -1,
-      stateId: -1,
+      fnId: -1,
+      fId: -1,
+      inst_id: -1,
+      user_id: -1,
+      divisionId: -1,
     };
     try {
-      api.post(`M10_District/GetDistrictMaster`, collectData).then((res) => {
+      api.post(`FileNumber/GetFileNumber`, collectData).then((res) => {
         console.log("result" + JSON.stringify(res.data.data));
         const data = res.data.data;
         const arr = data.map((item: any, index: any) => ({
           ...item,
           serialNo: index + 1,
-          id: item.cityId,
+          id: item.fnId,
         }));
         setRows(arr);
         setIsLoading(false);
@@ -206,14 +212,14 @@ export default function FileMaster() {
               headerClassName: "MuiDataGrid-colCell",
             },
             {
-              field: "stateName",
-              headerName: t("text.StateName"),
+              field: "fileTypeNm",
+              headerName: "File Type",
               flex: 1,
               headerClassName: "MuiDataGrid-colCell",
             },
             {
-              field: "cityName",
-              headerName: t("text.DistrictName"),
+              field: "fileNm",
+              headerName: "File Number",
               flex: 1,
               headerClassName: "MuiDataGrid-colCell",
             },
@@ -227,38 +233,32 @@ export default function FileMaster() {
       // setIsLoading(false);
     }
   };
-
   const validationSchema = Yup.object({
-    stateId: Yup.string().test(
+    fId: Yup.string().test(
       "required",
-      "Select State Is Required",
+      "Select File Type Required",
       function (value: any) {
         return value && value.trim() !== "";
       }
     ),
   });
-
   const [toaster, setToaster] = useState(false);
-
   const formik = useFormik({
     initialValues: {
-      cityId: -1,
-      cityName: "",
-      stateId: "",
-      createdOn: defaultValuestime,
-      updatedOn: defaultValuestime,
-      createdBy: "-1",
-      updatedBy: "-1",
+      fnId: -1,
+      fId: "",
+      fileNm: "",
+      inst_id: instId,
+      user_id: userId,
+      createdDate: defaultValuestime,
+      divisionId: divId,
     },
     validationSchema: validationSchema,
     onSubmit: async (values) => {
-      values.cityId = editId;
+      values.fnId = editId;
       // console.log("check", values);
 
-      const response = await api.post(
-        `M10_District/AddUpdateDistrictMaster`,
-        values
-      );
+      const response = await api.post(`FileNumber/AddUpdateFileNumber`, values);
       if (response.data.isSuccess) {
         setToaster(false);
         toast.success(response.data.mesg);
@@ -272,11 +272,11 @@ export default function FileMaster() {
     },
   });
 
-  const requiredFields = ["stateId"];
+  const requiredFields = ["fId"];
 
   const routeChangeEdit = (row: any) => {
-    formik.setFieldValue("stateId", row.stateId);
-    formik.setFieldValue("cityName", row.cityName);
+    formik.setFieldValue("fId", row.fId);
+    formik.setFieldValue("fileNm", row.fileNm);
 
     setEditId(row.id);
   };
@@ -319,7 +319,7 @@ export default function FileMaster() {
                   sx={{ padding: "20px" }}
                   align="left"
                 >
-                  {t("text.DistrictMaster")}
+                  {t("text.ServiceMaster")}
                 </Typography>
               </Grid>
 
@@ -337,68 +337,78 @@ export default function FileMaster() {
                 </select>
               </Grid>
             </Grid>
+
             <Divider />
 
             <Box height={10} />
 
             <form onSubmit={formik.handleSubmit}>
               <Grid item xs={12} container spacing={3}>
-                <Grid xs={5} sm={5} item>
+                <Grid xs={3} sm={3} item>
                   <Autocomplete
                     disablePortal
                     id="combo-box-demo"
-                    options={option}
+                    options={fileTypeOption}
+                    value={
+                      fileTypeOption.find(
+                        (option) => option.value === formik.values.fId
+                      ) || null
+                    }
                     fullWidth
                     size="small"
                     onChange={(event, newValue) => {
                       console.log(newValue?.value);
-                      formik.setFieldValue("stateId", newValue?.value);
-                      formik.setFieldTouched("stateId", true);
-                      formik.setFieldTouched("stateId", false);
+                      formik.setFieldValue("fId", newValue?.value);
+                      formik.setFieldTouched("fId", true);
+                      formik.setFieldTouched("fId", false);
                     }}
-                    value={
-                      option.find(
-                        (opt) => opt.value === formik.values.stateId
-                      ) || null
-                    }
-                    // value={}
                     renderInput={(params) => (
                       <TextField
                         {...params}
                         label={
                           <CustomLabel
-                            text={t("text.SelectStateName")}
-                            required={requiredFields.includes("stateId")}
+                            text={t("text.SelectFileType")}
+                            required={requiredFields.includes("fId")}
                           />
                         }
                       />
                     )}
                   />
-                  {formik.touched.stateId && formik.errors.stateId ? (
+                  {formik.touched.fId && formik.errors.fId ? (
                     <div style={{ color: "red", margin: "5px" }}>
-                      {formik.errors.stateId}
+                      {formik.errors.fId}
                     </div>
                   ) : null}
                 </Grid>
 
-                <Grid item xs={5} sm={5}>
+                <Grid item xs={3} sm={3}>
                   <TranslateTextField
-                    label={t("text.EnterDistrictName")}
-                    value={formik.values.cityName}
+                    label={t("text.FileNumber")}
+                    value={formik.values.fileNm}
                     onChangeText={(text: string) =>
-                      handleConversionChange("cityName", text)
+                      handleConversionChange("fileNm", text)
                     }
                     required={true}
                     lang={lang}
                   />
-                  {formik.touched.cityName && formik.errors.cityName ? (
-                    <div style={{ color: "red", margin: "5px" }}>
-                      {formik.errors.cityName}
-                    </div>
-                  ) : null}
                 </Grid>
 
-                <Grid item xs={2} sx={{ m: -1 }}>
+                <Grid item lg={3} xs={12}>
+                  <TextField
+                    id="fileNm"
+                    name="fileNm"
+                    label={<CustomLabel text={t("text.Rate")} />}
+                    value={formik.values.fileNm}
+                    placeholder={t("text.Rate")}
+                    size="small"
+                    fullWidth
+                    style={{ backgroundColor: "white" }}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                  />
+                </Grid>
+
+                <Grid item xs={3} sx={{ m: -1 }}>
                   {editId === -1 && permissionData?.isAdd && (
                     <ButtonWithLoader
                       buttonText={t("text.save")}

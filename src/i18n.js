@@ -655,6 +655,18 @@ const resources = {
         EditRoute:"Edit Route",
         Search:"Search",
         reqlName:"Letter name required",
+        ServiceMaster:"Service Master",
+        Rate:"Rate",
+        EditAplicantDetails:"Edit Aplicant Details",
+        AddAplicantDetails:"Add Aplicant Details",
+        AplicantDetails:"Aplicant Details",
+        CreateLetterOrType:"Create Letter/Type",
+        EnrollmentNo:"Enrollment Number",
+        AdharNo:"Adhar Number",
+        City:"City",
+        ChooseServices:"Choose Services",
+        SelectDistrict:"Select District",
+        FatherName:"Father Name",
 
 
       },
@@ -1311,7 +1323,21 @@ const resources = {
          EditRoute:"मार्ग संपादित करें",
          Search:"खोज",
  
-         reqlName:"पत्र का नाम आवश्यक है"
+         reqlName:"पत्र का नाम आवश्यक है",
+         ServiceMaster:"सर्विस मास्टर",
+         Rate:"दर",
+         EditAplicantDetails:"आवेदक विवरण संपादित करें",
+         AddAplicantDetails:"आवेदक विवरण जोड़ें",
+         AplicantDetails:"आवेदक का विवरण",
+         CreateLetterOrType:"पत्र/प्रकार बनाएं",
+         EnrollmentNo:"नामांकन संख्या",
+         AdharNo:"आधार नंबर",
+         City:"शहर",
+         ChooseServices:"सेवाएँ चुनें",
+         SelectDistrict:"जिला चुनें",
+         FatherName:"पिता का नाम",
+
+ 
 
 
 

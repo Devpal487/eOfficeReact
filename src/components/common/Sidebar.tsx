@@ -64,6 +64,13 @@ import { CloseIcons } from "../../utils/icons";
 import { GridColDef } from "@mui/x-data-grid";
 import CustomDataGrid from "../../utils/CustomDatagrid";
 import { getId } from "../../utils/Constant";
+import dark from "../../assets/images/darkTheme.png";
+import Light from "../../assets/images/lightTheme.png";
+import '../../index.css';
+import MainLayout from "../layout/MainLayout";
+
+
+
 
 const drawerWidth = 225;
 
@@ -161,6 +168,22 @@ const Drawer = styled(MuiDrawer, {
   }),
 }));
 
+function getGreeting() {
+  const hour = new Date().getHours();
+
+  if (hour < 6) {
+    return { text: "Good Night", color: "#2E2E2E" }; // Dark gray for night
+  } else if (hour < 12) {
+    return { text: "Good Morning", color: "#FFD700" }; // Gold for morning
+  } else if (hour < 17) {
+    return { text: "Good Afternoon", color: "#FFA500" }; // Orange for afternoon
+  } else if (hour < 20) {
+    return { text: "Good Evening", color: "#FF6347" }; // Tomato for evening
+  } else {
+    return { text: "Good Night", color: "#2E2E2E" }; // Dark gray for night
+  }
+}
+
 export default function MiniDrawer({ items }: any) {
   const theme = useTheme();
   const Userid = getId();
@@ -168,6 +191,7 @@ export default function MiniDrawer({ items }: any) {
   let headerName = localStorage.getItem("name");
   let appLogo: any = localStorage.getItem("applogo");
   let sideLogo: any = localStorage.getItem("sidelogo");
+  
 
   let sidebarMainColor: any = localStorage.getItem("mclr");
   let sidebarOverColor: any = localStorage.getItem("oclr");
@@ -186,6 +210,45 @@ export default function MiniDrawer({ items }: any) {
   // const [filteredItems, setFilteredItems] = React.useState([]);
   const [filteredItems, setFilteredItems] = React.useState<MenuItem[]>([]);
   const [expandedItems, setExpandedItems] = React.useState<any[]>([]);
+
+  const [currentTheme, setCurrentTheme] = useState(() => {
+    const storedTheme = localStorage.getItem("theme");
+   // console.log('storedTheme',storedTheme);
+    return storedTheme ? storedTheme : "light";
+  });
+  
+  // Function to toggle the theme
+  const toggleTheme = () => {
+    const newTheme = currentTheme === "light" ? "dark" : "light";
+    localStorage.setItem("theme", newTheme);
+    setCurrentTheme(newTheme);
+   
+  };
+
+
+  
+ 
+  // Determine background color based on theme
+  const headerColor = currentTheme === "light" ? sidebarMainColor :"#81848a";
+
+  
+  const drawerStyles = {
+    backgroundColor: currentTheme === "light" ? "#f5f5f5" : "#81848a",
+    color: currentTheme === "light" ? "black" : "white",
+  };
+
+  const menuStyles = {
+    backgroundColor: currentTheme === "light" ? "#ffffff" : "#81848a",
+    color: currentTheme === "light" ? "black" : "white",
+    "& .MuiMenuItem-root": {
+      color: currentTheme === "light" ? "black" : "white",
+    },
+    "& .MuiDivider-root": {
+      backgroundColor: currentTheme === "light" ? "rgba(0, 0, 0, 0.12)" : "#6e6e6e",
+    },
+  };
+
+
 
   const location = useLocation();
 
@@ -392,6 +455,8 @@ export default function MiniDrawer({ items }: any) {
 
   const [nodeId, setnodeId] = React.useState<any>(0);
   const [nodeNames, setNodeNames] = React.useState<string>("");
+
+  // Effect to apply the theme from local storage
   
   const handleToggle = (id: number, name: string) => () => {
     const currentIndex = check.indexOf(id);
@@ -413,9 +478,6 @@ export default function MiniDrawer({ items }: any) {
     //     : [...prevExpanded, id.toString()]
     // );
 
-     
-
-
     console.log("Checked data:", name);
     console.log("Checked data:", id);
 
@@ -423,8 +485,6 @@ export default function MiniDrawer({ items }: any) {
     setnodeId(id);
     // handleSave(id, name);
   };
-
- 
 
   const handleSave = () => {
     console.log("handleSave function called");
@@ -446,7 +506,6 @@ export default function MiniDrawer({ items }: any) {
       itemId={String(nodes.id)}
       label={
         <div style={{ display: "flex", alignItems: "center" }}>
-         
           <Checkbox
             checked={check.indexOf(nodes.id) !== -1}
             // onChange={handleToggle(nodes.id)}
@@ -626,15 +685,23 @@ export default function MiniDrawer({ items }: any) {
     window.open(path, "_blank");
   };
 
+  const greeting = getGreeting();
+
   return (
+
+    
     <Box sx={{ display: "flex" }}>
+
+
+
+
       <AppBar position="fixed" open={open} style={{}}>
         <Toolbar
           style={{
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
-            background: sidebarMainColor,
+            background: headerColor,
           }}
         >
           <div
@@ -667,7 +734,9 @@ export default function MiniDrawer({ items }: any) {
             )}
           </div>
 
-          <div style={{ fontSize: "25px" }}>{headerName}</div>
+          
+
+          <div style={{ fontSize: "2.1vw" }}>{headerName}</div>
 
           <IconButton
             onClick={handleClick}
@@ -683,104 +752,109 @@ export default function MiniDrawer({ items }: any) {
           </IconButton>
 
           <Menu
-            anchorEl={anchorEl}
-            id="account-menu"
-            open={menuOpen}
-            // onClose={handleClose}
-            onClick={handleClose}
-            PaperProps={{
-              elevation: 0,
-              sx: {
-                overflow: "auto",
-                filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
-                paddingRight: "10px",
-                paddingLeft: "10px",
-                mt: 1.5,
-                "& .MuiAvatar-root": {
-                  width: 32,
-                  height: 32,
-                  ml: -0.5,
-                  mr: 1,
-                },
-                "&::before": {
-                  content: '""',
-                  display: "block",
-                  position: "absolute",
-                  top: 0,
-                  right: 14,
-                  width: 10,
-                  height: 10,
-                  // bgcolor: "background.paper",
-                  transform: "translateY(-50%) rotate(45deg)",
-                  zIndex: 0,
-                },
-              },
-            }}
-            transformOrigin={{ horizontal: "right", vertical: "top" }}
-            anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
-          >
-            <MenuItem onClick={handleClose}>
-              <ListItemIcon>
-                <img src={userIcon} width={40} height={40} />
-              </ListItemIcon>{" "}
-              {username}
-            </MenuItem>
-            {/* <MenuItem > */}
-            <MenuItem onClick={handleMyProfileClick}>
-              <ListItemIcon>
-                <img src={ids} width={30} height={30} />
-              </ListItemIcon>
-              My Profile
-            </MenuItem>
-
-            <Divider />
-
-            <MenuItem
-              onClick={() => {
-                localStorage.getItem("preferredLanguage") == "hi"
-                  ? changeLanguage("en")
-                  : changeLanguage("hi");
-              }}
-            >
-              <ListItemIcon>
-                <img src={trans} width={30} height={30} />
-              </ListItemIcon>
-              Translate -- {newLanguage}
-            </MenuItem>
-
-            <MenuItem
-              onClick={() => {
-                let path = "/master/HelpDesk";
-                localStorage.setItem("menuData", menuData.toString());
-                window.open(path, "_blank");
-              }}
-            >
-              <ListItemIcon>
-                <img src={help} width={30} height={30} />
-              </ListItemIcon>
-              Help Desk
-            </MenuItem>
-
-            <MenuItem onClick={handleClose}>
-              <ListItemIcon>
-                <img src={settings} width={30} height={30} />
-              </ListItemIcon>
-              Settings
-            </MenuItem>
-            <MenuItem onClick={handlePermissionClick}>
-              <ListItemIcon>
-                <img src={logged} width={40} height={40} />
-              </ListItemIcon>
-              Permission
-            </MenuItem>
-            <Divider />
-            <MenuItem onClick={Logout}>
-              <ListItemIcon>
-                <img src={logouts} width={30} height={30} />
-              </ListItemIcon>
-              Logout
-            </MenuItem>
-          </Menu>
+      anchorEl={anchorEl}
+      id="account-menu"
+      open={menuOpen}
+      onClick={handleClose}
+      PaperProps={{
+        elevation: 0,
+        sx: {
+          ...menuStyles,
+          overflow: "auto",
+          filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
+          paddingRight: "10px",
+          paddingLeft: "10px",
+          mt: 1.5,
+          "& .MuiAvatar-root": {
+            width: 32,
+            height: 32,
+            ml: -0.5,
+            mr: 1,
+          },
+          "&::before": {
+            content: '""',
+            display: "block",
+            position: "absolute",
+            top: 0,
+            right: 14,
+            width: 10,
+            height: 10,
+            transform: "translateY(-50%) rotate(45deg)",
+            zIndex: 0,
+          },
+        },
+      }}
+      transformOrigin={{ horizontal: "right", vertical: "top" }}
+      anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
+    >
+      <MenuItem onClick={handleClose}>
+        <ListItemIcon>
+          <img src={userIcon} width={40} height={40} alt="User" />
+        </ListItemIcon>{" "}
+        {username}
+      </MenuItem>
+      <MenuItem onClick={handleMyProfileClick}>
+        <ListItemIcon>
+          <img src={ids} width={30} height={30} alt="Profile" />
+        </ListItemIcon>
+        My Profile
+      </MenuItem>
+      <Divider />
+      <MenuItem
+        onClick={() => {
+          localStorage.getItem("preferredLanguage") === "hi"
+            ? changeLanguage("en")
+            : changeLanguage("hi");
+        }}
+      >
+        <ListItemIcon>
+          <img src={trans} width={30} height={30} alt="Translate" />
+        </ListItemIcon>
+        Translate -- {newLanguage}
+      </MenuItem>
+      <MenuItem
+        onClick={() => {
+          let path = "/HelpDesk";
+          localStorage.setItem("menuData", menuData.toString());
+          window.open(path, "_blank");
+        }}
+      >
+        <ListItemIcon>
+          <img src={help} width={30} height={30} alt="Help Desk" />
+        </ListItemIcon>
+        Help Desk
+      </MenuItem>
+      <MenuItem onClick={toggleTheme}>
+        <ListItemIcon>
+          <img
+            src={currentTheme === "light" ? dark : Light}
+            width={30}
+            height={30}
+            alt="Theme"
+          />
+        </ListItemIcon>
+        Theme -- {currentTheme === "light" ? "Dark Mode" : "Light Mode"}
+      </MenuItem>
+      <MenuItem onClick={handleClose}>
+        <ListItemIcon>
+          <img src={settings} width={30} height={30} alt="Settings" />
+        </ListItemIcon>
+        Settings
+      </MenuItem>
+      <MenuItem onClick={handlePermissionClick}>
+        <ListItemIcon>
+          <img src={logged} width={40} height={40} alt="Permission" />
+        </ListItemIcon>
+        Permission
+      </MenuItem>
+      <Divider />
+      <MenuItem onClick={Logout}>
+        <ListItemIcon>
+          <img src={logouts} width={30} height={30} alt="Logout" />
+        </ListItemIcon>
+        Logout
+      </MenuItem>
+    </Menu>
         </Toolbar>
 
         <div
@@ -790,7 +864,7 @@ export default function MiniDrawer({ items }: any) {
             alignItems: "center",
             // backgroundColor: "rgba(245,245,245,0.7)",
             // borderBottomRightRadius: "15px",
-            backgroundColor: sidebarMainColor,
+            backgroundColor: headerColor,
           }}
         >
           <div role="presentation" onClick={handleClicked} style={{}}>
@@ -874,6 +948,7 @@ export default function MiniDrawer({ items }: any) {
               paddingRight: "15px",
             }}
           >
+            <p style={{  fontSize: "1.2vw",color: greeting.color }}>{greeting.text}</p>
             <p>
               {t("text.EGovernanceLevel")} : {nodeName}
             </p>
@@ -893,7 +968,7 @@ export default function MiniDrawer({ items }: any) {
         open={open}
         PaperProps={{
           sx: {
-            backgroundColor: "#f5f5f5",
+            backgroundColor:drawerStyles,
           },
         }}
       >

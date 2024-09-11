@@ -456,7 +456,7 @@ const AplicantDetailsEdit = (props: Props) => {
               <Grid item xs={12}>
                 <div style={containerStyle}>
                   {/* Header */}
-                  <div style={headerStyle}>Aplicant Details</div>
+                  <div style={headerStyle}>Postal Address</div>
 
                   {/* Form Fields */}
                   <Grid container spacing={2} sx={{ marginTop: "1%" }}>
@@ -573,7 +573,7 @@ const AplicantDetailsEdit = (props: Props) => {
             <Grid item xs={12}>
                 <div style={containerStyle}>
                   {/* Header */}
-                  <div style={headerStyle}>Aplicant Details</div>
+                  <div style={headerStyle}>Choose Services</div>
 
                   {/* Form Fields */}
                   <Grid container spacing={2} sx={{ marginTop: "1%" }}>

@@ -93,8 +93,7 @@ export default function AplicantDetails() {
 
   const accept = () => {
     const collectData = {
-        id: delete_id,
-     
+      id: delete_id,
     };
     console.log("collectData " + JSON.stringify(collectData));
     api
@@ -133,7 +132,10 @@ export default function AplicantDetails() {
         certificateId: -1,
         status: -1,
       };
-      const response = await api.post(`CertificateApply/GetCertificateApply`, collectData);
+      const response = await api.post(
+        `CertificateApply/GetCertificateApply`,
+        collectData
+      );
       const data = response.data.data;
       const zonesWithIds = data.map((zone: any, index: any) => ({
         ...zone,
@@ -159,29 +161,29 @@ export default function AplicantDetails() {
                   sx={{ alignItems: "center", marginTop: "5px" }}
                 >
                   {/* {permissionData?.isEdit ? ( */}
-                    <EditIcon
-                      style={{
-                        fontSize: "20px",
-                        color: "blue",
-                        cursor: "pointer",
-                      }}
-                      className="cursor-pointer"
-                      onClick={() => routeChangeEdit(params.row)}
-                    />
+                  <EditIcon
+                    style={{
+                      fontSize: "20px",
+                      color: "blue",
+                      cursor: "pointer",
+                    }}
+                    className="cursor-pointer"
+                    onClick={() => routeChangeEdit(params.row)}
+                  />
                   {/* ) : (
                     ""
                   )}
                   {permissionData?.isDel ? ( */}
-                    <DeleteIcon
-                      style={{
-                        fontSize: "20px",
-                        color: "red",
-                        cursor: "pointer",
-                      }}
-                      onClick={() => {
-                        handledeleteClick(params.row.id);
-                      }}
-                    />
+                  <DeleteIcon
+                    style={{
+                      fontSize: "20px",
+                      color: "red",
+                      cursor: "pointer",
+                    }}
+                    onClick={() => {
+                      handledeleteClick(params.row.id);
+                    }}
+                  />
                   {/* ) : (
                     ""
                   )} */}
@@ -216,7 +218,7 @@ export default function AplicantDetails() {
           },
           {
             field: "emailId",
-            headerName:  t("text.Email"),
+            headerName: t("text.Email"),
             flex: 1,
             headerClassName: "MuiDataGrid-colCell",
           },
@@ -242,7 +244,7 @@ export default function AplicantDetails() {
   return (
     <div>
       <Grid item lg={6} sm={6} xs={12}>
-         <ToastContainer />
+        <ToastContainer />
         <Card
           style={{
             width: "100%",
@@ -272,7 +274,7 @@ export default function AplicantDetails() {
               sx={{ padding: "20px" }}
               align="left"
             >
-              {t("text.CertificateApply")}
+              {t("text.AplicantDetails")}
             </Typography>
             <Divider />
 
@@ -280,13 +282,13 @@ export default function AplicantDetails() {
             <Box height={10} />
             <Stack direction="row" spacing={2} classes="my-2 mb-2">
               {/* {permissionData?.isAdd == true ? ( */}
-                <Button
-                  onClick={routeChangeAdd}
-                  variant="contained"
-                  endIcon={<AddCircleIcon />}
-                >
-                  {t("text.add")}
-                </Button>
+              <Button
+                onClick={routeChangeAdd}
+                variant="contained"
+                endIcon={<AddCircleIcon />}
+              >
+                {t("text.add")}
+              </Button>
               {/* ) : (
                 ""
               )} */}

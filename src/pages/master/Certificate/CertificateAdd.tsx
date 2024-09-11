@@ -1,7 +1,9 @@
 import {
   Button,
   CardContent,
+  Checkbox,
   Grid,
+  ListItemText,
   TextField,
   Typography,
 } from "@mui/material";
@@ -64,19 +66,21 @@ const CertificateAdd = (props: Props) => {
   };
 
   const getStatus = () => {
-    api
-      .get(`ReceiptStatus/GetReceiptStatus`, { params: { ReceiptStatId: -1 } })
-      .then((res) => {
-        const arr = [];
-        // console.log("result" + JSON.stringify(res.data.data));
-        for (let index = 0; index < res.data.data.length; index++) {
-          arr.push({
-            label: res.data.data[index]["recStatus"],
-            value: res.data.data[index]["receiptStatId"],
-          });
-        }
-        setStatusOps(arr);
-      });
+    const collectData = {
+      serviceId: -1,
+      fId: -1,
+    };
+    api.post(`ServiceMaster/GetServiceMaster`, collectData).then((res) => {
+      const arr = [];
+      // console.log("result" + JSON.stringify(res.data.data));
+      for (let index = 0; index < res.data.data.length; index++) {
+        arr.push({
+          label: res.data.data[index]["fileNumber"],
+          value: res.data.data[index]["serviceId"],
+        });
+      }
+      setStatusOps(arr);
+    });
   };
 
   useEffect(() => {
@@ -322,8 +326,6 @@ const CertificateAdd = (props: Props) => {
                   // }
                   size="small"
                   onChange={(event, newValue) => {
-                    // console.log(newValue?.value);
-                    // formik.setFieldValue("parentName", newValue?.label);
                     formik.setFieldValue("certificateId", newValue?.value);
                     formik.setFieldTouched("certificateId", true);
                     formik.setFieldTouched("certificateId", false);
@@ -374,6 +376,41 @@ const CertificateAdd = (props: Props) => {
                   lang={lang}
                 />
               </Grid>
+
+              <Grid xs={12} sm={4} item>
+                <Autocomplete
+                  disablePortal
+                  id="combo-box-demo"
+                  multiple
+                  options={StatusOps}
+                  fullWidth
+                  // value={
+                  //   option.find(
+                  //     (opt) => opt.value === formik.values.CertificateId
+                  //   ) || null
+                  // }
+                  size="small"
+                  onChange={(event, newValue: any) => {
+                    formik.setFieldValue("certificateId", newValue?.value);
+                    formik.setFieldTouched("certificateId", true);
+                    formik.setFieldTouched("certificateId", false);
+                  }}
+                  disableCloseOnSelect
+                  renderOption={(props, option, { selected }) => (
+                    <li {...props}>
+                      <Checkbox style={{ marginRight: 8 }} checked={selected} />
+                      <ListItemText primary={option.label} />
+                    </li>
+                  )}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label={<CustomLabel text={t("text.SelectServices")} />}
+                    />
+                  )}
+                />
+              </Grid>
+
               <Grid xs={12} item>
                 <div style={{ justifyContent: "space-between", flex: 2 }}>
                   <Button

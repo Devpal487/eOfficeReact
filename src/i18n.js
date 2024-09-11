@@ -667,6 +667,8 @@ const resources = {
         ChooseServices:"Choose Services",
         SelectDistrict:"Select District",
         FatherName:"Father Name",
+        SelectServices:"Select Services",
+        DispatchFee:"Dispatch Fee",
 
 
       },
@@ -1336,6 +1338,9 @@ const resources = {
          ChooseServices:"सेवाएँ चुनें",
          SelectDistrict:"जिला चुनें",
          FatherName:"पिता का नाम",
+         SelectServices:"सेवाएँ चुनें",
+         DispatchFee:"प्रेषण शुल्क",
+
 
  
 

@@ -344,7 +344,7 @@ export default function ServiceMaster() {
 
             <form onSubmit={formik.handleSubmit}>
               <Grid item xs={12} container spacing={3}>
-                <Grid xs={3} sm={3} item>
+                <Grid xs={6} sm={6} item>
                   <Autocomplete
                     disablePortal
                     id="combo-box-demo"
@@ -381,7 +381,7 @@ export default function ServiceMaster() {
                   ) : null}
                 </Grid>
 
-                <Grid item xs={3} sm={3}>
+                <Grid item xs={6} sm={6}>
                   <TranslateTextField
                     label={t("text.FileNumber")}
                     value={formik.values.fileNm}
@@ -393,13 +393,28 @@ export default function ServiceMaster() {
                   />
                 </Grid>
 
-                <Grid item lg={3} xs={12}>
+                <Grid item lg={6} xs={12}>
                   <TextField
                     id="fileNm"
                     name="fileNm"
                     label={<CustomLabel text={t("text.Rate")} />}
                     value={formik.values.fileNm}
                     placeholder={t("text.Rate")}
+                    size="small"
+                    fullWidth
+                    style={{ backgroundColor: "white" }}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                  />
+                </Grid>
+
+                <Grid item lg={6} xs={12}>
+                  <TextField
+                    id="fileNm"
+                    name="fileNm"
+                    label={<CustomLabel text={t("text.DispatchFee")} />}
+                    value={formik.values.fileNm}
+                    placeholder={t("text.DispatchFee")}
                     size="small"
                     fullWidth
                     style={{ backgroundColor: "white" }}

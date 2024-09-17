@@ -17,7 +17,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { toast, ToastContainer } from "react-toastify";
 import ToastApp from "../../../ToastApp";
 
-export default function ServiceMaster() {
+export default function StudentMaster() {
   const [zones, setZones] = useState([]);
   const [columns, setColumns] = useState<any>([]);
   const [rows, setRows] = useState<any>([]);
@@ -79,7 +79,7 @@ export default function ServiceMaster() {
 
   const routeChangeEdit = (row: any) => {
     // console.log(row);
-    let path = `/master/ServiceMasterEdit`;
+    let path = `/master/StudentDetailsEdit`;
     navigate(path, {
       state: row,
     });
@@ -87,7 +87,7 @@ export default function ServiceMaster() {
 
   let navigate = useNavigate();
   const routeChangeAdd = () => {
-    let path = `/master/ServiceMasterAdd`;
+    let path = `/master/StudentDetailsAdd`;
     navigate(path);
   };
 
@@ -98,7 +98,7 @@ export default function ServiceMaster() {
     };
     console.log("collectData " + JSON.stringify(collectData));
     api
-      .delete(`ServiceMaster/DeleteServiceMaster`, { data: collectData })
+      .delete(`StudentMaster/DeleteStudentMaster`, { data: collectData })
       .then((response) => {
         if (response.data.isSuccess) {
           toast.success(response.data.mesg);
@@ -128,15 +128,15 @@ export default function ServiceMaster() {
   const getList = async () => {
     try {
       const collectData = {
-        serviceId: -1,
-        fId: -1,
+        studentId: -1,
+        // fId: -1,
       };
-      const response = await api.post(`ServiceMaster/GetServiceMaster`, collectData);
+      const response = await api.post(`StudentMaster/GetStudentMaster`, collectData);
       const data = response.data.data;
       const zonesWithIds = data.map((zone: any, index: any) => ({
         ...zone,
         serialNo: index + 1,
-        serviceId: zone.serviceId,
+        studentId: zone.studentId,
       }));
       setZones(zonesWithIds);
       setIsLoading(false);
@@ -177,7 +177,7 @@ export default function ServiceMaster() {
                         cursor: "pointer",
                       }}
                       onClick={() => {
-                        handledeleteClick(params.row.serviceId);
+                        handledeleteClick(params.row.studentId);
                       }}
                     />
                   {/* ) : (
@@ -195,32 +195,32 @@ export default function ServiceMaster() {
             headerClassName: "MuiDataGrid-colCell",
           },
           {
-            field: "fName",
-            headerName: t("text.FileName"),
+            field: "StudentName",
+            headerName: t("text.StudentName"),
             flex: 1,
             headerClassName: "MuiDataGrid-colCell",
           },
           {
-            field: "routeName",
-            headerName: t("text.RouteName"),
+            field: "DOB",
+            headerName: t("text.DOB"),
             flex: 1,
             headerClassName: "MuiDataGrid-colCell",
           },
           {
-            field: "lName",
-            headerName: t("text.LetterName"),
+            field: "MobileNo",
+            headerName: t("text.MobileNo"),
             flex: 1,
             headerClassName: "MuiDataGrid-colCell",
           },
           {
-            field: "rate",
-            headerName:  t("text.Rate"),
+            field: "CourseName",
+            headerName:  t("text.CourseName"),
             flex: 1,
             headerClassName: "MuiDataGrid-colCell",
           },
           {
-            field: "dispatchFees",
-            headerName: t("text.DispatchFees"),
+            field: "Address",
+            headerName: t("text.Address"),
             flex: 1,
             headerClassName: "MuiDataGrid-colCell",
           },
@@ -271,7 +271,7 @@ export default function ServiceMaster() {
               sx={{ padding: "20px" }}
               align="left"
             >
-              {t("text.ServiceMaster")}
+              {t("text.StudentMaster")}
             </Typography>
             <Divider />
 

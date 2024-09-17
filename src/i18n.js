@@ -685,8 +685,9 @@ const resources = {
         Email:"Email",
         CourseCompletionDate:"Course Completion Date",
         Remarks:"Remarks",
-        CreateStudentMaster:"Create Student Master"
-
+        CreateStudentMaster:"Create Student Master",
+        Service:"Service",
+        AdharUpload:"Adhar Upload",
 
 
 
@@ -1359,6 +1360,9 @@ const resources = {
          FatherName:"पिता का नाम",
          SelectServices:"सेवाएँ चुनें",
          DispatchFee:"प्रेषण शुल्क",
+         Service:"सेवा",
+         AdharUpload:"आधार अपलोड",
+
 
 
  

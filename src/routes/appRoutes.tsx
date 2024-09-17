@@ -70,6 +70,11 @@ import ServiceMaster from "../pages/master/ServiceMaster/ServiceMaster";
 import AplicantDetails from "../pages/DocManagement/AplicantDetails/AplicantDetails";
 import AplicantDetailsAdd from "../pages/DocManagement/AplicantDetails/AplicantDetailsAdd";
 import AplicantDetailsEdit from "../pages/DocManagement/AplicantDetails/AplicantDetailsEdit";
+import ServiceMasterAdd from "../pages/master/ServiceMaster/ServiceMasterAdd";
+import ServiceMasterEdit from "../pages/master/ServiceMaster/ServiceMasterEdit";
+import StudentMaster from "../pages/master/StudentMaster/StudentMaster";
+import StudentMasterAdd from "../pages/master/StudentMaster/StudentMasterAdd";
+import StudentMasterEdit from "../pages/master/StudentMaster/StudentMasterEdit";
 
 const appRoutes: RouteType[] = [
   {
@@ -296,6 +301,14 @@ const appRoutes: RouteType[] = [
         },
       },
 
+      // {
+      //   path: "/master/ServiceMaster",
+      //   element: <ServiceMaster/>,
+      //   state: "master.ServiceMaster",
+      //   sidebarProps: {
+      //     displayText: "Service Master",
+      //   },
+      // },
       {
         path: "/master/ServiceMaster",
         element: <ServiceMaster/>,
@@ -303,6 +316,18 @@ const appRoutes: RouteType[] = [
         sidebarProps: {
           displayText: "Service Master",
         },
+      },
+
+      {
+        path: "/master/ServiceMasterAdd",
+        element: <ServiceMasterAdd/>,
+        state: "master.ServiceMasterAdd",
+      },
+
+      {
+        path: "/master/ServiceMasterEdit",
+        element: <ServiceMasterEdit/>,
+        state: "master.ServiceMasterEdit",
       },
 
       {
@@ -324,6 +349,27 @@ const appRoutes: RouteType[] = [
         path: "/master/AplicantDetailsEdit",
         element: <AplicantDetailsEdit/>,
         state: "master.AplicantDetailsEdit",
+      },
+
+      {
+        path: "/master/StudentDetails",
+        element: <StudentMaster/>,
+        state: "master.StudentDetails",
+        sidebarProps: {
+          displayText: "Student Master",
+        },
+      },
+
+      {
+        path: "/master/StudentDetailsAdd",
+        element: <StudentMasterAdd/>,
+        state: "master.StudentDetailsAdd",
+      },
+
+      {
+        path: "/master/StudentDetailsEdit",
+        element: <StudentMasterEdit/>,
+        state: "master.StudentDetailsEdit",
       },
     ],
   },

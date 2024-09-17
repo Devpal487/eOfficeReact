@@ -4,6 +4,7 @@ import { toast } from 'react-toastify';
 
 
 export const HOST_URL = 'http://103.12.1.132:8123/api/';
+//export const HOST_URL = 'https://localhost:7237/api/';
 
 
 

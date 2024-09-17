@@ -669,6 +669,8 @@ const resources = {
         FatherName:"Father Name",
         SelectServices:"Select Services",
         DispatchFee:"Dispatch Fee",
+        Service:"Service",
+        AdharUpload:"Adhar Upload",
 
 
       },
@@ -1340,6 +1342,9 @@ const resources = {
          FatherName:"पिता का नाम",
          SelectServices:"सेवाएँ चुनें",
          DispatchFee:"प्रेषण शुल्क",
+         Service:"सेवा",
+         AdharUpload:"आधार अपलोड",
+
 
 
  

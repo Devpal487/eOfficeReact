@@ -93,12 +93,12 @@ export default function StudentMaster() {
 
   const accept = () => {
     const collectData = {
-      serviceId: delete_id,
+      studentId: delete_id,
      
     };
     console.log("collectData " + JSON.stringify(collectData));
     api
-      .delete(`StudentMaster/DeleteStudentMaster`, { data: collectData })
+      .delete(`Student/DeleteStudentDetails`, { data: collectData })
       .then((response) => {
         if (response.data.isSuccess) {
           toast.success(response.data.mesg);
@@ -131,12 +131,12 @@ export default function StudentMaster() {
         studentId: -1,
         // fId: -1,
       };
-      const response = await api.post(`StudentMaster/GetStudentMaster`, collectData);
+      const response = await api.post(`Student/GetStudentDetails`, collectData);
       const data = response.data.data;
       const zonesWithIds = data.map((zone: any, index: any) => ({
         ...zone,
         serialNo: index + 1,
-        studentId: zone.studentId,
+        id: zone.studentId,
       }));
       setZones(zonesWithIds);
       setIsLoading(false);
@@ -195,31 +195,26 @@ export default function StudentMaster() {
             headerClassName: "MuiDataGrid-colCell",
           },
           {
-            field: "StudentName",
+            field: "studentName",
             headerName: t("text.StudentName"),
             flex: 1,
             headerClassName: "MuiDataGrid-colCell",
           },
           {
-            field: "DOB",
-            headerName: t("text.DOB"),
+            field: "email",
+            headerName: t("text.Email"),
             flex: 1,
             headerClassName: "MuiDataGrid-colCell",
           },
           {
-            field: "MobileNo",
+            field: "mobileNo",
             headerName: t("text.MobileNo"),
             flex: 1,
             headerClassName: "MuiDataGrid-colCell",
           },
+         
           {
-            field: "CourseName",
-            headerName:  t("text.CourseName"),
-            flex: 1,
-            headerClassName: "MuiDataGrid-colCell",
-          },
-          {
-            field: "Address",
+            field: "address",
             headerName: t("text.Address"),
             flex: 1,
             headerClassName: "MuiDataGrid-colCell",

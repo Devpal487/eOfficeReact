@@ -137,9 +137,10 @@ const PageCreateAdd = (props: Props) => {
 
     const [selectedYear, setSelectedYear] = useState("");
     const [sNo, setSNo] = useState("");
+      const [keywords, setKeywords] = useState("");
 
     const [tableData, setTableData] = useState<any>([]);
-    const [keywords, setKeywords] = useState("");
+  
     const [pdf, setPDF] = useState("");
     const [fileName, setfileName] = useState("");
     const [rootid, setRootid] = useState("");
@@ -266,8 +267,7 @@ const PageCreateAdd = (props: Props) => {
                 label: item.firsT_NAME,
                 value: item.useR_ID,
             }));
-            // console.log("🚀 ~ arr ~ res.data.data:", res.data.data)
-            // console.log("🚀 ~ arr ~ arr:", arr)
+           
             setUserOption(arr);
         });
     };

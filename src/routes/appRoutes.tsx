@@ -75,6 +75,7 @@ import ServiceMasterEdit from "../pages/master/ServiceMaster/ServiceMasterEdit";
 import StudentMaster from "../pages/master/StudentMaster/StudentMaster";
 import StudentMasterAdd from "../pages/master/StudentMaster/StudentMasterAdd";
 import StudentMasterEdit from "../pages/master/StudentMaster/StudentMasterEdit";
+import CourseMaster from "../pages/master/CourseMaster/CourseMaster";
 
 const appRoutes: RouteType[] = [
   {
@@ -349,6 +350,15 @@ const appRoutes: RouteType[] = [
         path: "/master/AplicantDetailsEdit",
         element: <AplicantDetailsEdit/>,
         state: "master.AplicantDetailsEdit",
+      },
+
+      {
+        path: "/master/CourseMaster",
+        element: <CourseMaster/>,
+        state: "master.CourseMaster",
+        sidebarProps: {
+          displayText: "CourseMaster",
+        },
       },
 
       {

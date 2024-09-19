@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "./OtpPopup.css";
 import api from "./Url";
 import { toast, ToastContainer } from "react-toastify";
@@ -8,7 +8,7 @@ interface OtpPopupProps {
   onClose: () => void;
   onOtpVerified: (isVerified: boolean) => void;
   isId: any;
-  isData:any;
+  isData: any;
 }
 
 const OtpPopup: React.FC<OtpPopupProps> = ({
@@ -18,19 +18,17 @@ const OtpPopup: React.FC<OtpPopupProps> = ({
   isId,
   isData
 }) => {
-  const [otp, setOtp] = useState<any>();
-  console.log("otp", otp);
+  const [otp, setOtp] = useState<string[]>(Array(6).fill(""));
   const [resendAvailable, setResendAvailable] = useState<boolean>(false);
-  const [timer, setTimer] = useState<any>(5);
-
-  
+  const [timer, setTimer] = useState<number>(180);
+  const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
   useEffect(() => {
     let countdown: NodeJS.Timeout;
 
     if (isVisible && !resendAvailable) {
       countdown = setInterval(() => {
-        setTimer((prev: any) => {
+        setTimer(prev => {
           if (prev <= 1) {
             clearInterval(countdown);
             setResendAvailable(true);
@@ -44,12 +42,20 @@ const OtpPopup: React.FC<OtpPopupProps> = ({
     return () => clearInterval(countdown);
   }, [isVisible, resendAvailable]);
 
- 
+  const handleOtpChange = (index: number, value: string) => {
+    const newOtp = [...otp];
+    newOtp[index] = value;
+    setOtp(newOtp);
+
+    // Move to the next input field
+    if (value && index < 5) {
+      inputRefs.current[index + 1]?.focus();
+    }
+  };
 
   const handleSubmitOtp = () => {
-    const collectData = { otp };
-    console.log(collectData.otp);
-
+    const otpString = otp.join("");
+    const collectData = {  otp: otpString  };
     api
       .post(
         `CertificateApply/VerificationOTP?id=${isId}`,
@@ -60,40 +66,41 @@ const OtpPopup: React.FC<OtpPopupProps> = ({
           },
         }
       )
-      .then((res) => {
+      .then(res => {
         if (res.data.isSuccess) {
           toast.success(res.data.mesg);
           onOtpVerified(true);
           onClose();
         } else {
-          alert(res.data.mesg);
+          toast.error(res.data.mesg);
           onOtpVerified(false);
         }
       });
-    console.log("OTP Submitted:", otp);
   };
 
   const handleResendOtp = () => {
-    const collectData ={
-      id: parseInt(isId)||0, 
-      name: isData.name ||"",
-      rollNo: isData.rollNo ||"",
-      mobileNo: isData.mobileNo ||"",
-      emailId: isData.emailId ||"",
-      dob:isData.dob ||"",
-      otp: isData.otp ||"",
-      certificateId:parseInt(isData.certificateId)||0,
+    const collectData = {
+      id: parseInt(isId) || 0,
+      name: isData.name || "",
+      rollNo: isData.rollNo || "",
+      mobileNo: isData.mobileNo || "",
+      emailId: isData.emailId || "",
+      dob: isData.dob || "",
+      otp: isData.otp || "",
+      certificateId: parseInt(isData.certificateId) || 0,
       status: parseInt(isData.status) || 0,
-      address: isData.address ||"",
-      aadharNo: parseInt(isData.aadharNo) ||0,
-      aadharImage: isData.aadharImage ||"",
+      address: isData.address || "",
+      aadharNo: parseInt(isData.aadharNo) || 0,
+      aadharImage: isData.aadharImage || "",
     };
 
-    api.post(`CertificateApply/ResendOTP`, collectData).then((res) => {
+    api.post(`CertificateApply/ResendOTP`, collectData).then(res => {
       if (res.data.isSuccess) {
-        alert("OTP has been resent.");
+        toast.success("OTP has been resent.");
+        setOtp(Array(6).fill(""));
         setResendAvailable(false);
-        setTimer(60); // Reset timer
+        setTimer(120); // Reset timer
+        
       } else {
         toast.error(res.data.mesg);
       }
@@ -103,26 +110,43 @@ const OtpPopup: React.FC<OtpPopupProps> = ({
   return isVisible ? (
     <div className="otp-popup">
       <div className="otp-popup-content">
-        <h2>OTP Verification</h2>
-        <input
-          type="number"
-          value={otp}
-          onChange={(e) => setOtp(e.target.value)}
-          placeholder="Enter OTP"
-        />
-        <button
-          onClick={(e) => {
-            handleSubmitOtp();
-            e.preventDefault();
-          }}
-        >
+        <h2>
+          <span className="otp-icon"></span>
+          OTP Verification
+        </h2>
+        <div className="otp-input-container">
+          {otp.map((digit, index) => (
+            <input
+              key={index}
+              type="text"
+              value={digit}
+              onChange={(e) => handleOtpChange(index, e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Backspace" && !digit && index > 0) {
+                  inputRefs.current[index - 1]?.focus();
+                }
+              }}
+              ref={el => inputRefs.current[index] = el}
+              maxLength={1}
+              className="otp-input"
+              placeholder="-"
+            />
+          ))}
+        </div>
+        <button className="verify" onClick={(e)=> {handleSubmitOtp();
+          e.preventDefault();
+        }}>
           Verify OTP
         </button>
-        <button onClick={onClose}>Close</button>
+        <button className="close" onClick={onClose}>
+          Close
+        </button>
         {resendAvailable && (
-          <button onClick={(e) =>{handleResendOtp()
+          <button className="resend" onClick={(e) =>{handleResendOtp();
             e.preventDefault();
-          }}>Resend OTP</button>
+          }}>
+            Resend OTP
+          </button>
         )}
         {!resendAvailable && timer > 0 && (
           <p>
@@ -131,6 +155,7 @@ const OtpPopup: React.FC<OtpPopupProps> = ({
           </p>
         )}
       </div>
+      <ToastContainer />
     </div>
   ) : null;
 };

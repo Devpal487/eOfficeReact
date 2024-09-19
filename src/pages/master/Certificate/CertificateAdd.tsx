@@ -137,15 +137,16 @@ const CertificateAdd = (props: Props) => {
 
   const [lang, setLang] = useState<Language>("en");
   const [isRecord, setIsRecord] = useState(false);
-  const [isOtpVerified, setOtpVerified] = useState(false);
+  const [isOtpVerified, setOtpVerified] = useState(true);
 
   const [panOpens, setPanOpen] = React.useState(false);
   const [modalImg, setModalImg] = useState("");
   const [isId, setId] = useState();
-  
+
   const [toaster, setToaster] = useState(false);
   const [isData, setData] = useState<any>();
 
+  const [isServiceId, setServiceId] = useState<any>();
 
   const handlePanClose = () => {
     setPanOpen(false);
@@ -199,7 +200,7 @@ const CertificateAdd = (props: Props) => {
     };
     api.post(`FileNumber/GetFileNumber`, collectData).then((res) => {
       const arr = [];
-      // console.log("result" + JSON.stringify(res.data.data));
+      
       for (let index = 0; index < res.data.data.length; index++) {
         arr.push({
           label: res.data.data[index]["fileNm"],
@@ -259,6 +260,9 @@ const CertificateAdd = (props: Props) => {
 
   const navigate = useNavigate();
 
+  
+
+
   const formik = useFormik({
     initialValues: {
       id: -1,
@@ -276,6 +280,7 @@ const CertificateAdd = (props: Props) => {
     },
 
     onSubmit: async (values) => {
+      setData(formik.values);
       const response = await api.post(
         `CertificateApply/AddUpdateCertificateApply`,
         values
@@ -286,8 +291,6 @@ const CertificateAdd = (props: Props) => {
 
         setOtpPopupVisible(true);
         setId(response.data.data);
-        setData(formik.values)
-
         
       } else {
         setToaster(true);
@@ -469,7 +472,6 @@ const CertificateAdd = (props: Props) => {
 
               <Grid xs={12} sm={4} item>
                 <TextField
-                 
                   name="aadharNo"
                   id="aadharNo"
                   label={<CustomLabel text={t("text.AdharNo")} />}
@@ -487,97 +489,6 @@ const CertificateAdd = (props: Props) => {
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                 />
-              </Grid>
-
-              <Grid container spacing={1} item>
-                <Grid
-                  xs={12}
-                  md={4}
-                  sm={4}
-                  item
-                  style={{ marginBottom: "30px", marginTop: "30px" }}
-                >
-                  <TextField
-                    type="file"
-                    inputProps={{ accept: "image/*" }}
-                    InputLabelProps={{ shrink: true }}
-                    label={<CustomLabel text={t("text.AdharUpload")} />}
-                    size="small"
-                    fullWidth
-                    style={{ backgroundColor: "white" }}
-                    onChange={(e) => otherDocChangeHandler(e, "aadharImage")}
-                  />
-                </Grid>
-                <Grid xs={12} md={4} sm={4} item></Grid>
-
-                <Grid xs={12} md={4} sm={4} item>
-                  <Grid
-                    style={{
-                      display: "flex",
-                      justifyContent: "space-around",
-                      alignItems: "center",
-                      margin: "10px",
-                    }}
-                  >
-                    {formik.values.aadharImage == "" ? (
-                      <img
-                        src={nopdf}
-                        style={{
-                          width: 150,
-                          height: 100,
-                          border: "1px solid grey",
-                          borderRadius: 10,
-                        }}
-                      />
-                    ) : (
-                      <img
-                        src={formik.values.aadharImage}
-                        style={{
-                          width: 150,
-                          height: 100,
-                          border: "1px solid grey",
-                          borderRadius: 10,
-                          padding: "2px",
-                        }}
-                      />
-                    )}
-                    <Typography
-                      onClick={() => modalOpenHandle("aadharImage")}
-                      style={{
-                        textDecorationColor: "blue",
-                        textDecorationLine: "underline",
-                        color: "blue",
-                        fontSize: "15px",
-                        cursor: "pointer",
-                      }}
-                    >
-                      {t("text.Preview")}
-                    </Typography>
-                  </Grid>
-                </Grid>
-                <Modal open={panOpens} onClose={handlePanClose}>
-                  <Box sx={style}>
-                    {modalImg == "" ? (
-                      <img
-                        src={nopdf}
-                        style={{
-                          width: "170vh",
-                          height: "75vh",
-                        }}
-                      />
-                    ) : (
-                      <img
-                        alt="preview image"
-                        src={modalImg}
-                        style={{
-                          width: "170vh",
-                          height: "75vh",
-                          borderRadius: 10,
-                        }}
-                      />
-                    )}
-                  </Box>
-                </Modal>
               </Grid>
 
               <Grid xs={12} sm={4} item>
@@ -600,6 +511,99 @@ const CertificateAdd = (props: Props) => {
 
               {isOtpVerified && (
                 <>
+                  <Grid container spacing={1} item>
+                    <Grid
+                      xs={12}
+                      md={4}
+                      sm={4}
+                      item
+                      style={{ marginBottom: "30px", marginTop: "30px" }}
+                    >
+                      <TextField
+                        type="file"
+                        inputProps={{ accept: "image/*" }}
+                        InputLabelProps={{ shrink: true }}
+                        label={<CustomLabel text={t("text.AdharUpload")} />}
+                        size="small"
+                        fullWidth
+                        style={{ backgroundColor: "white" }}
+                        onChange={(e) =>
+                          otherDocChangeHandler(e, "aadharImage")
+                        }
+                      />
+                    </Grid>
+                    <Grid xs={12} md={4} sm={4} item></Grid>
+
+                    <Grid xs={12} md={4} sm={4} item>
+                      <Grid
+                        style={{
+                          display: "flex",
+                          justifyContent: "space-around",
+                          alignItems: "center",
+                          margin: "10px",
+                        }}
+                      >
+                        {formik.values.aadharImage == "" ? (
+                          <img
+                            src={nopdf}
+                            style={{
+                              width: 150,
+                              height: 100,
+                              border: "1px solid grey",
+                              borderRadius: 10,
+                            }}
+                          />
+                        ) : (
+                          <img
+                            src={formik.values.aadharImage}
+                            style={{
+                              width: 150,
+                              height: 100,
+                              border: "1px solid grey",
+                              borderRadius: 10,
+                              padding: "2px",
+                            }}
+                          />
+                        )}
+                        <Typography
+                          onClick={() => modalOpenHandle("aadharImage")}
+                          style={{
+                            textDecorationColor: "blue",
+                            textDecorationLine: "underline",
+                            color: "blue",
+                            fontSize: "15px",
+                            cursor: "pointer",
+                          }}
+                        >
+                          {t("text.Preview")}
+                        </Typography>
+                      </Grid>
+                    </Grid>
+                    <Modal open={panOpens} onClose={handlePanClose}>
+                      <Box sx={style}>
+                        {modalImg == "" ? (
+                          <img
+                            src={nopdf}
+                            style={{
+                              width: "170vh",
+                              height: "75vh",
+                            }}
+                          />
+                        ) : (
+                          <img
+                            alt="preview image"
+                            src={modalImg}
+                            style={{
+                              width: "170vh",
+                              height: "75vh",
+                              borderRadius: 10,
+                            }}
+                          />
+                        )}
+                      </Box>
+                    </Modal>
+                  </Grid>
+
                   <Grid xs={12} sm={4} item>
                     <Autocomplete
                       disablePortal
@@ -669,6 +673,9 @@ const CertificateAdd = (props: Props) => {
                         setServices(selectedServices);
                         setRates(selectedRates);
                         setDispatches(selectedDispatches);
+
+                        setServiceId(newValue.length > 0 ? newValue[0].value : null);
+
 
                         // Update Formik values
                         formik.setFieldValue(
@@ -942,7 +949,8 @@ const CertificateAdd = (props: Props) => {
                                 dispatchFee={totalDispatch}
                                 rate={totalRate}
                                 netPayment={netPayment}
-                               
+                                isData={isData}
+                                serviceId= {isServiceId}
                               />
                             </Grid>
                           </Grid>
@@ -992,7 +1000,7 @@ const CertificateAdd = (props: Props) => {
               isVisible={isOtpPopupVisible}
               onClose={() => setOtpPopupVisible(false)}
               onOtpVerified={(isVerified) => setOtpVerified(isVerified)}
-              isId = {isId}
+              isId={isId}
               isData={isData}
             />
           </form>

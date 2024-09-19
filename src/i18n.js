@@ -688,6 +688,11 @@ const resources = {
         CreateStudentMaster:"Create Student Master",
         Service:"Service",
         AdharUpload:"Adhar Upload",
+        Attachments:"Attachments",
+        CourseMaster:"Course Master",
+        EnterCourseName:"Enter Course Name",
+        AadharNo:"Aadhar Number",
+        SelectCourse:"Select Course",
 
 
 
@@ -1362,12 +1367,12 @@ const resources = {
          DispatchFee:"प्रेषण शुल्क",
          Service:"सेवा",
          AdharUpload:"आधार अपलोड",
-
-
-
- 
-
-
+         Attachments:"संलग्नक",
+         CourseMaster:"कोर्स मास्टर",
+        EnterCourseName:"पाठ्यक्रम का नाम दर्ज करें",
+        AadharNo:"आधार नंबर",
+        SelectCourse:"पाठ्यक्रम का चयन करें",
+        
 
       },
       content: {},

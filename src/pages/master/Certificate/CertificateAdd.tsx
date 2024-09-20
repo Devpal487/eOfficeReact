@@ -141,7 +141,7 @@ const CertificateAdd = (props: Props) => {
 
   const [panOpens, setPanOpen] = React.useState(false);
   const [modalImg, setModalImg] = useState("");
-  const [isId, setId] = useState();
+  const [isId, setId] = useState<any>();
 
   const [toaster, setToaster] = useState(false);
   const [isData, setData] = useState<any>();
@@ -265,21 +265,31 @@ const CertificateAdd = (props: Props) => {
 
   const formik = useFormik({
     initialValues: {
-      id: -1,
-      name: "",
-      rollNo: "",
-      mobileNo: "",
-      emailId: "",
-      dob: "",
-      otp: "",
-      certificateId: 0,
-      status: 0,
-      address: "",
-      aadharNo: "",
-      aadharImage: "",
+      "id": -1,
+      "name": "",
+      "rollNo": "",
+      "mobileNo": "",
+      "emailId": "",
+      "dob": "",
+      "otp": "",
+      "certificateId": 0,
+      "status": 0,
+      "serviceId": 0,
+      "address": "",
+      "aadharNo": "",
+      "aadharImage": "",
+      "fileNumber": "",
+      "letterType": "",
+      "fileType": "",
+      "subject": "",
+      "sendBy": "",
+      "discription": "string",
+      "root": "string",
+      "subService": []
     },
 
     onSubmit: async (values) => {
+      values.id=isId
       setData(formik.values);
       const response = await api.post(
         `CertificateApply/AddUpdateCertificateApply`,
@@ -291,6 +301,7 @@ const CertificateAdd = (props: Props) => {
 
         setOtpPopupVisible(true);
         setId(response.data.data);
+        console.log("🚀 ~ onSubmit: ~ response.data.data:", response.data.data)
         
       } else {
         setToaster(true);
@@ -658,6 +669,7 @@ const CertificateAdd = (props: Props) => {
                       // }
                       size="small"
                       onChange={(event, newValue: any) => {
+                        console.log("🚀 ~ CertificateAdd ~ newValue:", newValue)
                         // Extract selected values
                         const selectedServices = newValue.map(
                           (item: any) => item.label
@@ -676,12 +688,21 @@ const CertificateAdd = (props: Props) => {
 
                         setServiceId(newValue.length > 0 ? newValue[0].value : null);
 
+                        const serviceID = newValue.map((item:any) => ({
+                          serviceId: item.value,
+                          multiId: -1,
+                          id:-1
+                        }));
+                        console.log("🚀 ~ serviceID ~ serviceID:", serviceID)
+
+                       
+                        formik.setFieldValue("subService",serviceID);
 
                         // Update Formik values
-                        formik.setFieldValue(
-                          "certificateId",
-                          newValue.map((item: any) => item.value)
-                        );
+                        // formik.setFieldValue(
+                        //   "subService[0].serviceId",
+                        //   newValue.map((item: any) => item.value)
+                        // );
 
                         setIsRecord(true);
                         // getPayment(newValue?.value);

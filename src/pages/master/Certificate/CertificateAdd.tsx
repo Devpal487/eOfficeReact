@@ -137,7 +137,7 @@ const CertificateAdd = (props: Props) => {
 
   const [lang, setLang] = useState<Language>("en");
   const [isRecord, setIsRecord] = useState(false);
-  const [isOtpVerified, setOtpVerified] = useState(true);
+  const [isOtpVerified, setOtpVerified] = useState(false);
 
   const [panOpens, setPanOpen] = React.useState(false);
   const [modalImg, setModalImg] = useState("");

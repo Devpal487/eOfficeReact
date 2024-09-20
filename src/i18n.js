@@ -693,6 +693,7 @@ const resources = {
         EnterCourseName:"Enter Course Name",
         AadharNo:"Aadhar Number",
         SelectCourse:"Select Course",
+        ServiceDashboard:"Service Dashboard",
 
 
 
@@ -1372,6 +1373,7 @@ const resources = {
         EnterCourseName:"पाठ्यक्रम का नाम दर्ज करें",
         AadharNo:"आधार नंबर",
         SelectCourse:"पाठ्यक्रम का चयन करें",
+        ServiceDashboard:"सेवा डैशबोर्ड"
         
 
       },

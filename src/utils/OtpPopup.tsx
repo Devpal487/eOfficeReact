@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import "./OtpPopup.css";
 import api from "./Url";
 import { toast, ToastContainer } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css'; // Import toast CSS
 
 interface OtpPopupProps {
   isVisible: boolean;
@@ -16,7 +17,7 @@ const OtpPopup: React.FC<OtpPopupProps> = ({
   onClose,
   onOtpVerified,
   isId,
-  isData
+  isData,
 }) => {
   const [otp, setOtp] = useState<string[]>(Array(6).fill(""));
   const [resendAvailable, setResendAvailable] = useState<boolean>(false);
@@ -55,18 +56,15 @@ const OtpPopup: React.FC<OtpPopupProps> = ({
 
   const handleSubmitOtp = () => {
     const otpString = otp.join("");
-    const collectData = {  otp: otpString  };
+    const collectData = { otp: otpString };
     api
-      .post(
-        `CertificateApply/VerificationOTP?id=${isId}`,
-        JSON.stringify(collectData.otp),
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      )
+      .post(`CertificateApply/VerificationOTP?id=${isId}`, JSON.stringify(collectData.otp), {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
       .then(res => {
+        console.log(res.data); // Debug log
         if (res.data.isSuccess) {
           toast.success(res.data.mesg);
           onOtpVerified(true);
@@ -75,6 +73,10 @@ const OtpPopup: React.FC<OtpPopupProps> = ({
           toast.error(res.data.mesg);
           onOtpVerified(false);
         }
+      })
+      .catch(err => {
+        toast.error("An error occurred while verifying OTP.");
+        console.error(err);
       });
   };
 
@@ -94,17 +96,21 @@ const OtpPopup: React.FC<OtpPopupProps> = ({
       aadharImage: isData.aadharImage || "",
     };
 
-    api.post(`CertificateApply/ResendOTP`, collectData).then(res => {
-      if (res.data.isSuccess) {
-        toast.success("OTP has been resent.");
-        setOtp(Array(6).fill(""));
-        setResendAvailable(false);
-        setTimer(120); // Reset timer
-        
-      } else {
-        toast.error(res.data.mesg);
-      }
-    });
+    api.post(`CertificateApply/ResendOTP`, collectData)
+      .then(res => {
+        if (res.data.isSuccess) {
+          toast.success("OTP has been resent.");
+          setOtp(Array(6).fill(""));
+          setResendAvailable(false);
+          setTimer(120); // Reset timer
+        } else {
+          toast.error(res.data.mesg);
+        }
+      })
+      .catch(err => {
+        toast.error("An error occurred while resending OTP.");
+        console.error(err);
+      });
   };
 
   return isVisible ? (
@@ -133,18 +139,14 @@ const OtpPopup: React.FC<OtpPopupProps> = ({
             />
           ))}
         </div>
-        <button className="verify" onClick={(e)=> {handleSubmitOtp();
-          e.preventDefault();
-        }}>
+        <button className="verify" onClick={(e) => { e.preventDefault(); handleSubmitOtp(); }}>
           Verify OTP
         </button>
         <button className="close" onClick={onClose}>
           Close
         </button>
         {resendAvailable && (
-          <button className="resend" onClick={(e) =>{handleResendOtp();
-            e.preventDefault();
-          }}>
+          <button className="resend" onClick={(e) => { e.preventDefault(); handleResendOtp(); }}>
             Resend OTP
           </button>
         )}

@@ -313,7 +313,7 @@ const appRoutes: RouteType[] = [
       // },
       {
         path: "/master/ServiceMaster",
-        element: <ServiceMaster/>,
+        element: <ServiceMaster />,
         state: "master.ServiceMaster",
         sidebarProps: {
           displayText: "Service Master",
@@ -322,19 +322,19 @@ const appRoutes: RouteType[] = [
 
       {
         path: "/master/ServiceMasterAdd",
-        element: <ServiceMasterAdd/>,
+        element: <ServiceMasterAdd />,
         state: "master.ServiceMasterAdd",
       },
 
       {
         path: "/master/ServiceMasterEdit",
-        element: <ServiceMasterEdit/>,
+        element: <ServiceMasterEdit />,
         state: "master.ServiceMasterEdit",
       },
 
       {
         path: "/master/AplicantDetails",
-        element: <AplicantDetails/>,
+        element: <AplicantDetails />,
         state: "master.AplicantDetails",
         sidebarProps: {
           displayText: "Aplicant Details",
@@ -343,19 +343,19 @@ const appRoutes: RouteType[] = [
 
       {
         path: "/master/AplicantDetailsAdd",
-        element: <AplicantDetailsAdd/>,
+        element: <AplicantDetailsAdd />,
         state: "master.AplicantDetailsAdd",
       },
 
       {
         path: "/master/AplicantDetailsEdit",
-        element: <AplicantDetailsEdit/>,
+        element: <AplicantDetailsEdit />,
         state: "master.AplicantDetailsEdit",
       },
 
       {
         path: "/master/CourseMaster",
-        element: <CourseMaster/>,
+        element: <CourseMaster />,
         state: "master.CourseMaster",
         sidebarProps: {
           displayText: "CourseMaster",
@@ -364,7 +364,7 @@ const appRoutes: RouteType[] = [
 
       {
         path: "/master/StudentDetails",
-        element: <StudentMaster/>,
+        element: <StudentMaster />,
         state: "master.StudentDetails",
         sidebarProps: {
           displayText: "Student Master",
@@ -373,13 +373,13 @@ const appRoutes: RouteType[] = [
 
       {
         path: "/master/StudentDetailsAdd",
-        element: <StudentMasterAdd/>,
+        element: <StudentMasterAdd />,
         state: "master.StudentDetailsAdd",
       },
 
       {
         path: "/master/StudentDetailsEdit",
-        element: <StudentMasterEdit/>,
+        element: <StudentMasterEdit />,
         state: "master.StudentDetailsEdit",
       },
     ],
@@ -462,7 +462,6 @@ const appRoutes: RouteType[] = [
           displayText: "File Status",
         },
       },
-
     ],
   },
   //======================FileManagement End====================
@@ -613,7 +612,7 @@ const appRoutes: RouteType[] = [
 
       {
         path: "/E-Office/ServiceDashboard",
-        element: <ServiceDashboard/>,
+        element: <ServiceDashboard />,
         state: "E-Office.ServiceDashboard",
         sidebarProps: {
           displayText: "Service Dashboard",

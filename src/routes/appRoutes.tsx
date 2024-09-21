@@ -76,6 +76,7 @@ import StudentMaster from "../pages/master/StudentMaster/StudentMaster";
 import StudentMasterAdd from "../pages/master/StudentMaster/StudentMasterAdd";
 import StudentMasterEdit from "../pages/master/StudentMaster/StudentMasterEdit";
 import CourseMaster from "../pages/master/CourseMaster/CourseMaster";
+import ServiceDashboard from "../pages/FileManagement/ServiceDashboard/ServiceDashboard";
 
 const appRoutes: RouteType[] = [
   {
@@ -607,6 +608,14 @@ const appRoutes: RouteType[] = [
         state: "E-Office.SplitPage",
         sidebarProps: {
           displayText: "Split Page",
+        },
+      },
+      {
+        path: "/E-Office/ServiceDashboard",
+        element: <ServiceDashboard/>,
+        state: "E-Office.ServiceDashboard",
+        sidebarProps: {
+          displayText: "Service Dashboard",
         },
       },
     ],

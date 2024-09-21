@@ -69,8 +69,11 @@ const OtpPopup: React.FC<OtpPopupProps> = ({
       .then(res => {
         if (res.data.isSuccess) {
           toast.success(res.data.mesg);
-          onOtpVerified(true);
+          setTimeout(() => {
+            onOtpVerified(true);
           onClose();
+          }, 800);
+          
         } else {
           toast.error(res.data.mesg);
           onOtpVerified(false);

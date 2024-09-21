@@ -288,8 +288,10 @@ const ViewEditFile: React.FC = (props: Props) => {
   const [CoreOpen, setCoreOpen] = useState(false);
   const [ReportOpen, setReportOpen] = useState(false);
   const [OtherOpen, setOtherOpen] = useState(false);
+  const [divisionId, setDivisionId] = useState<any>(-1);
   const [editorContent, setEditorContent] = useState<string>("");
   const [triggerFetch, setTriggerFetch] = useState(false);
+  const [extenFile, setExtenFile] = useState<any>('');
 
   const handleEditorChange = (content: any) => {
     setEditorContent(content);
@@ -444,6 +446,7 @@ const ViewEditFile: React.FC = (props: Props) => {
         setRoute2(res.data.data[index]["routeId"]);
         setAuthorityLevel(res.data.data[index]["authorityLevel"]);
         setLetterRID(res.data.data[index]["rid"]);
+        setDivisionId(res.data.data[index]["divisionid"]);
       }
       setMovementTableData(arr);
       setIsTableLoading(false);
@@ -521,6 +524,32 @@ const ViewEditFile: React.FC = (props: Props) => {
       }
     });
   };
+
+  const getFileType = (filename: any) => {
+    const extension = filename.slice(((filename.lastIndexOf(".") - 1) >>> 0) + 2).toLowerCase();
+    console.log(extension)
+    switch (true) {
+      case ['.png', '.jpg', '.jpeg', '.gif', '.webp'].includes(`.${extension}`):
+        return 'image';
+      case ['.pdf'].includes(`.${extension}`):
+        return 'pdf';
+      default:
+        return "unknown";
+
+    }
+  }
+  const getDisplayUI = (filetyperesult: any, filepath: any, extension: any) => {
+    console.log("displayUi", filetyperesult, filepath, extension)
+    // let baseurl = 'https://weblibraryfilepath.mssplonline.com:8130/'
+    switch (filetyperesult) {
+      case 'image':
+        return (<img src={filepath} style={{ height: "150px", width: "200px" }} />)
+      case 'pdf':
+        return (<embed src={filepath} type="application/pdf" />)
+      default:
+        return "Error"
+    }
+  }
 
   const MoveAwait = () => {
     let value;
@@ -815,7 +844,10 @@ const ViewEditFile: React.FC = (props: Props) => {
       api
         .post(`CreateNewFileAttach/GetCreateNewFileAttach`, collectData)
         .then((response) => {
+          // console.log("🚀 ~ .then ~ respo̥nse:", )
           if (response?.data?.data[0]["pdfBase64"] != null) {
+            getFileType(response?.data?.data[0]['fileattach_name']);
+            setExtenFile(response?.data?.data[0]['fileattach_name']);
             setPDFData(response?.data?.data[0]["pdfBase64"]);
             setIsLoading(false);
           } else {
@@ -830,10 +862,10 @@ const ViewEditFile: React.FC = (props: Props) => {
           rFileType: -1,
           inst_id: -1,
           user_id: "",
-          fromdate: "2020-06-19T09:34:14.829Z",
-          todate: "2024-06-19T09:34:14.829Z",
+          fromdate: "1900-01-01",
+          todate: "1900-01-01",
           refNo: -1,
-          divisionid: -1,
+          divisionid: divisionId,
           type: 1,
         };
       } else {
@@ -3000,7 +3032,7 @@ const ViewEditFile: React.FC = (props: Props) => {
                               >
                                 <Typography fontWeight="600" fontSize={17}>
                                   <i>
-                                    #{selectedRow ? selectedRow.cFileNm : ""}
+                                    #{selectedRow ? selectedRow.cFileNm  : ""}
                                   </i>
                                 </Typography>
                                 <IconButton
@@ -3040,6 +3072,7 @@ const ViewEditFile: React.FC = (props: Props) => {
                                   ) : (
                                     <>
                                       {pdfData ? (
+                                        (extenFile.lastIndexOf(".")) === "pdf")?(
                                         <embed
                                           src={pdfData}
                                           style={{
@@ -3047,8 +3080,17 @@ const ViewEditFile: React.FC = (props: Props) => {
                                             width: "95vh",
                                             border: "1px solid gray",
                                           }}
+                                        />):(
+                                          <img
+                                          src={pdfData}
+                                          style={{
+                                            height: "90vh",
+                                            width: "95vh",
+                                            border: "1px solid gray",
+                                          }}
                                         />
-                                      ) : (
+                                        )
+                                       : (
                                         <div
                                           style={{
                                             display: "flex",

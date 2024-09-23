@@ -3,26 +3,25 @@ import "./OtpPopup.css";
 import api from "./Url";
 import { toast, ToastContainer } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css'; // Import toast CSS
+import { useNavigate } from "react-router-dom";
 
 interface OtpPopupProps {
   isVisible: boolean;
   onClose: () => void;
-  onOtpVerified: (isVerified: boolean) => void;
-  isId: any;
-  isData: any;
+ 
 }
 
-const OtpPopup: React.FC<OtpPopupProps> = ({
+const TokenPopUp: React.FC<OtpPopupProps> = ({
   isVisible,
   onClose,
-  onOtpVerified,
-  isId,
-  isData,
+ 
 }) => {
   const [otp, setOtp] = useState<string[]>(Array(6).fill(""));
   const [resendAvailable, setResendAvailable] = useState<boolean>(false);
   const [timer, setTimer] = useState<number>(180);
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     let countdown: NodeJS.Timeout;
@@ -54,67 +53,67 @@ const OtpPopup: React.FC<OtpPopupProps> = ({
     }
   };
 
-  const handleSubmitOtp = () => {
-    const otpString = otp.join("");
-    const collectData = { otp: otpString };
-    api
-      .post(`CertificateApply/VerificationOTP?id=${isId}`, JSON.stringify(collectData.otp), {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      })
-      .then(res => {
-        console.log(res.data); // Debug log
-        if (res.data.isSuccess) {
-          toast.success(res.data.mesg);
-          setTimeout(() => {
-            onOtpVerified(true);
-          onClose();
-          }, 800);
+//   const handleSubmitOtp = () => {
+//     const otpString = otp.join("");
+//     const collectData = { otp: otpString };
+//     api
+//       .post(`CertificateApply/VerificationOTP?id=${isId}`, JSON.stringify(collectData.otp), {
+//         headers: {
+//           "Content-Type": "application/json",
+//         },
+//       })
+//       .then(res => {
+//         console.log(res.data); // Debug log
+//         if (res.data.isSuccess) {
+//           toast.success(res.data.mesg);
+//           setTimeout(() => {
+//             onOtpVerified(true);
+//           onClose();
+//           }, 800);
           
-        } else {
-          toast.error(res.data.mesg);
-          onOtpVerified(false);
-        }
-      })
-      .catch(err => {
-        toast.error("An error occurred while verifying OTP.");
-        console.error(err);
-      });
-  };
+//         } else {
+//           toast.error(res.data.mesg);
+//           onOtpVerified(false);
+//         }
+//       })
+//       .catch(err => {
+//         toast.error("An error occurred while verifying OTP.");
+//         console.error(err);
+//       });
+//   };
 
-  const handleResendOtp = () => {
-    const collectData = {
-      id: parseInt(isId) || 0,
-      name: isData.name || "",
-      rollNo: isData.rollNo || "",
-      mobileNo: isData.mobileNo || "",
-      emailId: isData.emailId || "",
-      dob: isData.dob || "",
-      otp: isData.otp || "",
-      certificateId: parseInt(isData.certificateId) || 0,
-      status: parseInt(isData.status) || 0,
-      address: isData.address || "",
-      aadharNo: parseInt(isData.aadharNo) || 0,
-      aadharImage: isData.aadharImage || "",
-    };
+//   const handleResendOtp = () => {
+//     const collectData = {
+//       id: parseInt(isId) || 0,
+//       name: isData.name || "",
+//       rollNo: isData.rollNo || "",
+//       mobileNo: isData.mobileNo || "",
+//       emailId: isData.emailId || "",
+//       dob: isData.dob || "",
+//       otp: isData.otp || "",
+//       certificateId: parseInt(isData.certificateId) || 0,
+//       status: parseInt(isData.status) || 0,
+//       address: isData.address || "",
+//       aadharNo: parseInt(isData.aadharNo) || 0,
+//       aadharImage: isData.aadharImage || "",
+//     };
 
-    api.post(`CertificateApply/ResendOTP`, collectData)
-      .then(res => {
-        if (res.data.isSuccess) {
-          toast.success("OTP has been resent.");
-          setOtp(Array(6).fill(""));
-          setResendAvailable(false);
-          setTimer(120); // Reset timer
-        } else {
-          toast.error(res.data.mesg);
-        }
-      })
-      .catch(err => {
-        toast.error("An error occurred while resending OTP.");
-        console.error(err);
-      });
-  };
+//     api.post(`CertificateApply/ResendOTP`, collectData)
+//       .then(res => {
+//         if (res.data.isSuccess) {
+//           toast.success("OTP has been resent.");
+//           setOtp(Array(6).fill(""));
+//           setResendAvailable(false);
+//           setTimer(120); // Reset timer
+//         } else {
+//           toast.error(res.data.mesg);
+//         }
+//       })
+//       .catch(err => {
+//         toast.error("An error occurred while resending OTP.");
+//         console.error(err);
+//       });
+//   };
 
   return isVisible ? (
     <div className="otp-popup">
@@ -142,14 +141,18 @@ const OtpPopup: React.FC<OtpPopupProps> = ({
             />
           ))}
         </div>
-        <button className="verify" onClick={(e) => { e.preventDefault(); handleSubmitOtp(); }}>
+        {/* <button className="verify" onClick={(e) => { e.preventDefault(); handleSubmitOtp(); }}> */}
+        <button className="verify" onClick={() => {
+            navigate('/AplicantService')
+        }} >
           Verify OTP
         </button>
         <button className="close" onClick={onClose}>
           Close
         </button>
         {resendAvailable && (
-          <button className="resend" onClick={(e) => { e.preventDefault(); handleResendOtp(); }}>
+        //   <button className="resend" onClick={(e) => { e.preventDefault(); handleResendOtp(); }}>
+        <button className="resend" >
             Resend OTP
           </button>
         )}
@@ -165,4 +168,4 @@ const OtpPopup: React.FC<OtpPopupProps> = ({
   ) : null;
 };
 
-export default OtpPopup;
+export default TokenPopUp;

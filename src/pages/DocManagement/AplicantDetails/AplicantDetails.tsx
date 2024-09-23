@@ -87,7 +87,7 @@ export default function AplicantDetails() {
 
   let navigate = useNavigate();
   const routeChangeAdd = () => {
-    let path = `/master/AplicantDetailsAdd`;
+    let path = `/AplicantDetailsAdd`;
     navigate(path);
   };
 

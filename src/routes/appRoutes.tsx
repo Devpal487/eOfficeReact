@@ -76,7 +76,7 @@ import StudentMaster from "../pages/master/StudentMaster/StudentMaster";
 import StudentMasterAdd from "../pages/master/StudentMaster/StudentMasterAdd";
 import StudentMasterEdit from "../pages/master/StudentMaster/StudentMasterEdit";
 import CourseMaster from "../pages/master/CourseMaster/CourseMaster";
-import ServiceDashboard from "../pages/FileManagement/ServiceDashboard/ServiceDashboard";
+//import ServiceDashboard from "../pages/FileManagement/ServiceDashboard/ServiceDashboard";
 
 const appRoutes: RouteType[] = [
   {
@@ -313,7 +313,7 @@ const appRoutes: RouteType[] = [
       // },
       {
         path: "/master/ServiceMaster",
-        element: <ServiceMaster/>,
+        element: <ServiceMaster />,
         state: "master.ServiceMaster",
         sidebarProps: {
           displayText: "Service Master",
@@ -322,40 +322,40 @@ const appRoutes: RouteType[] = [
 
       {
         path: "/master/ServiceMasterAdd",
-        element: <ServiceMasterAdd/>,
+        element: <ServiceMasterAdd />,
         state: "master.ServiceMasterAdd",
       },
 
       {
         path: "/master/ServiceMasterEdit",
-        element: <ServiceMasterEdit/>,
+        element: <ServiceMasterEdit />,
         state: "master.ServiceMasterEdit",
       },
 
       {
         path: "/master/AplicantDetails",
-        element: <AplicantDetails/>,
+        element: <AplicantDetails />,
         state: "master.AplicantDetails",
         sidebarProps: {
           displayText: "Aplicant Details",
         },
       },
 
-      {
-        path: "/master/AplicantDetailsAdd",
-        element: <AplicantDetailsAdd/>,
-        state: "master.AplicantDetailsAdd",
-      },
+      // {
+      //   path: "/master]/AplicantDetailsAdd",
+      //   element: <AplicantDetailsAdd />,
+      //   state: "master.AplicantDetailsAdd",
+      // },
 
       {
         path: "/master/AplicantDetailsEdit",
-        element: <AplicantDetailsEdit/>,
+        element: <AplicantDetailsEdit />,
         state: "master.AplicantDetailsEdit",
       },
 
       {
         path: "/master/CourseMaster",
-        element: <CourseMaster/>,
+        element: <CourseMaster />,
         state: "master.CourseMaster",
         sidebarProps: {
           displayText: "CourseMaster",
@@ -364,7 +364,7 @@ const appRoutes: RouteType[] = [
 
       {
         path: "/master/StudentDetails",
-        element: <StudentMaster/>,
+        element: <StudentMaster />,
         state: "master.StudentDetails",
         sidebarProps: {
           displayText: "Student Master",
@@ -373,13 +373,13 @@ const appRoutes: RouteType[] = [
 
       {
         path: "/master/StudentDetailsAdd",
-        element: <StudentMasterAdd/>,
+        element: <StudentMasterAdd />,
         state: "master.StudentDetailsAdd",
       },
 
       {
         path: "/master/StudentDetailsEdit",
-        element: <StudentMasterEdit/>,
+        element: <StudentMasterEdit />,
         state: "master.StudentDetailsEdit",
       },
     ],
@@ -462,7 +462,6 @@ const appRoutes: RouteType[] = [
           displayText: "File Status",
         },
       },
-
     ],
   },
   //======================FileManagement End====================
@@ -610,14 +609,15 @@ const appRoutes: RouteType[] = [
           displayText: "Split Page",
         },
       },
-      {
-        path: "/E-Office/ServiceDashboard",
-        element: <ServiceDashboard/>,
-        state: "E-Office.ServiceDashboard",
-        sidebarProps: {
-          displayText: "Service Dashboard",
-        },
-      },
+
+      // {
+      //   path: "/E-Office/ServiceDashboard",
+      //   element: <ServiceDashboard />,
+      //   state: "E-Office.ServiceDashboard",
+      //   sidebarProps: {
+      //     displayText: "Service Dashboard",
+      //   },
+      // },
     ],
   },
   //   //===================End committee===================

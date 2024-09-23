@@ -200,7 +200,7 @@ const CertificateAdd = (props: Props) => {
     };
     api.post(`FileNumber/GetFileNumber`, collectData).then((res) => {
       const arr = [];
-      
+
       for (let index = 0; index < res.data.data.length; index++) {
         arr.push({
           label: res.data.data[index]["fileNm"],
@@ -260,36 +260,33 @@ const CertificateAdd = (props: Props) => {
 
   const navigate = useNavigate();
 
-  
-
-
   const formik = useFormik({
     initialValues: {
-      "id": -1,
-      "name": "",
-      "rollNo": "",
-      "mobileNo": "",
-      "emailId": "",
-      "dob": "",
-      "otp": "",
-      "certificateId": 0,
-      "status": 0,
-      "serviceId": 0,
-      "address": "",
-      "aadharNo": "",
-      "aadharImage": "",
-      "fileNumber": "",
-      "letterType": "",
-      "fileType": "",
-      "subject": "",
-      "sendBy": "",
-      "discription": "string",
-      "root": "string",
-      "subService": []
+      id: -1,
+      name: "",
+      rollNo: "",
+      mobileNo: "",
+      emailId: "",
+      dob: "",
+      otp: "",
+      certificateId: 0,
+      status: 0,
+      serviceId: 0,
+      address: "",
+      aadharNo: "",
+      aadharImage: "",
+      fileNumber: "",
+      letterType: "",
+      fileType: "",
+      subject: "",
+      sendBy: "",
+      discription: "string",
+      root: "string",
+      subService: [],
     },
 
     onSubmit: async (values) => {
-      values.id=isId
+      values.id = isId;
       setData(formik.values);
       const response = await api.post(
         `CertificateApply/AddUpdateCertificateApply`,
@@ -301,8 +298,7 @@ const CertificateAdd = (props: Props) => {
 
         setOtpPopupVisible(true);
         setId(response.data.data);
-        console.log("🚀 ~ onSubmit: ~ response.data.data:", response.data.data)
-        
+        console.log("🚀 ~ onSubmit: ~ response.data.data:", response.data.data);
       } else {
         setToaster(true);
         toast.error(response.data.mesg);
@@ -669,7 +665,10 @@ const CertificateAdd = (props: Props) => {
                       // }
                       size="small"
                       onChange={(event, newValue: any) => {
-                        console.log("🚀 ~ CertificateAdd ~ newValue:", newValue)
+                        console.log(
+                          "🚀 ~ CertificateAdd ~ newValue:",
+                          newValue
+                        );
                         // Extract selected values
                         const selectedServices = newValue.map(
                           (item: any) => item.label
@@ -686,17 +685,18 @@ const CertificateAdd = (props: Props) => {
                         setRates(selectedRates);
                         setDispatches(selectedDispatches);
 
-                        setServiceId(newValue.length > 0 ? newValue[0].value : null);
+                        setServiceId(
+                          newValue.length > 0 ? newValue[0].value : null
+                        );
 
-                        const serviceID = newValue.map((item:any) => ({
+                        const serviceID = newValue.map((item: any) => ({
                           serviceId: item.value,
                           multiId: -1,
-                          id:-1
+                          id: -1,
                         }));
-                        console.log("🚀 ~ serviceID ~ serviceID:", serviceID)
+                        console.log("🚀 ~ serviceID ~ serviceID:", serviceID);
 
-                       
-                        formik.setFieldValue("subService",serviceID);
+                        formik.setFieldValue("subService", serviceID);
 
                         // Update Formik values
                         // formik.setFieldValue(
@@ -971,7 +971,7 @@ const CertificateAdd = (props: Props) => {
                                 rate={totalRate}
                                 netPayment={netPayment}
                                 isData={isData}
-                                serviceId= {isServiceId}
+                                serviceId={isServiceId}
                               />
                             </Grid>
                           </Grid>

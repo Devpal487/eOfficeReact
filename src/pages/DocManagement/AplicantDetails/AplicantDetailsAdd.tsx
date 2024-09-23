@@ -24,21 +24,25 @@ import { Language, ReactTransliterate } from "react-transliterate";
 import "react-transliterate/dist/index.css";
 import TranslateTextField from "../../../TranslateTextField";
 import OtpPopup from "../../../utils/OtpPopup";
+import Institute from "../../../assets/images/aktu.png";
 
 const containerStyle = {
   border: "1px solid #ccc",
   borderRadius: "5px",
-  padding: "20px",
+  justifyContent: "center",
+  
+  
+  //padding: "20px",
   backgroundColor: "#f9f9f9",
 };
 
 const headerStyle: any = {
-  backgroundColor: "#3cc4d6",
+  backgroundColor: "rgb(183, 28, 28)",
   padding: "10px",
   borderRadius: "5px",
-  textAlign: "center",
+  textAlign: "left",  // Changed to left
   fontWeight: "bold",
-  color: "#333",
+  color: "#ffff",
   boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.1)",
 };
 
@@ -194,7 +198,7 @@ const AplicantDetailsAdd = (props: Props) => {
       >
         <CardContent>
           <Grid item xs={12} container spacing={2}>
-            <Grid item lg={2} md={2} xs={2} marginTop={2}>
+            {/* <Grid item lg={2} md={2} xs={2} marginTop={2}>
               <Button
                 type="submit"
                 onClick={() => back(-1)}
@@ -206,39 +210,32 @@ const AplicantDetailsAdd = (props: Props) => {
               >
                 <ArrowBackSharpIcon />
               </Button>
-            </Grid>
+            </Grid> */}
             <Grid
               item
-              lg={7}
-              md={7}
-              xs={7}
-              alignItems="center"
-              justifyContent="center"
+              lg={12}
+              md={12}
+              xs={12}
+             sx={{backgroundColor:"rgb(183, 28, 28)",width:"100%"}}
             >
               <Typography
                 gutterBottom
                 variant="h5"
                 component="div"
-                sx={{ padding: "20px" }}
-                align="center"
+                sx={{ padding: "10px",color:"#ffff",display:"flex" }}
+                align="left"
+
               >
-                {t("text.AddAplicantDetails")}
+                <img
+                    src={Institute}
+                    alt="Institute Logo"
+                    style={{ marginRight: 8, height: 24 }}
+                  />{" "}
+                  Institute ERP
               </Typography>
             </Grid>
 
-            <Grid item lg={3} md={3} xs={3} marginTop={3}>
-              <select
-                className="language-dropdown"
-                value={lang}
-                onChange={(e) => setLang(e.target.value as Language)}
-              >
-                {Languages.map((l) => (
-                  <option key={l.value} value={l.value}>
-                    {l.label}
-                  </option>
-                ))}
-              </select>
-            </Grid>
+           
           </Grid>
 
           <Divider />
@@ -249,25 +246,39 @@ const AplicantDetailsAdd = (props: Props) => {
               {/* <ToastContainer /> */}
               {toaster === false ? "" : <ToastApp />}
 
-              <Grid item xs={12}>
+              <Grid item xs={12} sm={12}>
+                <Typography style={{color:"black",fontWeight:"600",fontSize:"17px"}}>Aplicant Details</Typography>
+              </Grid>
+
+              <Grid item xs={12} >
                 <div style={containerStyle}>
                   {/* Header */}
                   <div style={headerStyle}>Aplicant Details</div>
 
                   {/* Form Fields */}
-                  <Grid container spacing={2} sx={{ marginTop: "1%" }}>
-                    <Grid xs={12} sm={4} item>
-                      <TranslateTextField
-                        label={t("text.Name")}
+                  <Grid container spacing={2} sx={{ marginTop: "1%",justifyContent:"center" }}>
+                    <Grid xs={12} sm={3.5} item>
+                    <TextField
+                        type="text"
+                        name="name"
+                        id="name"
+                        label={<CustomLabel text={t("text.Name")} />}
                         value={formik.values.name}
-                        onChangeText={(text: string) =>
-                          handleConversionChange("name", text)
-                        }
-                        required={true}
-                        lang={lang}
+                        placeholder={t("text.Name")}
+                        size="small"
+                        fullWidth
+                        style={{
+                          backgroundColor: "white",
+                          borderColor:
+                            formik.touched.rollNo && formik.errors.rollNo
+                              ? "red"
+                              : "initial",
+                        }}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
                       />
                     </Grid>
-                    <Grid xs={12} sm={4} item>
+                    <Grid xs={12} sm={3.5} item>
                       <TextField
                         type="text"
                         name="rollNo"
@@ -289,7 +300,7 @@ const AplicantDetailsAdd = (props: Props) => {
                       />
                     </Grid>
 
-                    <Grid xs={12} sm={4} item>
+                    <Grid xs={12} sm={3.5} item>
                       <TextField
                         type="text"
                         name="rollNo"
@@ -311,7 +322,7 @@ const AplicantDetailsAdd = (props: Props) => {
                       />
                     </Grid>
 
-                    <Grid xs={12} sm={4} item>
+                    <Grid xs={12} sm={3.5} item>
                       <TextField
                         type="text"
                         name="rollNo"
@@ -333,7 +344,7 @@ const AplicantDetailsAdd = (props: Props) => {
                       />
                     </Grid>
 
-                    <Grid xs={12} sm={4} item>
+                    <Grid xs={12} sm={3.5} item>
                       <TextField
                         type="text"
                         name="mobileNo"
@@ -354,7 +365,7 @@ const AplicantDetailsAdd = (props: Props) => {
                         onBlur={formik.handleBlur}
                       />
                     </Grid>
-                    <Grid xs={12} sm={4} item>
+                    <Grid xs={12} sm={3.5} item>
                       <TextField
                         type="text"
                         name="emailId"
@@ -376,7 +387,7 @@ const AplicantDetailsAdd = (props: Props) => {
                       />
                     </Grid>
 
-                    <Grid xs={12} sm={4} item>
+                    <Grid xs={12} sm={3.5} item>
                       <Autocomplete
                         disablePortal
                         id="combo-box-demo"
@@ -402,7 +413,7 @@ const AplicantDetailsAdd = (props: Props) => {
                       />
                     </Grid>
 
-                    <Grid xs={12} sm={4} item>
+                    <Grid xs={12} sm={3.5} item>
                       <TextField
                         type="date"
                         name="dob"
@@ -424,7 +435,7 @@ const AplicantDetailsAdd = (props: Props) => {
                         onBlur={formik.handleBlur}
                       />
                     </Grid>
-                    <Grid xs={12} sm={4} item>
+                    <Grid xs={12} sm={3.5} item>
                       <TextField
                         type="number"
                         name="otp"
@@ -445,6 +456,8 @@ const AplicantDetailsAdd = (props: Props) => {
                         onBlur={formik.handleBlur}
                       />
                     </Grid>
+
+                    <Grid xs={12} sm={12} item></Grid>
                   </Grid>
                 </div>
               </Grid>
@@ -456,8 +469,8 @@ const AplicantDetailsAdd = (props: Props) => {
                   <div style={headerStyle}>Postel Address</div>
 
                   {/* Form Fields */}
-                  <Grid container spacing={2} sx={{ marginTop: "1%" }}>
-                    <Grid item xs={12} sm={4}>
+                  <Grid container spacing={2} sx={{ margin: "1%",justifyContent: "center" }}>
+                  <Grid xs={12} sm={3.5} item>
                       <Autocomplete
                         disablePortal
                         id="country-autocomplete"
@@ -481,7 +494,7 @@ const AplicantDetailsAdd = (props: Props) => {
                       />
                     </Grid>
 
-                    <Grid item xs={12} sm={4}>
+                    <Grid xs={12} sm={3.5} item>
                       <Autocomplete
                         disablePortal
                         id="state-autocomplete"
@@ -503,7 +516,7 @@ const AplicantDetailsAdd = (props: Props) => {
                       />
                     </Grid>
 
-                    <Grid item xs={12} sm={4}>
+                    <Grid xs={12} sm={3.5} item>
                       <Autocomplete
                         disablePortal
                         id="district-autocomplete"
@@ -524,15 +537,25 @@ const AplicantDetailsAdd = (props: Props) => {
                       />
                     </Grid>
 
-                    <Grid item xs={12}>
-                      <TranslateTextField
-                        label={t("text.Address")}
+                    <Grid item xs={12} sm={10.5} >
+                    <TextField
+                        type="text"
+                        name="address"
+                        id="address"
+                        label={<CustomLabel text={t("text.Address")} />}
                         value={formik.values.address}
-                        onChangeText={(text) =>
-                          handleConversionChange("address", text)
-                        }
-                        required={true}
-                        lang={lang}
+                        placeholder={t("text.Address")}
+                        size="small"
+                        fullWidth
+                        style={{
+                          backgroundColor: "white",
+                          borderColor:
+                            formik.touched.rollNo && formik.errors.address
+                              ? "red"
+                              : "initial",
+                        }}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
                       />
                     </Grid>
                   </Grid>
@@ -547,8 +570,8 @@ const AplicantDetailsAdd = (props: Props) => {
                   <div style={headerStyle}>Choose Services</div>
 
                   {/* Form Fields */}
-                  <Grid container spacing={2} sx={{ marginTop: "1%" }}>
-                    <Grid xs={12} sm={6} item>
+                  <Grid container spacing={2} sx={{ margin: "1%",justifyContent: "center" }}>
+                    <Grid xs={12} sm={5.25} item>
                       <Autocomplete
                         disablePortal
                         id="combo-box-demo"
@@ -574,7 +597,7 @@ const AplicantDetailsAdd = (props: Props) => {
                       />
                     </Grid>
 
-                    <Grid xs={12} sm={6} item>
+                    <Grid xs={12} sm={5.25} item>
                       <TextField
                         type="text"
                         name="emailId"

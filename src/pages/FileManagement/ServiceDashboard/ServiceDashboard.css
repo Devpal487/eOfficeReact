@@ -1,0 +1,80 @@
+.card {
+    width: 100%;
+    height: 50%;
+    background-color: #E9FDEE;
+    border: 0.5px solid #2B4593;
+    margin-top: 0;
+  }
+  
+  .header {
+    background-color: rgb(183, 28, 28);
+  }
+  
+  .header-text {
+    padding: 10px;
+    color: #fff;
+    display: flex;
+    align-items: center;
+  }
+  
+  .title {
+    color: black;
+    font-weight: 600;
+    font-size: 17px;
+  }
+  
+  .services-container {
+    border: 1px solid black;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    border-radius: 1px;
+    overflow: hidden;
+  }
+  
+  .services-header {
+    background-color: rgb(183, 28, 28);
+    display: flex;
+    align-items: center;
+    color: #fff;
+    justify-content: space-between;
+    padding: 10px;
+    margin-bottom: 16px;
+  }
+  
+  .table-container {
+    max-height: 400px;
+    overflow-y: auto;
+    background-color: #fff;
+    border-radius: 4px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    width: 93%;
+    margin: 0 auto;
+  }
+  
+  .important-instruction {
+    border: 1px solid black;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    border-radius: 1px;
+    overflow: hidden;
+  }
+  
+  .instruction-header {
+    background-color: rgb(183, 28, 28);
+    display: flex;
+    align-items: center;
+    color: #fff;
+    justify-content: space-between;
+    padding: 10px;
+    margin-bottom: 16px;
+  }
+  
+  .notice {
+    color: #f54556;
+    display: inline-block;
+    animation: bounce 1.5s infinite;
+  }
+  
+  
+  @keyframes bounce {
+    0%, 100% { transform: translateX(0); }
+    50% { transform: translateX(10px); }
+  }

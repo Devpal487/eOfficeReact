@@ -76,7 +76,7 @@ import StudentMaster from "../pages/master/StudentMaster/StudentMaster";
 import StudentMasterAdd from "../pages/master/StudentMaster/StudentMasterAdd";
 import StudentMasterEdit from "../pages/master/StudentMaster/StudentMasterEdit";
 import CourseMaster from "../pages/master/CourseMaster/CourseMaster";
-import ServiceDashboard from "../pages/FileManagement/ServiceDashboard/ServiceDashboard";
+//import ServiceDashboard from "../pages/FileManagement/ServiceDashboard/ServiceDashboard";
 
 const appRoutes: RouteType[] = [
   {
@@ -341,11 +341,11 @@ const appRoutes: RouteType[] = [
         },
       },
 
-      {
-        path: "/master/AplicantDetailsAdd",
-        element: <AplicantDetailsAdd />,
-        state: "master.AplicantDetailsAdd",
-      },
+      // {
+      //   path: "/master]/AplicantDetailsAdd",
+      //   element: <AplicantDetailsAdd />,
+      //   state: "master.AplicantDetailsAdd",
+      // },
 
       {
         path: "/master/AplicantDetailsEdit",
@@ -610,14 +610,14 @@ const appRoutes: RouteType[] = [
         },
       },
 
-      {
-        path: "/E-Office/ServiceDashboard",
-        element: <ServiceDashboard />,
-        state: "E-Office.ServiceDashboard",
-        sidebarProps: {
-          displayText: "Service Dashboard",
-        },
-      },
+      // {
+      //   path: "/E-Office/ServiceDashboard",
+      //   element: <ServiceDashboard />,
+      //   state: "E-Office.ServiceDashboard",
+      //   sidebarProps: {
+      //     displayText: "Service Dashboard",
+      //   },
+      // },
     ],
   },
   //   //===================End committee===================

@@ -143,6 +143,8 @@ const CertificateAdd = (props: Props) => {
   const [modalImg, setModalImg] = useState("");
   const [isId, setId] = useState<any>();
 
+  localStorage.setItem('tokenId',isId)
+
   const [toaster, setToaster] = useState(false);
   const [isData, setData] = useState<any>();
 
@@ -293,11 +295,13 @@ const CertificateAdd = (props: Props) => {
         values
       );
       if (response.data.isSuccess) {
-        // toast.success(response.data.mesg);
-        // setToaster(true);
+        if (isId !== -1) {
+          // Check if it's an update
+          setOtpPopupVisible(false); // Hide OTP popup for updates
+        } 
 
-        setOtpPopupVisible(true);
-        setId(response.data.data);
+        setOtpPopupVisible(true); 
+        setId(response.data.data); // Set the ID from the response
         console.log("🚀 ~ onSubmit: ~ response.data.data:", response.data.data);
       } else {
         setToaster(true);
@@ -706,8 +710,8 @@ const CertificateAdd = (props: Props) => {
 
                         setIsRecord(true);
                         // getPayment(newValue?.value);
-                        formik.setFieldTouched("certificateId", true);
-                        formik.setFieldTouched("certificateId", false);
+                        formik.setFieldTouched("subService", true);
+                        formik.setFieldTouched("subService", false);
                       }}
                       disableCloseOnSelect
                       renderOption={(props, option, { selected }) => (

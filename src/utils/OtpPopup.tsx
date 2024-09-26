@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import "./OtpPopup.css";
 import api from "./Url";
 import { toast, ToastContainer } from "react-toastify";
-import 'react-toastify/dist/ReactToastify.css'; // Import toast CSS
+import "react-toastify/dist/ReactToastify.css"; // Import toast CSS
 
 interface OtpPopupProps {
   isVisible: boolean;
@@ -19,11 +19,11 @@ const OtpPopup: React.FC<OtpPopupProps> = ({
   isId,
   isData,
 }) => {
-  console.log("🚀 ~ isVisi̥ble:", isVisible)
-  console.log("🚀 ~ onClose:", onClose)
-  console.log("🚀 ~ onOtpVerified:", onOtpVerified)
-  console.log("🚀 ~ isId:", isId)
-  console.log("🚀 ~ isData:", isData)
+  console.log("🚀 ~ isVisi̥ble:", isVisible);
+  console.log("🚀 ~ onClose:", onClose);
+  console.log("🚀 ~ onOtpVerified:", onOtpVerified);
+  console.log("🚀 ~ isId:", isId);
+  console.log("🚀 ~ isData:", isData);
   const [otp, setOtp] = useState<string[]>(Array(6).fill(""));
   const [resendAvailable, setResendAvailable] = useState<boolean>(false);
   const [timer, setTimer] = useState<number>(180);
@@ -34,7 +34,7 @@ const OtpPopup: React.FC<OtpPopupProps> = ({
 
     if (isVisible && !resendAvailable) {
       countdown = setInterval(() => {
-        setTimer(prev => {
+        setTimer((prev) => {
           if (prev <= 1) {
             clearInterval(countdown);
             setResendAvailable(true);
@@ -63,26 +63,29 @@ const OtpPopup: React.FC<OtpPopupProps> = ({
     const otpString = otp.join("");
     const collectData = { otp: otpString };
     api
-      .post(`CertificateApply/VerificationOTP?id=${isId}`, JSON.stringify(collectData.otp), {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      })
-      .then(res => {
+      .post(
+        `CertificateApply/VerificationOTP?id=${isId}`,
+        JSON.stringify(collectData.otp),
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      )
+      .then((res) => {
         console.log(res.data); // Debug log
         if (res.data.isSuccess) {
           toast.success(res.data.mesg);
           setTimeout(() => {
             onOtpVerified(true);
-          onClose();
+            onClose();
           }, 800);
-          
         } else {
           toast.error(res.data.mesg);
           onOtpVerified(false);
         }
       })
-      .catch(err => {
+      .catch((err) => {
         toast.error("An error occurred while verifying OTP.");
         console.error(err);
       });
@@ -104,8 +107,9 @@ const OtpPopup: React.FC<OtpPopupProps> = ({
       aadharImage: isData.aadharImage || "",
     };
 
-    api.post(`CertificateApply/ResendOTP`, collectData)
-      .then(res => {
+    api
+      .post(`CertificateApply/ResendOTP`, collectData)
+      .then((res) => {
         if (res.data.isSuccess) {
           toast.success("OTP has been resent.");
           setOtp(Array(6).fill(""));
@@ -115,7 +119,7 @@ const OtpPopup: React.FC<OtpPopupProps> = ({
           toast.error(res.data.mesg);
         }
       })
-      .catch(err => {
+      .catch((err) => {
         toast.error("An error occurred while resending OTP.");
         console.error(err);
       });
@@ -140,21 +144,33 @@ const OtpPopup: React.FC<OtpPopupProps> = ({
                   inputRefs.current[index - 1]?.focus();
                 }
               }}
-              ref={el => inputRefs.current[index] = el}
+              ref={(el) => (inputRefs.current[index] = el)}
               maxLength={1}
               className="otp-input"
               placeholder="-"
             />
           ))}
         </div>
-        <button className="verify" onClick={(e) => { e.preventDefault(); handleSubmitOtp(); }}>
+        <button
+          className="verify"
+          onClick={(e) => {
+            handleSubmitOtp();
+            e.preventDefault();
+          }}
+        >
           Verify OTP
         </button>
         <button className="close" onClick={onClose}>
           Close
         </button>
         {resendAvailable && (
-          <button className="resend" onClick={(e) => { e.preventDefault(); handleResendOtp(); }}>
+          <button
+            className="resend"
+            onClick={(e) => {
+              e.preventDefault();
+              handleResendOtp();
+            }}
+          >
             Resend OTP
           </button>
         )}

@@ -24,7 +24,7 @@ import TokenPopUp from "../../../utils/TokenPopUp";
 import { useFormik } from "formik";
 import api from "../../../utils/Url";
 import { toast } from "react-toastify";
-
+import { getISTDate } from "../../../utils/Constant";
 
 export default function TokenGenration() {
   const { t } = useTranslation();
@@ -33,54 +33,51 @@ export default function TokenGenration() {
   const [isId, setId] = useState<any>();
   const [toaster, setToaster] = useState(false);
   const [isData, setData] = useState<any>();
+  let {defaultValuestime} = getISTDate();
 
+  const formik = useFormik({
+    initialValues: {
+      id: -1,
+      name: "",
+      rollNo: "",
+      mobileNo: "",
+      emailId: "",
+      dob:defaultValuestime,
+      otp: "",
+      certificateId: 0,
+      status: 0,
+      serviceId: 0,
+      address: "",
+      aadharNo: "",
+      aadharImage: "",
+      fileNumber: "",
+      letterType: "",
+      fileType: "",
+      subject: "",
+      sendBy: "",
+      discription: "",
+      root: "",
+      subService: [],
+    },
 
-
-const formik = useFormik({
-  initialValues: {
-    id: -1,
-    name: "",
-    rollNo: "",
-    mobileNo: "",
-    emailId: "",
-    dob: "",
-    otp: "",
-    certificateId: 0,
-    status: 0,
-    serviceId: 0,
-    address: "",
-    aadharNo: "",
-    aadharImage: "",
-    fileNumber: "",
-    letterType: "",
-    fileType: "",
-    subject: "",
-    sendBy: "",
-    discription: "",
-    root: "",
-    subService: [],
-  },
-
-  onSubmit: async (values) => {
-    values.id = isId;
-    setData(formik.values);
-    const response = await api.post(
-      `CertificateApply/AddUpdateCertificateApply`,
-      values
-    );
-    if (response.data.isSuccess) {
-      // toast.success(response.data.mesg);
-      // setToaster(true);
-
-      setOtpPopupVisible(true);
-      setId(response.data.data);
-      console.log("🚀 ~ onSubmit: ~ response.data.data:", response.data.data);
-    } else {
-      setToaster(true);
-      toast.error(response.data.mesg);
-    }
-  },
-});
+    onSubmit: async (values) => {
+      values.id = isId;
+      setData(formik.values);
+      const response = await api.post(
+        `CertificateApply/AddUpdateCertificateApply`,
+        values
+      );
+      if (response.data.isSuccess) {
+        // toast.success(response.data.mesg);
+        setOtpPopupVisible(true);
+        setId(response.data.data);
+        console.log("🚀 ~ onSubmit: ~ response.data.data:", response.data.data);
+      } else {
+        setToaster(true);
+        toast.error(response.data.mesg);
+      }
+    },
+  });
 
   return (
     <>
@@ -129,150 +126,150 @@ const formik = useFormik({
                     </Typography>
                   </div>
                   <form onSubmit={formik.handleSubmit}>
-                  <Grid
-                    container
-                    spacing={2}
-                    style={{ marginBottom: 16, justifyContent: "center" }}
-                  >
-                    <Grid item xs={3}>
-                      <TextField
-                        fullWidth
-                        name="name"
-                        id="name"
-                        //value={formik.values.name}
-                        // onChangeText={(text: string) =>
-                        //   handleConversionChange("name", text)
-                        // }
-                        label="Roll No"
-                        variant="outlined"
-                        placeholder="Roll No"
-                        InputLabelProps={{
-                          sx: { color: "rgb(183, 28, 28)" },
-                        }}
-                        sx={{
-                          "& .MuiOutlinedInput-notchedOutline": {
-                            borderTop: "none",
-                            borderLeft: "none",
-                            borderRight: "none",
-                          },
-                          "& .MuiOutlinedInput-root": {
-                            "& fieldset": {
+                    <Grid
+                      container
+                      spacing={2}
+                      style={{ marginBottom: 16, justifyContent: "center" }}
+                    >
+                      <Grid item xs={3}>
+                        <TextField
+                          fullWidth
+                          name="rollNo"
+                          id="rollNo"
+                          value={formik.values.rollNo}
+                          onChange={formik.handleChange}
+                          label="Roll No"
+                          variant="outlined"
+                          placeholder="Roll No"
+                          InputLabelProps={{
+                            sx: { color: "rgb(183, 28, 28)" },
+                          }}
+                          sx={{
+                            "& .MuiOutlinedInput-notchedOutline": {
                               borderTop: "none",
                               borderLeft: "none",
                               borderRight: "none",
                             },
-                          },
-                        }}
-                      />
-                    </Grid>
-                    <Grid item xs={3}>
-                      <TextField
-                        fullWidth
-                        name="mobileNo"
-                        id="mobileNo"
-                        //value={formik.values.mobileNo}
-                        label="Mobile Number"
-                        placeholder="Mobile Number"
-                        variant="outlined"
-                        InputLabelProps={{
-                          sx: { color: "rgb(183, 28, 28)" },
-                        }}
-                        sx={{
-                          "& .MuiOutlinedInput-notchedOutline": {
-                            borderTop: "none",
-                            borderLeft: "none",
-                            borderRight: "none",
-                          },
-                          "& .MuiOutlinedInput-root": {
-                            "& fieldset": {
+                            "& .MuiOutlinedInput-root": {
+                              "& fieldset": {
+                                borderTop: "none",
+                                borderLeft: "none",
+                                borderRight: "none",
+                              },
+                            },
+                          }}
+                        />
+                      </Grid>
+                      <Grid item xs={3}>
+                        <TextField
+                          fullWidth
+                          name="mobileNo"
+                          id="mobileNo"
+                          value={formik.values.mobileNo}
+                          onChange={formik.handleChange}
+                          label="Mobile Number"
+                          placeholder="Mobile Number"
+                          variant="outlined"
+                          InputLabelProps={{
+                            sx: { color: "rgb(183, 28, 28)" },
+                          }}
+                          sx={{
+                            "& .MuiOutlinedInput-notchedOutline": {
                               borderTop: "none",
                               borderLeft: "none",
                               borderRight: "none",
                             },
-                          },
-                        }}
-                      />
-                    </Grid>
-                    <Grid item xs={3}>
-                      <TextField
-                        fullWidth
-                        name="emailId"
-                        id="emailId"
-                        //value={formik.values.emailId}
-                        label="Email"
-                        variant="outlined"
-                        placeholder="Email"
-                        InputLabelProps={{
-                          sx: { color: "rgb(183, 28, 28)" },
-                        }}
-                        sx={{
-                          "& .MuiOutlinedInput-notchedOutline": {
-                            borderTop: "none",
-                            borderLeft: "none",
-                            borderRight: "none",
-                          },
-                          "& .MuiOutlinedInput-root": {
-                            "& fieldset": {
+                            "& .MuiOutlinedInput-root": {
+                              "& fieldset": {
+                                borderTop: "none",
+                                borderLeft: "none",
+                                borderRight: "none",
+                              },
+                            },
+                          }}
+                        />
+                      </Grid>
+                      <Grid item xs={3}>
+                        <TextField
+                          fullWidth
+                          name="emailId"
+                          id="emailId"
+                          value={formik.values.emailId}
+                          onChange={formik.handleChange}
+                          label="Email"
+                          variant="outlined"
+                          placeholder="Email"
+                          InputLabelProps={{
+                            sx: { color: "rgb(183, 28, 28)" },
+                          }}
+                          sx={{
+                            "& .MuiOutlinedInput-notchedOutline": {
                               borderTop: "none",
                               borderLeft: "none",
                               borderRight: "none",
                             },
-                          },
-                        }}
-                      />
+                            "& .MuiOutlinedInput-root": {
+                              "& fieldset": {
+                                borderTop: "none",
+                                borderLeft: "none",
+                                borderRight: "none",
+                              },
+                            },
+                          }}
+                        />
+                      </Grid>
+
+                      <Grid item xs={3}>
+                        <TextField
+                          fullWidth
+                          name="aadharNo"
+                          id="aadharNo"
+                          value={formik.values.aadharNo}
+                          onChange={formik.handleChange}
+                          label="Aadhar Number"
+                          placeholder="Aadhar Number"
+                          variant="outlined"
+                          InputLabelProps={{
+                            sx: { color: "rgb(183, 28, 28)" },
+                          }}
+                          sx={{
+                            "& .MuiOutlinedInput-notchedOutline": {
+                              borderTop: "none",
+                              borderLeft: "none",
+                              borderRight: "none",
+                            },
+                            "& .MuiOutlinedInput-root": {
+                              "& fieldset": {
+                                borderTop: "none",
+                                borderLeft: "none",
+                                borderRight: "none",
+                              },
+                            },
+                          }}
+                        />
+                      </Grid>
                     </Grid>
 
-                    <Grid item xs={3}>
-                      <TextField
-                        fullWidth
-                        name="aadharNo"
-                        id="aadharNo"
-                        //value={formik.values.aadharNo}
-                        label="Aadhar Number"
-                        placeholder="Aadhar Number"
-                        variant="outlined"
-                        InputLabelProps={{
-                          sx: { color: "rgb(183, 28, 28)" },
-                        }}
-                        sx={{
-                          "& .MuiOutlinedInput-notchedOutline": {
-                            borderTop: "none",
-                            borderLeft: "none",
-                            borderRight: "none",
-                          },
-                          "& .MuiOutlinedInput-root": {
-                            "& fieldset": {
-                              borderTop: "none",
-                              borderLeft: "none",
-                              borderRight: "none",
-                            },
-                          },
-                        }}
-                      />
+                    <Grid
+                      container
+                      spacing={2}
+                      style={{ marginBottom: 16, justifyContent: "center" }}
+                    >
+                      <Grid item xs={4}>
+                        <Button
+                          type="submit"
+                          variant="contained"
+                          fullWidth
+                          style={{ backgroundColor: "#03a1fc", color: "white" }}
+                          // onClick={() => {
+                          //   setOtpPopupVisible(true);
+                          // }}
+                        >
+                          Generate OTP
+                        </Button>
+                      </Grid>
                     </Grid>
-                  </Grid>
-
-                  <Grid
-                    container
-                    spacing={2}
-                    style={{ marginBottom: 16, justifyContent: "center" }}
-                  >
-                    <Grid item xs={4}>
-                      <Button
-                      type="submit"
-                        variant="contained"
-                        fullWidth
-                        style={{ backgroundColor: "#03a1fc", color: "white" }}
-                        // onClick={() => {
-                        //   setOtpPopupVisible(true);
-                        // }}
-                      >
-                        Generate OTP
-                      </Button>
-                    </Grid>
-                  </Grid>
-                 
-            </form>
+                  </form>
                 </div>
               </Grid>
               <Grid item xs={1.5} sm={1.5}></Grid>
@@ -282,7 +279,10 @@ const formik = useFormik({
 
             <TokenPopUp
               isVisible={isOtpPopupVisible}
-              onClose={() => setOtpPopupVisible(false)}
+              onClose={() => setOtpPopupVisible(!isOtpPopupVisible)}
+              //onOtpVerified={(isVerified) => setOtpVerified(isVerified)}
+              isId={isId}
+              isData={isData}
             />
           </Paper>
         </Card>

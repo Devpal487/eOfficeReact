@@ -95,7 +95,7 @@ export default function RoleMaster() {
     isPrint: false,
     isDel: false,
   });
-  const [lang, setLang] = useState<Language>("en");
+  //const [lang, setLang] = useState<Language>("en");
 
   const location = useLocation();
   const { i18n, t } = useTranslation();

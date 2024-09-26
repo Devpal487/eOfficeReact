@@ -4,6 +4,15 @@ import {
   Checkbox,
   Grid,
   ListItemText,
+  Paper,
+  styled,
+  Table,
+  TableBody,
+  TableCell,
+  tableCellClasses,
+  TableContainer,
+  TableHead,
+  TableRow,
   TextField,
   Typography,
 } from "@mui/material";
@@ -29,6 +38,7 @@ import OtpPopup from "../../../utils/OtpPopup";
 import Institute from "../../../assets/images/aktu.png";
 import dayjs, { Dayjs } from "dayjs";
 import { getISTDate } from "../../../utils/Constant";
+import PaymentComponent from "../../../utils/PaymentComponent";
 
 const containerStyle = {
   border: "1px solid #ccc",
@@ -50,11 +60,36 @@ const headerStyle: any = {
 };
 
 type Props = {};
+const StyledTableCell = styled(TableCell)(({ theme }) => ({
+  [`&.${tableCellClasses.head}`]: {
+    padding: "5px !important",
+    backgroundColor: "#00009c",
+    color: theme.palette.common.white,
+  },
+  [`&.${tableCellClasses.body}`]: {
+    fontSize: 14,
+    padding: "2px !important",
+  },
+}));
+
+const StyledTableRow = styled(TableRow)(({ theme }) => ({
+  "&:nth-of-type(odd)": {
+    backgroundColor: theme.palette.action.hover,
+  },
+
+  "&:last-child td, &:last-child th": {
+    border: 0,
+  },
+  "& td, & th": {
+    padding: "3px !important",
+  },
+}));
+
 
 const AplicantDetailsAdd = (props: Props) => {
   const back = useNavigate();
   const { t } = useTranslation();
-  const [lang, setLang] = useState<Language>("en");
+  //const [lang, setLang] = useState<Language>("en");
   const location = useLocation();
   const studentData = location.state?.[0] || {};
 
@@ -90,10 +125,18 @@ const AplicantDetailsAdd = (props: Props) => {
   const totalDispatch = dispatches.reduce((acc, dispatch) => acc + dispatch, 0);
   const netPayment = totalRate + totalDispatch;
 
+  const [isData, setData] = useState<any>();
+
+  const [isServiceId, setServiceId] = useState<any>();
+  const [isRecord, setIsRecord] = useState(false);
+  const [isOtpVerified, setOtpVerified] = useState(false);
+
+
   useEffect(() => {
     getFileNo();
     getCountry();
     getStatus();
+    setData(studentData)
   }, []);
 
   const getFileNo = () => {
@@ -696,9 +739,9 @@ const AplicantDetailsAdd = (props: Props) => {
                           setRates(selectedRates);
                           setDispatches(selectedDispatches);
 
-                          // setServiceId(
-                          //   newValue.length > 0 ? newValue[0].value : null
-                          // );
+                          setServiceId(
+                            newValue.length > 0 ? newValue[0].value : null
+                          );
 
                           const serviceID = newValue.map((item: any) => ({
                             serviceId: item.value,
@@ -706,7 +749,7 @@ const AplicantDetailsAdd = (props: Props) => {
                             id: -1,
                           }));
                           console.log("🚀 ~ serviceID ~ serviceID:", serviceID);
-
+                          setIsRecord(true);
                           formik.setFieldValue("subService", serviceID);
 
                           formik.setFieldTouched("subService", true);
@@ -752,6 +795,253 @@ const AplicantDetailsAdd = (props: Props) => {
                 </div>
               </Grid>
             </Grid>
+           
+                <Grid container spacing={2} sx={{ marginTop: "2%" }}>
+                  {isRecord && (
+                    <>
+                      <Grid item xs={12}>
+                        <div style={containerStyle}>
+                          {/* Header */}
+                          <div style={headerStyle}>Payment Details</div>
+
+                          {/* Form Fields */}
+                          <Grid container spacing={1} sx={{ marginTop: "1%" }}>
+                            <Grid xs={12} sm={12} item>
+                              <TableContainer
+                                component={Paper}
+                                id="tabcont"
+                                sx={{
+                                  maxHeight: "65vh",
+                                  marginBottom: "10px",
+                                  border: "1px solid #fff",
+                                }}
+                              >
+                                <Table
+                                  aria-label="customized  table"
+                                  style={{
+                                    border: "1px gray solid",
+                                    borderCollapse: "collapse",
+                                    width: "100%",
+                                  }}
+                                >
+                                  <TableHead
+                                    style={{
+                                      border: "1px gray solid",
+                                      borderCollapse: "collapse",
+                                      position: "sticky",
+                                    }}
+                                  >
+                                    <TableRow>
+                                      {/* <StyledTableCell /> */}
+
+                                      <StyledTableCell
+                                        align="center"
+                                        style={{
+                                          fontSize: 15,
+                                          fontWeight: 500,
+                                          border: "1px gray grey",
+                                          borderLeft: "1px solid #bdbbbb",
+                                          paddingTop: "5px",
+                                          paddingBottom: "5px",
+                                          // padding: "10px",
+                                        }}
+                                      >
+                                        {t("text.Service")}
+                                      </StyledTableCell>
+                                      <StyledTableCell
+                                        align="center"
+                                        style={{
+                                          fontSize: 15,
+                                          fontWeight: 500,
+                                          border: "1px gray grey",
+                                          borderLeft: "1px solid #bdbbbb",
+                                          paddingTop: "5px",
+                                          paddingBottom: "5px",
+                                          // padding: "10px",
+                                        }}
+                                      >
+                                        {t("text.Rate")}
+                                      </StyledTableCell>
+
+                                      <StyledTableCell
+                                        align="center"
+                                        style={{
+                                          fontSize: 15,
+                                          fontWeight: 500,
+                                          border: "1px gray grey",
+                                          borderLeft: "1px solid #bdbbbb",
+                                          paddingTop: "5px",
+                                          paddingBottom: "5px",
+                                          // padding: "10px",
+                                        }}
+                                      >
+                                        {t("text.DispatchFee")}
+                                      </StyledTableCell>
+                                    </TableRow>
+                                  </TableHead>
+                                  {/* {tableLoading ? (
+                            <div
+                              style={{
+                                display: "flex",
+                                justifyContent: "center",
+                                alignItems: "center",
+                                margin: 10,
+                              }}
+                            >
+                              <CustomizedProgressBars />
+                            </div>
+                          ) : ( */}
+                                  <TableBody>
+                                    {services.map((service, index) => (
+                                      <StyledTableRow
+                                        key={index}
+                                        sx={{
+                                          border: "1px gray grey",
+                                          borderLeft: "1px solid #bdbbbb",
+                                          borderTop: "1px solid #bdbbbb",
+                                          padding: "2px",
+                                        }}
+                                      >
+                                        <TableCell
+                                          style={{
+                                            border: "1px gray grey",
+                                            borderLeft: "1px solid #bdbbbb",
+                                            borderTop: "1px solid #bdbbbb",
+                                            padding: "2px",
+                                          }}
+                                        >
+                                          {service}
+                                        </TableCell>
+
+                                        <TableCell
+                                          style={{
+                                            border: "1px gray grey",
+                                            borderLeft: "1px solid #bdbbbb",
+                                            borderTop: "1px solid #bdbbbb",
+                                            padding: "2px",
+                                          }}
+                                          align="center"
+                                        >
+                                          {rates[index]}
+                                        </TableCell>
+
+                                        <TableCell
+                                          style={{
+                                            border: "1px gray grey",
+                                            borderLeft: "1px solid #bdbbbb",
+                                            borderTop: "1px solid #bdbbbb",
+                                            padding: "2px",
+                                          }}
+                                          align="center"
+                                        >
+                                          {dispatches[index]}
+                                        </TableCell>
+                                      </StyledTableRow>
+                                    ))}
+
+                                    <StyledTableRow
+                                      sx={{
+                                        border: "1px gray grey",
+                                        borderLeft: "1px solid #bdbbbb",
+                                        borderTop: "1px solid #bdbbbb",
+                                        padding: "2px",
+                                        backgroundColor: "#f5f5f5",
+                                      }}
+                                    >
+                                      <TableCell
+                                        style={{
+                                          border: "1px gray grey",
+                                          borderLeft: "1px solid #bdbbbb",
+                                          borderTop: "1px solid #bdbbbb",
+                                          padding: "2px",
+                                          fontWeight: "bold",
+                                          textAlign: "center",
+                                        }}
+                                      >
+                                        Total Fee
+                                      </TableCell>
+                                      <TableCell
+                                        style={{
+                                          border: "1px gray grey",
+                                          borderLeft: "1px solid #bdbbbb",
+                                          borderTop: "1px solid #bdbbbb",
+                                          padding: "2px",
+                                        }}
+                                        align="center"
+                                      >
+                                        {totalRate}
+                                      </TableCell>
+                                      <TableCell
+                                        style={{
+                                          border: "1px gray grey",
+                                          borderLeft: "1px solid #bdbbbb",
+                                          borderTop: "1px solid #bdbbbb",
+                                          padding: "2px",
+                                        }}
+                                        align="center"
+                                      >
+                                        {totalDispatch}
+                                      </TableCell>
+                                    </StyledTableRow>
+
+                                    <StyledTableRow
+                                      sx={{
+                                        border: "1px gray grey",
+                                        borderLeft: "1px solid #bdbbbb",
+                                        borderTop: "1px solid #bdbbbb",
+                                        padding: "2px",
+                                        backgroundColor: "#f5f5f5",
+                                      }}
+                                    >
+                                      <TableCell
+                                        style={{
+                                          border: "1px gray grey",
+                                          borderLeft: "1px solid #bdbbbb",
+                                          borderTop: "1px solid #bdbbbb",
+                                          padding: "2px",
+                                          fontWeight: "bold",
+                                          textAlign: "center",
+                                        }}
+                                      >
+                                        Net Payment
+                                      </TableCell>
+                                      <TableCell
+                                        colSpan={2}
+                                        style={{
+                                          border: "1px gray grey",
+                                          borderLeft: "1px solid #bdbbbb",
+                                          borderTop: "1px solid #bdbbbb",
+                                          fontWeight: "bold",
+                                          padding: "2px",
+                                        }}
+                                        align="center"
+                                      >
+                                        {netPayment}
+                                      </TableCell>
+                                    </StyledTableRow>
+                                  </TableBody>
+
+                                  {/* )} */}
+                                </Table>
+                              </TableContainer>
+                            </Grid>
+
+                            <Grid xs={12} sm={12} item>
+                              <PaymentComponent
+                                dispatchFee={totalDispatch}
+                                rate={totalRate}
+                                netPayment={netPayment}
+                                isData={isData}
+                                serviceId={isServiceId}
+                              />
+                            </Grid>
+                          </Grid>
+                        </div>
+                      </Grid>
+                    </>
+                  )}
+                </Grid>
+            
             <Grid container spacing={1} sx={{ marginTop: "2%" }}>
               <Grid xs={12} item>
                 <div style={{ justifyContent: "space-between", flex: 2 }}>

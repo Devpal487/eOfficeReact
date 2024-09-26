@@ -29,6 +29,12 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { getISTDate } from "../../../utils/Constant";
 import CustomDataGrid from "../../../utils/CustomDatagrid";
 import CustomLabel from "../../../CustomLable";
+import ButtonWithLoader from "../../../utils/ButtonWithLoader";
+import Languages from "../../../Languages";
+import { Language } from "react-transliterate";
+import "react-transliterate/dist/index.css";
+import TranslateTextField from "../../../TranslateTextField";
+
 
 interface MenuPermission {
   isAdd: boolean;
@@ -52,6 +58,7 @@ export default function GenderMaster() {
     isPrint: false,
     isDel: false,
   });
+  const [lang, setLang] = useState<Language>("en");
 
   useEffect(() => {
     const dataString = localStorage.getItem("userdata");
@@ -96,8 +103,8 @@ export default function GenderMaster() {
         getList();
       });
   };
+
   const reject = () => {
-    // toast.warn({summary: 'Rejected', detail: 'You have rejected', life: 3000 });
     toast.warn("Rejected: You have rejected", { autoClose: 3000 });
   };
 
@@ -116,7 +123,7 @@ export default function GenderMaster() {
 
   const getList = () => {
     const collectData = {
-     "genderID": -1
+      "genderID": -1
     };
     try {
       api
@@ -147,33 +154,33 @@ export default function GenderMaster() {
                       direction="row"
                       sx={{ alignItems: "center", marginTop: "5px" }}
                     >
-                      {/*  {permissionData?.isEdit ? ( */}
-                      <EditIcon
-                        style={{
-                          fontSize: "20px",
-                          color: "blue",
-                          cursor: "pointer",
-                        }}
-                        className="cursor-pointer"
-                        onClick={() => routeChangeEdit(params.row)}
-                      />
-                      {/*  ) : ( */}
-                      {/*   "" */}
-                      {/* )} */}
-                      {/*  {permissionData?.isDel ? ( */}
-                      <DeleteIcon
-                        style={{
-                          fontSize: "20px",
-                          color: "red",
-                          cursor: "pointer",
-                        }}
-                        onClick={() => {
-                          handledeleteClick(params.row.id);
-                        }}
-                      />
-                      {/*  ) : ( */}
-                      {/*    "" */}
-                      {/*  )} */}
+                      {permissionData?.isEdit ? (
+                        <EditIcon
+                          style={{
+                            fontSize: "20px",
+                            color: "blue",
+                            cursor: "pointer",
+                          }}
+                          className="cursor-pointer"
+                          onClick={() => routeChangeEdit(params.row)}
+                        />
+                      ) : (
+                        ""
+                      )}
+                      {permissionData?.isDel ? (
+                        <DeleteIcon
+                          style={{
+                            fontSize: "20px",
+                            color: "red",
+                            cursor: "pointer",
+                          }}
+                          onClick={() => {
+                            handledeleteClick(params.row.id);
+                          }}
+                        />
+                      ) : (
+                        ""
+                      )}
                     </Stack>,
                   ];
                 },
@@ -207,6 +214,7 @@ export default function GenderMaster() {
       // setIsLoading(false);
     }
   };
+
   const validationSchema = Yup.object({
     genderName: Yup.string().test(
       "required",
@@ -216,6 +224,7 @@ export default function GenderMaster() {
       }
     ),
   });
+
   const [toaster, setToaster] = useState(false);
   const formik = useFormik({
     initialValues: {
@@ -223,16 +232,6 @@ export default function GenderMaster() {
       genderID: -1,
       genderName: "",
       genderCode: ""
-
-      // countryId: -1,
-      // countryName: "",
-      // countryCode: "",
-
-      // createdBy: "",
-      // updatedBy: "",
-      // createdOn: new Date().toISOString(),
-      // updatedOn: new Date().toISOString(),
-
     },
     validationSchema: validationSchema,
     onSubmit: async (values) => {
@@ -265,6 +264,14 @@ export default function GenderMaster() {
     setEditId(row.id);
   };
 
+  const handleSubmitWrapper = async () => {
+    await formik.handleSubmit();
+  };
+
+  const handleConversionChange = (params: any, text: string) => {
+    formik.setFieldValue(params, text);
+  };
+
   return (
     <>
       <Grid item lg={6} sm={6} xs={12} sx={{ marginTop: "3vh" }}>
@@ -273,7 +280,7 @@ export default function GenderMaster() {
             width: "100%",
             height: "50%",
             backgroundColor: "#E9FDEE",
-            border: ".5px solid #FF7722 ",
+            border: ".5px solid #2B4593 ",
             marginTop: "5px",
           }}
         >
@@ -291,42 +298,48 @@ export default function GenderMaster() {
             style={{ padding: "10px" }}
           >
             <ConfirmDialog />
+
+            <Grid item xs={12} container spacing={2}>
+            <Grid item lg={10} md={10} xs={12}>
             <Typography
-              gutterBottom
-              variant="h5"
-              component="div"
-              sx={{ padding: "20px" }}
-              align="left"
-            >
-              {t("text.GenderMaster")}
-            </Typography>
+            gutterBottom
+            variant="h5"
+            component="div"
+            sx={{ padding: "20px" }}
+            align="left"
+          >
+            {t("text.GenderMaster")}
+          </Typography>
+            </Grid>
+
+            <Grid item lg={2} md={2} xs={12} marginTop={2}>
+              <select
+                className="language-dropdown"
+                value={lang}
+                onChange={(e) => setLang(e.target.value as Language)}
+              >
+                {Languages.map((l) => (
+                  <option key={l.value} value={l.value}>
+                    {l.label}
+                  </option>
+                ))}
+              </select>
+            </Grid>
+          </Grid>
+            
             <Divider />
 
             <Box height={10} />
-            {/* <Stack direction="row" spacing={2} classes="my-2 mb-2"> */}
-            {/* <Grid
-                                // style={{
-                                //     display: "flex",
-                                //     flexDirection: "row",
-                                //     justifyContent: "space-around",
-                                //     alignItems: "flex-start",
-                                // }}
-                            > */}
             <form onSubmit={formik.handleSubmit}>
               <Grid item xs={12} container spacing={2}>
-                <Grid item xs={4}>
-                  <TextField
-                    label={<CustomLabel text={t("text.EnterGenderName")} required={requiredFields.includes('genderName')} />}
-                    value={formik.values.genderName}
-                    placeholder={t("text.EnterGenderName")}
-                    size="small"
-                    name="genderName"
-                    id="genderName"
-                    fullWidth
-                    style={{ backgroundColor: "white" }}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                  />
+                <Grid item xs={5}>
+                <TranslateTextField
+                  label={t("text.EnterGenderName")}
+                  value={formik.values.genderName}
+                  onChangeText={(text: string) => handleConversionChange('genderName', text)}
+                  required={true}
+                  lang={lang}
+                />
                   {formik.touched.genderName && formik.errors.genderName ? (
                     <div style={{ color: "red", margin: "5px" }}>
                       {formik.errors.genderName}
@@ -335,7 +348,7 @@ export default function GenderMaster() {
                 </Grid>
 
 
-                <Grid item xs={4}>
+                <Grid item xs={5}>
                   <TextField
                     label={<CustomLabel text={t("text.EnterGenderCode")} />}
                     value={formik.values.genderCode}
@@ -348,15 +361,23 @@ export default function GenderMaster() {
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
                   />
-                </Grid>
-                <Grid item xs={2}>
-                  {/* {permissionData?.isAdd == true ? ( */}
-                  <Button type="submit" variant="contained" size="large">
-                    {editId == -1 ? t("text.save") : t("text.update")}
-                  </Button>
-                  {/* ) : ( */}
-                  {/*    "" */}
-                  {/* )} */}
+                </Grid> 
+                <Grid item xs={2}  sx={{m:-1}}>
+                  {editId === -1 && permissionData?.isAdd && (
+                    <ButtonWithLoader
+                      buttonText={t("text.save")}
+                      onClickHandler={handleSubmitWrapper}
+                      fullWidth={true}
+                    />
+                  )}
+
+                  {editId !== -1 && (
+                    <ButtonWithLoader
+                      buttonText={t("text.update")}
+                      onClickHandler={handleSubmitWrapper}
+                      fullWidth={true}
+                    />
+                  )}
                 </Grid>
               </Grid>
             </form>

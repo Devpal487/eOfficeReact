@@ -12,8 +12,6 @@ import {
 import EditIcon from "@mui/icons-material/Edit";
 import Card from "@mui/material/Card";
 import Grid from "@mui/material/Grid";
-import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
 import api from "../../../utils/Url";
 import { useLocation } from "react-router-dom";
@@ -24,11 +22,15 @@ import { useTranslation } from "react-i18next";
 import { DataGrid, GridColDef, GridToolbar } from "@mui/x-data-grid";
 import { toast } from "react-toastify";
 import ToastApp from "../../../ToastApp";
-import { usePermissionData } from "../../../usePermissionData";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { getISTDate } from "../../../utils/Constant";
 import CustomDataGrid from "../../../utils/CustomDatagrid";
 import CustomLabel from "../../../CustomLable";
+import ButtonWithLoader from "../../../utils/ButtonWithLoader";
+import Languages from "../../../Languages";
+import { Language } from "react-transliterate";
+import "react-transliterate/dist/index.css";
+import TranslateTextField from "../../../TranslateTextField";
 
 interface MenuPermission {
   isAdd: boolean;
@@ -52,6 +54,7 @@ export default function DesignationMaster() {
     isPrint: false,
     isDel: false,
   });
+  const [lang, setLang] = useState<Language>("en");
 
   useEffect(() => {
     const dataString = localStorage.getItem("userdata");
@@ -68,15 +71,14 @@ export default function DesignationMaster() {
             );
             console.log("data", pathrow);
             if (pathrow) {
-
               setPermissionData(pathrow);
+              getList();
               // getList();
             }
           }
         }
       }
     }
-    getList();
   }, [isLoading]);
 
   let delete_id = "";
@@ -147,7 +149,7 @@ export default function DesignationMaster() {
                       direction="row"
                       sx={{ alignItems: "center", marginTop: "5px" }}
                     >
-                      {/*  {permissionData?.isEdit ? ( */}
+                       {permissionData?.isEdit ? (
                       <EditIcon
                         style={{
                           fontSize: "20px",
@@ -157,10 +159,10 @@ export default function DesignationMaster() {
                         className="cursor-pointer"
                         onClick={() => routeChangeEdit(params.row)}
                       />
-                      {/*  ) : ( */}
-                      {/*   "" */}
-                      {/* )} */}
-                      {/*  {permissionData?.isDel ? ( */}
+                        ) : (
+                         "" 
+                      )} 
+                       {permissionData?.isDel ? (
                       <DeleteIcon
                         style={{
                           fontSize: "20px",
@@ -171,9 +173,9 @@ export default function DesignationMaster() {
                           handledeleteClick(params.row.id);
                         }}
                       />
-                      {/*  ) : ( */}
-                      {/*    "" */}
-                      {/*  )} */}
+                       ) : ( 
+                          "" 
+                        )} 
                     </Stack>,
                   ];
                 },
@@ -227,16 +229,6 @@ export default function DesignationMaster() {
       "updatedBy": "string",
       "createdOn": defaultValuestime,
       "updatedOn": defaultValuestime
-
-      // "departmentId": -1,
-      // "departmentName": "",
-      // "departmentShortname": "",
-      // "createdBy": "admin",
-      // "updatedBy": "admin",
-      // "createdOn":defaultValuestime,
-      // "updatedOn":defaultValuestime
-      
-
     },
     validationSchema: validationSchema,
     onSubmit: async (values) => {
@@ -269,6 +261,15 @@ export default function DesignationMaster() {
     setEditId(row.id);
   };
 
+  const handleSubmitWrapper = async () => {
+    await formik.handleSubmit();
+  };
+
+  const handleConversionChange = (params: any, text: string) => {
+    formik.setFieldValue(params, text);
+  };
+
+
   return (
     <>
       <Grid item lg={6} sm={6} xs={12} sx={{ marginTop: "3vh" }}>
@@ -277,7 +278,7 @@ export default function DesignationMaster() {
             width: "100%",
             height: "50%",
             backgroundColor: "#E9FDEE",
-            border: ".5px solid #FF7722 ",
+            border: ".5px solid #2B4593 ",
             marginTop: "5px",
           }}
         >
@@ -295,52 +296,56 @@ export default function DesignationMaster() {
             style={{ padding: "10px" }}
           >
             <ConfirmDialog />
+
+            <Grid item xs={12} container spacing={2}>
+            <Grid item lg={10} md={10} xs={12}>
             <Typography
-              gutterBottom
-              variant="h5"
-              component="div"
-              sx={{ padding: "20px" }}
-              align="left"
-            >
-              {t("text.DesignationMaster")}
-            </Typography>
+            gutterBottom
+            variant="h5"
+            component="div"
+            sx={{ padding: "20px" }}
+            align="left"
+          >
+            {t("text.DesignationMaster")}
+          </Typography>
+            </Grid>
+
+            <Grid item lg={2} md={2} xs={12} marginTop={2}>
+              <select
+                className="language-dropdown"
+                value={lang}
+                onChange={(e) => setLang(e.target.value as Language)}
+              >
+                {Languages.map((l) => (
+                  <option key={l.value} value={l.value}>
+                    {l.label}
+                  </option>
+                ))}
+              </select>
+            </Grid>
+          </Grid>
+           
             <Divider />
 
             <Box height={10} />
-            {/* <Stack direction="row" spacing={2} classes="my-2 mb-2"> */}
-            {/* <Grid
-                                // style={{
-                                //     display: "flex",
-                                //     flexDirection: "row",
-                                //     justifyContent: "space-around",
-                                //     alignItems: "flex-start",
-                                // }}
-                            > */}
+           
             <form onSubmit={formik.handleSubmit}>
               <Grid item xs={12} container spacing={2}>
-                <Grid item xs={4}>
-                <TextField
-                    id="designationName"
-                    name="designationName"
-                    label={<CustomLabel text={t("text.enterDesName")} required={requiredFields.includes('designationName')}  />}
-                    value={formik.values.designationName}
-                    placeholder={t("text.enterDesName")}
-                    size="small"
-                    fullWidth
-                    style={{
-                      backgroundColor: 'white',
-                      borderColor: formik.touched.designationName && formik.errors.designationName ? 'red' : 'initial',
-                    }}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                  />
+                <Grid item xs={5}>
+                <TranslateTextField
+                  label={t("text.enterDesName")}
+                  value={formik.values.designationName}
+                  onChangeText={(text: string) => handleConversionChange('designationName', text)}
+                  required={true}
+                  lang={lang}
+                />
                   {formik.touched.designationName && formik.errors.designationName ? (
                     <div style={{color:"red", margin:"5px"}}>{formik.errors.designationName}</div>
                   ) : null}
                 </Grid>
 
 
-                <Grid item xs={4}>
+                <Grid item xs={5}>
                 <TextField
                     id="designationCode"
                     name="designationCode"
@@ -354,14 +359,22 @@ export default function DesignationMaster() {
                     onBlur={formik.handleBlur}
                   />
                 </Grid>
-                <Grid item xs={2}>
-                  {/* {permissionData?.isAdd == true ? ( */}
-                  <Button type="submit" variant="contained" size="large">
-                    {editId == -1 ? t("text.save") : t("text.update")}
-                  </Button>
-                  {/* ) : ( */}
-                  {/*    "" */}
-                  {/* )} */}
+                <Grid item xs={2} sx={{m:-1}}>
+                 {editId === -1 && permissionData?.isAdd && (
+  <ButtonWithLoader
+    buttonText={t("text.save")}
+    onClickHandler={handleSubmitWrapper}
+    fullWidth={true}
+  />
+)}
+
+{editId !== -1 && (
+  <ButtonWithLoader
+    buttonText={t("text.update")}
+    onClickHandler={handleSubmitWrapper}
+    fullWidth={true}
+  />
+)}
                 </Grid>
               </Grid>
             </form>

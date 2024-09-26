@@ -54,27 +54,27 @@ export default function CommitteeMaster() {
 
     useEffect(() => {
         const dataString = localStorage.getItem("userdata");
-        // if (dataString) {
-        //     const data = JSON.parse(dataString);
-        //     if (data && data.length > 0) {
-        //         const userPermissionData = data[0]?.userPermission;
-        //         if (userPermissionData && userPermissionData.length > 0) {
-        //             const menudata = userPermissionData[0]?.parentMenu;
-        //             for (let index = 0; index < menudata.length; index++) {
-        //                 const childMenudata = menudata[index]?.childMenu;
-        //                 const pathrow = childMenudata.find(
-        //                     (x: any) => x.path === location.pathname
-        //                 );
-        //                 console.log("data", pathrow);
-        //                 if (pathrow) {
-        //                     setPermissionData(pathrow);
-        //                 }
-        //             }
-        //         }
-        //     }
-        // }
-        fetchZonesData();
-    }, []);
+        if (dataString) {
+            const data = JSON.parse(dataString);
+            if (data && data.length > 0) {
+                const userPermissionData = data[0]?.userPermission;
+                if (userPermissionData && userPermissionData.length > 0) {
+                    const menudata = userPermissionData[0]?.parentMenu;
+                    for (let index = 0; index < menudata.length; index++) {
+                        const childMenudata = menudata[index]?.childMenu;
+                        const pathrow = childMenudata.find(
+                            (x: any) => x.path === location.pathname
+                        );
+                        console.log("data", pathrow);
+                        if (pathrow) {
+                            setPermissionData(pathrow);
+                            fetchZonesData();
+                        }
+                    }
+                }
+            }
+        }
+    }, [isLoading]);
     // }, [isLoading]);
     const routeChangeAdd = () => {
         let path = `/E-Office/CommitteeAdd`;
@@ -165,7 +165,7 @@ export default function CommitteeMaster() {
                                     direction="row"
                                     sx={{ alignItems: "center", marginTop: "5px" }}
                                 >
-                                    {/* {permissionData?.isEdit ? ( */}
+                                    {permissionData?.isEdit === true && ( 
                                     <EditIcon
                                         style={{
                                             fontSize: "20px",
@@ -175,10 +175,8 @@ export default function CommitteeMaster() {
                                         className="cursor-pointer"
                                         onClick={() => routeChangeEdit(params.row)}
                                     />
-                                    {/* ) : ( */}
-                                    {/*  "" */}
-                                    {/*)} */}
-                                    {/*{permissionData?.isDel ? ( */}
+                                    ) } 
+                                   {permissionData?.isDel === true && ( 
                                     <DeleteIcon
                                         style={{
                                             fontSize: "20px",
@@ -189,7 +187,7 @@ export default function CommitteeMaster() {
                                             handledeleteClick(params.row.id);
                                         }}
                                     />
-
+                                ) } 
 
                                 </Stack>,
                             ];
@@ -255,7 +253,7 @@ export default function CommitteeMaster() {
                     width: "100%",
                     // height: "100%",
                     backgroundColor: "#E9FDEE",
-                    // border: ".5px solid #FF7722 ",
+                    border: ".5px solid #00009c ",
                     marginTop: "3vh"
                 }}
             >
@@ -288,7 +286,7 @@ export default function CommitteeMaster() {
                     <Box height={10} />
 
                     <Stack direction="row" spacing={2} classes="my-2 mb-2">
-                        {/*permissionData?.isAdd == true && ( */}
+                        {permissionData?.isAdd === true  && (
                         <Button
                             onClick={routeChangeAdd}
                             variant="contained"
@@ -297,19 +295,9 @@ export default function CommitteeMaster() {
                         >
                             {t("text.Add")}
                         </Button>
-                        {/*)} */}
+                        )}
 
-                        {/*{permissionData?.isPrint == true ? (
-              <Button variant="contained" endIcon={<PrintIcon />} size="large">
-                {t("text.print")}
-              </Button>
-            ) : (
-              ""
-            )} */}
                     </Stack>
-
-
-
 
                     {isLoading ? (
                         <div

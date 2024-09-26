@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { styled, useTheme, Theme, CSSObject } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import MuiDrawer from "@mui/material/Drawer";
@@ -15,9 +15,9 @@ import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
-import { useNavigate, Navigate } from "react-router-dom";
+import { useNavigate, Navigate, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { Avatar, Stack } from "@mui/material";
+import { Avatar, CircularProgress, Stack } from "@mui/material";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import call from "../../assets/images/phone-call.png";
@@ -34,7 +34,8 @@ import trans from "../../assets/images/translation.png";
 import userIcon from "../../assets/images/profile1.png";
 import logged from "../../assets/images/permission.png";
 import logo from "../../assets/images/recyclebinLogo.png";
-import loged from "../../assets/images/DrawerLogo.png";
+import help from "../../assets/images/help.png";
+
 import CloseIcon from "@mui/icons-material/Close";
 import dayjs from "dayjs";
 import { Home } from "@mui/icons-material";
@@ -50,16 +51,26 @@ import SearchIcon from "@mui/icons-material/Search";
 import Paper from "@mui/material/Paper";
 import Autocomplete from "@mui/material/Autocomplete";
 import InputAdornment from "@mui/material/InputAdornment";
-import {
-  TextField, Button
-} from "@mui/material";
+import { TextField, Button } from "@mui/material";
+import logouts from "../../assets/images/logout.png";
 import api from "../../utils/Url";
 import { toast } from "react-toastify";
 import Modal from "@mui/material/Modal";
 import { Grid, Checkbox } from "@mui/material";
 import { SimpleTreeView } from "@mui/x-tree-view/SimpleTreeView";
 import { TreeItem, treeItemClasses } from "@mui/x-tree-view/TreeItem";
-import TreeView from '@mui/x-tree-view/TreeView';
+import TreeView from "@mui/x-tree-view/TreeView";
+import { CloseIcons } from "../../utils/icons";
+import { GridColDef } from "@mui/x-data-grid";
+import CustomDataGrid from "../../utils/CustomDatagrid";
+import { getId } from "../../utils/Constant";
+import dark from "../../assets/images/darkTheme.png";
+import Light from "../../assets/images/lightTheme.png";
+import '../../index.css';
+import MainLayout from "../layout/MainLayout";
+
+
+
 
 const drawerWidth = 225;
 
@@ -114,7 +125,6 @@ const AppBar = styled(MuiAppBar, {
   }),
 }));
 
-
 const style = {
   position: "absolute" as "absolute",
   top: "50%",
@@ -127,7 +137,18 @@ const style = {
   boxShadow: 24,
   p: 4,
   borderRadius: 10,
- 
+};
+
+const Modstyle = {
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: 800,
+  bgcolor: "background.paper",
+  border: "2px solid #000",
+  boxShadow: 24,
+  p: 4,
 };
 
 const Drawer = styled(MuiDrawer, {
@@ -147,8 +168,34 @@ const Drawer = styled(MuiDrawer, {
   }),
 }));
 
+function getGreeting() {
+  const hour = new Date().getHours();
+
+  if (hour < 6) {
+    return { text: "Good Night", color: "#2E2E2E" }; // Dark gray for night
+  } else if (hour < 12) {
+    return { text: "Good Morning", color: "#FFD700" }; // Gold for morning
+  } else if (hour < 17) {
+    return { text: "Good Afternoon", color: "#FFA500" }; // Orange for afternoon
+  } else if (hour < 20) {
+    return { text: "Good Evening", color: "#FF6347" }; // Tomato for evening
+  } else {
+    return { text: "Good Night", color: "#2E2E2E" }; // Dark gray for night
+  }
+}
+
 export default function MiniDrawer({ items }: any) {
   const theme = useTheme();
+  const Userid = getId();
+
+  let headerName = localStorage.getItem("name");
+  let appLogo: any = localStorage.getItem("applogo");
+  let sideLogo: any = localStorage.getItem("sidelogo");
+  
+
+  let sidebarMainColor: any = localStorage.getItem("mclr");
+  let sidebarOverColor: any = localStorage.getItem("oclr");
+
   const [open, setOpen] = React.useState(true);
   const [menuOpen, setMenuOpen] = React.useState(false);
   const [profileDrawerOpen, setProfileDrawerOpen] = React.useState(false);
@@ -164,7 +211,76 @@ export default function MiniDrawer({ items }: any) {
   const [filteredItems, setFilteredItems] = React.useState<MenuItem[]>([]);
   const [expandedItems, setExpandedItems] = React.useState<any[]>([]);
 
+  const [currentTheme, setCurrentTheme] = useState(() => {
+    const storedTheme = localStorage.getItem("theme");
+   // console.log('storedTheme',storedTheme);
+    return storedTheme ? storedTheme : "light";
+  });
+  
+  // Function to toggle the theme
+  const toggleTheme = () => {
+    const newTheme = currentTheme === "light" ? "dark" : "light";
+    localStorage.setItem("theme", newTheme);
+    setCurrentTheme(newTheme);
+   
+  };
+
+
+  
+ 
+  // Determine background color based on theme
+  const headerColor = currentTheme === "light" ? sidebarMainColor :"#81848a";
+
+  
+  const drawerStyles = {
+    backgroundColor: currentTheme === "light" ? "#f5f5f5" : "#81848a",
+    color: currentTheme === "light" ? "black" : "white",
+  };
+
+  const menuStyles = {
+    backgroundColor: currentTheme === "light" ? "#ffffff" : "#81848a",
+    color: currentTheme === "light" ? "black" : "white",
+    "& .MuiMenuItem-root": {
+      color: currentTheme === "light" ? "black" : "white",
+    },
+    "& .MuiDivider-root": {
+      backgroundColor: currentTheme === "light" ? "rgba(0, 0, 0, 0.12)" : "#6e6e6e",
+    },
+  };
+
+
+
+  const location = useLocation();
+
   let navigate = useNavigate();
+  const [menuData, setMenuData] = React.useState<any>("");
+
+  useEffect(() => {
+    const dataString = localStorage.getItem("userdata");
+    if (dataString) {
+      const data = JSON.parse(dataString);
+      if (data && data.length > 0) {
+        const userPermissionData = data[0]?.userPermission;
+        if (userPermissionData && userPermissionData.length > 0) {
+          const menudata = userPermissionData[0]?.parentMenu;
+          for (let index = 0; index < menudata.length; index++) {
+            const childMenudata = menudata[index]?.childMenu;
+            const pathrow = childMenudata.find(
+              (x: any) => x.path === location.pathname
+            );
+
+            if (pathrow) {
+              console.log("data", pathrow);
+              setMenuData(pathrow.menuId);
+              break;
+              // setPermissionData(pathrow);
+              // fetchZonesData();
+            }
+          }
+        }
+      }
+    }
+  }, [location.pathname]);
 
   function searchMenuItems(items: any, query: string) {
     const results = [];
@@ -251,16 +367,16 @@ export default function MiniDrawer({ items }: any) {
   // console.log("data", treedata)
   const [check, setCheck] = React.useState<any>([]);
   let ID: any = localStorage.getItem("useR_ID");
-  ID = ID.replace(/^"(.*)"$/, '$1');
+  ID = ID.replace(/^"(.*)"$/, "$1");
   const handlePermissionClick = () => {
     if (ID) {
-      console.log("id check 175", ID)
+      console.log("id check 175", ID);
       getNode(ID);
     } else {
-      toast.error("ID not found")
+      toast.error("ID not found");
     }
     setIsModalOpen(true);
-    console.log("first")
+    console.log("first");
   };
 
   const handleCloseModal = () => {
@@ -288,31 +404,31 @@ export default function MiniDrawer({ items }: any) {
     };
   });
 
-
   const getNode = (id: any) => {
     const collectData = {
       id: -1,
       nodeID: -1,
       titleID: -1,
-      "user_Id": id
+      user_Id: id,
     };
-    api.post(`NewNodeMaster/GetNewNodeMasterHeirarical`, collectData).then((res: any) => {
-
-      if (res.data && res.data.data && res.data.data.length > 0) {
-        setTreedata(res.data.data);
-        const allNodeIds = getAllNodeIds(res.data.data);
-        setExpandedItems(allNodeIds);
-      } else {
-        toast.error('Data is null or empty');
-      }
-    });
+    api
+      .post(`NewNodeMaster/GetNewNodeMasterHeirarical`, collectData)
+      .then((res: any) => {
+        if (res.data && res.data.data && res.data.data.length > 0) {
+          setTreedata(res.data.data);
+          const allNodeIds = getAllNodeIds(res.data.data);
+          setExpandedItems(allNodeIds);
+        } else {
+          toast.error("Data is null or empty");
+        }
+      });
   };
 
-  const getAllNodeIds = (nodes: any[]): any[] => {
-    let ids: any[] = [];
+  const getAllNodeIds = (nodes: any[]): string[] => {
+    let ids: string[] = [];
 
     const collectIds = (nodes: any[]) => {
-      nodes.forEach(node => {
+      nodes.forEach((node) => {
         ids.push(node.id.toString());
         if (node.childnode) {
           collectIds(node.childnode);
@@ -321,41 +437,32 @@ export default function MiniDrawer({ items }: any) {
     };
 
     collectIds(nodes);
+
     return ids;
   };
 
-
-
-  // const handleToggle = (id: number) => () => {
-  //   const currentIndex = check.indexOf(id);
-  //   const newChecked = [...check];
-
-  //   if (currentIndex === -1) {
-  //       newChecked.push(id);
-  //   } else {
-  //       newChecked.splice(currentIndex, 1);
-  //   }
-  //   setCheck(newChecked);
-  // };
-
-  //console.log("Checked value", check)
-  const defaultSelectedNodeId = parseInt(localStorage.getItem('id') + "");
+  const defaultSelectedNodeId = parseInt(localStorage.getItem("id") + "");
 
   useEffect(() => {
     // Set default selected node here
-    setCheck([defaultSelectedNodeId]);
-  }, [defaultSelectedNodeId]);
+    if (defaultSelectedNodeId) {
+      setCheck([defaultSelectedNodeId]);
+    }
 
+    const initialExpanded = getAllNodeIds(treedata);
+    setExpandedItems(initialExpanded);
+  }, [defaultSelectedNodeId, treedata]);
 
   const [nodeId, setnodeId] = React.useState<any>(0);
-  const [nodeNames, setNodeNames] = React.useState<string>('');
+  const [nodeNames, setNodeNames] = React.useState<string>("");
 
+  // Effect to apply the theme from local storage
+  
   const handleToggle = (id: number, name: string) => () => {
     const currentIndex = check.indexOf(id);
-   // const newChecked = [...check];
-   const newChecked = currentIndex === -1 ? [id] : [];
-   const updatedChecked = newChecked.length === 1 ? [id] : [];
-
+    //const newChecked = [...check];
+    const newChecked = currentIndex === -1 ? [id] : [];
+    //const updatedChecked = currentIndex === -1 ? [id] : [];
 
     if (currentIndex === -1) {
       newChecked.push(id);
@@ -363,36 +470,34 @@ export default function MiniDrawer({ items }: any) {
       newChecked.splice(currentIndex, 1);
     }
 
-   
-    setCheck(updatedChecked);
+    setCheck(newChecked);
 
-   
-    setExpandedItems((prevExpanded) =>
-      prevExpanded.includes(id.toString())
-        ? prevExpanded.filter(item => item !== id.toString())
-        : [...prevExpanded, id.toString()]
-    );
+    // setExpandedItems((prevExpanded) =>
+    //   prevExpanded.includes(id.toString())
+    //     ? prevExpanded.filter((item) => item !== id.toString())
+    //     : [...prevExpanded, id.toString()]
+    // );
 
-    console.log("Checked data:",  name);
-    console.log("Checked data:",  id );
+    console.log("Checked data:", name);
+    console.log("Checked data:", id);
+
     setNodeNames(name);
-    setnodeId(id);   
+    setnodeId(id);
     // handleSave(id, name);
   };
 
   const handleSave = () => {
     console.log("handleSave function called");
 
-    
-    if (nodeId != 0 || nodeNames != "" ){
-      localStorage.setItem('id', nodeId);
-      localStorage.setItem('nodeName', nodeNames);
-      console.log("Checked Save:", { nodeId, nodeNames })
+    if (nodeId != 0 || nodeNames != "") {
+      localStorage.setItem("id", nodeId);
+      localStorage.setItem("nodeName", nodeNames);
+      console.log("Checked Save:", { nodeId, nodeNames });
+
       handleCloseModal();
+    } else {
+      toast.error("Please Retry... Network Issues");
     }
-      else{
-        toast.error("Please Retry... Network Issues")
-      }
   };
 
   const renderTree = (nodes: any) => (
@@ -403,7 +508,8 @@ export default function MiniDrawer({ items }: any) {
         <div style={{ display: "flex", alignItems: "center" }}>
           <Checkbox
             checked={check.indexOf(nodes.id) !== -1}
-           // onChange={handleToggle(nodes.id)}
+            // onChange={handleToggle(nodes.id)}
+
             onChange={handleToggle(nodes.id, nodes.name)}
             onClick={(event: any) => event.stopPropagation()}
           />
@@ -411,6 +517,7 @@ export default function MiniDrawer({ items }: any) {
           <div style={{ marginLeft: 8 }}>{nodes.name}</div>
         </div>
       }
+      onClick={() => toggleExpansion(nodes.id.toString())}
     >
       {Array.isArray(nodes.childnode)
         ? nodes.childnode.map((node: any) => renderTree(node))
@@ -418,14 +525,21 @@ export default function MiniDrawer({ items }: any) {
     </TreeItem>
   );
 
+  const toggleExpansion = (nodeId: string) => {
+    if (expandedItems.includes(nodeId)) {
+      setExpandedItems(expandedItems.filter((item) => item !== nodeId));
+    } else {
+      setExpandedItems([...expandedItems, nodeId]);
+    }
+  };
 
   const handleSubMenuClick = (index: any) => {
-    console.log(index);
+    // console.log(index);
     setSelectedSubMenu(index);
   };
   const resetHomeColor = () => {
     // setHomeColor("inherit");
-    setHomeColor("#00009C");
+    setHomeColor(sidebarMainColor);
     // setHomeColor("");
   };
 
@@ -437,7 +551,7 @@ export default function MiniDrawer({ items }: any) {
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
     setMenuOpen(true);
-    setHomeColor("inherit");
+    setHomeColor("#00009c");
   };
 
   const handleClose = () => {
@@ -460,24 +574,13 @@ export default function MiniDrawer({ items }: any) {
     setOpenlogo(false);
   };
 
-  // const Logout = () => {
-  //   localStorage.removeItem("userdata");
-  //   localStorage.removeItem("useR_ID");
-  //   sessionStorage.removeItem("token");
-  //   navigate("/");
-  // };
-
   const Logout = useCallback(() => {
     localStorage.clear();
     sessionStorage.clear();
     navigate("/");
   }, [navigate]);
 
-
-
   function onClick(e: any, item: any) {
-
-
     let path = item.path;
     if (path == "" || path == null || path == "undefind") {
       window.alert("Path Not Found ????");
@@ -488,12 +591,6 @@ export default function MiniDrawer({ items }: any) {
 
   var data = JSON.parse(localStorage.getItem("userdata")!);
   var menudata = data[0]["userdetail"];
-  // var userDataString = localStorage.getItem("userdata");
-  // if (userDataString) {
-  //     var data = JSON.parse(userDataString);
-  //     var menudata = data[0]["userdetail"];
-  //   // console.log(userDetail);
-  // }
 
   var username =
     menudata[0]["firsT_NAME"] +
@@ -505,27 +602,22 @@ export default function MiniDrawer({ items }: any) {
   const { i18n, t } = useTranslation();
 
   const changeLanguage = (language: any) => {
-
     i18n.changeLanguage(language);
     localStorage.setItem("preferredLanguage", language);
   };
   var currentLanguage = localStorage.getItem("preferredLanguage");
   var newLanguage = currentLanguage === "hi" ? "English" : "हिंदी";
 
-
   const userData = JSON.parse(localStorage.getItem("userdata")!) || {};
   const userDetail = userData[0]?.userdetail || [];
 
-
   const collapsehamndle = (index: any) => {
-    // console.log(index);
     if (index == collapseIndex) {
       setCollapseIndex(-1);
     } else {
       setCollapseIndex(index);
     }
   };
-  // console.log("items", items);
 
   const getImageForFirstName = (
     firsT_NAME: any,
@@ -557,12 +649,12 @@ export default function MiniDrawer({ items }: any) {
   };
 
   const currentPathname = window.location.pathname;
+  // console.log("pathname",window.location);
   const segments = currentPathname.split("/").filter(Boolean);
   const isHomePage = segments.length === 0;
 
   function handleClicked(event: React.MouseEvent<HTMLDivElement, MouseEvent>) {
     event.preventDefault();
-    // console.info("You clicked a breadcrumb.");
   }
 
   const handleClickhome = () => {
@@ -575,10 +667,8 @@ export default function MiniDrawer({ items }: any) {
 
     const words = text.split(" ");
 
-    // Extract the first letter from each word
     const firstLetters = words.map((word: any) => word.charAt(0));
 
-    // Join the first letters back into a string
     const result = firstLetters.join("");
 
     return <div>{result}</div>;
@@ -587,7 +677,7 @@ export default function MiniDrawer({ items }: any) {
   let nodeName = localStorage.getItem("nodeName");
 
   if (nodeName !== null) {
-    nodeName = nodeName.replace(/"/g, '');
+    nodeName = nodeName.replace(/"/g, "");
   }
 
   const handleRightClick = (path: any) => (e: any) => {
@@ -595,16 +685,23 @@ export default function MiniDrawer({ items }: any) {
     window.open(path, "_blank");
   };
 
+  const greeting = getGreeting();
+
   return (
-    <Box sx={{ display: "flex", }}>
-      {/* <CssBaseline /> */}
+
+    
+    <Box sx={{ display: "flex" }}>
+
+
+
+
       <AppBar position="fixed" open={open} style={{}}>
         <Toolbar
           style={{
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
-            background: "#00009C",
+            background: headerColor,
           }}
         >
           <div
@@ -612,8 +709,6 @@ export default function MiniDrawer({ items }: any) {
               display: "flex",
               justifyContent: "flex-start",
               alignItems: "center",
-              // paddingTop: "10px",
-              // paddingBottom: "10px",
             }}
           >
             <IconButton
@@ -622,20 +717,26 @@ export default function MiniDrawer({ items }: any) {
               onClick={handleDrawerOpen}
               edge="start"
               sx={{
-                // marginRight: 5,
                 ...(open && { display: "none" }),
               }}
             >
               <MenuIcon fontSize="large" />
             </IconButton>
 
-            {!openlogo && <img src={logo} width={60} height={60} />}
+            {!openlogo && (
+              <img
+                src={appLogo}
+                width={60}
+                height={60}
+                onClick={() => handleClickhome()}
+                style={{ cursor: "pointer" }}
+              />
+            )}
           </div>
 
-          <div style={{ fontSize: "25px" }}>
-            {/* <Typewriter text="PanchShala" delay={120} infinite /> */}
-            {t("text.eoffice")}
-          </div>
+          
+
+          <div style={{ fontSize: "2.1vw" }}>{headerName}</div>
 
           <IconButton
             onClick={handleClick}
@@ -651,90 +752,109 @@ export default function MiniDrawer({ items }: any) {
           </IconButton>
 
           <Menu
-            anchorEl={anchorEl}
-            id="account-menu"
-            open={menuOpen}
-            // onClose={handleClose}
-            onClick={handleClose}
-            PaperProps={{
-              elevation: 0,
-              sx: {
-                overflow: "visible",
-                filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
-                paddingRight: "10px",
-                paddingLeft: "10px",
-                mt: 1.5,
-                "& .MuiAvatar-root": {
-                  width: 32,
-                  height: 32,
-                  ml: -0.5,
-                  mr: 1,
-                },
-                "&::before": {
-                  content: '""',
-                  display: "block",
-                  position: "absolute",
-                  top: 0,
-                  right: 14,
-                  width: 10,
-                  height: 10,
-                  // bgcolor: "background.paper",
-                  transform: "translateY(-50%) rotate(45deg)",
-                  zIndex: 0,
-                },
-              },
-            }}
-            transformOrigin={{ horizontal: "right", vertical: "top" }}
-            anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
-          >
-            <MenuItem onClick={handleClose}>
-              <ListItemIcon>
-                <img src={userIcon} width={40} height={40} />
-              </ListItemIcon>{" "}
-              {username}
-            </MenuItem>
-            {/* <MenuItem > */}
-            <MenuItem onClick={handleMyProfileClick}>
-              <ListItemIcon>
-                <img src={ids} width={30} height={30} />
-              </ListItemIcon>
-              My Profile
-            </MenuItem>
-
-            <Divider />
-
-            <MenuItem
-              onClick={() => {
-                localStorage.getItem("preferredLanguage") == "hi"
-                  ? changeLanguage("en")
-                  : changeLanguage("hi");
-              }}
-            >
-              <ListItemIcon>
-                <img src={trans} width={30} height={30} />
-              </ListItemIcon>
-              Translate -- {newLanguage}
-            </MenuItem>
-            <MenuItem onClick={handleClose}>
-              <ListItemIcon>
-                <img src={settings} width={30} height={30} />
-              </ListItemIcon>
-              Settings
-            </MenuItem>
-            <MenuItem onClick={handlePermissionClick}>
-              <ListItemIcon >
-                <img src={logged} width={40} height={40} />
-              </ListItemIcon>
-              Permission
-            </MenuItem>
-            <Divider />
-            <MenuItem onClick={Logout}>
-              {/* <ListItemIcon>
-                <img src={logout} width={30} height={30} />
-              </ListItemIcon> */}
-              Logout
-            </MenuItem>
-          </Menu>
+      anchorEl={anchorEl}
+      id="account-menu"
+      open={menuOpen}
+      onClick={handleClose}
+      PaperProps={{
+        elevation: 0,
+        sx: {
+          ...menuStyles,
+          overflow: "auto",
+          filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
+          paddingRight: "10px",
+          paddingLeft: "10px",
+          mt: 1.5,
+          "& .MuiAvatar-root": {
+            width: 32,
+            height: 32,
+            ml: -0.5,
+            mr: 1,
+          },
+          "&::before": {
+            content: '""',
+            display: "block",
+            position: "absolute",
+            top: 0,
+            right: 14,
+            width: 10,
+            height: 10,
+            transform: "translateY(-50%) rotate(45deg)",
+            zIndex: 0,
+          },
+        },
+      }}
+      transformOrigin={{ horizontal: "right", vertical: "top" }}
+      anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
+    >
+      <MenuItem onClick={handleClose}>
+        <ListItemIcon>
+          <img src={userIcon} width={40} height={40} alt="User" />
+        </ListItemIcon>{" "}
+        {username}
+      </MenuItem>
+      <MenuItem onClick={handleMyProfileClick}>
+        <ListItemIcon>
+          <img src={ids} width={30} height={30} alt="Profile" />
+        </ListItemIcon>
+        My Profile
+      </MenuItem>
+      <Divider />
+      <MenuItem
+        onClick={() => {
+          localStorage.getItem("preferredLanguage") === "hi"
+            ? changeLanguage("en")
+            : changeLanguage("hi");
+        }}
+      >
+        <ListItemIcon>
+          <img src={trans} width={30} height={30} alt="Translate" />
+        </ListItemIcon>
+        Translate -- {newLanguage}
+      </MenuItem>
+      <MenuItem
+        onClick={() => {
+          let path = "/HelpDesk";
+          localStorage.setItem("menuData", menuData.toString());
+          window.open(path, "_blank");
+        }}
+      >
+        <ListItemIcon>
+          <img src={help} width={30} height={30} alt="Help Desk" />
+        </ListItemIcon>
+        Help Desk
+      </MenuItem>
+      <MenuItem onClick={toggleTheme}>
+        <ListItemIcon>
+          <img
+            src={currentTheme === "light" ? dark : Light}
+            width={30}
+            height={30}
+            alt="Theme"
+          />
+        </ListItemIcon>
+        Theme -- {currentTheme === "light" ? "Dark Mode" : "Light Mode"}
+      </MenuItem>
+      <MenuItem onClick={handleClose}>
+        <ListItemIcon>
+          <img src={settings} width={30} height={30} alt="Settings" />
+        </ListItemIcon>
+        Settings
+      </MenuItem>
+      <MenuItem onClick={handlePermissionClick}>
+        <ListItemIcon>
+          <img src={logged} width={40} height={40} alt="Permission" />
+        </ListItemIcon>
+        Permission
+      </MenuItem>
+      <Divider />
+      <MenuItem onClick={Logout}>
+        <ListItemIcon>
+          <img src={logouts} width={30} height={30} alt="Logout" />
+        </ListItemIcon>
+        Logout
+      </MenuItem>
+    </Menu>
         </Toolbar>
 
         <div
@@ -744,14 +864,10 @@ export default function MiniDrawer({ items }: any) {
             alignItems: "center",
             // backgroundColor: "rgba(245,245,245,0.7)",
             // borderBottomRightRadius: "15px",
-            backgroundColor: "#00009C"
+            backgroundColor: headerColor,
           }}
         >
-          <div
-            role="presentation"
-            onClick={handleClicked}
-            style={{}}
-          >
+          <div role="presentation" onClick={handleClicked} style={{}}>
             <Breadcrumbs aria-label="breadcrumb" sx={{ color: "#fff" }}>
               {/* <Link
                 underline="hover"
@@ -832,9 +948,17 @@ export default function MiniDrawer({ items }: any) {
               paddingRight: "15px",
             }}
           >
-            <p>E-Governance Level : {nodeName}</p>
-            <p> Time : {date.toLocaleTimeString()}</p>
-            <p> Date : {formattedDate}</p>
+            <p style={{  fontSize: "1.2vw",color: greeting.color }}>{greeting.text}</p>
+            <p>
+              {t("text.EGovernanceLevel")} : {nodeName}
+            </p>
+            <p>
+              {" "}
+              {t("text.Time")} : {date.toLocaleTimeString()}
+            </p>
+            <p>
+              {t("text.Date")}: {formattedDate}
+            </p>
           </div>
         </div>
       </AppBar>
@@ -844,7 +968,7 @@ export default function MiniDrawer({ items }: any) {
         open={open}
         PaperProps={{
           sx: {
-            backgroundColor: "#f5f5f5",
+            backgroundColor:drawerStyles,
           },
         }}
       >
@@ -862,10 +986,16 @@ export default function MiniDrawer({ items }: any) {
                     paddingBottom: "25px",
                   }}
                 >
-                  <img src={loged} width={100} height={100} />
+                  <img
+                    src={sideLogo}
+                    width={100}
+                    height={100}
+                    onClick={() => handleClickhome()}
+                    style={{ cursor: "pointer" }}
+                  />
                 </div>
               ) : (
-                <div style={{ padding: 0 }}></div>
+                ""
               )}
             </Stack>
 
@@ -995,7 +1125,7 @@ export default function MiniDrawer({ items }: any) {
                       paddingBottom: 0,
                       cursor: "pointer",
                     }}
-                  // key={text.id} component={Link} to={text.path}
+                    // key={text.id} component={Link} to={text.path}
                   >
                     {/* <ListItemIcon
                     sx={{
@@ -1014,7 +1144,9 @@ export default function MiniDrawer({ items }: any) {
                           mr: open ? 1 : "auto",
                           justifyContent: "center",
                           color:
-                            index === collapseIndex ? "#00009C" : "inherit",
+                            index === collapseIndex
+                              ? sidebarMainColor
+                              : sidebarOverColor,
                           fontWeight: 600,
                         }}
                         title={text.name}
@@ -1032,9 +1164,10 @@ export default function MiniDrawer({ items }: any) {
                           justifyContent: "center",
                           alignItems: "center",
                           marginRight: 8,
-                          // color: "Black",
                           color:
-                            index === collapseIndex ? "#00009C" : "inherit",
+                            index === collapseIndex
+                              ? sidebarMainColor
+                              : "inherit",
                         }}
                         title={text.name}
                       >
@@ -1082,7 +1215,9 @@ export default function MiniDrawer({ items }: any) {
                             paddingTop: 0,
                             paddingBottom: 0,
                             backgroundColor:
-                              selectedSubMenu == index2 ? "#00009C" : "inherit",
+                              selectedSubMenu == index2
+                                ? sidebarMainColor
+                                : "inherit",
                             color:
                               selectedSubMenu == index2 ? "white" : "black",
                             borderRadius: "10px",
@@ -1126,11 +1261,13 @@ export default function MiniDrawer({ items }: any) {
                                 minWidth: 0,
                                 mr: open ? 3 : "auto",
                                 justifyContent: "center",
-                                color: open ? "#00009C" : "inherit",
+
+                                color: open ? sidebarMainColor : "inherit",
                                 backgroundColor:
                                   selectedSubMenu == index2
-                                    ? "#00009C"
+                                    ? sidebarMainColor
                                     : "inherit",
+
                                 Color:
                                   selectedSubMenu == index2 ? "white" : "black",
                                 borderRadius: "25px",
@@ -1153,25 +1290,16 @@ export default function MiniDrawer({ items }: any) {
         </React.Fragment>
       </Drawer>
 
-
       <Modal open={isModalOpen} onClose={handleCloseModal}>
         <Box sx={style}>
-          <Typography
-            fontWeight={500}
-            fontSize={20}
-            noWrap
-            align="center"
-          >
+          <Typography fontWeight={500} fontSize={20} noWrap align="center">
             Node Permission
           </Typography>
-          <div >
+          <div>
             <Grid xs={12} item>
               <Box>
                 <div style={{ height: "400px", overflow: "auto" }}>
-                  <SimpleTreeView
-                    expandedItems={expandedItems}
-
-                  >
+                  <SimpleTreeView expandedItems={expandedItems}>
                     {Array.isArray(treedata)
                       ? treedata.map((node: any) => renderTree(node))
                       : null}
@@ -1179,7 +1307,7 @@ export default function MiniDrawer({ items }: any) {
                 </div>
               </Box>
             </Grid>
-            <Grid xs={3} item alignItems="center" justifyContent="center" >
+            <Grid xs={3} item alignItems="center" justifyContent="center">
               <Button
                 type="submit"
                 fullWidth
@@ -1197,14 +1325,13 @@ export default function MiniDrawer({ items }: any) {
         </Box>
       </Modal>
 
-
       <SwipeableDrawer
         anchor="left"
         open={profileDrawerOpen}
         onClose={() => {
           setProfileDrawerOpen(false);
         }}
-        onOpen={() => { }}
+        onOpen={() => {}}
         style={{
           zIndex: 1300,
         }}

@@ -127,25 +127,39 @@ export default function Closed() {
                     },
                     {
                         field: "fileNm",
-                        headerName: "File Name",
+                        headerName: t("text.FileNo"),
                         flex: 1,
                         headerClassName: "MuiDataGrid-colCell",
+                        renderCell: (params) => {
+                            return [
+                              <a
+                                onClick={() => navigate('/E-Office/ViewEditFile')}
+                                style={{
+                                  color: "blue",
+                                  cursor: "pointer",
+                                  textDecoration: "underline",
+                                }}
+                              >
+                                {params.value}
+                              </a>,
+                            ];
+                          },
                     },
                     {
                         field: "lastUpdatedDate",
-                        headerName: "Last Updated Date",
+                        headerName: t("text.LastUpdatedDate"),
                         flex: 1,
                         headerClassName: "MuiDataGrid-colCell",
                     },
                     {
                         field: "laststaus",
-                        headerName: "Last Status ",
+                        headerName: t("text.LastStatus"),
                         flex: 1,
                         headerClassName: "MuiDataGrid-colCell",
                     },
                     {
                         field: "updatedremark",
-                        headerName: "Updated Remark",
+                        headerName:t("text.UpdatedRemark"),
                         flex: 1,
                         headerClassName: "MuiDataGrid-colCell",
                     },

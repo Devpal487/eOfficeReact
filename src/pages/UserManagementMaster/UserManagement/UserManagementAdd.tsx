@@ -130,7 +130,6 @@ const UserManagementAdd = (props: Props) => {
             dob: res.data.data[index]["empDob"],
             gendeR_ID: res.data.data[index]["gender"],
             roleId: res.data.data[index]["roleId"],
-            // useR_TYPE_ID: res.data.data[index]["useR_TYPE_ID"],
             label: res.data.data[index]["empName"],
             value: res.data.data[index]["empid"],
           });
@@ -299,7 +298,7 @@ const UserManagementAdd = (props: Props) => {
           padding: "-5px 5px",
           backgroundColor: "#FFFFFF",
           borderRadius: "5px",
-          border: ".5px solid #ff7722",
+          border: ".5px solid #2B4593",
           marginTop: "3vh"
         }}
       >
@@ -348,7 +347,7 @@ const UserManagementAdd = (props: Props) => {
                     formik.setFieldValue("cuR_MOBILE", newValue?.cuR_MOBILE);
                     formik.setFieldValue("email", newValue?.email);
                     formik.setFieldValue("dob", newValue?.dob);
-                    formik.setFieldValue("gendeR_ID", parseInt(newValue?.gendeR_ID));
+                    formik.setFieldValue("gendeR_ID", (newValue?.gendeR_ID));
                     formik.setFieldValue("employeeID", newValue?.value)
                     formik.setFieldValue("User_NAME", newValue?.label);
                     formik.setFieldValue("ranK_ID", newValue?.roleId);
@@ -463,7 +462,7 @@ const UserManagementAdd = (props: Props) => {
 
               <Grid xs={12} sm={4} item>
                 <TextField
-                  type="text"
+                 
                   label={
                     <span>
                       {t("text.EnterMobileNo")}{" "}
@@ -479,6 +478,7 @@ const UserManagementAdd = (props: Props) => {
                     </span>
                   }
                   inputProps={{ maxLength: 10 }}
+                  type="number"
                   name="cuR_MOBILE"
                   id="cuR_MOBILE"
                   value={formik.values.cuR_MOBILE}
@@ -562,14 +562,11 @@ const UserManagementAdd = (props: Props) => {
                   options={option}
                   fullWidth
                   size="small"
-                  // value={
-                  //   option.find(
-                  //     (option) => option.value === formik.values.gendeR_ID
-                  //   ) || null
-                  // }
-
-                  // value={{ value: "male", label: "Male" }}
-                  
+                  value={
+                    option.find(
+                      (option) => option.value == formik.values.gendeR_ID
+                    ) || null
+                  }
                   onChange={(event, newValue) => {
                     formik.setFieldValue("gendeR_ID", newValue?.value);
                     formik.setFieldTouched("gendeR_ID", true);

@@ -1,6 +1,5 @@
 import {
   Button,
-  Card,
   CardContent,
   Grid,
   TextField,
@@ -11,9 +10,7 @@ import {
 } from "@mui/material";
 import ArrowBackSharpIcon from "@mui/icons-material/ArrowBackSharp";
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import { useLocation, useNavigate } from "react-router-dom";
-import HOST_URL from "../../utils/Url";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useTranslation } from "react-i18next";
@@ -21,10 +18,11 @@ import { toast } from "react-toastify";
 import ToastApp from "../../ToastApp";
 import Autocomplete from "@mui/material/Autocomplete";
 import nopdf from "../../assets/images/imagepreview.jpg";
-import { Console } from "console";
 import dayjs, { Dayjs } from "dayjs";
 import api from "../../utils/Url";
-import CustomLabel from "../../CustomLable";
+import Languages from "../../Languages";
+import TranslateTextField from "../../TranslateTextField";
+import { Language } from "react-transliterate";
 
 const style = {
   position: "absolute" as "absolute",
@@ -44,24 +42,29 @@ type Props = {};
 
 const EmployeeEdit = (props: Props) => {
   const { i18n, t } = useTranslation();
-  
+
   const [EmpDesignation, setEmpDesignation] = useState<any>([
     { value: "-1", label: t("text.SelectDesignation") },
   ]);
   const [Department, setDepartment] = useState<any>([
-    { value: "-1", label:t("text.SelectDepartment") },
+    { value: "-1", label: t("text.SelectDepartment") },
   ]);
   const [StateOption, setStateOption] = useState<any>([
-    { value: "-1", label:t("text.SelectState") },
+    { value: "-1", label: t("text.SelectState") },
   ]);
   const [Country, setCountry] = useState<any>([
     { value: "-1", label: t("text.SelectCountry") },
   ]);
-  const [City, setCity] = useState<any>([{ value: "-1", label: t("text.SelectCity") }]);
+  const [City, setCity] = useState<any>([
+    { value: "-1", label: t("text.SelectCity") },
+  ]);
   const [Gender, setGender] = useState<any>([
     { value: "-1", label: t("text.SelectGender") },
   ]);
-  const [Role, setRole] = useState<any>([{ value: "-1", label: t("text.SelectRole") }]);
+  const [Role, setRole] = useState<any>([
+    { value: "-1", label: t("text.SelectRole") },
+  ]);
+  const [lang, setLang] = useState<Language>("en");
 
   const location = useLocation();
   console.log("location", location.state);
@@ -71,120 +74,106 @@ const EmployeeEdit = (props: Props) => {
     getRole();
     getEmpDesignation();
     getDepartment();
-    getState();
+   // getState();
     getCountry();
-    getCity();
+   // getCity();
     getimgbyid();
     getSignById();
+    formik.setFieldValue("empStateId", location.state.empStateId);
   }, []);
 
   const getEmpDesignation = () => {
     const collectData = {
       designationId: -1,
     };
-    api
-      .post(
-         `Designation/GetDesignationmaster`,
-        collectData
-      )
-      .then((res) => {
-        const arr = res.data.data.map((item: any) => ({
-          label: item.designationName,
-          value: item.designationId,
-        }));
-        setEmpDesignation(arr);
-      });
+    api.post(`Designation/GetDesignationmaster`, collectData).then((res) => {
+      const arr = res.data.data.map((item: any) => ({
+        label: item.designationName,
+        value: item.designationId,
+      }));
+      setEmpDesignation(arr);
+    });
   };
 
   const getDepartment = () => {
     const collectData = {
       departmentId: -1,
+      departmentName: "",
     };
-    api
-      .post( `Department/GetDepartmentmaster`, collectData)
-      .then((res) => {
-        const arr = res.data.data.map((item: any) => ({
-          label: item.departmentName,
-          value: item.departmentId,
-        }));
-        setDepartment(arr);
-      });
+    api.post(`Department/GetDepartmentmaster`, collectData).then((res) => {
+      const arr = res.data.data.map((item: any) => ({
+        label: item.departmentName,
+        value: item.departmentId,
+      }));
+      setDepartment(arr);
+    });
   };
-
-  const getState = () => {
+  const getState = (countryId:any) => {
     const collectData = {
       stateId: -1,
+      countryId:countryId,
     };
-    api
-      .post( `State/GetStateMaster`, collectData)
-      .then((res) => {
-        const arr = res.data.data.map((item: any) => ({
-          label: item.stateName,
-          value: item.stateId,
-        }));
-        setStateOption(arr);
-      });
+    api.post(`State/GetStateMaster`, collectData).then((res) => {
+      const arr = res.data.data.map((item: any) => ({
+        label: item.stateName,
+        value: item.stateId,
+      }));
+      setStateOption(arr);
+    });
   };
 
   const getCountry = () => {
     const collectData = {
       countryId: -1,
     };
-    api
-      .post(`Country/GetCountryMaster`, collectData)
-      .then((res) => {
-        const arr = res.data.data.map((item: any) => ({
-          label: item.countryName,
-          value: item.countryId,
-        }));
-        setCountry(arr);
-      });
+    api.post(`Country/GetCountryMaster`, collectData).then((res) => {
+      const arr = res.data.data.map((item: any) => ({
+        label: item.countryName,
+        value: item.countryId,
+      }));
+      setCountry(arr);
+    });
   };
 
-  const getCity = () => {
+  const getCity = (stateId:any) => {
     const collectData = {
-      countryId: -1,
+      cityId: -1,
+      stateId:stateId,
     };
-    api
-      .post( `M10_District/GetDistrictMaster`, collectData)
-      .then((res) => {
-        const arr = res.data.data.map((item: any) => ({
-          label: item.cityName,
-          value: item.cityId,
-        }));
-        setCity(arr);
-      });
+    api.post(`M10_District/GetDistrictMaster`, collectData).then((res) => {
+      const arr = res.data.data.map((item: any) => ({
+        label: item.cityName,
+        value: item.cityId,
+      }));
+      setCity(arr);
+    });
   };
 
   const getGender = () => {
     const collectData = {
       genderID: -1,
     };
-    api
-      .post(`Gender/GetGenderMaster`, collectData)
-      .then((res) => {
-        const arr = res.data.data.map((item: any) => ({
-          label: item.genderName,
-          value: item.genderID,
-        }));
-        setGender(arr);
-      });
+    api.post(`Gender/GetGenderMaster`, collectData).then((res) => {
+      const arr = res.data.data.map((item: any) => ({
+        label: item.genderName,
+        value: item.genderID,
+      }));
+      setGender(arr);
+    });
   };
 
   const getRole = () => {
     const collectData = {
       roleId: "-1",
     };
-    api
-      .post(`Auth/GetRoleMaster`, collectData)
-      .then((res) => {
-        const arr = res.data.data.map((item: any) => ({
-          label: item.roleName,
-          value: item.roleId,
-        }));
-        console.log(" arr ", arr);
-        setRole(arr);
-      });
+    api.post(`Auth/GetRoleMaster`, collectData).then((res) => {
+      const arr = res.data.data.map((item: any) => ({
+        label: item.roleName,
+        value: item.roleId,
+      }));
+      console.log(" arr ", arr);
+      setRole(arr);
+    });
   };
 
   const getimgbyid = () => {
@@ -202,14 +191,12 @@ const EmployeeEdit = (props: Props) => {
       roleId: location.state.roleId,
     };
 
-    api
-      .post( `EmpMaster/GetEmpmaster`, collectData)
-      .then((res) => {
-        console.log("result" + JSON.stringify(res.data.data[0]["imageFile"]));
+    api.post(`EmpMaster/GetEmpmaster`, collectData).then((res) => {
+      console.log("result" + JSON.stringify(res.data.data[0]["imageFile"]));
 
-        const Doc = res.data.data[0]["imageFile"];
-        formik.setFieldValue("imageFile", Doc);
-      });
+      const Doc = res.data.data[0]["imageFile"];
+      formik.setFieldValue("imageFile", Doc);
+    });
   };
 
   const getSignById = () => {
@@ -227,16 +214,12 @@ const EmployeeEdit = (props: Props) => {
       roleId: location.state.roleId,
     };
 
-    api
-      .post( `EmpMaster/GetEmpmaster`, collectData)
-      .then((res) => {
-        console.log(
-          "result" + JSON.stringify(res.data.data[0]["signatureFile"])
-        );
+    api.post(`EmpMaster/GetEmpmaster`, collectData).then((res) => {
+      console.log("result" + JSON.stringify(res.data.data[0]["signatureFile"]));
 
-        const Doc = res.data.data[0]["signatureFile"];
-        formik.setFieldValue("signatureFile", Doc);
-      });
+      const Doc = res.data.data[0]["signatureFile"];
+      formik.setFieldValue("signatureFile", Doc);
+    });
   };
 
   const [panOpens, setPanOpen] = React.useState(false);
@@ -275,13 +258,6 @@ const EmployeeEdit = (props: Props) => {
       };
     });
   };
-  // const otherDocChangeHandler = async (event: any, params: any) => {
-  //   if (event.target.files && event.target.files[0]) {
-  //     const file = event.target.files[0];
-  //     const base64 = await ConvertBase64(file);
-  //     formik.setFieldValue(params, base64);
-  //   }
-  // }
 
   const otherDocChangeHandler = async (event: any, params: any) => {
     if (event.target.files && event.target.files[0]) {
@@ -293,16 +269,13 @@ const EmployeeEdit = (props: Props) => {
         formik.setFieldValue(params, base64);
         console.log(base64);
       } else {
-        // Display an error message indicating that only PDF files are allowed
         alert("Only  files are allowed to be uploaded.");
-        // Optionally, you can clear the file input field
         event.target.value = null;
       }
     }
   };
 
   let navigate = useNavigate();
-  
 
   const [toaster, setToaster] = useState(false);
 
@@ -347,10 +320,7 @@ const EmployeeEdit = (props: Props) => {
     ),
 
     empPanNumber: Yup.string()
-      .matches(
-        /^[A-Z]{3}[A-ZHPTCF][A-Z]\d{4}[A-Z]$/,
-        'Invalid PAN format'
-      )
+      .matches(/^[A-Z]{3}[A-ZHPTCF][A-Z]\d{4}[A-Z]$/, "Invalid PAN format")
       .required(t("text.PanNoRequired")),
 
     empDob: Yup.string().test(
@@ -402,19 +372,15 @@ const EmployeeEdit = (props: Props) => {
 
     empAddharNo: Yup.string()
       .required(t("text.AdharNoRequired"))
-      .test("len", ("Aadhaar number must be exactly 12 digits"), (val: any) =>
+      .test("len", "Aadhaar number must be exactly 12 digits", (val: any) =>
         val ? val.replace(/\D/g, "").length === 12 : true
       ),
     email: Yup.string()
       .required(t("text.reqEmail"))
-      .test(
-        "is-valid-email",
-        "Invalid email format",
-        function (value: any) {
-          const trimmedValue = value.trim();
-          return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedValue);
-        }
-      ),
+      .test("is-valid-email", "Invalid email format", function (value: any) {
+        const trimmedValue = value.trim();
+        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedValue);
+      }),
   });
 
   const formik = useFormik({
@@ -433,8 +399,9 @@ const EmployeeEdit = (props: Props) => {
       empAddharNo: location.state.empAddharNo,
       empDob: dayjs(location.state.empDob).format("YYYY-MM-DD"),
       empJoiningDate: dayjs(location.state.empJoiningDate).format("YYYY-MM-DD"),
-      empretirementDate: dayjs(location.state.empretirementDate).format("YYYY-MM-DD"),
-
+      empretirementDate: dayjs(location.state.empretirementDate).format(
+        "YYYY-MM-DD"
+      ),
       empPincode: location.state.empPincode,
       roleId: location.state.roleId,
       imageFile: location.state.imageFile,
@@ -454,13 +421,12 @@ const EmployeeEdit = (props: Props) => {
 
     validationSchema: validationSchema,
     onSubmit: async (values) => {
-
       const filteredValues = Object.fromEntries(
         Object.entries(values).filter(([_, value]) => value !== "")
       );
 
       const response = await api.post(
-          `EmpMaster/AddUpdateEmpmaster`,
+        `EmpMaster/AddUpdateEmpmaster`,
         filteredValues
       );
       if (response.data.isSuccess) {
@@ -487,10 +453,15 @@ const EmployeeEdit = (props: Props) => {
     "empDeptId",
     "empAddharNo",
     "email",
-    "empPincode"
+    "empPincode",
   ];
 
   const back = useNavigate();
+
+  const handleConversionChange = (params: any, text: string) => {
+    formik.setFieldValue(params, text);
+  };
+
 
   return (
     <div>
@@ -499,72 +470,76 @@ const EmployeeEdit = (props: Props) => {
           padding: "-5px 5px",
           backgroundColor: "#ffffff",
           borderRadius: "5px",
-          border: ".5px solid #FF7722",
+
+          border: ".5px solid #00009c",
+
           marginTop: "3vh",
         }}
       >
         <CardContent>
-          <Typography
-            variant="h5"
-            textAlign="center"
-            style={{ fontSize: "18px", fontWeight: 500 }}
-          >
-            {t("text.EditEmployeeRegistration")}
-          </Typography>
 
-          <Grid item sm={4} xs={12}>
-            <Typography style={{ marginTop: "-75px" }}>
+          <Grid item xs={12} container spacing={2}>
+            <Grid item lg={2} md={2} xs={2} marginTop={2}>
               <Button
                 type="submit"
                 onClick={() => back(-1)}
                 variant="contained"
                 style={{
-                  marginBottom: 15,
-                  marginTop: "45px",
                   backgroundColor: "blue",
                   width: 20,
                 }}
               >
                 <ArrowBackSharpIcon />
               </Button>
-            </Typography>
+            </Grid>
+            <Grid
+              item
+              lg={7}
+              md={7}
+              xs={7}
+              alignItems="center"
+              justifyContent="center"
+            >
+              <Typography
+                gutterBottom
+                variant="h5"
+                component="div"
+                sx={{ padding: "20px" }}
+                align="center"
+              >
+                {t("text.EditEmployeeRegistration")}
+              </Typography>
+            </Grid>
+
+            <Grid item lg={3} md={3} xs={3} marginTop={3}>
+              <select
+                className="language-dropdown"
+                value={lang}
+                onChange={(e) => setLang(e.target.value as Language)}
+              >
+                {Languages.map((l) => (
+                  <option key={l.value} value={l.value}>
+                    {l.label}
+                  </option>
+                ))}
+              </select>
+            </Grid>
           </Grid>
+
           <Divider />
           <br />
           <form onSubmit={formik.handleSubmit}>
             {toaster === false ? "" : <ToastApp />}
             <Grid item xs={12} container spacing={2}>
               <Grid item lg={4} xs={12}>
-                <TextField
-                  id="empName"
-                  name="empName"
-                  label={
-                    <span>
-                      {t("text.EnterEmployeeName")} {" "}
-                      {requiredFields.includes("empName") && (
-                        <span
-                          style={{
-                            color: formik.values.empName ? "green" : "red",
-                          }}
-                        >
-                          *
-                        </span>
-                      )}
-                    </span>
-                  }
+              <TranslateTextField
+                  label={t("text.EnterEmployeeName")}
                   value={formik.values.empName}
-                  placeholder={t("text.EnterEmployeeName")}
-                  size="small"
-                  fullWidth
-                  style={{
-                    backgroundColor: "white",
-                    borderColor:
-                      formik.touched.empName && formik.errors.empName
-                        ? "red"
-                        : "initial",
-                  }}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
+                  onChangeText={(text: string) =>
+                    handleConversionChange("empName", text)
+                  }
+                  required={false}
+                  lang={lang}
                 />
                 {formik.touched.empName && formik.errors.empName ? (
                   <div style={{ color: "red", margin: "5px" }}>
@@ -579,7 +554,7 @@ const EmployeeEdit = (props: Props) => {
                   name="empCode"
                   label={
                     <span>
-                      {t("text.EnterEmployeeCode")} {" "}
+                      {t("text.EnterEmployeeCode")}{" "}
                       {requiredFields.includes("empCode") && (
                         <span
                           style={{
@@ -613,33 +588,14 @@ const EmployeeEdit = (props: Props) => {
               </Grid>
 
               <Grid item lg={4} xs={12}>
-                <TextField
-                  id="empFatherName"
-                  name="empFatherName"
-                  label={
-                    <span>
-                      {t("text.EnterFatherName")} {" "}
-                      {requiredFields.includes("empFatherName") && (
-                        <span
-                          style={{
-                            color: formik.values.empFatherName ? "green" : "red",
-                          }}
-                        >
-                          *
-                        </span>
-                      )}
-                    </span>
-                  }
+                <TranslateTextField
+                  label={t("text.EnterFatherName")}
                   value={formik.values.empFatherName}
-                  placeholder={t("text.EnterFatherName")}
-                  size="small"
-                  fullWidth
-                  style={{
-                    backgroundColor: "white",
-                  }}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  inputProps={{ pattern: "[A-Za-z\\s'-]*" }}
+                  onChangeText={(text: string) =>
+                    handleConversionChange("empFatherName", text)
+                  }
+                  required={false}
+                  lang={lang}
                 />
                 {formik.touched.empFatherName && formik.errors.empFatherName ? (
                   <div style={{ color: "red", margin: "5px" }}>
@@ -649,32 +605,26 @@ const EmployeeEdit = (props: Props) => {
               </Grid>
 
               <Grid item lg={4} xs={12}>
-                <TextField
-                  id="empspauseName"
-                  name="empspauseName"
+              <TranslateTextField
                   label={t("text.EnterSpauseName")}
                   value={formik.values.empspauseName}
-                  placeholder={t("text.EnterSpauseName")}
-                  size="small"
-                  fullWidth
-                  style={{ backgroundColor: "white" }}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
+                  onChangeText={(text: string) =>
+                    handleConversionChange("empspauseName", text)
+                  }
+                  required={false}
+                  lang={lang}
                 />
               </Grid>
 
               <Grid item lg={4} xs={12}>
-                <TextField
-                  id="empMotherName"
-                  name="empMotherName"
+              <TranslateTextField
                   label={t("text.EnterMotherName")}
                   value={formik.values.empMotherName}
-                  placeholder={t("text.EnterMotherName")}
-                  size="small"
-                  fullWidth
-                  style={{ backgroundColor: "white" }}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
+                  onChangeText={(text: string) =>
+                    handleConversionChange("empMotherName", text)
+                  }
+                  required={false}
+                  lang={lang}
                 />
               </Grid>
 
@@ -682,10 +632,11 @@ const EmployeeEdit = (props: Props) => {
                 <TextField
                   id="empMobileNo"
                   name="empMobileNo"
-                  inputProps={{ maxLength: 10 }}
+                  inputProps={{ min: "0", maxLength: 10 }}
+                  type="number"
                   label={
                     <span>
-                      {t("text.EnterMobileNo")} {" "}
+                      {t("text.EnterMobileNo")}{" "}
                       {requiredFields.includes("empMobileNo") && (
                         <span
                           style={{
@@ -718,15 +669,13 @@ const EmployeeEdit = (props: Props) => {
                 ) : null}
               </Grid>
 
-
-
               <Grid item lg={4} xs={12}>
                 <TextField
                   id="email"
                   name="email"
                   label={
                     <span>
-                      {t("text.EnterEmail")} {" "}
+                      {t("text.EnterEmail")}{" "}
                       {requiredFields.includes("email") && (
                         <span
                           style={{
@@ -761,7 +710,7 @@ const EmployeeEdit = (props: Props) => {
                   name="empPanNumber"
                   label={
                     <span>
-                      {t("text.EnterPanNo")} {" "}
+                      {t("text.EnterPanNo")}{" "}
                       {requiredFields.includes("empPanNumber") && (
                         <span
                           style={{
@@ -800,7 +749,7 @@ const EmployeeEdit = (props: Props) => {
                   name="empAddharNo"
                   label={
                     <span>
-                      {t("text.EnterAdharNumber")} {" "}
+                      {t("text.EnterAdharNumber")}{" "}
                       {requiredFields.includes("empAddharNo") && (
                         <span
                           style={{
@@ -814,6 +763,7 @@ const EmployeeEdit = (props: Props) => {
                   }
                   value={formik.values.empAddharNo}
                   placeholder={t("text.EnterAdharNumber")}
+                  type="number"
                   size="small"
                   fullWidth
                   style={{ backgroundColor: "white" }}
@@ -835,7 +785,7 @@ const EmployeeEdit = (props: Props) => {
                   name="empDob"
                   label={
                     <span>
-                      {t("text.EnterDOB")} {" "}
+                      {t("text.EnterDOB")}{" "}
                       {requiredFields.includes("empDob") && (
                         <span
                           style={{
@@ -877,7 +827,7 @@ const EmployeeEdit = (props: Props) => {
                   InputLabelProps={{ shrink: true }}
                   label={
                     <span>
-                      {t("text.EnterJoiningDate")} {" "}
+                      {t("text.EnterJoiningDate")}{" "}
                       {requiredFields.includes("empJoiningDate") && (
                         <span
                           style={{
@@ -899,7 +849,7 @@ const EmployeeEdit = (props: Props) => {
                     backgroundColor: "white",
                     borderColor:
                       formik.touched.empJoiningDate &&
-                        formik.errors.empJoiningDate
+                      formik.errors.empJoiningDate
                         ? "red"
                         : "initial",
                   }}
@@ -907,7 +857,7 @@ const EmployeeEdit = (props: Props) => {
                   onBlur={formik.handleBlur}
                 />
                 {formik.touched.empJoiningDate &&
-                  formik.errors.empJoiningDate ? (
+                formik.errors.empJoiningDate ? (
                   <div style={{ color: "red", margin: "5px" }}>
                     {formik.errors.empJoiningDate}
                   </div>
@@ -943,7 +893,8 @@ const EmployeeEdit = (props: Props) => {
                   size="small"
                   value={
                     EmpDesignation.find(
-                      (option:any) => option.value === formik.values.empDesignationId
+                      (option: any) =>
+                        option.value === formik.values.empDesignationId
                     ) || null
                   }
                   onChange={(event, newValue: any) => {
@@ -956,7 +907,7 @@ const EmployeeEdit = (props: Props) => {
                       {...params}
                       label={
                         <span>
-                          {t("text.SelectDesignation")} {" "}
+                          {t("text.SelectDesignation")}{" "}
                           {requiredFields.includes("empDesignationId") && (
                             <span
                               style={{
@@ -974,7 +925,7 @@ const EmployeeEdit = (props: Props) => {
                   )}
                 />
                 {formik.touched.empDesignationId &&
-                  formik.errors.empDesignationId ? (
+                formik.errors.empDesignationId ? (
                   <div style={{ color: "red", margin: "5px" }}>
                     {String(formik.errors.empDesignationId)}
                   </div>
@@ -988,11 +939,11 @@ const EmployeeEdit = (props: Props) => {
                   options={Department}
                   fullWidth
                   size="small"
-                   value={
+                  value={
                     Department.find(
-                       (option:any) => option.value === formik.values.empDeptId
-                     ) || null
-                   }
+                      (option: any) => option.value === formik.values.empDeptId
+                    ) || null
+                  }
                   onChange={(event, newValue: any) => {
                     formik.setFieldValue("empDeptId", newValue?.value);
                     formik.setFieldTouched("empDeptId", true);
@@ -1003,12 +954,13 @@ const EmployeeEdit = (props: Props) => {
                       {...params}
                       label={
                         <span>
-                          {t("text.SelectDepartment")} {" "}
+                          {t("text.SelectDepartment")}{" "}
                           {requiredFields.includes("empDeptId") && (
                             <span
                               style={{
                                 color: formik.values.empDeptId
-                                  ? "green" : "red",
+                                  ? "green"
+                                  : "red",
                               }}
                             >
                               *
@@ -1035,20 +987,22 @@ const EmployeeEdit = (props: Props) => {
                   size="small"
                   value={
                     Country.find(
-                     (option:any) => option.value === formik.values.empCountryID
-                   ) || null
+                      (option: any) =>
+                        option.value === formik.values.empCountryID
+                    ) || null
                   }
                   onChange={(event, newValue: any) => {
                     formik.setFieldValue("empCountryID", newValue?.value);
                     formik.setFieldTouched("empCountryID", true);
                     formik.setFieldTouched("empCountryID", false);
+                    getState(newValue?.value);
                   }}
                   renderInput={(params) => (
                     <TextField
                       {...params}
                       label={
                         <span>
-                          {t("text.SelectCountry")}  {""}
+                          {t("text.SelectCountry")} {""}
                           {requiredFields.includes("empCountryID") && (
                             <span
                               style={{
@@ -1081,13 +1035,14 @@ const EmployeeEdit = (props: Props) => {
                   size="small"
                   value={
                     StateOption.find(
-                  (option:any) => option.value === formik.values.empStateId
-                  ) || null
+                      (option: any) => option.value === formik.values.empStateId
+                    ) || null
                   }
                   onChange={(event, newValue: any) => {
                     formik.setFieldValue("empStateId", newValue?.value);
                     formik.setFieldTouched("empStateId", true);
                     formik.setFieldTouched("empStateId", false);
+                    getCity(newValue?.value);
                   }}
                   renderInput={(params) => (
                     <TextField
@@ -1157,10 +1112,7 @@ const EmployeeEdit = (props: Props) => {
                     />
                   )}
                 />
-
               </Grid>
-
-
 
               <Grid item lg={4} xs={12}>
                 <Autocomplete
@@ -1206,10 +1158,6 @@ const EmployeeEdit = (props: Props) => {
                 ) : null}
               </Grid>
 
-
-
-
-
               <Grid item lg={4} xs={12}>
                 <Autocomplete
                   disablePortal
@@ -1219,7 +1167,8 @@ const EmployeeEdit = (props: Props) => {
                   size="small"
                   value={
                     Gender.find(
-                      (option: any) => option.value+"" === formik.values.gender
+                      (option: any) =>
+                        option.value + "" === formik.values.gender
                     ) || null
                   }
                   onChange={(event, newValue: any) => {
@@ -1255,56 +1204,26 @@ const EmployeeEdit = (props: Props) => {
               </Grid>
 
               <Grid item lg={4} xs={12}>
-                <TextField
-                  id="empLocalAddress"
-                  name="empLocalAddress"
+              <TranslateTextField
                   label={t("text.EnterLocalAddress")}
                   value={formik.values.empLocalAddress}
-                  placeholder={t("text.EnterLocalAddress")}
-                  inputProps={{}}
-                  size="small"
-                  type="text"
-                  fullWidth
-                  style={{ backgroundColor: "white" }}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
+                  onChangeText={(text: string) =>
+                    handleConversionChange("empLocalAddress", text)
+                  }
+                  required={false}
+                  lang={lang}
                 />
               </Grid>
 
               <Grid item lg={4} xs={12}>
-                <TextField
-                  id="empPerAddress"
-                  name="empPerAddress"
-                  label={
-                    <span>
-                      {t("text.EnterPermanentAddress")} {" "}
-                      {requiredFields.includes("empPerAddress") && (
-                        <span
-                          style={{
-                            color: formik.values.empPerAddress
-                              ? "green"
-                              : "red",
-                          }}
-                        >
-                          *
-                        </span>
-                      )}
-                    </span>
-                  }
+              <TranslateTextField
+                  label={t("text.EnterPermanentAddress")}
                   value={formik.values.empPerAddress}
-                  placeholder={t("text.EnterPermanentAddress")}
-                  size="small"
-                  fullWidth
-                  style={{
-                    backgroundColor: "white",
-                    borderColor:
-                      formik.touched.empPerAddress &&
-                        formik.errors.empPerAddress
-                        ? "red"
-                        : "initial",
-                  }}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
+                  onChangeText={(text: string) =>
+                    handleConversionChange("empPerAddress", text)
+                  }
+                  required={true}
+                  lang={lang}
                 />
                 {formik.touched.empPerAddress && formik.errors.empPerAddress ? (
                   <div style={{ color: "red", margin: "5px" }}>
@@ -1319,13 +1238,11 @@ const EmployeeEdit = (props: Props) => {
                   name="empPincode"
                   label={
                     <span>
-                      {t("text.EnterPincode")} {" "}
+                      {t("text.EnterPincode")}{" "}
                       {requiredFields.includes("empPincode") && (
                         <span
                           style={{
-                            color: formik.values.empPincode
-                              ? "green"
-                              : "red",
+                            color: formik.values.empPincode ? "green" : "red",
                           }}
                         >
                           *
@@ -1337,7 +1254,7 @@ const EmployeeEdit = (props: Props) => {
                   placeholder={t("text.EnterPincode")}
                   inputProps={{ maxLength: 6 }}
                   size="small"
-                  type="text"
+                  type="number"
                   fullWidth
                   style={{ backgroundColor: "white" }}
                   onChange={formik.handleChange}
@@ -1459,7 +1376,7 @@ const EmployeeEdit = (props: Props) => {
                     InputLabelProps={{ shrink: true }}
                     label={
                       <strong style={{ color: "#000" }}>
-                         {t("text.AttachedSignature")}
+                        {t("text.AttachedSignature")}
                       </strong>
                     }
                     size="small"
@@ -1516,7 +1433,6 @@ const EmployeeEdit = (props: Props) => {
                   </Grid>
                 </Grid>
 
-
                 <Modal open={Opens} onClose={handlePanClose1}>
                   <Box sx={style}>
                     {Img == "" ? (
@@ -1572,7 +1488,6 @@ const EmployeeEdit = (props: Props) => {
                   {t("text.reset")}
                 </Button>
               </Grid>
-
             </Grid>
           </form>
         </CardContent>

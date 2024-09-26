@@ -23,6 +23,7 @@ const CustomDataGrid: React.FC<CustomDataGridProps> = ({
 }) => {
   return (
     isLoading ? (
+      
       <div
         style={{
           display: "flex",
@@ -35,7 +36,8 @@ const CustomDataGrid: React.FC<CustomDataGridProps> = ({
     ) : (
       <Box>
         <br />
-        <div style={{ width: "100%", backgroundColor: "#FFFFFF" }}>
+        <div style={{ height: "50vh", width: "100%", backgroundColor: "#FFFFFF",overflowY: "auto" }}>
+          
           <DataGrid
             rows={rows}
             columns={columns}
@@ -99,6 +101,7 @@ const CustomDataGrid: React.FC<CustomDataGridProps> = ({
           />
         </div>
       </Box>
+      
     )
   );
 };

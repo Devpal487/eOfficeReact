@@ -28,6 +28,10 @@ import { usePermissionData } from "../../../usePermissionData";
 import DeleteIcon from "@mui/icons-material/Delete";
 import api from "../../../utils/Url";
 import CustomDataGrid from "../../../utils/CustomDatagrid";
+import ButtonWithLoader from "../../../utils/ButtonWithLoader";
+import Languages from "../../../Languages";
+import TranslateTextField from "../../../TranslateTextField";
+import { Language } from "react-transliterate";
 
 interface MenuPermission {
   isAdd: boolean;
@@ -49,6 +53,7 @@ export default function UserType() {
     isPrint: false,
     isDel: false,
   });
+  const [lang, setLang] = useState<Language>("en");
 
   useEffect(() => {
     const dataString = localStorage.getItem("userdata");
@@ -186,6 +191,12 @@ export default function UserType() {
                 flex: 1,
                 headerClassName: "MuiDataGrid-colCell",
               },
+              {
+                field: "useR_TYPE_CODE",
+                headerName: t("text.UserTypeCode"),
+                flex: 1,
+                headerClassName: "MuiDataGrid-colCell",
+              },
             ];
             setColumns(columns as any);
           }
@@ -244,6 +255,14 @@ export default function UserType() {
     setEditId(row.id);
   };
 
+  const handleSubmitWrapper = async () => {
+    await formik.handleSubmit();
+  };
+
+  const handleConversionChange = (params: any, text: string) => {
+    formik.setFieldValue(params, text);
+  };
+
   return (
     <>
       <Grid item lg={6} sm={6} xs={12} sx={{ marginTop: "3vh" }}>
@@ -252,33 +271,46 @@ export default function UserType() {
             width: "100%",
             height: "50%",
             backgroundColor: "#E9FDEE",
-            border: ".5px solid #FF7722 ",
+            border: ".5px solid #2B4593 ",
             marginTop: "5px",
           }}
         >
           <Paper
             sx={{
               width: "100%",
-              overflow: "hidden",
-              "& .MuiDataGrid-colCell": {
-                backgroundColor: "#2B4593",
-                color: "#fff",
-                fontSize: 18,
-                fontWeight: 800,
-              },
+              overflow: "hidden"
             }}
             style={{ padding: "10px" }}
           >
             <ConfirmDialog />
-            <Typography
-              gutterBottom
-              variant="h5"
-              component="div"
-              sx={{ padding: "20px" }}
-              align="left"
-            >
-              {t("text.UserTypeMaster")}
-            </Typography>
+
+            <Grid item xs={12} container spacing={1}>
+            <Grid item lg={10} md={10} xs={12}>
+              <Typography
+                gutterBottom
+                variant="h5"
+                component="div"
+                sx={{ padding: "20px" }}
+                align="left"
+              >
+                {t("text.UserTypeMaster")}
+              </Typography>
+            </Grid>
+
+            <Grid item lg={2} md={2} xs={12} marginTop={2}>
+              <select
+                className="language-dropdown"
+                value={lang}
+                onChange={(e) => setLang(e.target.value as Language)}
+              >
+                {Languages.map((l) => (
+                  <option key={l.value} value={l.value}>
+                    {l.label}
+                  </option>
+                ))}
+              </select>
+            </Grid>
+          </Grid>
             <Divider />
 
             <Box height={10} />
@@ -286,33 +318,14 @@ export default function UserType() {
             <form onSubmit={formik.handleSubmit}>
               <Grid item xs={12} container spacing={2}>
                 <Grid item xs={5}>
-                  <TextField
-                    id="useR_TYPE_NAME"
-                    type="text"
-                    label={
-                      <span>
-                        {t("text.EnterUserType")} {""}
-                        {requiredFields.includes("useR_TYPE_NAME") && (
-                          <span
-                            style={{
-                              color: formik.values.useR_TYPE_NAME
-                                ? "green"
-                                : "red",
-                            }}
-                          >
-                            *
-                          </span>
-                        )}
-                      </span>
-                    }
-                    placeholder={t("text.EnterUserType")}
-                    value={formik.values.useR_TYPE_NAME}
-                    size="small"
-                    name="useR_TYPE_NAME"
-                    fullWidth
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                  />
+                <TranslateTextField
+                  label={t("text.EnterUserType")}
+                  value={formik.values.useR_TYPE_NAME}
+                  onChangeText={(text: string) => handleConversionChange('useR_TYPE_NAME', text)}
+                  required={true}
+                  lang={lang}
+                />
+                  
                   {formik.touched.useR_TYPE_NAME &&
                     formik.errors.useR_TYPE_NAME ? (
                     <div style={{ color: "red", margin: "5px" }}>
@@ -335,14 +348,30 @@ export default function UserType() {
                     inputProps={{ maxLength: 5 }}
                   />
                 </Grid>
-                <Grid item xs={2}>
-                  {permissionData?.isAdd == true ? (
+                <Grid item xs={2} sx={{m:-1}}>
+                  {/* {permissionData?.isAdd == true ? (
                     <Button type="submit" variant="contained" size="large">
                       {editId == -1 ? t("text.save") : t("text.update")}
                     </Button>
                   ) : (
                     ""
-                  )}
+                  )} */}
+
+{editId === -1 && permissionData?.isAdd && (
+  <ButtonWithLoader
+    buttonText={t("text.save")}
+    onClickHandler={handleSubmitWrapper}
+    fullWidth={true}
+  />
+)}
+
+{editId !== -1 && (
+  <ButtonWithLoader
+    buttonText={t("text.update")}
+    onClickHandler={handleSubmitWrapper}
+    fullWidth={true}
+  />
+)}
                 </Grid>
               </Grid>
             </form>

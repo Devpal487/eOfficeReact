@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import {
+    DataGrid,
     GridColDef,
+    GridToolbar,
 } from "@mui/x-data-grid";
 import { useNavigate } from "react-router-dom";
 import {
@@ -9,114 +11,95 @@ import {
     CircularProgress,
 } from "@mui/material";
 import { useTranslation } from "react-i18next";
-import api from "../../../utils/Url"; 
+import api from "../../../utils/Url";
 import Box from "@mui/material/Box";
-import { getinstId, getId, getdivisionId } from  "../../../utils/Constant";
+import { getinstId, getId, getdivisionId } from "../../../utils/Constant";
 import { toast } from "react-toastify";
-import CustomDataGrid from "../../../utils/CustomDatagrid"; 
+import CustomDataGrid from "../../../utils/CustomDatagrid";
 
-interface MenuPermission {
-    isAdd: boolean;
-    isEdit: boolean;
-    isPrint: boolean;
-    isDel: boolean;
+
+interface ReportProps {
+    fileID: any | null;
+    triggerFetch: boolean;
 }
 
-export default function NoteSheet() {
+const NoteSheet: React.FC<ReportProps> = ({ fileID, triggerFetch }) => {
     const [totalFile, setTotalFile] = useState([]);
     const [columns, setColumns] = useState<any>([]);
     const [isLoading, setIsLoading] = useState(true);
-    const [ReviewModalData, setReviewModalData] = useState(false);
+
     const { t } = useTranslation();
 
-    const userId = getId();
-
-    const instId = getinstId();
-    // console.log("🚀 ~ ViewEditFile ~ userId:", userId);
-    const divId = getdivisionId();
-    // console.log("🚀 ~ ViewEditFile ~ divId:", divId);
-
-    const navigate = useNavigate();
 
     useEffect(() => {
-        fetchTotalFile();
-    }, []);
+        console.log(fileID);
+        if (fileID == null || fileID == "" ) {
+            toast.error("Please select file for further proceed....")
+        }else{
+        fetchTotalFile(fileID);
+        }
+    }, [fileID, triggerFetch]);
 
 
 
 
-    const fetchTotalFile = async () => {
 
-            const value = {
-                "fileId": -1,
-                "fNid": -1,
-                "nodeId": -1,
-                "reviewFlag": "N"
-            };
-            console.log("collectData", value);
-            const response = await api.post(`Correspondance/GetCorrespondance`, value)
+    const fetchTotalFile = async (fileID: any) => {
 
-            console.log("result", response.data.data);
-            const data = response.data.data;
-            const DocsWithIds = data.map((doc: any, index: any) => ({
-                ...doc,
-                serialNo: index + 1,
-                id: doc.fileId,
-            }));
+        const value = {
+            "fileId": -1,
+            "fNid": fileID,
+            "nodeId": -1,
+            "reviewFlag": "N"
+        };
+        console.log("collectData", value);
+        const response = await api.post(`Correspondance/GetCorrespondance`, value)
 
-            setTotalFile(DocsWithIds);
-            setIsLoading(false);
+        console.log("result", response.data.data);
+        const data = response.data.data;
+        const DocsWithIds = data.map((doc: any, index: any) => ({
+            ...doc,
+            serialNo: index + 1,
+            id: doc.fileId,
+        }));
 
-            if (data.length > 0) {
-                const columns: GridColDef[] = [
-                    {
-                        field: "serialNo",
-                        headerName: t("text.SrNo"),
-                        width: 120,
-                        headerClassName: "MuiDataGrid-colCell",
-                    },
+        setTotalFile(DocsWithIds);
+        setIsLoading(false);
 
-                    {
-                        field: "fileNo",
-                        headerName: "File Name",
-                        flex: 1,
-                        headerClassName: "MuiDataGrid-colCell",
-                    },
+        if (data.length > 0) {
+            const columns: GridColDef[] = [
+                {
+                    field: "serialNo",
+                    headerName: t("text.SrNo"),
+                    width: 120,
+                    headerClassName: "MuiDataGrid-colCell",
+                },
 
-
-                    // {
-                    //     field: "cSubject",
-                    //     headerName: "Subject ",
-                    //     flex: 1,
-                    //     headerClassName: "MuiDataGrid-colCell",
-                    // },
-
-                    // {
-                    //     field: "dairyDate",
-                    //     headerName: "Dairy Date",
-                    //     flex: 1,
-                    //     headerClassName: "MuiDataGrid-colCell",
-                    // },
-                    // {
-                    //     field: "fileStatus",
-                    //     headerName: "File Status ",
-                    //     flex: 1,
-                    //     headerClassName: "MuiDataGrid-colCell",
-                    // },
-
-                    // {
-                    //     field: "createdby",
-                    //     headerName: "Created By",
-                    //     flex: 1,
-                    //     headerClassName: "MuiDataGrid-colCell",
-                    // },
-
-
-                   
-                ];
-                setColumns(columns as any);
-            }
+                {
+                    field: "fileNo",
+                    headerName: "File Name",
+                    flex: 1,
+                    headerClassName: "MuiDataGrid-colCell",
+                },
+                {
+                    field: "fileCont",
+                    headerName: "Message ",
+                    flex: 1,
+                    headerClassName: "MuiDataGrid-colCell",
+                },
+                {
+                    field: "remark",
+                    headerName: "Remark ",
+                    flex: 1,
+                    headerClassName: "MuiDataGrid-colCell",
+                }
+            ];
+            setColumns(columns as any);
+        }
     };
+
+   
+    
 
     const adjustedColumns = columns.map((column: any) => ({
         ...column,
@@ -154,8 +137,11 @@ export default function NoteSheet() {
                     columns={adjustedColumns}
                     pageSizeOptions={[5, 10, 25, 50, 100]}
                     initialPageSize={5}
-                />)}
+                />
+            )}
 
         </Paper>
     );
 }
+
+export default NoteSheet;

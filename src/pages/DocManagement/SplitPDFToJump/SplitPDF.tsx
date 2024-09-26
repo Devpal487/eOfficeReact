@@ -31,6 +31,11 @@ import moment from 'moment';
 import api from "../../../utils/Url";
 import { getISTDate } from "../../../utils/Constant";
 import CustomLabel from "../../../CustomLable";
+import { Language, ReactTransliterate } from "react-transliterate";
+import "react-transliterate/dist/index.css";
+import TranslateTextField from "../../../TranslateTextField";
+import Languages from "../../../Languages";
+
 
 // const style = {
 //   position: "absolute" as "absolute",
@@ -57,6 +62,7 @@ const SplitPDF = (props: Props) => {
   const [selectedRows, setSelectedRows] = useState<any>([]);
   const [selectedRow, setSelectedRow] = useState<any>([]);
   const { defaultValuestime } = getISTDate();
+  const [lang, setLang] = useState<Language>("en");
 
 
   let navigate = useNavigate();
@@ -309,6 +315,10 @@ const SplitPDF = (props: Props) => {
     }
   };
 
+  const handleConversionChange = (params: any, text: string) => {
+    formik.setFieldValue(params, text);
+  };
+
 
 
 
@@ -328,35 +338,50 @@ const SplitPDF = (props: Props) => {
           padding: "-5px 5px",
           backgroundColor: "#ffffff",
           borderRadius: "5px",
-          border: ".5px solid #42AEEE",
+          border: ".5px solid #2B4593",
           marginTop: "3vh"
         }}
       >
         <CardContent>
-          <Typography
-            variant="h5"
-            textAlign="center"
-            style={{ fontSize: "18px", fontWeight: 500 }}
-          >
-            {t("text.SplitPdfToJump")}
-          </Typography>
-
-          <Grid item sm={4} xs={12}>
-            <Typography style={{ marginTop: "-75px" }}>
+        <Grid item xs={12} container spacing={2} >
+            <Grid item lg={2} md={2} xs={2} marginTop={2}>
               <Button
                 type="submit"
                 onClick={() => back(-1)}
                 variant="contained"
                 style={{
-                  marginBottom: 15,
-                  marginTop: "45px",
                   backgroundColor: "blue",
                   width: 20,
                 }}
               >
                 <ArrowBackSharpIcon />
               </Button>
-            </Typography>
+            </Grid>
+            <Grid item lg={7} md={7} xs={7} alignItems="center" justifyContent="center">
+              <Typography
+                gutterBottom
+                variant="h5"
+                component="div"
+                sx={{ padding: "20px" }}
+                align="center"
+              >
+                {t("text.SplitPdfToJump")}
+              </Typography>
+            </Grid>
+
+            <Grid item lg={3} md={3} xs={3} marginTop={3}>
+              <select
+                className="language-dropdown"
+                value={lang}
+                onChange={(e) => setLang(e.target.value as Language)}
+              >
+                {Languages.map((l) => (
+                  <option key={l.value} value={l.value}>
+                    {l.label}
+                  </option>
+                ))}
+              </select>
+            </Grid>
           </Grid>
           <Divider />
           <br />
@@ -472,20 +497,15 @@ const SplitPDF = (props: Props) => {
 
 
               <Grid item md={3} xs={12}>
-                <TextField
-                  type="text"
-                  
-                  id="textSearch"
-                  name="textSearch"
-                  label={<CustomLabel text={t("text.Search")} />}
-                  value={formik.values.textSearch}
-                  placeholder={t("text.Search")}
-                  size="small"
-                  fullWidth
-                  style={{ backgroundColor: "white" }}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                />
+              <TranslateTextField
+                          label={t("text.Search")}
+                          value={formik.values.textSearch}
+                          onChangeText={(text: string) =>
+                            handleConversionChange("textSearch", text)
+                          }
+                          required={true}
+                          lang={lang}
+                        />
               </Grid>
 
 

@@ -142,7 +142,7 @@ export default function PageCreate() {
                 } else {
                     toast.error(response.data.mesg);
                 }
-                fetchDocData();
+               // fetchDocData();
             });
     };
 

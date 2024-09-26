@@ -3,7 +3,6 @@ import Paper from "@mui/material/Paper";
 import { useEffect, useState } from "react";
 import {
   Box,
-  Button,
   Divider,
   Stack,
   TextField,
@@ -12,8 +11,6 @@ import {
 import EditIcon from "@mui/icons-material/Edit";
 import Card from "@mui/material/Card";
 import Grid from "@mui/material/Grid";
-import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
 import api from "../../../utils/Url";
 import { useLocation } from "react-router-dom";
@@ -21,14 +18,19 @@ import CircularProgress from "@mui/material/CircularProgress";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useTranslation } from "react-i18next";
-import { DataGrid, GridColDef, GridToolbar } from "@mui/x-data-grid";
+import { GridColDef } from "@mui/x-data-grid";
 import { toast } from "react-toastify";
 import ToastApp from "../../../ToastApp";
-import { usePermissionData } from "../../../usePermissionData";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { getISTDate } from "../../../utils/Constant";
 import CustomDataGrid from "../../../utils/CustomDatagrid";
 import CustomLabel from "../../../CustomLable";
+import ButtonWithLoader from "../../../utils/ButtonWithLoader";
+import Languages from "../../../Languages";
+import { Language } from "react-transliterate";
+import "react-transliterate/dist/index.css";
+import TranslateTextField from "../../../TranslateTextField";
+
 
 interface MenuPermission {
   isAdd: boolean;
@@ -52,6 +54,8 @@ export default function DepartmentMaster() {
     isPrint: false,
     isDel: false,
   });
+  const [lang, setLang] = useState<Language>("en");
+
 
   useEffect(() => {
     const dataString = localStorage.getItem("userdata");
@@ -70,13 +74,12 @@ export default function DepartmentMaster() {
             if (pathrow) {
 
               setPermissionData(pathrow);
-              // getList();
+              getList();
             }
           }
         }
       }
     }
-    getList();
   }, [isLoading]);
 
   let delete_id = "";
@@ -97,12 +100,10 @@ export default function DepartmentMaster() {
       });
   };
   const reject = () => {
-    // toast.warn({summary: 'Rejected', detail: 'You have rejected', life: 3000 });
     toast.warn("Rejected: You have rejected", { autoClose: 3000 });
   };
 
   const handledeleteClick = (del_id: any) => {
-    // console.log(del_id + " del_id ");
     delete_id = del_id;
     confirmDialog({
       message: "Do you want to delete this record ?",
@@ -116,7 +117,8 @@ export default function DepartmentMaster() {
 
   const getList = () => {
     const collectData = {
-     "departmentId": -1
+      "departmentId": -1,
+      "departmentName": ""
     };
     try {
       api
@@ -147,7 +149,7 @@ export default function DepartmentMaster() {
                       direction="row"
                       sx={{ alignItems: "center", marginTop: "5px" }}
                     >
-                      {/*  {permissionData?.isEdit ? ( */}
+                       {permissionData?.isEdit ? (
                       <EditIcon
                         style={{
                           fontSize: "20px",
@@ -157,10 +159,10 @@ export default function DepartmentMaster() {
                         className="cursor-pointer"
                         onClick={() => routeChangeEdit(params.row)}
                       />
-                      {/*  ) : ( */}
-                      {/*   "" */}
-                      {/* )} */}
-                      {/*  {permissionData?.isDel ? ( */}
+                       ) : ( 
+                        "" 
+                      )} 
+                       {permissionData?.isDel ? ( 
                       <DeleteIcon
                         style={{
                           fontSize: "20px",
@@ -171,9 +173,9 @@ export default function DepartmentMaster() {
                           handledeleteClick(params.row.id);
                         }}
                       />
-                      {/*  ) : ( */}
-                      {/*    "" */}
-                      {/*  )} */}
+                       ) : ( 
+                         "" 
+                       )} 
                     </Stack>,
                   ];
                 },
@@ -193,7 +195,7 @@ export default function DepartmentMaster() {
               },
               {
                 field: "departmentShortname",
-                headerName: t("text.ShortName"),
+                headerName: t("text.deptCode"),
                 flex: 1,
                 headerClassName: "MuiDataGrid-colCell",
               },
@@ -219,23 +221,13 @@ export default function DepartmentMaster() {
   const [toaster, setToaster] = useState(false);
   const formik = useFormik({
     initialValues: {
-
       "departmentId": -1,
       "departmentName": "",
       "departmentShortname": "",
       "createdBy": "admin",
       "updatedBy": "admin",
-      "createdOn":defaultValuestime,
-      "updatedOn":defaultValuestime
-      // countryId: -1,
-      // countryName: "",
-      // countryCode: "",
-
-      // createdBy: "",
-      // updatedBy: "",
-      // createdOn: new Date().toISOString(),
-      // updatedOn: new Date().toISOString(),
-
+      "createdOn": defaultValuestime,
+      "updatedOn": defaultValuestime
     },
     validationSchema: validationSchema,
     onSubmit: async (values) => {
@@ -268,6 +260,16 @@ export default function DepartmentMaster() {
     setEditId(row.id);
   };
 
+
+  const handleSubmitWrapper = async () => {
+    await formik.handleSubmit();
+  };
+
+  const handleConversionChange = (params: any, text: string) => {
+    formik.setFieldValue(params, text);
+  };
+
+
   return (
     <>
       <Grid item lg={6} sm={6} xs={12} sx={{ marginTop: "3vh" }}>
@@ -276,70 +278,67 @@ export default function DepartmentMaster() {
             width: "100%",
             height: "50%",
             backgroundColor: "#E9FDEE",
-            border: ".5px solid #FF7722 ",
+            border: ".5px solid #2B4593 ",
             marginTop: "5px",
           }}
         >
           <Paper
             sx={{
               width: "100%",
-              overflow: "hidden",
-              "& .MuiDataGrid-colCell": {
-                backgroundColor: "#2B4593",
-                color: "#fff",
-                fontSize: 18,
-                fontWeight: 800,
-              },
+              overflow: "hidden"
             }}
             style={{ padding: "10px" }}
           >
             <ConfirmDialog />
+
+            <Grid item xs={12} container spacing={2}>
+            <Grid item lg={10} md={10} xs={12}>
             <Typography
-              gutterBottom
-              variant="h5"
-              component="div"
-              sx={{ padding: "20px" }}
-              align="left"
-            >
-              {t("text.deptMaster")}
-            </Typography>
+            gutterBottom
+            variant="h5"
+            component="div"
+            sx={{ padding: "20px" }}
+            align="left"
+          >
+            {t("text.deptMaster")}
+          </Typography>
+            </Grid>
+
+            <Grid item lg={2} md={2} xs={12} marginTop={2}>
+              <select
+                className="language-dropdown"
+                value={lang}
+                onChange={(e) => setLang(e.target.value as Language)}
+              >
+                {Languages.map((l) => (
+                  <option key={l.value} value={l.value}>
+                    {l.label}
+                  </option>
+                ))}
+              </select>
+            </Grid>
+          </Grid>
             <Divider />
 
             <Box height={10} />
-            {/* <Stack direction="row" spacing={2} classes="my-2 mb-2"> */}
-            {/* <Grid
-                                // style={{
-                                //     display: "flex",
-                                //     flexDirection: "row",
-                                //     justifyContent: "space-around",
-                                //     alignItems: "flex-start",
-                                // }}
-                            > */}
+           
             <form onSubmit={formik.handleSubmit}>
               <Grid item xs={12} container spacing={2}>
-                <Grid item xs={4}>
-                  <TextField
-                    id="departmentName"
-                    name="departmentName"
-                    label={<CustomLabel text={t("text.enterdeptName")} required={requiredFields.includes('departmentName')} />}
-                    value={formik.values.departmentName}
-                    placeholder={t("text.enterdeptName")}
-                    size="small"
-                    fullWidth
-                    style={{
-                      backgroundColor: 'white',
-                      borderColor: formik.touched.departmentName && formik.errors.departmentName ? 'red' : 'initial',
-                    }}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                  />
+                <Grid item xs={5}>
+                <TranslateTextField
+                  label={t("text.enterdeptName")}
+                  value={formik.values.departmentName}
+                  onChangeText={(text: string) => handleConversionChange('departmentName', text)}
+                  required={true}
+                  lang={lang}
+                />
                   {formik.touched.departmentName && formik.errors.departmentName ? (
                     <div style={{ color: "red", margin: "5px" }}>{formik.errors.departmentName}</div>
                   ) : null}
                 </Grid>
 
 
-                <Grid item xs={4}>
+                <Grid item xs={5}>
                   <TextField
                     id="departmentShortname"
                     name="departmentShortname"
@@ -353,14 +352,22 @@ export default function DepartmentMaster() {
                     onBlur={formik.handleBlur}
                   />
                 </Grid>
-                <Grid item xs={2}>
-                  {/* {permissionData?.isAdd == true ? ( */}
-                  <Button type="submit" variant="contained" size="large">
-                    {editId == -1 ? t("text.save") : t("text.update")}
-                  </Button>
-                  {/* ) : ( */}
-                  {/*    "" */}
-                  {/* )} */}
+                <Grid item xs={2}  sx={{m:-1}}>
+                  {editId === -1 && permissionData?.isAdd && (
+  <ButtonWithLoader
+    buttonText={t("text.save")}
+    onClickHandler={handleSubmitWrapper}
+    fullWidth={true}
+  />
+)}
+
+{editId !== -1 && (
+  <ButtonWithLoader
+    buttonText={t("text.update")}
+    onClickHandler={handleSubmitWrapper}
+    fullWidth={true}
+  />
+)}
                 </Grid>
               </Grid>
             </form>

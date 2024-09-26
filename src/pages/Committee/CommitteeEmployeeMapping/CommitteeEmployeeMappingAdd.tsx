@@ -11,19 +11,16 @@ import {
 import React, { useEffect, useState } from "react";
 import ArrowBackSharpIcon from "@mui/icons-material/ArrowBackSharp";
 import { Navigate, useNavigate } from "react-router-dom";
-import axios from "axios";
-import HOST_URL from "../../../utils/Url";
 import Autocomplete from "@mui/material/Autocomplete";
 import { Divider } from "@mui/material";
 import { useFormik } from "formik";
-import * as Yup from "yup";
 import { useTranslation } from "react-i18next";
 import { toast } from "react-toastify";
 import ToastApp from "../../../ToastApp";
-import dayjs, { Dayjs } from "dayjs";
 import api from "../../../utils/Url";
 import CustomLabel from "../../../CustomLable";
-import { getISTDate } from "../../../utils/Constant";
+import { getdivisionId, getId, getinstId,getISTDate } from "../../../utils/Constant";
+import axios from "axios";
 
 
 type Props = {};
@@ -31,7 +28,10 @@ type Props = {};
 const CommitteeEmployeeMappingAdd = (props: Props) => {
     const { t } = useTranslation();
 
-    const { defaultValuestime } = getISTDate();
+    const ID = getId();
+    let divId = getdivisionId();
+    let instId = getinstId();
+    let {defaultValuestime} = getISTDate();
 
 
     const [option, setOption] = useState([
@@ -74,9 +74,6 @@ const CommitteeEmployeeMappingAdd = (props: Props) => {
         });
     };
 
-
-
-
     const getUserName = () => {
         const collectData = {
             empid: -1,
@@ -105,7 +102,6 @@ const CommitteeEmployeeMappingAdd = (props: Props) => {
         });
     };
 
-
     const getCommittee = () => {
         const collectData = {
             "id": -1,
@@ -132,10 +128,19 @@ const CommitteeEmployeeMappingAdd = (props: Props) => {
     const [toaster, setToaster] = useState(false);
 
     useEffect(() => {
+        getIP();
         getGender();
         getUserName();
         getCommittee();
     }, []);
+
+    const getIP =()=>{
+        axios.get('http://ipinfo.io')
+        .then((res:any)=>{
+        formik.setFieldValue("ipAddress",res.data.ip);
+      }
+    )
+      }
 
     const formik = useFormik({
         initialValues: {
@@ -146,14 +151,13 @@ const CommitteeEmployeeMappingAdd = (props: Props) => {
             "dol": "",
             "priority": 0,
             "committeeId": 0,
-
+            "inst_id": instId,
             "officeId": 1,
-            "userId": "",
+            "userId": ID,
             "ipAddress": "",
             "uploadDate": defaultValuestime,
             "head": "",
-            "divisionid": parseInt(localStorage.getItem('id') + ""),
-
+            "divisionid": divId,
             "empName": "",
             "authorityName": ""
         },
@@ -180,7 +184,7 @@ const CommitteeEmployeeMappingAdd = (props: Props) => {
                     padding: "-5px 5px",
                     backgroundColor: "#FFFFFF",
                     borderRadius: "5px",
-                    border: ".5px solid #ff7722",
+                    border: ".5px solid #00009c",
                     marginTop: "3vh",
                 }}
             >
@@ -264,6 +268,7 @@ const CommitteeEmployeeMappingAdd = (props: Props) => {
                                     size="small"
                                     onChange={(event, newValue) => {
                                         formik.setFieldValue("empId", newValue?.value);
+                                        formik.setFieldValue("empName", newValue?.label);
                                         formik.setFieldTouched("empId", true);
                                         formik.setFieldTouched("empId", false);
                                     }}
@@ -286,6 +291,7 @@ const CommitteeEmployeeMappingAdd = (props: Props) => {
 
                                     onChange={(event, newValue) => {
                                         formik.setFieldValue("designationInCommittee", newValue?.value);
+                                        formik.setFieldValue("authorityName", newValue?.label);
                                         formik.setFieldTouched("designationInCommittee", true);
                                         formik.setFieldTouched("designationInCommittee", false);
                                     }}
@@ -318,8 +324,6 @@ const CommitteeEmployeeMappingAdd = (props: Props) => {
                             </Grid>
 
                             <Grid xs={12} sm={4} item>
-
-
                                 <TextField
                                     type="date"
                                     label={<CustomLabel text={t("text.EnterDateOfLeaving")} />}

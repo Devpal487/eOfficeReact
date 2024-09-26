@@ -314,7 +314,7 @@ const UserManagementEdit = (props: Props) => {
           padding: "-5px 5px",
           backgroundColor: "#FFFFFF",
           borderRadius: "5px",
-          border: ".5px solid #ff7722",
+          border: ".5px solid #2B4593",
           marginTop: "3vh"
         }}
       >
@@ -486,7 +486,7 @@ const UserManagementEdit = (props: Props) => {
 
               <Grid xs={12} sm={4} item>
                 <TextField
-                  type="text"
+                  type="number"
                   label={
                     <span>
                       {t("text.EnterMobileNo")}{" "}

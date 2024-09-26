@@ -74,9 +74,9 @@ export default function Inbox() {
             "lastUpdatedDate ": "1900-01-01",
             "type": 2,
 
-            "inst_id":1,
-            "user_id":userId,
-          
+            "inst_id": 1,
+            "user_id": userId,
+
 
 
             "divisionid": parseInt(localStorage.getItem("id") + ""),
@@ -163,35 +163,58 @@ export default function Inbox() {
 
                     {
                         field: "fileNm",
-                        headerName: "File Name",
+                        headerName: t('text.FileNo'),
                         flex: 1,
                         headerClassName: "MuiDataGrid-colCell",
+                        renderCell: (params) => {
+                            return [
+                                <a
+                                    onClick={() => navigate('/E-Office/ViewEditFile')}
+                                    style={{
+                                        color: "blue",
+                                        cursor: "pointer",
+                                        textDecoration: "underline",
+                                    }}
+                                >
+                                    {params.value}
+                                </a>,
+                            ];
+                        },
                     },
 
 
                     {
                         field: "cSubject",
-                        headerName: "Subject ",
+                        headerName:t('text.Subject'),
                         flex: 1,
                         headerClassName: "MuiDataGrid-colCell",
                     },
 
-                    {
-                        field: "dairyDate",
-                        headerName: "Dairy Date",
-                        flex: 1,
-                        headerClassName: "MuiDataGrid-colCell",
-                    },
+
                     {
                         field: "fileStatus",
-                        headerName: "File Status ",
+                        headerName:t('text.FileStatus'),
                         flex: 1,
                         headerClassName: "MuiDataGrid-colCell",
                     },
 
                     {
                         field: "createdby",
-                        headerName: "Created By",
+                        headerName: t('text.CreatedBy'),
+                        flex: 1,
+                        headerClassName: "MuiDataGrid-colCell",
+                    },
+
+                    {
+                        field: "updatedRemark",
+                        headerName:t('text.Remark'),
+                        flex: 1,
+                        headerClassName: "MuiDataGrid-colCell",
+                    },
+
+                    {
+                        field: "dairyDate",
+                        headerName:t('text.Date'),
                         flex: 1,
                         headerClassName: "MuiDataGrid-colCell",
                     },
@@ -199,7 +222,7 @@ export default function Inbox() {
 
                     {
                         field: "sendWorkPlace",
-                        headerName: "Work Place",
+                        headerName:t('text.WorkPlace'),
                         flex: 1,
                         headerClassName: "MuiDataGrid-colCell",
                         renderCell: (params) => {
@@ -212,7 +235,7 @@ export default function Inbox() {
                                     onClick={() => handleMove(params.row)}
                                     style={{ height: "80%" }}
                                 >
-                                    Move
+                                   {t('text.Move')}
                                 </Button>
 
                             ]

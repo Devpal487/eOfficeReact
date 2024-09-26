@@ -694,6 +694,7 @@ const resources = {
         AadharNo:"Aadhar Number",
         SelectCourse:"Select Course",
         ServiceDashboard:"Service Dashboard",
+        Files:"Files",
 
 
 

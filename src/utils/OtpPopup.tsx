@@ -19,6 +19,11 @@ const OtpPopup: React.FC<OtpPopupProps> = ({
   isId,
   isData,
 }) => {
+  console.log("🚀 ~ isVisi̥ble:", isVisible)
+  console.log("🚀 ~ onClose:", onClose)
+  console.log("🚀 ~ onOtpVerified:", onOtpVerified)
+  console.log("🚀 ~ isId:", isId)
+  console.log("🚀 ~ isData:", isData)
   const [otp, setOtp] = useState<string[]>(Array(6).fill(""));
   const [resendAvailable, setResendAvailable] = useState<boolean>(false);
   const [timer, setTimer] = useState<number>(180);

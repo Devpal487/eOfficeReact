@@ -1,76 +1,81 @@
 import {
-  Box,
   Button,
+  Card,
   CardContent,
   Grid,
-  Modal,
-  Table,
   TextField,
   Typography,
+  Divider,
+  Checkbox,
+  ListItemText,
+  Table,
+  Modal,
+  Box,
 } from "@mui/material";
-import React, { useEffect, useState } from "react";
 import ArrowBackSharpIcon from "@mui/icons-material/ArrowBackSharp";
-import { useLocation, useNavigate } from "react-router-dom";
+import React, { useState, useEffect, useTransition } from "react";
+import axios from "axios";
+import { Navigate, useLocation, useNavigate } from "react-router-dom";
 import api from "../../../utils/Url";
 import Autocomplete from "@mui/material/Autocomplete";
-import { Divider } from "@mui/material";
 import { useFormik } from "formik";
+import * as Yup from "yup";
 import { useTranslation } from "react-i18next";
 import CustomLabel from "../../../CustomLable";
-import { toast } from "react-toastify";
+import dayjs, { Dayjs } from "dayjs";
+import { toast, ToastContainer } from "react-toastify";
+
 import ToastApp from "../../../ToastApp";
 import Languages from "../../../Languages";
-import { Language } from "react-transliterate";
+import { Language, ReactTransliterate } from "react-transliterate";
 import "react-transliterate/dist/index.css";
-import { getISTDate } from "../../../utils/Constant";
+import TranslateTextField from "../../../TranslateTextField";
 import nopdf from "../../../assets/images/imagepreview.jpg";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import DeleteIcon from "@mui/icons-material/Delete";
-import dayjs from "dayjs";
+import { getISTDate } from "../../../utils/Constant";
 
 type Props = {};
 
-const StudentMasterEdit = (props: Props) => {
-  const back = useNavigate();
-  const { t } = useTranslation();
+const style = {
+  position: "absolute" as "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: "180vh",
+  height: "85vh",
+  bgcolor: "#f5f5f5",
+  border: "1px solid #000",
+  boxShadow: 24,
+  p: 4,
+  borderRadius: 10,
+};
+
+function StudentMasterEdit(Props: Props) {
+  const location = useLocation();
+  // console.log('location', location.state)
+  const { i18n, t } = useTranslation();
+
+  const [toaster, setToaster] = useState(false);
+  const [lang, setLang] = useState<Language>("en");
+  const [tableData, setTableData] = useState<any>([]);
+
+  const [pdf, setPDF] = useState("");
+  const [fileName, setfileName] = useState("");
+  const [pdfView2, setPdfView2] = useState("");
+  const [Shows, setShows] = React.useState(false);
+  const [selectedPdf, setSelectedPdf] = useState<any>(null);
+
+  const { defaultValuestime } = getISTDate();
 
   const [fileTypeOption, setFileTypeOption] = useState([
     { value: "-1", label: t("text.SelectCourse") },
   ]);
 
-  const [toaster, setToaster] = useState(false);
-  const [lang, setLang] = useState<Language>("en");
-  const navigate = useNavigate();
-  const { defaultValuestime } = getISTDate();
-  const [tableData, setTableData] = useState<any>([]);
-  console.log("🚀 ~ StudentMasterEdit ~ tableData:", tableData)
-
-  const [pdf, setPDF] = useState("");
-  const [fileName, setfileName] = useState("");
-  const [Shows, setShows] = React.useState(false);
-  const [selectedPdf, setSelectedPdf] = useState<any>(null);
   const [courseType, setCourseType] = useState("");
-  const location = useLocation();
-
-  const style = {
-    position: "absolute" as "absolute",
-    top: "50%",
-    left: "50%",
-    transform: "translate(-50%, -50%)",
-    width: "180vh",
-    height: "85vh",
-    bgcolor: "#f5f5f5",
-    border: "1px solid #000",
-    boxShadow: 24,
-    p: 4,
-    borderRadius: 10,
-  };
 
   useEffect(() => {
     getFileTypeData();
-    if(location.state && location.state.id){
-      GetStudentDetailsById(location.state.id);
-    }
   }, []);
 
   const getFileTypeData = async () => {
@@ -87,81 +92,6 @@ const StudentMasterEdit = (props: Props) => {
       setFileTypeOption(arr);
     }
   };
-  
-  const GetStudentDetailsById = async (id:any) => {
-    const res = await api.post(`Student/GetStudentDetails`, {
-      studentId: id,
-    });
-    console.log("check file type", res?.data?.data[0]["studentDoc"]);
-    if(res.data && res.data.isSuccess){
-      let result = res?.data?.data[0]["studentDoc"];
-    
-      if(result?.length >0){
-        const arr = [];
-      for (let index = 0; index < result.length; index++) {
-        arr.push({
-          id:index+1,
-        docId: result[index]['docId'],
-        studentId: result[index]['studentId'],
-        courseId:result[index]['courseId'],
-        docName:result[index]['docName'],
-        docImage:result[index]['docImage'],
-        createdBy: result[index]['createdBy'],
-        updatedBy: result[index]['updatedBy'],
-        createdOn: (result[index]['createdOn']),
-        updatedOn: (result[index]['updatedOn']),
-        courseName:result[index]['courseName'],
-        });
-        console.log('arr',arr)
-        setTableData(arr);
-      }}
-    }
-  };
-
-  const formik = useFormik({
-    initialValues: {
-      studentId: location.state.studentId,
-      studentName: location.state.studentName,
-      dob: location.state.dob,
-      email: location.state.email,
-      mobileNo: location.state.mobileNo,
-      address: location.state.address,
-      courseId: location.state.courseId,
-      rollNo: location.state.rollNo,
-      aadharNo: location.state.aadharNo,
-      remarks: location.state.remarks,
-      createdBy: location.state.createdBy,
-      updatedBy: location.state.updatedBy,
-      createdOn: defaultValuestime,
-      updatedOn: defaultValuestime,
-      attachments: location.state.attachments,
-      courseName: location.state.courseName,
-      studentDoc: [],
-    },
-
-    onSubmit: async (values) => {
-      if(tableData.length>0){
-        values.studentDoc = tableData;
-      }
-      if(values.studentDoc.length === 0){
-       alert("Please attach file for proceed further");
-        return;
-     }
-          //console.log("Before submitting values", values)
-      const response = await api.post(
-        `Student/AddUpdateStudentDetails`,
-        values
-      );
-      if (response.data.isSuccess) {
-        toast.success(response.data.mesg);
-        setToaster(true);
-        navigate("/master/StudentDetails");
-      } else {
-        setToaster(true);
-        toast.error(response.data.mesg);
-      }
-    },
-  });
 
   const handlePanClose1 = () => {
     setShows(false);
@@ -190,34 +120,33 @@ const StudentMasterEdit = (props: Props) => {
     event.preventDefault();
     if (event.target.files && event.target.files[0]) {
       var file = event.target.files[0];
+      // console.log("file name", file.name)
       const fileURL = URL.createObjectURL(file);
+      // console.log("file check", fileURL);
+      setPdfView2(fileURL);
       setfileName(file.name);
       setPDF(URL.createObjectURL(event.target.files[0]));
       const base64 = await convertBase64(file);
+      // console.log("base64 " + base64);
       setPDF(base64 + "");
     }
   };
 
   const addMoreRow = () => {
     const newRows = {
-      id:tableData.length+1,
-      docId: -1,
-      studentId: -1,
-      courseId:formik.values.courseId,
-      docName:fileName,
-      docImage:pdf,
-      createdBy: "",
-      updatedBy: "",
-      createdOn: defaultValuestime,
-      updatedOn: defaultValuestime,
-      courseName:formik.values.courseName,
+      id: tableData.length + 1,
 
+      pdfName: fileName,
+      courseType: courseType,
+
+      pdfPath: pdf,
+      pdfView2: pdfView2,
+
+      isDelete: false,
     };
 
     setTableData((prevTableData: any) => {
       const updatedTableDataed = [...prevTableData, newRows];
-      console.log("🚀 ~ setTableData ~ updatedTableDataed:", updatedTableDataed)
-      //formik.setFieldValue("studentDoc", updatedTableDataed);
       return updatedTableDataed;
     });
 
@@ -226,16 +155,57 @@ const StudentMasterEdit = (props: Props) => {
   };
 
   const removeExtraRow = (id: any) => {
-    console.log("🚀 ~ removeExtraRow ~ id:", id)
     setTableData((prevTableData: any) => {
       const updatedTableDataed = prevTableData.filter(
-        (row: any) => row.docId !== id.docId
+        (row: any) => row.id !== id
       );
-      console.log("🚀 ~ setTableData ~ updatedTableDataed:", updatedTableDataed)
       return updatedTableDataed;
     });
-
   };
+
+  const navigate = useNavigate();
+
+  const back = useNavigate();
+
+  const formik = useFormik({
+    initialValues: {
+      studentId: location.state.studentId,
+      studentName: location.state.studentName,
+      dob: location.state.dob,
+      email: location.state.email,
+      mobileNo: location.state.mobileNo,
+      address: location.state.address,
+      courseId: location.state.courseId,
+      rollNo: location.state.rollNo,
+      aadharNo: location.state.aadharNo,
+      remarks: location.state.remarks,
+      createdBy: location.state.createdBy,
+      updatedBy: location.state.updatedBy,
+      createdOn: defaultValuestime,
+      updatedOn: defaultValuestime,
+      attachments: location.state.attachments,
+    },
+
+    onSubmit: async (values) => {
+      const response = await api.post(
+        `Student/AddUpdateStudentDetails`,
+        values
+      );
+      if (response.data.isSuccess) {
+        toast.success(response.data.mesg);
+        setToaster(true);
+        navigate("/master/StudentDetails");
+      } else {
+        setToaster(true);
+        toast.error(response.data.mesg);
+      }
+    },
+  });
+
+  const handleConversionChange = (params: any, text: string) => {
+    formik.setFieldValue(params, text);
+  };
+
   return (
     <div>
       <div
@@ -442,17 +412,16 @@ const StudentMasterEdit = (props: Props) => {
                     onChange={(event, newValue: any) => {
                       console.log(newValue?.value);
                       formik.setFieldValue("courseId", newValue?.value);
-                      formik.setFieldValue("courseName", newValue?.label);
                       setCourseType(newValue?.label);
                       formik.setFieldTouched("courseId", true);
                       formik.setFieldTouched("courseId", false);
                     }}
                     value={
                       fileTypeOption.find(
-                        (opt) => opt.value === formik.values.courseId
+                        (opt:any) => opt.value === formik.values.courseId
                       ) || null
                     }
-
+                    
                     renderInput={(params) => (
                       <TextField
                         {...params}
@@ -477,7 +446,7 @@ const StudentMasterEdit = (props: Props) => {
                         required={false}
                       />
                     }
-                    // value={pdf}
+                    
                     placeholder={t("text.Attachments")}
                     size="small"
                     type="file"
@@ -485,7 +454,6 @@ const StudentMasterEdit = (props: Props) => {
                     style={{ backgroundColor: "white" }}
                     InputLabelProps={{ shrink: true }}
                     onChange={onTransctionChange}
-                    // onChange={(e) => onTransctionChange(e, "docImage")}
                   />
                 </Grid>
 
@@ -555,7 +523,7 @@ const StudentMasterEdit = (props: Props) => {
                           paddingBottom: "5px",
                         }}
                       >
-                        {t("text.Files")}
+                        {t("text.PdfFile")}
                       </th>
                     </tr>
                   </thead>
@@ -577,7 +545,7 @@ const StudentMasterEdit = (props: Props) => {
                               color: "darkred",
                               cursor: "pointer",
                             }}
-                            onClick={() => removeExtraRow(row)}
+                            onClick={() => removeExtraRow(row.id)}
                           />{" "}
                         </td>
 
@@ -591,7 +559,7 @@ const StudentMasterEdit = (props: Props) => {
                             paddingLeft: "5px",
                           }}
                         >
-                          {row.docName}
+                          {row.pdfName}
                         </td>
 
                         <td
@@ -604,7 +572,7 @@ const StudentMasterEdit = (props: Props) => {
                             paddingLeft: "5px",
                           }}
                         >
-                          {row.courseName}
+                          {row.courseType}
                         </td>
                         <td
                           style={{
@@ -618,11 +586,11 @@ const StudentMasterEdit = (props: Props) => {
                             padding: "2px",
                           }}
                         >
-                          {row.docImage == "" ? (
+                          {row.pdfView2 == "" ? (
                             ""
                           ) : (
                             <embed
-                              src={row.docImage}
+                              src={row.pdfView2}
                               style={{
                                 width: 150,
                                 height: 100,
@@ -659,7 +627,7 @@ const StudentMasterEdit = (props: Props) => {
                               ) : (
                                 <embed
                                   //alt="preview image"
-                                  src={row.docImage}
+                                  src={selectedPdf}
                                   style={{
                                     width: "170vh",
                                     height: "75vh",
@@ -676,7 +644,7 @@ const StudentMasterEdit = (props: Props) => {
                 </Table>
               </Grid>
 
-              {/* ---------------Save and Reset Button start----------------- */}
+              {/* ---------------update and Reset Button start----------------- */}
               <Grid xs={12} item>
                 <div style={{ justifyContent: "space-between", flex: 2 }}>
                   <Button
@@ -688,7 +656,7 @@ const StudentMasterEdit = (props: Props) => {
                       margin: "1%",
                     }}
                   >
-                    {t("text.save")}
+                    {t("text.update")}
                   </Button>
                   <Button
                     type="reset"
@@ -704,13 +672,13 @@ const StudentMasterEdit = (props: Props) => {
                   </Button>
                 </div>
               </Grid>
-              {/* ---------------Save and Reset Button end----------------- */}
+              {/* ---------------update and Reset Button end----------------- */}
             </Grid>
           </form>
         </CardContent>
       </div>
     </div>
   );
-};
+}
 
 export default StudentMasterEdit;

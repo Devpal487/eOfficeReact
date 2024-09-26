@@ -108,9 +108,24 @@ const StudentMasterAdd = (props: Props) => {
       remarks: "",
       createdBy: "",
       updatedBy: "",
-      createdOn:defaultValuestime,
+      createdOn: defaultValuestime,
       updatedOn: defaultValuestime,
       attachments: "",
+      courseName: "",
+      studentDoc: [
+        {
+          docId: -1,
+          studentId: -1,
+          courseId: 0,
+          docName: "",
+          docImage: "",
+          createdBy: "",
+          updatedBy: "",
+          createdOn: defaultValuestime,
+          updatedOn: defaultValuestime,
+          courseName: "",
+        },
+      ],
     },
 
     onSubmit: async (values) => {
@@ -175,18 +190,22 @@ const StudentMasterAdd = (props: Props) => {
 
   const addMoreRow = () => {
     const newRows = {
-      id: tableData.length + 1,
+      docId: -1,
+      studentId: -1,
+      courseId:formik.values.courseId,
+      docName:fileName,
+      docImage:pdf,
+      createdBy: "",
+      updatedBy: "",
+      createdOn: defaultValuestime,
+      updatedOn: defaultValuestime,
+      courseName:courseType,
 
-      pdfName: fileName,
-      courseType:courseType,
-      pdfPath: pdf,
-      pdfView2: pdfView2,
-      srn: -1,
-      isDelete: false,
     };
 
     setTableData((prevTableData: any) => {
       const updatedTableDataed = [...prevTableData, newRows];
+      formik.setFieldValue("studentDoc", updatedTableDataed);
       return updatedTableDataed;
     });
 
@@ -409,6 +428,7 @@ const StudentMasterAdd = (props: Props) => {
                     onChange={(event, newValue: any) => {
                       console.log(newValue?.value);
                       formik.setFieldValue("courseId", newValue?.value);
+                      formik.setFieldValue("courseName", newValue?.label);
                       setCourseType(newValue?.label);
                       formik.setFieldTouched("courseId", true);
                       formik.setFieldTouched("courseId", false);
@@ -418,7 +438,7 @@ const StudentMasterAdd = (props: Props) => {
                     //     (opt) => opt.value === formik.values.stateId
                     //   ) || null
                     // }
-                    
+
                     renderInput={(params) => (
                       <TextField
                         {...params}
@@ -556,7 +576,7 @@ const StudentMasterAdd = (props: Props) => {
                             paddingLeft: "5px",
                           }}
                         >
-                          {row.pdfName}
+                          {row.docName}
                         </td>
 
                         <td
@@ -569,7 +589,7 @@ const StudentMasterAdd = (props: Props) => {
                             paddingLeft: "5px",
                           }}
                         >
-                          {row.courseType}
+                          {row.courseName}
                         </td>
                         <td
                           style={{
@@ -583,11 +603,11 @@ const StudentMasterAdd = (props: Props) => {
                             padding: "2px",
                           }}
                         >
-                          {row.pdfView2 == "" ? (
+                          {row.docImage == "" ? (
                             ""
                           ) : (
                             <embed
-                              src={row.pdfView2}
+                              src={row.docImage}
                               style={{
                                 width: 150,
                                 height: 100,
@@ -624,7 +644,7 @@ const StudentMasterAdd = (props: Props) => {
                               ) : (
                                 <embed
                                   //alt="preview image"
-                                  src={selectedPdf}
+                                  src={row.docImage}
                                   style={{
                                     width: "170vh",
                                     height: "75vh",

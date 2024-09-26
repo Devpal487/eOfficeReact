@@ -240,6 +240,8 @@ const AplicantDetailsAdd = (props: Props) => {
     },
 
     onSubmit: async (values) => {
+
+      console.log('value',values);
       const response = await api.post(
         `CertificateApply/AddUpdateCertificateApply`,
         values

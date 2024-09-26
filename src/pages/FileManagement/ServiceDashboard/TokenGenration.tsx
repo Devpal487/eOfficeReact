@@ -21,11 +21,66 @@ import { useTranslation } from "react-i18next";
 import Institute from "../../../assets/images/aktu.png";
 import "./ServiceDashboard.css"; // Import the CSS file
 import TokenPopUp from "../../../utils/TokenPopUp";
+import { useFormik } from "formik";
+import api from "../../../utils/Url";
+import { toast } from "react-toastify";
+
 
 export default function TokenGenration() {
   const { t } = useTranslation();
 
   const [isOtpPopupVisible, setOtpPopupVisible] = useState(false);
+  const [isId, setId] = useState<any>();
+  const [toaster, setToaster] = useState(false);
+  const [isData, setData] = useState<any>();
+
+
+
+const formik = useFormik({
+  initialValues: {
+    id: -1,
+    name: "",
+    rollNo: "",
+    mobileNo: "",
+    emailId: "",
+    dob: "",
+    otp: "",
+    certificateId: 0,
+    status: 0,
+    serviceId: 0,
+    address: "",
+    aadharNo: "",
+    aadharImage: "",
+    fileNumber: "",
+    letterType: "",
+    fileType: "",
+    subject: "",
+    sendBy: "",
+    discription: "",
+    root: "",
+    subService: [],
+  },
+
+  onSubmit: async (values) => {
+    values.id = isId;
+    setData(formik.values);
+    const response = await api.post(
+      `CertificateApply/AddUpdateCertificateApply`,
+      values
+    );
+    if (response.data.isSuccess) {
+      // toast.success(response.data.mesg);
+      // setToaster(true);
+
+      setOtpPopupVisible(true);
+      setId(response.data.data);
+      console.log("🚀 ~ onSubmit: ~ response.data.data:", response.data.data);
+    } else {
+      setToaster(true);
+      toast.error(response.data.mesg);
+    }
+  },
+});
 
   return (
     <>
@@ -73,7 +128,7 @@ export default function TokenGenration() {
                       Token for aplicants
                     </Typography>
                   </div>
-
+                  <form onSubmit={formik.handleSubmit}>
                   <Grid
                     container
                     spacing={2}
@@ -82,6 +137,12 @@ export default function TokenGenration() {
                     <Grid item xs={3}>
                       <TextField
                         fullWidth
+                        name="name"
+                        id="name"
+                        //value={formik.values.name}
+                        // onChangeText={(text: string) =>
+                        //   handleConversionChange("name", text)
+                        // }
                         label="Roll No"
                         variant="outlined"
                         placeholder="Roll No"
@@ -107,6 +168,9 @@ export default function TokenGenration() {
                     <Grid item xs={3}>
                       <TextField
                         fullWidth
+                        name="mobileNo"
+                        id="mobileNo"
+                        //value={formik.values.mobileNo}
                         label="Mobile Number"
                         placeholder="Mobile Number"
                         variant="outlined"
@@ -132,6 +196,9 @@ export default function TokenGenration() {
                     <Grid item xs={3}>
                       <TextField
                         fullWidth
+                        name="emailId"
+                        id="emailId"
+                        //value={formik.values.emailId}
                         label="Email"
                         variant="outlined"
                         placeholder="Email"
@@ -158,8 +225,11 @@ export default function TokenGenration() {
                     <Grid item xs={3}>
                       <TextField
                         fullWidth
-                        label="Adhar Number"
-                        placeholder="Adhar Number"
+                        name="aadharNo"
+                        id="aadharNo"
+                        //value={formik.values.aadharNo}
+                        label="Aadhar Number"
+                        placeholder="Aadhar Number"
                         variant="outlined"
                         InputLabelProps={{
                           sx: { color: "rgb(183, 28, 28)" },
@@ -189,17 +259,20 @@ export default function TokenGenration() {
                   >
                     <Grid item xs={4}>
                       <Button
+                      type="submit"
                         variant="contained"
                         fullWidth
                         style={{ backgroundColor: "#03a1fc", color: "white" }}
-                        onClick={() => {
-                          setOtpPopupVisible(true);
-                        }}
+                        // onClick={() => {
+                        //   setOtpPopupVisible(true);
+                        // }}
                       >
                         Generate OTP
                       </Button>
                     </Grid>
                   </Grid>
+                 
+            </form>
                 </div>
               </Grid>
               <Grid item xs={1.5} sm={1.5}></Grid>

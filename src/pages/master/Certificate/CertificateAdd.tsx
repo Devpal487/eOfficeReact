@@ -1019,7 +1019,7 @@ const CertificateAdd = (props: Props) => {
 
             <OtpPopup
               isVisible={isOtpPopupVisible}
-              onClose={() => setOtpPopupVisible(false)}
+              onClose={() => setOtpPopupVisible(!isOtpPopupVisible)}
               onOtpVerified={(isVerified) => setOtpVerified(isVerified)}
               isId={isId}
               isData={isData}

@@ -137,6 +137,7 @@ const AplicantDetailsAdd = (props: Props) => {
     getCountry();
     getStatus();
     setData(studentData)
+    
   }, []);
 
   const getFileNo = () => {

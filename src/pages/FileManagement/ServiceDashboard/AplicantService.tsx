@@ -31,8 +31,6 @@ export default function AplicantService() {
 
   const navigate = useNavigate();
   const TokenId = localStorage.getItem("tokenId");
-
-
   let { defaultValuestime } = getISTDate();
 
   const routeChangeEdit = (row:any) => {

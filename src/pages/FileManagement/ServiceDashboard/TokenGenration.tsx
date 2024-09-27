@@ -69,8 +69,12 @@ export default function TokenGenration() {
       );
       if (response.data.isSuccess) {
         // toast.success(response.data.mesg);
+
+        
         setOtpPopupVisible(true);
         setId(response.data.data);
+        localStorage.setItem("tokenId",response.data.data);
+        localStorage.setItem("rollNo",formik.values.rollNo);
         console.log("🚀 ~ onSubmit: ~ response.data.data:", response.data.data);
       } else {
         setToaster(true);

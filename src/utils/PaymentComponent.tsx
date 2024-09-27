@@ -66,6 +66,7 @@ const PaymentComponent: React.FC<PaymentComponentProps> = ({
   };
 
   useEffect(() => {
+    console.log("netPayment",netPayment);
     setFormattedAmount(`₹${netPayment.toFixed(2)}`);
 
     const script = document.createElement("script");

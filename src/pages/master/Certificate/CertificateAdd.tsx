@@ -299,7 +299,6 @@ const CertificateAdd = (props: Props) => {
           // Check if it's an update
           setOtpPopupVisible(false); // Hide OTP popup for updates
         } 
-
         setOtpPopupVisible(true); 
         setId(response.data.data); // Set the ID from the response
         console.log("🚀 ~ onSubmit: ~ response.data.data:", response.data.data);

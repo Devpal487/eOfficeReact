@@ -31,6 +31,8 @@ export default function AplicantService() {
 
   const navigate = useNavigate();
   const TokenId = localStorage.getItem("tokenId");
+
+
   let { defaultValuestime } = getISTDate();
 
   const routeChangeEdit = (row:any) => {
@@ -45,16 +47,14 @@ export default function AplicantService() {
   const formik = useFormik({
     initialValues: {
       studentId: -1,
-      rollNo: "",
+      rollNo: localStorage.getItem("rollNo"),
     },
 
     onSubmit: async (values: any) => {
       const response = await api.post(`Student/GetStudentDetails`, values);
       if (response.data.data) {
         // toast.success(response.data.mesg);
-
         routeChangeEdit(response.data.data);
-
         console.log("🚀 ~ onSubmit: ~ response.data.data:", response.data.data);
       } else {
         //setToaster(true);

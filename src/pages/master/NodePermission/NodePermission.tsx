@@ -461,7 +461,8 @@ values.subNode = arrOfStringIndexes;
                     variant="contained"
                     style={{
                       width: "48%",
-                      backgroundColor: "#059669",
+                      backgroundColor:`var(--grid-headerBackground)`,
+                      color: `var(--grid-headerColor)`,
                       margin: "1%",
                     }}
 

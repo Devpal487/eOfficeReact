@@ -231,16 +231,16 @@ export default function Institute() {
         }}
       >
         <Paper
-          sx={{
-            width: "100%",
-            overflow: "hidden",
-            "& .MuiDataGrid-colCell": {
-              backgroundColor: "#00009C",
-              color: "#fff",
-              fontSize: 17,
-              fontWeight: 900,
-            },
-          }}
+          // sx={{
+          //   width: "100%",
+          //   overflow: "hidden",
+          //   "& .MuiDataGrid-colCell": {
+          //     backgroundColor: "#00009C",
+          //     color: "#fff",
+          //     fontSize: 17,
+          //     fontWeight: 900,
+          //   },
+          // }}
           style={{ padding: "10px" }}
         >
           <ConfirmDialog />
@@ -265,6 +265,7 @@ export default function Institute() {
                 variant="contained"
                 endIcon={<AddCircleIcon />}
                 size="large"
+                style={{backgroundColor:`var(--grid-headerBackground)`,color: `var(--grid-headerColor)`}}
               >
                 {t("text.add")}
               </Button>

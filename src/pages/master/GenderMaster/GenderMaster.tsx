@@ -285,16 +285,16 @@ export default function GenderMaster() {
           }}
         >
           <Paper
-            sx={{
-              width: "100%",
-              overflow: "hidden",
-              "& .MuiDataGrid-colCell": {
-                backgroundColor: "#2B4593",
-                color: "#fff",
-                fontSize: 18,
-                fontWeight: 800,
-              },
-            }}
+            // sx={{
+            //   width: "100%",
+            //   overflow: "hidden",
+            //   "& .MuiDataGrid-colCell": {
+            //     backgroundColor: "#2B4593",
+            //     color: "#fff",
+            //     fontSize: 18,
+            //     fontWeight: 800,
+            //   },
+            // }}
             style={{ padding: "10px" }}
           >
             <ConfirmDialog />

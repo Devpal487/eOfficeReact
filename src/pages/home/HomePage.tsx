@@ -692,8 +692,8 @@ export default function HomePage() {
               width: "100%",
               overflow: "hidden",
               "& .MuiDataGrid-colCell": {
-                backgroundColor: "#2B4593",
-                color: "#fff",
+                backgroundColor:`var(--grid-headerBackground)`,
+                color: `var(--grid-headerColor)`,
                 fontSize: 15,
                 fontWeight: 900,
               },

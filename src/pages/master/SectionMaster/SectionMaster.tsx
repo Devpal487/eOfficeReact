@@ -304,16 +304,16 @@ export default function SectionMaster() {
           }}
         >
           <Paper
-            sx={{
-              width: "100%",
-              overflow: "hidden",
-              "& .MuiDataGrid-colCell": {
-                backgroundColor: "#00009C",
-                color: "#fff",
-                fontSize: 18,
-                fontWeight: 800,
-              },
-            }}
+            // sx={{
+            //   width: "100%",
+            //   overflow: "hidden",
+            //   "& .MuiDataGrid-colCell": {
+            //     backgroundColor: "#00009C",
+            //     color: "#fff",
+            //     fontSize: 18,
+            //     fontWeight: 800,
+            //   },
+            // }}
             style={{ padding: "10px" }}
           >
             <ConfirmDialog />

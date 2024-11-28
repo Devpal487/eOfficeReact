@@ -287,11 +287,7 @@ export default function HelpCreation() {
                     <Button
                       type="submit"
                       fullWidth
-                      style={{
-                        backgroundColor: "#059669",
-                        color: "white",
-                        marginTop: "10px",
-                      }}
+                      style={{backgroundColor:`var(--grid-headerBackground)`,color: `var(--grid-headerColor)`,marginTop:"10px"}}
                     >
                       {t("text.save")}
                     </Button>

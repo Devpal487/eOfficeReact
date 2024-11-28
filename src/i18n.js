@@ -695,6 +695,8 @@ const resources = {
         SelectCourse:"Select Course",
         ServiceDashboard:"Service Dashboard",
         Files:"Files",
+        AuthorityMail:'Authority Mail',
+
 
 
 
@@ -1374,7 +1376,8 @@ const resources = {
         EnterCourseName:"पाठ्यक्रम का नाम दर्ज करें",
         AadharNo:"आधार नंबर",
         SelectCourse:"पाठ्यक्रम का चयन करें",
-        ServiceDashboard:"सेवा डैशबोर्ड"
+        ServiceDashboard:"सेवा डैशबोर्ड",
+        AuthorityMail:"प्राधिकरण मेल"
         
 
       },

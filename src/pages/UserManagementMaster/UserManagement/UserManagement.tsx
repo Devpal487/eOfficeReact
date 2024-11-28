@@ -427,16 +427,16 @@ export default function UserManagement() {
           }}
         >
           <Paper
-            sx={{
-              width: "100%",
-              overflow: "hidden",
-              "& .MuiDataGrid-colCell": {
-                backgroundColor: "#2B4593",
-                color: "#fff",
-                fontSize: 18,
-                fontWeight: 800,
-              },
-            }}
+            // sx={{
+            //   width: "100%",
+            //   overflow: "hidden",
+            //   "& .MuiDataGrid-colCell": {
+            //     backgroundColor: "#2B4593",
+            //     color: "#fff",
+            //     fontSize: 18,
+            //     fontWeight: 800,
+            //   },
+            // }}
             style={{ padding: "10px" }}
           >
             <ConfirmDialog />
@@ -489,6 +489,7 @@ export default function UserManagement() {
                   onClick={routeChangeAdd}
                   variant="contained"
                   endIcon={<AddCircleIcon />}
+                  style={{backgroundColor:`var(--grid-headerBackground)`,color: `var(--grid-headerColor)`}}
                   size="large"
                 >
                   {t("text.add")}

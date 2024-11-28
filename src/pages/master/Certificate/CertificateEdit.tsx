@@ -147,8 +147,8 @@ const CertificateEdit = (props: Props) => {
                 onClick={() => back(-1)}
                 variant="contained"
                 style={{
-                  backgroundColor: "blue",
-                  width: 20,
+                  backgroundColor: `var(--grid-headerBackground)`,
+                  color: `var(--grid-headerColor)`,
                 }}
               >
                 <ArrowBackSharpIcon />
@@ -375,7 +375,8 @@ const CertificateEdit = (props: Props) => {
                     variant="contained"
                     style={{
                       width: "48%",
-                      backgroundColor: "#059669",
+                      backgroundColor: `var(--grid-headerBackground)`,
+                      color: `var(--grid-headerColor)`,
                       margin: "1%",
                     }}
                   >

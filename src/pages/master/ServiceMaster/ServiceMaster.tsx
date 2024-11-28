@@ -136,7 +136,7 @@ export default function ServiceMaster() {
       const zonesWithIds = data.map((zone: any, index: any) => ({
         ...zone,
         serialNo: index + 1,
-        serviceId: zone.serviceId,
+        id: zone.serviceId,
       }));
       setZones(zonesWithIds);
       setIsLoading(false);
@@ -255,8 +255,8 @@ export default function ServiceMaster() {
               width: "100%",
               overflow: "hidden",
               "& .MuiDataGrid-colCell": {
-                backgroundColor: "#00009C",
-                color: "#fff",
+                backgroundColor: `var(--grid-headerBackground)`,
+                color:  `var(--grid-headerColor)`,
                 fontSize: 17,
                 fontWeight: 900,
               },
@@ -283,6 +283,7 @@ export default function ServiceMaster() {
                   onClick={routeChangeAdd}
                   variant="contained"
                   endIcon={<AddCircleIcon />}
+                  style={{backgroundColor:`var(--grid-headerBackground)`,color: `var(--grid-headerColor)`}}
                 >
                   {t("text.add")}
                 </Button>

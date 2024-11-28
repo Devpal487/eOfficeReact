@@ -547,6 +547,7 @@ export default function RoleMaster() {
                 onClick={handleOpen}
                 variant="contained"
                 endIcon={<AddCircleIcon />}
+                style={{backgroundColor:`var(--grid-headerBackground)`,color: `var(--grid-headerColor)`}}
               >
                 {t("text.add")}
               </Button>
@@ -593,8 +594,8 @@ export default function RoleMaster() {
                           type="submit"
                           fullWidth
                           style={{
-                            backgroundColor: "#059669",
-                            color: "white",
+                            backgroundColor:`var(--grid-headerBackground)`,
+                            color: `var(--grid-headerColor)`,
                             marginBottom: "10px",
                             marginTop: "3px",
                           }}

@@ -40,6 +40,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import { TransitionProps } from "@mui/material/transitions";
 import CloseIcon from "@mui/icons-material/Close";
 import CustomizedProgressBars from "../../../components/Loader";
+import CustomizedProgressBars from "../../../components/Loader";
 import { toast } from "react-toastify";
 import { getISTDate } from "../../../utils/Constant";
 import Dialog, { DialogProps } from "@mui/material/Dialog";
@@ -816,8 +817,8 @@ const ViewEditFile: React.FC = (props: Props) => {
 
   const tabStyle = {
     default: {
-      backgroundColor: "#00009c",
-      color: "#fff",
+      backgroundColor:`var(--grid-headerBackground)`,
+      color: `var(--grid-headerColor)`,
       fontWeight: "normal",
     },
     selected: {
@@ -1183,10 +1184,7 @@ const ViewEditFile: React.FC = (props: Props) => {
                 type="submit"
                 onClick={() => back(-1)}
                 variant="contained"
-                style={{
-                  backgroundColor: "blue",
-                  width: 20,
-                }}
+                style={{backgroundColor:`var(--grid-headerBackground)`,color: `var(--grid-headerColor)`}}
               >
                 <ArrowBackSharpIcon />
               </Button>
@@ -1426,6 +1424,7 @@ const ViewEditFile: React.FC = (props: Props) => {
                     maxHeight: "50px",
                     alignItems: "center",
                   }}
+                
                 >
                   <Tab
                     label="Files"
@@ -2185,7 +2184,8 @@ const ViewEditFile: React.FC = (props: Props) => {
                 >
                   <div
                     style={{
-                      backgroundColor: "#00009c",
+                      backgroundColor:`var(--grid-headerBackground)`,
+                      color: `var(--grid-headerColor)`,
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "space-between",
@@ -2259,7 +2259,7 @@ const ViewEditFile: React.FC = (props: Props) => {
                     style={{ cursor: "move" }}
                     id="draggable-dialog-title"
                     sx={{
-                      backgroundColor: "#00009c",
+                      backgroundColor: `var(--grid-headerBackground)`,
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "space-between",
@@ -2352,7 +2352,7 @@ const ViewEditFile: React.FC = (props: Props) => {
                         <Grid item xs={2}>
                           <Button
                             variant="contained"
-                            color="primary"
+                            style={{backgroundColor:`var(--grid-headerBackground)`,color: `var(--grid-headerColor)`}}
                             onClick={MoveAwait}
                             fullWidth
                           >
@@ -2377,7 +2377,7 @@ const ViewEditFile: React.FC = (props: Props) => {
                     style={{ cursor: "move" }}
                     id="draggable-dialog-title"
                     sx={{
-                      backgroundColor: "#00009c",
+                      backgroundColor:`var(--grid-headerBackground)`,
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "space-between",
@@ -2436,9 +2436,10 @@ const ViewEditFile: React.FC = (props: Props) => {
                         <Grid item xs={2}>
                           <Button
                             variant="contained"
-                            color="primary"
+                           
                             onClick={MoveParked}
                             fullWidth
+                            style={{backgroundColor:`var(--grid-headerBackground)`,color: `var(--grid-headerColor)`}}
                           >
                             Moved
                           </Button>
@@ -2461,7 +2462,7 @@ const ViewEditFile: React.FC = (props: Props) => {
                     style={{ cursor: "move" }}
                     id="draggable-dialog-title"
                     sx={{
-                      backgroundColor: "#00009c",
+                      backgroundColor:`var(--grid-headerBackground)`,
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "space-between",
@@ -2521,7 +2522,7 @@ const ViewEditFile: React.FC = (props: Props) => {
                         <Grid item xs={3}>
                           <Button
                             variant="contained"
-                            color="primary"
+                            style={{backgroundColor:`var(--grid-headerBackground)`,color: `var(--grid-headerColor)`}}
                             onClick={MoveClose}
                             fullWidth
                           >
@@ -2545,7 +2546,7 @@ const ViewEditFile: React.FC = (props: Props) => {
                     style={{ cursor: "move" }}
                     id="draggable-dialog-title"
                     sx={{
-                      backgroundColor: "#00009c",
+                      backgroundColor: `var(--grid-headerBackground)`,
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "space-between",
@@ -2598,7 +2599,7 @@ const ViewEditFile: React.FC = (props: Props) => {
                         <Grid item xs={2}>
                           <Button
                             variant="contained"
-                            color="primary"
+                            style={{backgroundColor:`var(--grid-headerBackground)`,color: `var(--grid-headerColor)`}}
                             onClick={UpdateSummary}
                             fullWidth
                           >
@@ -2623,7 +2624,7 @@ const ViewEditFile: React.FC = (props: Props) => {
                       style={{ cursor: "move" }}
                       id="draggable-dialog-title"
                       sx={{
-                        backgroundColor: "#00009c",
+                        backgroundColor:`var(--grid-headerBackground)`,
                         display: "flex",
                         alignItems: "center",
                         color: "#fff",
@@ -2818,7 +2819,7 @@ const ViewEditFile: React.FC = (props: Props) => {
                     >
                       <Button
                         variant="contained"
-                        color="primary"
+                        style={{backgroundColor:`var(--grid-headerBackground)`,color: `var(--grid-headerColor)`}}
                         startIcon={<ArrowBackIcon />}
                         onClick={handleBackwardData}
                         sx={{
@@ -2830,7 +2831,7 @@ const ViewEditFile: React.FC = (props: Props) => {
                       </Button>
                       <Button
                         variant="contained"
-                        color="primary"
+                        style={{backgroundColor:`var(--grid-headerBackground)`,color: `var(--grid-headerColor)`}}
                         endIcon={<ArrowForwardIcon />}
                         onClick={handleForwardData}
                         sx={{
@@ -2842,7 +2843,7 @@ const ViewEditFile: React.FC = (props: Props) => {
                       </Button>
                       <Button
                         variant="contained"
-                        color="primary"
+                        style={{backgroundColor:`var(--grid-headerBackground)`,color: `var(--grid-headerColor)`}}
                         startIcon={<MapIcon />}
                         onClick={() => getRouteView(nodeId)}
                         sx={{
@@ -3135,7 +3136,8 @@ const ViewEditFile: React.FC = (props: Props) => {
                 >
                   <div
                     style={{
-                      backgroundColor: "#00009c",
+                      backgroundColor:`var(--grid-headerBackground)`,
+                      
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "space-between",
@@ -3247,7 +3249,7 @@ const ViewEditFile: React.FC = (props: Props) => {
                     >
                       <Button
                         variant="contained"
-                        color="primary"
+                        style={{backgroundColor:`var(--grid-headerBackground)`,color: `var(--grid-headerColor)`}}
                         onClick={() => {
                           LetterSubmit();
                           setRightOpen(false);

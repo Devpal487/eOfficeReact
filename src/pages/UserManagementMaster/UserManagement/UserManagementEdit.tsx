@@ -335,7 +335,8 @@ const UserManagementEdit = (props: Props) => {
                 style={{
                   marginBottom: 15,
                   marginTop: "45px",
-                  backgroundColor: "blue",
+                  backgroundColor:`var(--grid-headerBackground)`,
+                  color: `var(--grid-headerColor)`,
                   width: 20,
                 }}
               >
@@ -725,7 +726,8 @@ const UserManagementEdit = (props: Props) => {
                     variant="contained"
                     style={{
                       width: "48%",
-                      backgroundColor: "#059669",
+                      backgroundColor:`var(--grid-headerBackground)`,
+                      color: `var(--grid-headerColor)`,
                       margin: "1%",
                     }}
                   >

@@ -769,14 +769,14 @@ export default function UserPermissionMaster() {
           }}
         >
           <Paper
-            sx={{
-              width: "100%", overflow: "hidden", "& .MuiDataGrid-colCell": {
-                backgroundColor: "#2B4593",
-                color: "#fff",
-                fontSize: 17,
-                fontWeight: 900
-              },
-            }}
+            // sx={{
+            //   width: "100%", overflow: "hidden", "& .MuiDataGrid-colCell": {
+            //     backgroundColor: "#2B4593",
+            //     color: "#fff",
+            //     fontSize: 17,
+            //     fontWeight: 900
+            //   },
+            // }}
             style={{ padding: "10px" }}
 
           >
@@ -797,6 +797,7 @@ export default function UserPermissionMaster() {
                 <Button
                   onClick={handleOpen}
                   variant="contained"
+                  style={{backgroundColor:`var(--grid-headerBackground)`,color: `var(--grid-headerColor)`}}
                   endIcon={<AddCircleIcon />}
                 >
                   {t("text.Add")}
@@ -873,8 +874,8 @@ export default function UserPermissionMaster() {
                           type="submit"
                           fullWidth
                           style={{
-                            backgroundColor: "#059669",
-                            color: "white",
+                            backgroundColor:`var(--grid-headerBackground)`,
+                            color: `var(--grid-headerColor)`,
                             marginBottom: "10px",
                             marginTop: "3px",
                           }}

@@ -169,10 +169,7 @@ const ServiceMasterAdd = (props: Props) => {
                                 type="submit"
                                 onClick={() => back(-1)}
                                 variant="contained"
-                                style={{
-                                    backgroundColor: "blue",
-                                    width: 20,
-                                }}
+                                style={{backgroundColor:`var(--grid-headerBackground)`,color: `var(--grid-headerColor)`,width:20}}
                             >
                                 <ArrowBackSharpIcon />
                             </Button>
@@ -394,7 +391,8 @@ const ServiceMasterAdd = (props: Props) => {
                                         variant="contained"
                                         style={{
                                             width: "48%",
-                                            backgroundColor: "#059669",
+                                            backgroundColor: `var(--grid-headerBackground)`,
+                                            color: `var(--grid-headerColor)`,
                                             margin: "1%",
                                         }}
                                     >

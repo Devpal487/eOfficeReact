@@ -203,10 +203,7 @@ const AplicantDetailsEdit = (props: Props) => {
                 type="submit"
                 onClick={() => back(-1)}
                 variant="contained"
-                style={{
-                  backgroundColor: "blue",
-                  width: 20,
-                }}
+                style={{backgroundColor:`var(--grid-headerBackground)`,color: `var(--grid-headerColor)`}}
               >
                 <ArrowBackSharpIcon />
               </Button>
@@ -634,7 +631,8 @@ const AplicantDetailsEdit = (props: Props) => {
                     variant="contained"
                     style={{
                       width: "48%",
-                      backgroundColor: "#059669",
+                      backgroundColor:`var(--grid-headerBackground)`,
+                      color: `var(--grid-headerColor)`,
                       margin: "1%",
                     }}
                   >

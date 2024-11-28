@@ -42,7 +42,6 @@ import "react-transliterate/dist/index.css";
 import TranslateTextField from "../../../TranslateTextField";
 import Languages from "../../../Languages";
 
-
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
     padding: "5px !important",
@@ -64,7 +63,6 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   "&:last-child td, &:last-child th": {
     border: 0,
     // padding: "2px !important",
-
   },
   "& td, & th": {
     padding: "3px !important", // Ensure all cells in the row have 2px padding
@@ -155,9 +153,7 @@ function Row({ row, index }: { row: any; index: number }) {
     setIsHover1(false);
   };
 
-  useEffect(() => {
-
-  }, [selectedRow]);
+  useEffect(() => {}, [selectedRow]);
 
   const handleAddCommentClick = (pdfname: any, pfid: any) => {
     setSelectedRow({ pdfname, pfid });
@@ -218,18 +214,15 @@ function Row({ row, index }: { row: any; index: number }) {
 
     console.log("Data before submitting:", updatedTableData);
 
-    const response = await api.post(
-       `DocFPages/AddUpdateDocFPages`,
-      { docFPages: updatedTableData }
-    );
+    const response = await api.post(`DocFPages/AddUpdateDocFPages`, {
+      docFPages: updatedTableData,
+    });
     if (response.data.isSuccess == true) {
       toast.success(response.data.mesg);
       handleCloseModal();
     } else {
       toast.error(response.data.mesg);
     }
-
-
   };
 
   let navigate = useNavigate();
@@ -244,27 +237,24 @@ function Row({ row, index }: { row: any; index: number }) {
     setIsLoading(true);
     const collectData = {
       pdFid: docMid,
-      user_Id: -1
+      user_Id: -1,
     };
 
     console.log("collectData " + JSON.stringify(collectData));
     api
-      .post( `DocFiles/GetDocFiles`, collectData)
+      .post(`DocFiles/GetDocFiles`, collectData)
       .then((response) => {
-        console.log(
-          "check pdf",
-          response?.data?.data[0]["pdfBase64"]
-        );
+        console.log("check pdf", response?.data?.data[0]["pdfBase64"]);
         setPDFData(response?.data?.data[0]["pdfBase64"]);
         setIsLoading(false);
       })
       .catch((error) => {
-        console.error('Error fetching data:', error);
+        console.error("Error fetching data:", error);
         setIsLoading(false);
       });
   };
 
-  const handleConversionChange = (params: any, text:any) => {
+  const handleConversionChange = (params: any, text: any) => {
     //formik.setFieldValue(params);
   };
 
@@ -272,19 +262,18 @@ function Row({ row, index }: { row: any; index: number }) {
     <React.Fragment>
       <ToastApp />
       <StyledTableRow sx={{ border: "1px gray grey" }}>
-
         <TableCell style={{ border: "1px gray grey" }} align="center">
           {index + 1}
         </TableCell>
 
         <TableCell style={{ border: "1px gray grey" }} align="center">
-          <p 
+          <p
             style={textStyle}
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
             onClick={() => handleAddCommentClick(row.pdfName, row.pdFid)}
           >
-           {t("text.AddComment")}
+            {t("text.AddComment")}
           </p>
 
           <Dialog
@@ -301,9 +290,6 @@ function Row({ row, index }: { row: any; index: number }) {
                 <CloseIcon />
               </IconButton>{" "}
               {row.fileNo}
-
-
-              
             </DialogTitle>
 
             <Grid xs={12} sm={12} item sx={{ margin: "5px" }}>
@@ -334,7 +320,6 @@ function Row({ row, index }: { row: any; index: number }) {
                       }}
                     >
                       {t("text.PageNoTo")}
-                      
                     </th>
                     <th
                       style={{
@@ -362,7 +347,6 @@ function Row({ row, index }: { row: any; index: number }) {
                       }}
                     >
                       {t("text.PhysicalIndex")}
-                      
                     </th>
 
                     <th
@@ -372,7 +356,7 @@ function Row({ row, index }: { row: any; index: number }) {
                         paddingBottom: "5px",
                       }}
                     >
-                       {t("text.Comments")}
+                      {t("text.Comments")}
                     </th>
 
                     <th
@@ -383,7 +367,7 @@ function Row({ row, index }: { row: any; index: number }) {
                         width: "70px",
                       }}
                     >
-                       {t("text.Action")}
+                      {t("text.Action")}
                     </th>
                   </tr>
                 </thead>
@@ -400,7 +384,7 @@ function Row({ row, index }: { row: any; index: number }) {
                         {" "}
                         <TextField
                           type="text"
-                          placeholder= {t("text.PageNoFrom")}
+                          placeholder={t("text.PageNoFrom")}
                           size="small"
                           fullWidth
                           value={row.pgNF}
@@ -554,7 +538,6 @@ function Row({ row, index }: { row: any; index: number }) {
               </Grid>
             </Grid>
           </Dialog>
-
         </TableCell>
 
         <TableCell style={{ border: "1px gray grey" }} align="center">
@@ -604,31 +587,52 @@ function Row({ row, index }: { row: any; index: number }) {
               </div>
             </DialogTitle>
             {isLoading ? (
-              <div style={{ display: 'flex', justifyContent: "center", alignItems: "center", margin: 10 }}><CustomizedProgressBars /></div>
-            ) : (<>
-              {pdfData ? (
-                <embed
-                  src={pdfData}
-                  style={{
-                    height: "90vh",
-                    width: "100vh",
-                    border: "1px solid gray",
-                  }}
-                />) : (<div style={{ display: 'flex', justifyContent: "center", alignItems: "center", margin: 10 }}>No PDF Available</div>)}
-            </>)}
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  margin: 10,
+                }}
+              >
+                <CustomizedProgressBars />
+              </div>
+            ) : (
+              <>
+                {pdfData ? (
+                  <embed
+                    src={pdfData}
+                    style={{
+                      height: "90vh",
+                      width: "100vh",
+                      border: "1px solid gray",
+                    }}
+                  />
+                ) : (
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      margin: 10,
+                    }}
+                  >
+                    No PDF Available
+                  </div>
+                )}
+              </>
+            )}
           </Dialog>
-
         </TableCell>
-        <TableCell style={{ border: "1px gray grey" }}>
-          {row.fileDef}
+        <TableCell style={{ border: "1px gray grey" }}>{row.fileDef}</TableCell>
+
+        <TableCell align="center" style={{ border: "1px gray grey" }}>
+          {row.fDate}
         </TableCell>
 
-        <TableCell  align="center" style={{ border: "1px gray grey" }}>{row.fDate}</TableCell>
-
-        <TableCell  align="center" style={{ border: "1px gray grey" }}>
+        <TableCell align="center" style={{ border: "1px gray grey" }}>
           {row.cDate}
         </TableCell>
-
       </StyledTableRow>
     </React.Fragment>
   );
@@ -640,21 +644,18 @@ export default function DocumentIndexing() {
   const { t } = useTranslation();
 
   const [optionSubSubject, setOptionSubSubject] = useState([
-    { value: "-1", label:t("text.SelectDevision") },
+    { value: "-1", label: t("text.SelectDevision") },
   ]);
 
   const [optionDocument, setOptionDocument] = useState([
-    { value: "-1", label:t("text.SelectFileType") },
+    { value: "-1", label: t("text.SelectFileType") },
   ]);
-
 
   const [optionFileStatus, setOptionFileStatus] = useState([
     { label: t("text.SelectFileStatus") },
   ]);
 
   const [loading, setLoading] = useState(false);
-
- 
 
   useEffect(() => {
     getSubSubjectData();
@@ -672,55 +673,53 @@ export default function DocumentIndexing() {
       fileNo: "",
     };
 
-    api
-      .post("DocMangr/GetDocMangr", collectData)
-      .then((res) => {
-        const arr = [];
-        console.log("result" + JSON.stringify(res.data));
-        for (let index = 0; index < res.data.data.length; index++) {
-          arr.push({
-            label: res.data.data[index]["fileNo"],
-            value: res.data.data[index]["docMid"],
-          });
-        }
-        setOptionSubSubject(arr);
-      });
-  };
-
-  const getDocumentData = () => {
-    const collectData = {
-      "fId": -1,
-      "inst_id": -1,
-      "user_id": -1,
-      "divisionid": -1
-    };
-
-    api
-      .post("FileType/GetFileType", collectData)
-      .then((res) => {
-        const arr = [];
-        console.log("result" + JSON.stringify(res.data));
-        for (let index = 0; index < res.data.data.length; index++) {
-          arr.push({
-            label: res.data.data[index]["fName"],
-            value: res.data.data[index]["fId"],
-          });
-        }
-        setOptionDocument(arr);
-      });
-  };
-
-  const getFileStatusData = () => {
-      api.get(`ReceiptStatus/GetReceiptStatus`,{ params :{ReceiptStatId: -1}}).then((res) => {
+    api.post("DocMangr/GetDocMangr", collectData).then((res) => {
       const arr = [];
       console.log("result" + JSON.stringify(res.data));
       for (let index = 0; index < res.data.data.length; index++) {
         arr.push({
-          label: res.data.data[index]["recStatus"],
+          label: res.data.data[index]["fileNo"],
+          value: res.data.data[index]["docMid"],
         });
       }
-      setOptionFileStatus(arr);
+      setOptionSubSubject(arr);
     });
+  };
+
+  const getDocumentData = () => {
+    const collectData = {
+      fId: -1,
+      inst_id: -1,
+      user_id: -1,
+      divisionid: -1,
+    };
+
+    api.post("FileType/GetFileType", collectData).then((res) => {
+      const arr = [];
+      console.log("result" + JSON.stringify(res.data));
+      for (let index = 0; index < res.data.data.length; index++) {
+        arr.push({
+          label: res.data.data[index]["fName"],
+          value: res.data.data[index]["fId"],
+        });
+      }
+      setOptionDocument(arr);
+    });
+  };
+
+  const getFileStatusData = () => {
+    api
+      .get(`ReceiptStatus/GetReceiptStatus`, { params: { ReceiptStatId: -1 } })
+      .then((res) => {
+        const arr = [];
+        console.log("result" + JSON.stringify(res.data));
+        for (let index = 0; index < res.data.data.length; index++) {
+          arr.push({
+            label: res.data.data[index]["recStatus"],
+          });
+        }
+        setOptionFileStatus(arr);
+      });
   };
 
   const handleFilterButtonClick = () => {
@@ -874,9 +873,9 @@ export default function DocumentIndexing() {
               type="button"
               onClick={() => handleFilterButtonClick()}
               style={{
-                backgroundColor: "blue",
+                backgroundColor: `var(--grid-headerBackground)`,
                 fontSize: "15px",
-                color: "#fff",
+                color: `var(--grid-headerColor)`,
                 textTransform: "none",
                 cursor: "pointer",
               }}
@@ -888,9 +887,9 @@ export default function DocumentIndexing() {
               type="button"
               onClick={handlePrint}
               style={{
-                backgroundColor: "blue",
+                backgroundColor: `var(--grid-headerBackground)`,
                 fontSize: "15px",
-                color: "#fff",
+                color: `var(--grid-headerColor)`,
                 textTransform: "none",
                 cursor: "pointer",
               }}
@@ -907,7 +906,7 @@ export default function DocumentIndexing() {
             anchor="right"
             open={filterDrawerOpen}
             onClose={handleCloseDrawer}
-            onOpen={() => { }}
+            onOpen={() => {}}
             slotProps={{
               backdrop: {
                 style: { backgroundColor: "rgba(0, 0, 0, 0.7)" },
@@ -963,7 +962,12 @@ export default function DocumentIndexing() {
                         formik.setFieldTouched("divisionid", false);
                       }}
                       renderInput={(params) => (
-                        <TextField {...params} label={<CustomLabel text={t("text.SelectDevision")} />} />
+                        <TextField
+                          {...params}
+                          label={
+                            <CustomLabel text={t("text.SelectDevision")} />
+                          }
+                        />
                       )}
                     />
                   </Grid>
@@ -983,7 +987,12 @@ export default function DocumentIndexing() {
                         // formik.setFieldTouched("fileTypId", false);
                       }}
                       renderInput={(params) => (
-                        <TextField {...params} label={<CustomLabel text={t("text.SelectFileType")} />} />
+                        <TextField
+                          {...params}
+                          label={
+                            <CustomLabel text={t("text.SelectFileType")} />
+                          }
+                        />
                       )}
                     />
                   </Grid>
@@ -1003,7 +1012,12 @@ export default function DocumentIndexing() {
                         formik.setFieldTouched("filestatus", false);
                       }}
                       renderInput={(params) => (
-                        <TextField {...params} label={<CustomLabel text={t("text.SelectFileStatus")} />} />
+                        <TextField
+                          {...params}
+                          label={
+                            <CustomLabel text={t("text.SelectFileStatus")} />
+                          }
+                        />
                       )}
                     />
                   </Grid>
@@ -1057,7 +1071,8 @@ export default function DocumentIndexing() {
                         variant="contained"
                         style={{
                           width: "37%",
-                          // backgroundColor: "#059669",
+                          backgroundColor: `var(--grid-headerBackground)`,
+                          color: `var(--grid-headerColor)`,
                           margin: "0.5%",
                         }}
                       >
@@ -1068,14 +1083,15 @@ export default function DocumentIndexing() {
                         variant="contained"
                         style={{
                           width: "37%",
-                          // backgroundColor: "#F43F5E",
+                          backgroundColor: `var(--grid-headerBackground)`,
+                          color: `var(--grid-headerColor)`,
                           margin: "0.5%",
                         }}
                         onClick={() => {
                           formik.resetForm();
                         }}
                       >
-                       {t("text.Clear")}
+                        {t("text.Clear")}
                       </Button>
                     </div>
                   </Grid>
@@ -1203,7 +1219,7 @@ export default function DocumentIndexing() {
                         // padding: "10px",
                       }}
                     >
-                     {t("text.DateFrom")}
+                      {t("text.DateFrom")}
                     </StyledTableCell>
                     <StyledTableCell
                       align="center"

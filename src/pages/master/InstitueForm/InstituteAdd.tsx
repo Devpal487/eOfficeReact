@@ -457,8 +457,8 @@ const InstituteAdd = (props: Props) => {
                 onClick={() => back(-1)}
                 variant="contained"
                 style={{
-                  backgroundColor: "blue",
-                  width: 20,
+                  backgroundColor: `var(--grid-headerBackground)`,
+                  color: `var(--grid-headerColor)`,
                 }}
               >
                 <ArrowBackSharpIcon />
@@ -2160,9 +2160,10 @@ const InstituteAdd = (props: Props) => {
                   type="submit"
                   fullWidth
                   style={{
-                    backgroundColor: "#059669",
-                    color: "white",
-                    marginTop: "10px",
+                    
+                    backgroundColor: `var(--grid-headerBackground)`,
+                    color: `var(--grid-headerColor)`,
+                    marginTop:"10px"
                   }}
                 >
                   {t("text.save")}

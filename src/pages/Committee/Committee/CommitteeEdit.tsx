@@ -216,7 +216,8 @@ const CommitteeEdit = (props: Props) => {
                 style={{
                   marginBottom: 15,
                   marginTop: "45px",
-                  backgroundColor: "blue",
+                  backgroundColor:`var(--grid-headerBackground)`,
+                  color: `var(--grid-headerColor)`,
                   width: 20,
                 }}
               >
@@ -440,12 +441,12 @@ const CommitteeEdit = (props: Props) => {
                     type="submit"
                     fullWidth
                     style={{
-                      backgroundColor: "#059669",
-                      color: "white",
+                      backgroundColor:`var(--grid-headerBackground)`,
+                      color: `var(--grid-headerColor)`,
                       marginTop: "10px",
                     }}
                   >
-                    {t("text.save")}
+                    {t("text.update")}
                   </Button>
                 </Grid>
 

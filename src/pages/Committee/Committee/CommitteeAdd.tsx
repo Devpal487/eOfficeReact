@@ -193,10 +193,7 @@ const CommitteeAdd = (props: Props) => {
                 type="submit"
                 onClick={() => back(-1)}
                 variant="contained"
-                style={{
-                  backgroundColor: "blue",
-                  width: 20,
-                }}
+                style={{backgroundColor:`var(--grid-headerBackground)`,color: `var(--grid-headerColor)`}}
               >
                 <ArrowBackSharpIcon />
               </Button>
@@ -422,11 +419,7 @@ const CommitteeAdd = (props: Props) => {
                   <Button
                     type="submit"
                     fullWidth
-                    style={{
-                      backgroundColor: "#059669",
-                      color: "white",
-                      marginTop: "10px",
-                    }}
+                    style={{backgroundColor:`var(--grid-headerBackground)`,color: `var(--grid-headerColor)`,marginTop:'10px'}}
                   >
                     {t("text.save")}
                   </Button>

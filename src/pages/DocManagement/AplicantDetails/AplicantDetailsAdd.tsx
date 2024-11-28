@@ -240,8 +240,7 @@ const AplicantDetailsAdd = (props: Props) => {
     },
 
     onSubmit: async (values) => {
-
-      console.log('value',values);
+      console.log("value", values);
       const response = await api.post(
         `CertificateApply/AddUpdateCertificateApply`,
         values
@@ -356,7 +355,8 @@ const AplicantDetailsAdd = (props: Props) => {
                         style={{
                           backgroundColor: "white",
                           borderColor:
-                            formik.touched.studentName && formik.errors.studentName
+                            formik.touched.studentName &&
+                            formik.errors.studentName
                               ? "red"
                               : "initial",
                         }}
@@ -745,7 +745,6 @@ const AplicantDetailsAdd = (props: Props) => {
                         placeholder={t("text.Rate")}
                         size="small"
                         fullWidth
-                       
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
                       />
@@ -762,7 +761,8 @@ const AplicantDetailsAdd = (props: Props) => {
                     variant="contained"
                     style={{
                       width: "48%",
-                      backgroundColor: "#059669",
+                      backgroundColor:`var(--grid-headerBackground)`,
+                      color: `var(--grid-headerColor)`,
                       margin: "1%",
                     }}
                   >

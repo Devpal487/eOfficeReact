@@ -17,7 +17,7 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import { useNavigate, Navigate, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { Avatar, CircularProgress, Stack } from "@mui/material";
+import { Avatar, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, Stack } from "@mui/material";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import call from "../../assets/images/phone-call.png";
@@ -66,11 +66,18 @@ import CustomDataGrid from "../../utils/CustomDatagrid";
 import { getId } from "../../utils/Constant";
 import dark from "../../assets/images/darkTheme.png";
 import Light from "../../assets/images/lightTheme.png";
-import '../../index.css';
+import "../../index.css";
 import MainLayout from "../layout/MainLayout";
-
-
-
+import "./ThemeStyle.css";
+import ThemeIcon from "../../assets/images/themes.png";
+import {
+  Brightness5,
+  Brightness4,
+  Waves,
+  WbSunny,
+  Forest,
+  Flag,
+} from "@mui/icons-material";
 
 const drawerWidth = 225;
 
@@ -191,7 +198,6 @@ export default function MiniDrawer({ items }: any) {
   let headerName = localStorage.getItem("name");
   let appLogo: any = localStorage.getItem("applogo");
   let sideLogo: any = localStorage.getItem("sidelogo");
-  
 
   let sidebarMainColor: any = localStorage.getItem("mclr");
   let sidebarOverColor: any = localStorage.getItem("oclr");
@@ -209,46 +215,60 @@ export default function MiniDrawer({ items }: any) {
   const [searchValue, setSearchValue] = React.useState("");
   // const [filteredItems, setFilteredItems] = React.useState([]);
   const [filteredItems, setFilteredItems] = React.useState<MenuItem[]>([]);
+
+  const themes = [
+    { name: "light-theme", icon: <Brightness5 /> },
+    { name: "dark-theme", icon: <Brightness4 /> },
+    { name: "ocean-theme", icon: <Waves /> },
+    { name: "sunset-theme", icon: <WbSunny /> },
+    { name: "forest-theme", icon: <Forest /> },
+    { name: "bhagwa-theme", icon: <Flag /> },
+  ];
   const [expandedItems, setExpandedItems] = React.useState<any[]>([]);
 
-  const [currentTheme, setCurrentTheme] = useState(() => {
+  const [showThemeMenu, setShowThemeMenu] = React.useState(false);
+
+  const [selectedTheme, setSelectedTheme] = React.useState(() => {
     const storedTheme = localStorage.getItem("theme");
-   // console.log('storedTheme',storedTheme);
-    return storedTheme ? storedTheme : "light";
+
+    return storedTheme ? storedTheme : themes[0]["name"];
   });
-  
-  // Function to toggle the theme
-  const toggleTheme = () => {
-    const newTheme = currentTheme === "light" ? "dark" : "light";
-    localStorage.setItem("theme", newTheme);
-    setCurrentTheme(newTheme);
-   
+
+  React.useEffect(() => {
+    console.log(selectedTheme);
+    document.body.className = selectedTheme;
+
+    localStorage.setItem("theme", selectedTheme);
+  }, [selectedTheme]);
+
+  const handleThemeChange = (theme: any) => {
+    setSelectedTheme(theme);
+    setShowThemeMenu(false);
   };
 
-
-  
- 
-  // Determine background color based on theme
-  const headerColor = currentTheme === "light" ? sidebarMainColor :"#81848a";
-
-  
-  const drawerStyles = {
-    backgroundColor: currentTheme === "light" ? "#f5f5f5" : "#81848a",
-    color: currentTheme === "light" ? "black" : "white",
+  const handleCloseSelect = () => {
+    setShowThemeMenu(false);
   };
 
-  const menuStyles = {
-    backgroundColor: currentTheme === "light" ? "#ffffff" : "#81848a",
-    color: currentTheme === "light" ? "black" : "white",
-    "& .MuiMenuItem-root": {
-      color: currentTheme === "light" ? "black" : "white",
-    },
-    "& .MuiDivider-root": {
-      backgroundColor: currentTheme === "light" ? "rgba(0, 0, 0, 0.12)" : "#6e6e6e",
-    },
-  };
+  const headerColor1 = `var(--header-background)`;
+  const drawerStyles = `var(--drawer-background)`;
 
+  // const drawerStyles = {
+  //   backgroundColor: currentTheme === "light" ? "#f5f5f5" : "#81848a",
+  //   color: currentTheme === "light" ? "black" : "white",
+  // };
 
+  // const menuStyles = {
+  //   backgroundColor: currentTheme === "light" ? "#ffffff" : "#81848a",
+  //   color: currentTheme === "light" ? "black" : "white",
+  //   "& .MuiMenuItem-root": {
+  //     color: currentTheme === "light" ? "black" : "white",
+  //   },
+  //   "& .MuiDivider-root": {
+  //     backgroundColor:
+  //       currentTheme === "light" ? "rgba(0, 0, 0, 0.12)" : "#6e6e6e",
+  //   },
+  // };
 
   const location = useLocation();
 
@@ -457,7 +477,7 @@ export default function MiniDrawer({ items }: any) {
   const [nodeNames, setNodeNames] = React.useState<string>("");
 
   // Effect to apply the theme from local storage
-  
+
   const handleToggle = (id: number, name: string) => () => {
     const currentIndex = check.indexOf(id);
     //const newChecked = [...check];
@@ -688,20 +708,15 @@ export default function MiniDrawer({ items }: any) {
   const greeting = getGreeting();
 
   return (
-
-    
     <Box sx={{ display: "flex" }}>
-
-
-
-
       <AppBar position="fixed" open={open} style={{}}>
         <Toolbar
           style={{
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
-            background: headerColor,
+            background: "var(--header-background1)",
+            color: "var(--header-color1)",
           }}
         >
           <div
@@ -734,8 +749,6 @@ export default function MiniDrawer({ items }: any) {
             )}
           </div>
 
-          
-
           <div style={{ fontSize: "2.1vw" }}>{headerName}</div>
 
           <IconButton
@@ -752,110 +765,128 @@ export default function MiniDrawer({ items }: any) {
           </IconButton>
 
           <Menu
-      anchorEl={anchorEl}
-      id="account-menu"
-      open={menuOpen}
-      onClick={handleClose}
-      PaperProps={{
-        elevation: 0,
-        sx: {
-          ...menuStyles,
-          overflow: "auto",
-          filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
-          paddingRight: "10px",
-          paddingLeft: "10px",
-          mt: 1.5,
-          "& .MuiAvatar-root": {
-            width: 32,
-            height: 32,
-            ml: -0.5,
-            mr: 1,
-          },
-          "&::before": {
-            content: '""',
-            display: "block",
-            position: "absolute",
-            top: 0,
-            right: 14,
-            width: 10,
-            height: 10,
-            transform: "translateY(-50%) rotate(45deg)",
-            zIndex: 0,
-          },
-        },
-      }}
-      transformOrigin={{ horizontal: "right", vertical: "top" }}
-      anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
-    >
-      <MenuItem onClick={handleClose}>
-        <ListItemIcon>
-          <img src={userIcon} width={40} height={40} alt="User" />
-        </ListItemIcon>{" "}
-        {username}
-      </MenuItem>
-      <MenuItem onClick={handleMyProfileClick}>
-        <ListItemIcon>
-          <img src={ids} width={30} height={30} alt="Profile" />
-        </ListItemIcon>
-        My Profile
-      </MenuItem>
-      <Divider />
-      <MenuItem
-        onClick={() => {
-          localStorage.getItem("preferredLanguage") === "hi"
-            ? changeLanguage("en")
-            : changeLanguage("hi");
-        }}
-      >
-        <ListItemIcon>
-          <img src={trans} width={30} height={30} alt="Translate" />
-        </ListItemIcon>
-        Translate -- {newLanguage}
-      </MenuItem>
-      <MenuItem
-        onClick={() => {
-          let path = "/HelpDesk";
-          localStorage.setItem("menuData", menuData.toString());
-          window.open(path, "_blank");
-        }}
-      >
-        <ListItemIcon>
-          <img src={help} width={30} height={30} alt="Help Desk" />
-        </ListItemIcon>
-        Help Desk
-      </MenuItem>
-      <MenuItem onClick={toggleTheme}>
-        <ListItemIcon>
-          <img
-            src={currentTheme === "light" ? dark : Light}
-            width={30}
-            height={30}
-            alt="Theme"
-          />
-        </ListItemIcon>
-        Theme -- {currentTheme === "light" ? "Dark Mode" : "Light Mode"}
-      </MenuItem>
-      <MenuItem onClick={handleClose}>
-        <ListItemIcon>
-          <img src={settings} width={30} height={30} alt="Settings" />
-        </ListItemIcon>
-        Settings
-      </MenuItem>
-      <MenuItem onClick={handlePermissionClick}>
-        <ListItemIcon>
-          <img src={logged} width={40} height={40} alt="Permission" />
-        </ListItemIcon>
-        Permission
-      </MenuItem>
-      <Divider />
-      <MenuItem onClick={Logout}>
-        <ListItemIcon>
-          <img src={logouts} width={30} height={30} alt="Logout" />
-        </ListItemIcon>
-        Logout
-      </MenuItem>
-    </Menu>
+            anchorEl={anchorEl}
+            id="account-menu"
+            open={menuOpen}
+            onClick={handleClose}
+            PaperProps={{
+              elevation: 0,
+              sx: {
+                backgroundColor: `var(--menu-background)`,
+                color: "var(--menu-color)",
+                overflow: "auto",
+                filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
+                paddingRight: "10px",
+                paddingLeft: "10px",
+                mt: 1.5,
+                "& .MuiAvatar-root": {
+                  width: 32,
+                  height: 32,
+                  ml: -0.5,
+                  mr: 1,
+                },
+                "&::before": {
+                  content: '""',
+                  display: "block",
+                  position: "absolute",
+                  top: 0,
+                  right: 14,
+                  width: 10,
+                  height: 10,
+                  transform: "translateY(-50%) rotate(45deg)",
+                  zIndex: 0,
+                },
+              },
+            }}
+            transformOrigin={{ horizontal: "right", vertical: "top" }}
+            anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
+          >
+            <MenuItem onClick={handleClose}>
+              <ListItemIcon>
+                <img src={userIcon} width={40} height={40} alt="User" />
+              </ListItemIcon>{" "}
+              {username}
+            </MenuItem>
+            <MenuItem onClick={handleMyProfileClick}>
+              <ListItemIcon>
+                <img src={ids} width={30} height={30} alt="Profile" />
+              </ListItemIcon>
+              My Profile
+            </MenuItem>
+            <Divider />
+            <MenuItem
+              onClick={() => {
+                localStorage.getItem("preferredLanguage") === "hi"
+                  ? changeLanguage("en")
+                  : changeLanguage("hi");
+              }}
+            >
+              <ListItemIcon>
+                <img src={trans} width={30} height={30} alt="Translate" />
+              </ListItemIcon>
+              Translate -- {newLanguage}
+            </MenuItem>
+            <MenuItem
+              onClick={() => {
+                let path = "/HelpDesk";
+                localStorage.setItem("menuData", menuData.toString());
+                window.open(path, "_blank");
+              }}
+            >
+              <ListItemIcon>
+                <img src={help} width={30} height={30} alt="Help Desk" />
+              </ListItemIcon>
+              Help Desk
+            </MenuItem>
+            <MenuItem onClick={() => setShowThemeMenu(!showThemeMenu)}>
+              <ListItemIcon>
+                <img src={ThemeIcon} width={30} height={30} />
+              </ListItemIcon>
+              Select Theme
+            </MenuItem>
+            <MenuItem onClick={handleClose}>
+              <ListItemIcon>
+                <img src={settings} width={30} height={30} alt="Settings" />
+              </ListItemIcon>
+              Settings
+            </MenuItem>
+            <MenuItem onClick={handlePermissionClick}>
+              <ListItemIcon>
+                <img src={logged} width={40} height={40} alt="Permission" />
+              </ListItemIcon>
+              Permission
+            </MenuItem>
+            <Divider />
+            <MenuItem onClick={Logout}>
+              <ListItemIcon>
+                <img src={logouts} width={30} height={30} alt="Logout" />
+              </ListItemIcon>
+              Logout
+            </MenuItem>
+          </Menu>
         </Toolbar>
+
+        <Dialog open={showThemeMenu} onClose={handleCloseSelect}>
+          <DialogTitle>Select a Theme</DialogTitle>
+          <DialogContent>
+            <List>
+              {themes.map((theme) => (
+                <ListItem
+                  button
+                  key={theme.name}
+                  onClick={() => handleThemeChange(theme.name)}
+                  selected={selectedTheme === theme.name}
+                >
+                  {theme.icon}
+                  <span style={{ marginLeft: "10px" }}>{theme.name}</span>
+                </ListItem>
+              ))}
+            </List>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleCloseSelect}>Cancel</Button>
+          </DialogActions>
+        </Dialog>
 
         <div
           style={{
@@ -864,7 +895,7 @@ export default function MiniDrawer({ items }: any) {
             alignItems: "center",
             // backgroundColor: "rgba(245,245,245,0.7)",
             // borderBottomRightRadius: "15px",
-            backgroundColor: headerColor,
+            backgroundColor: headerColor1,
           }}
         >
           <div role="presentation" onClick={handleClicked} style={{}}>
@@ -948,7 +979,9 @@ export default function MiniDrawer({ items }: any) {
               paddingRight: "15px",
             }}
           >
-            <p style={{  fontSize: "1.2vw",color: greeting.color }}>{greeting.text}</p>
+            <p style={{ fontSize: "1.2vw", color: greeting.color }}>
+              {greeting.text}
+            </p>
             <p>
               {t("text.EGovernanceLevel")} : {nodeName}
             </p>
@@ -968,7 +1001,8 @@ export default function MiniDrawer({ items }: any) {
         open={open}
         PaperProps={{
           sx: {
-            backgroundColor:drawerStyles,
+            backgroundColor: drawerStyles,
+            color: `var(--drawer-color)`,
           },
         }}
       >
@@ -1219,7 +1253,7 @@ export default function MiniDrawer({ items }: any) {
                                 ? sidebarMainColor
                                 : "inherit",
                             color:
-                              selectedSubMenu == index2 ? "white" : "black",
+                              selectedSubMenu == index2 ? "white" : `var(--drawer-color)`,
                             borderRadius: "10px",
                             cursor: "pointer",
                             "&:hover": {

@@ -332,10 +332,7 @@ const CertificateAdd = (props: Props) => {
                 type="submit"
                 onClick={() => back(-1)}
                 variant="contained"
-                style={{
-                  backgroundColor: "blue",
-                  width: 20,
-                }}
+                style={{backgroundColor:`var(--grid-headerBackground)`,color: `var(--grid-headerColor)`}}
               >
                 <ArrowBackSharpIcon />
               </Button>
@@ -508,7 +505,8 @@ const CertificateAdd = (props: Props) => {
                   variant="contained"
                   style={{
                     width: "100%",
-                    backgroundColor: "blue",
+                    backgroundColor:`var(--grid-headerBackground)`,
+                    color: `var(--grid-headerColor)`,
                     margin: "1%",
                   }}
                 >
@@ -997,7 +995,8 @@ const CertificateAdd = (props: Props) => {
                         variant="contained"
                         style={{
                           width: "48%",
-                          backgroundColor: "#059669",
+                          backgroundColor:`var(--grid-headerBackground)`,
+                          color: `var(--grid-headerColor)`,
                           margin: "1%",
                         }}
                       >

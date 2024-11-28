@@ -349,10 +349,7 @@ const SplitPDF = (props: Props) => {
                 type="submit"
                 onClick={() => back(-1)}
                 variant="contained"
-                style={{
-                  backgroundColor: "blue",
-                  width: 20,
-                }}
+                style={{backgroundColor:`var(--grid-headerBackground)`,color: `var(--grid-headerColor)`}}
               >
                 <ArrowBackSharpIcon />
               </Button>
@@ -550,11 +547,7 @@ const SplitPDF = (props: Props) => {
                 <Button
                   onClick={getDocMng}
                   fullWidth
-                  style={{
-                    backgroundColor: "#059669",
-                    color: "white",
-
-                  }}
+                  style={{backgroundColor:`var(--grid-headerBackground)`,color: `var(--grid-headerColor)`}}
 
                 >
                   {t("text.Search")}
@@ -786,12 +779,7 @@ const SplitPDF = (props: Props) => {
                   type="submit"
                   onClick={AddSplitPdf}
                   fullWidth
-                  style={{
-                    backgroundColor: "#059669",
-                    color: "white",
-                    marginTop: "10px",
-
-                  }}
+                  style={{backgroundColor:`var(--grid-headerBackground)`,color: `var(--grid-headerColor)`,marginTop:'10px'}}
                 >
                   {t("text.SplitPage")}
                 </Button>

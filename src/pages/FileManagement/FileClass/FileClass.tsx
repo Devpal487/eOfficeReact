@@ -301,16 +301,16 @@ export default function FileClass() {
         }}
       >
         <Paper
-          sx={{
-            width: "100%",
-            overflow: "hidden",
-            "& .MuiDataGrid-colCell": {
-              backgroundColor: "#2B4593",
-              color: "#fff",
-              fontSize: 17,
-              fontWeight: 900,
-            },
-          }}
+          // sx={{
+          //   width: "100%",
+          //   overflow: "hidden",
+          //   "& .MuiDataGrid-colCell": {
+          //     backgroundColor: "#2B4593",
+          //     color: "#fff",
+          //     fontSize: 17,
+          //     fontWeight: 900,
+          //   },
+          // }}
           style={{ padding: "10px" }}
         >
           <ConfirmDialog />

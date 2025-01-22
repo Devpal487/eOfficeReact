@@ -563,7 +563,8 @@ export default function Correspondence() {
                                             onChange={(e) => otherDocChangeHandler(e, "uploading")}
                                         />
                                     </Grid>
-                                    <Grid xs={12} md={4} sm={4} item></Grid>
+                                    
+                                    
 
                                     <Grid xs={12} md={4} sm={4} item>
                                         <Grid

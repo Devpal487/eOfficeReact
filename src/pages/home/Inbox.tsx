@@ -163,9 +163,23 @@ export default function Inbox() {
 
                     {
                         field: "fileNm",
-                        headerName: "File Name",
+                        headerName: "File Number",
                         flex: 1,
                         headerClassName: "MuiDataGrid-colCell",
+                        renderCell: (params) => {
+                            return [
+                              <a
+                                onClick={() => navigate('/Committee/ViewEditFile')}
+                                style={{
+                                  color: "blue",
+                                  cursor: "pointer",
+                                  textDecoration: "underline",
+                                }}
+                              >
+                                {params.value}
+                              </a>,
+                            ];
+                          },
                     },
 
 
@@ -176,12 +190,7 @@ export default function Inbox() {
                         headerClassName: "MuiDataGrid-colCell",
                     },
 
-                    {
-                        field: "dairyDate",
-                        headerName: "Dairy Date",
-                        flex: 1,
-                        headerClassName: "MuiDataGrid-colCell",
-                    },
+                  
                     {
                         field: "fileStatus",
                         headerName: "File Status ",
@@ -192,6 +201,20 @@ export default function Inbox() {
                     {
                         field: "createdby",
                         headerName: "Created By",
+                        flex: 1,
+                        headerClassName: "MuiDataGrid-colCell",
+                    },
+
+                    {
+                        field: "updatedRemark",
+                        headerName: "Remark",
+                        flex: 1,
+                        headerClassName: "MuiDataGrid-colCell",
+                    },
+
+                    {
+                        field: "dairyDate",
+                        headerName: "Date",
                         flex: 1,
                         headerClassName: "MuiDataGrid-colCell",
                     },

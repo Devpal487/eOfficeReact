@@ -12,8 +12,6 @@ import {
 import EditIcon from "@mui/icons-material/Edit";
 import Card from "@mui/material/Card";
 import Grid from "@mui/material/Grid";
-import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
 import api from "../../../utils/Url";
 import { useLocation } from "react-router-dom";
@@ -24,11 +22,15 @@ import { useTranslation } from "react-i18next";
 import { DataGrid, GridColDef, GridToolbar } from "@mui/x-data-grid";
 import { toast } from "react-toastify";
 import ToastApp from "../../../ToastApp";
-import { usePermissionData } from "../../../usePermissionData";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { getISTDate } from "../../../utils/Constant";
 import CustomDataGrid from "../../../utils/CustomDatagrid";
 import CustomLabel from "../../../CustomLable";
+import ButtonWithLoader from "../../../utils/ButtonWithLoader";
+import Languages from "../../../Languages";
+import { Language, ReactTransliterate } from "react-transliterate";
+import "react-transliterate/dist/index.css";
+import TranslateTextField from "../../../TranslateTextField";
 
 interface MenuPermission {
   isAdd: boolean;
@@ -39,8 +41,6 @@ interface MenuPermission {
 
 export default function FileCategory() {
   const { i18n, t } = useTranslation();
-  const { defaultValues, defaultValuestime } = getISTDate();
-
   const [columns, setColumns] = useState<any>([]);
   const [rows, setRows] = useState<any>([]);
   const [editId, setEditId] = useState<any>(-1);
@@ -52,6 +52,7 @@ export default function FileCategory() {
     isPrint: false,
     isDel: false,
   });
+  const [lang, setLang] = useState<Language>("en");
 
   useEffect(() => {
     const dataString = localStorage.getItem("userdata");
@@ -68,18 +69,18 @@ export default function FileCategory() {
             );
             console.log("data", pathrow);
             if (pathrow) {
-
               setPermissionData(pathrow);
-              // getList();
+              getList();
             }
           }
         }
       }
     }
-    getList();
+    // getList();
   }, [isLoading]);
 
   let delete_id = "";
+
   const accept = () => {
     const collectData = {
       fileCatid: delete_id,
@@ -96,6 +97,7 @@ export default function FileCategory() {
         getList();
       });
   };
+
   const reject = () => {
     // toast.warn({summary: 'Rejected', detail: 'You have rejected', life: 3000 });
     toast.warn("Rejected: You have rejected", { autoClose: 3000 });
@@ -116,38 +118,36 @@ export default function FileCategory() {
 
   const getList = () => {
     const collectData = {
-      "fileCatid": -1
+      fileCatid: -1,
     };
     try {
-      api
-        .post(`FileCategory/GetFileCategory`, collectData)
-        .then((res) => {
-          console.log("result" + JSON.stringify(res.data.data));
-          const data = res.data.data;
-          const arr = data.map((item: any, index: any) => ({
-            ...item,
-            serialNo: index + 1,
-            id: item.fileCatid,
-          }));
-          setRows(arr);
-          setIsLoading(false);
-          if (data.length > 0) {
-            const columns: GridColDef[] = [
-              {
-                field: "actions",
-                headerClassName: "MuiDataGrid-colCell",
-                headerName: t("text.Action"),
-                width: 150,
+      api.post(`FileCategory/GetFileCategory`, collectData).then((res) => {
+        console.log("result" + JSON.stringify(res.data.data));
+        const data = res.data.data;
+        const arr = data.map((item: any, index: any) => ({
+          ...item,
+          serialNo: index + 1,
+          id: item.fileCatid,
+        }));
+        setRows(arr);
+        setIsLoading(false);
+        if (data.length > 0) {
+          const columns: GridColDef[] = [
+            {
+              field: "actions",
+              headerClassName: "MuiDataGrid-colCell",
+              headerName: t("text.Action"),
+              width: 150,
 
-                renderCell: (params) => {
-                  console.log("Is Edit Allowed:", permissionData?.isEdit);
-                  return [
-                    <Stack
-                      spacing={1}
-                      direction="row"
-                      sx={{ alignItems: "center", marginTop: "5px" }}
-                    >
-                      {/*  {permissionData?.isEdit ? ( */}
+              renderCell: (params) => {
+                console.log("Is Edit Allowed:", permissionData?.isEdit);
+                return [
+                  <Stack
+                    spacing={1}
+                    direction="row"
+                    sx={{ alignItems: "center", marginTop: "5px" }}
+                  >
+                    {permissionData?.isEdit ? (
                       <EditIcon
                         style={{
                           fontSize: "20px",
@@ -157,10 +157,10 @@ export default function FileCategory() {
                         className="cursor-pointer"
                         onClick={() => routeChangeEdit(params.row)}
                       />
-                      {/*  ) : ( */}
-                      {/*   "" */}
-                      {/* )} */}
-                      {/*  {permissionData?.isDel ? ( */}
+                    ) : (
+                      ""
+                    )}
+                    {permissionData?.isDel ? (
                       <DeleteIcon
                         style={{
                           fontSize: "20px",
@@ -171,37 +171,37 @@ export default function FileCategory() {
                           handledeleteClick(params.row.id);
                         }}
                       />
-                      {/*  ) : ( */}
-                      {/*    "" */}
-                      {/*  )} */}
-                    </Stack>,
-                  ];
-                },
+                    ) : (
+                      ""
+                    )}
+                  </Stack>,
+                ];
               },
+            },
 
-              {
-                field: "serialNo",
-                headerName: t("text.SrNo"),
-                flex: 1,
-                headerClassName: "MuiDataGrid-colCell",
-              },
-              {
-                field: "fileCatDesc",
-                headerName: t("text.FileCatDescription"),
-                flex: 1,
-                headerClassName: "MuiDataGrid-colCell",
-              },
-             
-            ];
-            setColumns(columns as any);
-          }
-        });
+            {
+              field: "serialNo",
+              headerName: t("text.SrNo"),
+              flex: 1,
+              headerClassName: "MuiDataGrid-colCell",
+            },
+            {
+              field: "fileCatDesc",
+              headerName: t("text.FileCatDescription"),
+              flex: 1,
+              headerClassName: "MuiDataGrid-colCell",
+            },
+          ];
+          setColumns(columns as any);
+        }
+      });
       // setIsLoading(false);
     } catch (error) {
       console.error("Error fetching data:", error);
       // setIsLoading(false);
     }
   };
+
   const validationSchema = Yup.object({
     fileCatDesc: Yup.string().test(
       "required",
@@ -211,18 +211,13 @@ export default function FileCategory() {
       }
     ),
   });
+
   const [toaster, setToaster] = useState(false);
+
   const formik = useFormik({
     initialValues: {
-
-      "fileCatid": -1,
-      "fileCatDesc": ""
-
-     
-
-
-
-
+      fileCatid: -1,
+      fileCatDesc: "",
     },
     validationSchema: validationSchema,
     onSubmit: async (values) => {
@@ -237,22 +232,27 @@ export default function FileCategory() {
         toast.success(response.data.mesg);
         formik.resetForm();
         getList();
-        setEditId("-1");
+        setEditId(-1);
       } else {
         setToaster(true);
         toast.error(response.data.mesg);
       }
-
     },
   });
 
   const requiredFields = ["fileCatDesc"];
 
-
   const routeChangeEdit = (row: any) => {
     formik.setFieldValue("fileCatDesc", row.fileCatDesc);
-   
     setEditId(row.id);
+  };
+
+  const handleSubmitWrapper = async () => {
+    await formik.handleSubmit();
+  };
+
+  const handleConversionChange = (params: any, text: string) => {
+    formik.setFieldValue(params, text);
   };
 
   return (
@@ -263,7 +263,7 @@ export default function FileCategory() {
             width: "100%",
             height: "50%",
             backgroundColor: "#E9FDEE",
-            border: ".5px solid #FF7722 ",
+            border: ".5px solid #2B4593 ",
             marginTop: "5px",
           }}
         >
@@ -271,64 +271,52 @@ export default function FileCategory() {
             sx={{
               width: "100%",
               overflow: "hidden",
-              "& .MuiDataGrid-colCell": {
-                backgroundColor: "#2B4593",
-                color: "#fff",
-                fontSize: 18,
-                fontWeight: 800,
-              },
             }}
             style={{ padding: "10px" }}
           >
             <ConfirmDialog />
-            <Typography
-              gutterBottom
-              variant="h5"
-              component="div"
-              sx={{ padding: "20px" }}
-              align="left"
-            >
-              {t("text.FileCategory")}
-            </Typography>
+            <Grid item xs={12} container spacing={2}>
+              <Grid item lg={10} md={10} xs={12}>
+                <Typography
+                  gutterBottom
+                  variant="h5"
+                  component="div"
+                  sx={{ padding: "20px" }}
+                  align="left"
+                >
+                  {t("text.FileCategory")}
+                </Typography>
+              </Grid>
+
+              <Grid item lg={2} md={2} xs={12} marginTop={2}>
+                <select
+                  className="language-dropdown"
+                  value={lang}
+                  onChange={(e) => setLang(e.target.value as Language)}
+                >
+                  {Languages.map((l) => (
+                    <option key={l.value} value={l.value}>
+                      {l.label}
+                    </option>
+                  ))}
+                </select>
+              </Grid>
+            </Grid>
+
             <Divider />
 
             <Box height={10} />
-            {/* <Stack direction="row" spacing={2} classes="my-2 mb-2"> */}
-            {/* <Grid
-                                // style={{
-                                //     display: "flex",
-                                //     flexDirection: "row",
-                                //     justifyContent: "space-around",
-                                //     alignItems: "flex-start",
-                                // }}
-                            > */}
             <form onSubmit={formik.handleSubmit}>
               <Grid item xs={12} container spacing={2}>
-                <Grid item xs={4}>
-                  <TextField
-                    label={
-                      <span>
-                        {t("text.EnterFileCategory")} {" "}
-                        {requiredFields.includes("fileCatDesc") && (
-                          <span
-                            style={{
-                              color: formik.values.fileCatDesc ? "green" : "red",
-                            }}
-                          >
-                            *
-                          </span>
-                        )}
-                      </span>
-                    }
+                <Grid item xs={10}>
+                  <TranslateTextField
+                    label={t("text.EnterFileCategory")}
                     value={formik.values.fileCatDesc}
-                    name="fileCatDesc"
-                    id="fileCatDesc"
-                    placeholder={t("text.EnterFileCategory")}
-                    size="small"
-                    fullWidth
-                    style={{ backgroundColor: "white" }}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
+                    onChangeText={(text: string) =>
+                      handleConversionChange("fileCatDesc", text)
+                    }
+                    required={true}
+                    lang={lang}
                   />
                   {formik.touched.fileCatDesc && formik.errors.fileCatDesc ? (
                     <div style={{ color: "red", margin: "5px" }}>
@@ -337,16 +325,22 @@ export default function FileCategory() {
                   ) : null}
                 </Grid>
 
+                <Grid item xs={2} sx={{ m: -1 }}>
+                  {editId === -1 && permissionData?.isAdd && (
+                    <ButtonWithLoader
+                      buttonText={t("text.save")}
+                      onClickHandler={handleSubmitWrapper}
+                      fullWidth={true}
+                    />
+                  )}
 
-               
-                <Grid item xs={2}>
-                  {/* {permissionData?.isAdd == true ? ( */}
-                  <Button type="submit" variant="contained" size="large">
-                    {editId == -1 ? t("text.save") : t("text.update")}
-                  </Button>
-                  {/* ) : ( */}
-                  {/*    "" */}
-                  {/* )} */}
+                  {editId !== -1 && (
+                    <ButtonWithLoader
+                      buttonText={t("text.update")}
+                      onClickHandler={handleSubmitWrapper}
+                      fullWidth={true}
+                    />
+                  )}
                 </Grid>
               </Grid>
             </form>

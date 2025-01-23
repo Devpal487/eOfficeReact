@@ -12,8 +12,6 @@ import {
 import EditIcon from "@mui/icons-material/Edit";
 import Card from "@mui/material/Card";
 import Grid from "@mui/material/Grid";
-import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
 import api from "../../../utils/Url";
 import { useLocation } from "react-router-dom";
@@ -24,11 +22,16 @@ import { useTranslation } from "react-i18next";
 import { DataGrid, GridColDef, GridToolbar } from "@mui/x-data-grid";
 import { toast } from "react-toastify";
 import ToastApp from "../../../ToastApp";
-import { usePermissionData } from "../../../usePermissionData";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { getISTDate } from "../../../utils/Constant";
 import CustomDataGrid from "../../../utils/CustomDatagrid";
 import CustomLabel from "../../../CustomLable";
+import ButtonWithLoader from "../../../utils/ButtonWithLoader";
+import Languages from "../../../Languages";
+import { Language } from "react-transliterate";
+import "react-transliterate/dist/index.css";
+import TranslateTextField from "../../../TranslateTextField";
+
 
 interface MenuPermission {
   isAdd: boolean;
@@ -52,6 +55,7 @@ export default function CountryMaster() {
     isPrint: false,
     isDel: false,
   });
+  const [lang, setLang] = useState<Language>("en");
 
   useEffect(() => {
     const dataString = localStorage.getItem("userdata");
@@ -70,13 +74,12 @@ export default function CountryMaster() {
             if (pathrow) {
 
               setPermissionData(pathrow);
-              // getList();
+              getList();
             }
           }
         }
       }
     }
-    getList();
   }, [isLoading]);
 
   let delete_id = "";
@@ -96,13 +99,13 @@ export default function CountryMaster() {
         getList();
       });
   };
+
   const reject = () => {
     // toast.warn({summary: 'Rejected', detail: 'You have rejected', life: 3000 });
     toast.warn("Rejected: You have rejected", { autoClose: 3000 });
   };
 
   const handledeleteClick = (del_id: any) => {
-    // console.log(del_id + " del_id ");
     delete_id = del_id;
     confirmDialog({
       message: "Do you want to delete this record ?",
@@ -147,7 +150,7 @@ export default function CountryMaster() {
                       direction="row"
                       sx={{ alignItems: "center", marginTop: "5px" }}
                     >
-                      {/*  {permissionData?.isEdit ? ( */}
+                      {permissionData?.isEdit ? ( 
                       <EditIcon
                         style={{
                           fontSize: "20px",
@@ -157,10 +160,10 @@ export default function CountryMaster() {
                         className="cursor-pointer"
                         onClick={() => routeChangeEdit(params.row)}
                       />
-                      {/*  ) : ( */}
-                      {/*   "" */}
-                      {/* )} */}
-                      {/*  {permissionData?.isDel ? ( */}
+                      ) : ( 
+                       "" 
+                     )} 
+                      {permissionData?.isDel ? ( 
                       <DeleteIcon
                         style={{
                           fontSize: "20px",
@@ -171,9 +174,9 @@ export default function CountryMaster() {
                           handledeleteClick(params.row.id);
                         }}
                       />
-                      {/*  ) : ( */}
-                      {/*    "" */}
-                      {/*  )} */}
+                      ) : ( 
+                        "" 
+                      )} 
                     </Stack>,
                   ];
                 },
@@ -207,6 +210,7 @@ export default function CountryMaster() {
       // setIsLoading(false);
     }
   };
+
   const validationSchema = Yup.object({
     countryName: Yup.string().test(
       "required",
@@ -216,19 +220,18 @@ export default function CountryMaster() {
       }
     ),
   });
+
   const [toaster, setToaster] = useState(false);
+
   const formik = useFormik({
     initialValues: {
-
       countryId: -1,
       countryName: "",
       countryCode: "",
-     
       createdBy: "",
       updatedBy: "",
-      createdOn:  new Date().toISOString(),
-      updatedOn:new Date().toISOString(),
-     
+      createdOn: defaultValuestime,
+      updatedOn: defaultValuestime
     },
     validationSchema: validationSchema,
     onSubmit: async (values) => {
@@ -243,7 +246,7 @@ export default function CountryMaster() {
         toast.success(response.data.mesg);
         formik.resetForm();
         getList();
-        setEditId("-1");
+        setEditId(-1);
       } else {
         setToaster(true);
         toast.error(response.data.mesg);
@@ -254,12 +257,20 @@ export default function CountryMaster() {
 
   const requiredFields = ["countryName"];
 
-
   const routeChangeEdit = (row: any) => {
     formik.setFieldValue("countryName", row.countryName);
     formik.setFieldValue("countryCode", row.countryCode);
     setEditId(row.id);
   };
+
+  const handleSubmitWrapper = async () => {
+    await formik.handleSubmit();
+  };
+
+  const handleConversionChange = (params: any, text: string) => {
+    formik.setFieldValue(params, text);
+  };
+
 
   return (
     <>
@@ -269,65 +280,72 @@ export default function CountryMaster() {
             width: "100%",
             height: "50%",
             backgroundColor: "#E9FDEE",
-            border: ".5px solid #FF7722 ",
+            border: ".5px solid #2B4593 ",
             marginTop: "5px",
           }}
         >
           <Paper
-            sx={{
-              width: "100%",
-              overflow: "hidden",
-              "& .MuiDataGrid-colCell": {
-                backgroundColor: "#2B4593",
-                color: "#fff",
-                fontSize: 18,
-                fontWeight: 800,
-              },
-            }}
+            // sx={{
+            //   width: "100%",
+            //   overflow: "hidden",
+            //   "& .MuiDataGrid-colCell": {
+            //     backgroundColor: "#2B4593",
+            //     color: "#fff",
+            //     fontSize: 18,
+            //     fontWeight: 800,
+            //   },
+            // }}
             style={{ padding: "10px" }}
           >
             <ConfirmDialog />
+
+            <Grid item xs={12} container spacing={2}>
+            <Grid item lg={10} md={10} xs={12}>
             <Typography
-              gutterBottom
-              variant="h5"
-              component="div"
-              sx={{ padding: "20px" }}
-              align="left"
-            >
-              {t("text.CountryMaster")}
-            </Typography>
+            gutterBottom
+            variant="h5"
+            component="div"
+            sx={{ padding: "20px" }}
+            align="left"
+          >
+            {t("text.CountryMaster")}
+          </Typography>
+            </Grid>
+
+            <Grid item lg={2} md={2} xs={12} marginTop={2}>
+              <select
+                className="language-dropdown"
+                value={lang}
+                onChange={(e) => setLang(e.target.value as Language)}
+              >
+                {Languages.map((l) => (
+                  <option key={l.value} value={l.value}>
+                    {l.label}
+                  </option>
+                ))}
+              </select>
+            </Grid>
+          </Grid>
+           
             <Divider />
 
             <Box height={10} />
-            {/* <Stack direction="row" spacing={2} classes="my-2 mb-2"> */}
-            {/* <Grid
-                                // style={{
-                                //     display: "flex",
-                                //     flexDirection: "row",
-                                //     justifyContent: "space-around",
-                                //     alignItems: "flex-start",
-                                // }}
-                            > */}
             <form onSubmit={formik.handleSubmit}>
               <Grid item xs={12} container spacing={2}>
-                <Grid item xs={4}>
-                  <TextField
-                    label={<CustomLabel text={t("text.EnterCountryName")} required={requiredFields.includes('countryName')} />}
-                    value={formik.values.countryName}
-                    placeholder={t("text.EnterCountryName")}
-                    size="small"
-                    fullWidth
-                    name="countryName"
-                    id="countryName"
-                    style={{ backgroundColor: "white" }}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                  />
+                <Grid item xs={5}>
+                <TranslateTextField
+                  label={t("text.EnterCountryName")}
+                  value={formik.values.countryName}
+                  onChangeText={(text: string) => handleConversionChange('countryName', text)}
+                  required={true}
+                  lang={lang}
+                />
+                  
                   {formik.touched.countryName && formik.errors.countryName ? (
                     <div style={{ color: "red", margin: "5px" }}>{formik.errors.countryName}</div>
                   ) : null}
                 </Grid>
-                <Grid item xs={4}>
+                <Grid item xs={5}>
                 <TextField
                   label={<CustomLabel text={t("text.EnterCountryCode")}   />}
                   value={formik.values.countryCode}
@@ -341,14 +359,22 @@ export default function CountryMaster() {
                   onBlur={formik.handleBlur}
                 />
                 </Grid>
-                <Grid item xs={2}>
-                  {/* {permissionData?.isAdd == true ? ( */}
-                  <Button type="submit" variant="contained" size="large">
-                    {editId == -1 ? t("text.save") : t("text.update")}
-                  </Button>
-                  {/* ) : ( */}
-                  {/*    "" */}
-                  {/* )} */}
+                <Grid item xs={2}  sx={{m:-1}}>
+                {editId === -1 && permissionData?.isAdd && (
+  <ButtonWithLoader
+    buttonText={t("text.save")}
+    onClickHandler={handleSubmitWrapper}
+    fullWidth={true}
+  />
+)}
+
+{editId !== -1 && (
+  <ButtonWithLoader
+    buttonText={t("text.update")}
+    onClickHandler={handleSubmitWrapper}
+    fullWidth={true}
+  />
+)}
                 </Grid>
               </Grid>
             </form>

@@ -26,7 +26,7 @@ const ButtonWithLoader: React.FC<ButtonWithLoaderProps> = ({
   loadingColor = "green",
   fullWidth = false
 }) => {
-  console.log("Checkfullwidth", fullWidth)
+  // console.log("Checkfullwidth", fullWidth)
 
 
 
@@ -79,6 +79,7 @@ const ButtonWithLoader: React.FC<ButtonWithLoaderProps> = ({
           disabled={loading}
           onClick={handleClick}
           fullWidth={fullWidth}
+          style={{backgroundColor:`var(--grid-headerBackground)`,color: `var(--grid-headerColor)`}}
         >
           {buttonText}
         </Button>

@@ -3,33 +3,35 @@ import Paper from "@mui/material/Paper";
 import { useEffect, useState } from "react";
 import {
   Box,
-  Button,
   Divider,
   Stack,
   TextField,
   Typography,
   Grid,
   Card,
-  CircularProgress
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
 import Switch from "@mui/material/Switch";
 import Chip from "@mui/material/Chip";
 import { useTranslation } from "react-i18next";
-import { DataGrid, GridColDef, GridToolbar } from "@mui/x-data-grid";
+import { GridColDef } from "@mui/x-data-grid";
 import { toast } from "react-toastify";
 import ToastApp from "../../../ToastApp";
 import api from "../../../utils/Url";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import Autocomplete from "@mui/material/Autocomplete";
-import { getId, getISTDate } from "../../../utils/Constant";
 import CustomLabel from "../../../CustomLable";
 import ButtonWithLoader from "../../../utils/ButtonWithLoader";
 import CustomDataGrid from "../../../utils/CustomDatagrid";
+import Languages from "../../../Languages";
+import { Language } from "react-transliterate";
+import "react-transliterate/dist/index.css";
+import {getISTDate, getId} from '../../../utils/Constant' 
+import TranslateTextField from "../../../TranslateTextField";
 
 interface MenuPermission {
   isAdd: boolean;
@@ -53,7 +55,7 @@ export default function WardMaster() {
     isPrint: false,
     isDel: false,
   });
-
+  const [lang, setLang] = useState<Language>("en");
   const location = useLocation();
 
   useEffect(() => {
@@ -77,11 +79,9 @@ export default function WardMaster() {
         }
       }
     }
+    getVehicleZone();
   }, [isLoading]);
 
-  useEffect(() => {
-    getVehicleZone();
-  }, []);
 
 
   const handleSwitchChange = (
@@ -115,8 +115,6 @@ export default function WardMaster() {
       });
   };
 
-  // Delete Action Option
-
   let delete_id = "";
 
   const accept = () => {
@@ -124,7 +122,7 @@ export default function WardMaster() {
       wardID: delete_id,
       user_ID: UserId,
     };
-    console.log("collectData " + JSON.stringify(collectData));
+
     api
       .delete(`Ward/DeleteWardmaster`, { data: collectData })
       .then((response) => {
@@ -141,7 +139,6 @@ export default function WardMaster() {
   };
 
   const handledeleteClick = (del_id: any) => {
-    // console.log(del_id + " del_id ");
     delete_id = del_id;
     confirmDialog({
       message: "Do you want to delete this record ?",
@@ -154,24 +151,29 @@ export default function WardMaster() {
   };
 
   const getList = () => {
-    const collectData = {
+    let collectData;
+    if(UserId == 1){
+    collectData = {
       "wardID": -1,
       "zoneID": -1,
-      "user_ID": UserId,
-      // "isActive": true,
-    };
+      "user_ID": "-1",
+    };}else{
+      collectData = {
+        "wardID": -1,
+        "zoneID": -1,
+        "user_ID": UserId,
+      };
+    }
     try {
       api
         .post(`Ward/GetWardmaster`, collectData)
         .then((res) => {
-          console.log("result" + JSON.stringify(res.data.data));
           const data = res.data.data;
           const arr = data.map((item: any, index: any) => ({
             ...item,
             serialNo: index + 1,
             id: item.wardID,
           }));
-          // console.log(arr);
           setRows(arr);
           setIsLoading(false);
 
@@ -243,6 +245,13 @@ export default function WardMaster() {
                 flex: 1,
                 headerClassName: "MuiDataGrid-colCell",
               },
+
+              {
+                field: "zoneName",
+                headerName: t("text.zoneName"),
+                flex: 1,
+                headerClassName: "MuiDataGrid-colCell",
+              },
               {
                 field: "wardName",
                 headerName: t("text.wardName"),
@@ -255,12 +264,7 @@ export default function WardMaster() {
                 flex: 1,
                 headerClassName: "MuiDataGrid-colCell",
               },
-              {
-                field: "zoneName",
-                headerName: t("text.zoneName"),
-                flex: 1,
-                headerClassName: "MuiDataGrid-colCell",
-              },
+             
               {
                 field: "isActive",
                 headerName: t("text.Status"),
@@ -292,7 +296,6 @@ export default function WardMaster() {
         });
     } catch (error) {
       console.error("Error fetching data:", error);
-      // setIsLoading(false);
     }
   };
 
@@ -307,14 +310,13 @@ export default function WardMaster() {
   const getVehicleZone = () => {
     const collectData = {
       zoneID: -1,
-      user_ID: UserId,
+      user_ID:(UserId),
       isActive: true
     };
     api
       .post(`Zone/GetZonemaster`, collectData)
       .then((res) => {
         const arr: any = [];
-        console.log("result" + JSON.stringify(res.data.data));
         for (let index = 0; index < res.data.data.length; index++) {
           arr.push({
             label: res.data.data[index]["zoneName"],
@@ -324,8 +326,6 @@ export default function WardMaster() {
         setZoneOption(arr);
       });
   };
-
- 
 
   const validationSchema = Yup.object({
     zoneID: Yup.string().test(
@@ -343,18 +343,16 @@ export default function WardMaster() {
     ),
   });
 
-
   const formik = useFormik({
     initialValues: {
-
       "wardID": -1,
       "wardName": "",
       "wardCode": "",
-      "zoneID": 0,
+      "zoneID": "",
       "isActive": true,
       "sortOrder": 0,
-      "createdDt": new Date().toISOString().slice(0, 10),
-      "modifyDt": new Date().toISOString().slice(0, 10),
+      "createdDt": defaultValuestime,
+      "modifyDt": defaultValuestime,
       "user_ID": UserId,
       "zoneName": ""
     },
@@ -366,30 +364,26 @@ export default function WardMaster() {
         `Ward/AddUpdateWardmaster`,
         values
       );
-
       if (response.data.isSuccess == true) {
-        // setToaster(false);
         toast.success(response.data.mesg);
         formik.resetForm();
         setEditId(-1);
         getList();
-
-        // navigate("/master/WardMaster");
       } else {
-        // setToaster(true);
         toast.error(response.data.mesg);
       }
     }
   });
 
-
   const requiredFields = ["zoneID", "wardName"];
-
 
   const handleSubmitWrapper = async () => {
     await formik.handleSubmit();
   };
 
+  const handleConversionChange = (params: any, text: string) => {
+    formik.setFieldValue(params, text);
+  };
 
   return (
     <>
@@ -398,7 +392,7 @@ export default function WardMaster() {
         style={{
           width: "100%",
           backgroundColor: "#E9FDEE",
-          border: ".5px solid #FF7722 ",
+          border: ".5px solid #2B4593 ",
           marginTop: "3vh"
         }}
       >
@@ -406,57 +400,47 @@ export default function WardMaster() {
           sx={{
             width: "100%",
             overflow: "hidden",
-            "& .MuiDataGrid-colCell": {
-              backgroundColor: "#2B4593",
-              color: "#fff",
-              fontSize: 17,
-              fontWeight: 900
-            },
           }}
           style={{ padding: "10px", }}
         >
           <ConfirmDialog />
-          <Typography
+
+         <Grid item xs={12} container spacing={2}>
+            <Grid item lg={10} md={10} xs={12}>
+            <Typography
             gutterBottom
             variant="h5"
             component="div"
             sx={{ padding: "20px" }}
             align="left"
           >
-
             {t("text.wardMaster")}
           </Typography>
+            </Grid>
+
+            <Grid item lg={2} md={2} xs={12} marginTop={2}>
+              <select
+                className="language-dropdown"
+                value={lang}
+                onChange={(e) => setLang(e.target.value as Language)}
+              >
+                {Languages.map((l) => (
+                  <option key={l.value} value={l.value}>
+                    {l.label}
+                  </option>
+                ))}
+              </select>
+            </Grid>
+          </Grid>
+
+          
           <Divider />
 
-          {/* Search and ADD buttone Start */}
           <Box height={10} />
-          <Stack direction="row" spacing={2} classes="my-2 mb-2">
-            {/* {permissionData?.isAdd == true ? (
-                <Button
-                  onClick={routeChangeAdd}
-                  variant="contained"
-                  endIcon={<AddCircleIcon />} 
-                  size="large"
-                >
-                  {t("text.add")}
-                </Button>
-              ) : (
-                ""
-              )} */}
-            {/* {permissionData?.isPrint == true ? (
-                <Button variant="contained" 
-                endIcon={<PrintIcon />}
-                size="large">
-                  {t("text.print")}
-                </Button>
-              ) : (
-                ""
-              )} */}
-          </Stack>
+          
 
           <form onSubmit={formik.handleSubmit}>
             <Grid item xs={12} container spacing={3}>
-
 
               <Grid xs={3} sm={3} item>
                 <Autocomplete
@@ -492,18 +476,13 @@ export default function WardMaster() {
               </Grid>
 
               <Grid xs={3.5} sm={3.5} item>
-                <TextField
-                  type="text"
-                  name="wardName"
-                  id="wardName"
-                  label={<CustomLabel text={t("text.enterWardName")} required={requiredFields.includes('wardName')} />}
+                
+              <TranslateTextField
+                  label={t("text.enterWardName")}
                   value={formik.values.wardName}
-                  placeholder={t("text.enterWardName")}
-                  size="small"
-                  fullWidth
-                  style={{ backgroundColor: "white", borderColor: formik.touched.wardName && formik.errors.wardName ? 'red' : 'initial', }}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
+                  onChangeText={(text: string) => handleConversionChange('wardName', text)}
+                  required={true}
+                  lang={lang}
                 />
                 {formik.touched.wardName && formik.errors.wardName ? (
                   <div style={{ color: "red", margin: "5px" }}>
@@ -533,10 +512,26 @@ export default function WardMaster() {
               <Grid item xs={2} sx={{ m: -1 }}>
                 {/*  {permissionData?.isAdd == true ? ( */}
 
-                <ButtonWithLoader buttonText={editId == -1 ? t("text.save") : t("text.update")} onClickHandler={handleSubmitWrapper} fullWidth={true}  />
+                {/* <ButtonWithLoader buttonText={editId == -1 ? t("text.save") : t("text.update")} onClickHandler={handleSubmitWrapper} fullWidth={true}  /> */}
                 {/* ) : ( */}
                 {/*   "" */}
                 {/* )} */}
+
+                {editId === -1 && permissionData?.isAdd && (
+  <ButtonWithLoader
+    buttonText={t("text.save")}
+    onClickHandler={handleSubmitWrapper}
+    fullWidth={true}
+  />
+)}
+
+{editId !== -1 && (
+  <ButtonWithLoader
+    buttonText={t("text.update")}
+    onClickHandler={handleSubmitWrapper}
+    fullWidth={true}
+  />
+)}
               </Grid>
             </Grid>
           </form>

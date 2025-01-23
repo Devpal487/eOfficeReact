@@ -26,6 +26,12 @@ import api from "../../../utils/Url";
 import { toast } from "react-toastify";
 import nopdf from '../../../assets/images/imagepreview.jpg';
 import CustomLabel from "../../../CustomLable";
+import * as Yup from "yup";
+import { Language, ReactTransliterate } from "react-transliterate";
+import "react-transliterate/dist/index.css";
+import TranslateTextField from "../../../TranslateTextField";
+import Languages from "../../../Languages";
+
 
 
 const style = {
@@ -52,8 +58,10 @@ const CommitteeAdd = (props: Props) => {
 
   const [panOpens, setPanOpen] = React.useState(false);
   const [modalImg, setModalImg] = useState("");
+  const [lang, setLang] = useState<Language>("en");
 
   useEffect(()=>{
+    formik.setFieldValue("type", "C")
     getIP();
   },[]);
   const getIP =()=>{
@@ -89,8 +97,10 @@ const CommitteeAdd = (props: Props) => {
   const otherDocChangeHandler = async (event: any, params: any) => {
     if (event.target.files && event.target.files[0]) {
       const file = event.target.files[0];
-      const fileNameParts = file.name.split(".");
-      const fileExtension = fileNameParts[fileNameParts.length - 1];
+      if (!file.type.startsWith('image/')) {
+        alert("Please select a valid image file.");
+        return;
+    }
       const base64 = await ConvertBase64(file);
       formik.setFieldValue(params, base64);
       console.log(base64);
@@ -102,22 +112,23 @@ const CommitteeAdd = (props: Props) => {
 
   const [toaster, setToaster] = useState(false);
 
-  // const validationSchema = Yup.object({
-  //   chackNo: Yup.string().test(
-  //     "required",
-  //     t("text.reqChackNo"),
-  //     function (value: any) {
-  //       return value && value.trim() !== "";
-  //     }
-  //   ),
-  //   fileName: Yup.string().test(
-  //     "required",
-  //     t("text.reqFileName"),
-  //     function (value: any) {
-  //       return value && value.trim() !== "";
-  //     }
-  //   ),
-  // });
+  const validationSchema = Yup.object({
+   
+    committeeName: Yup.string().test(
+      "required",
+      t("text.reqcommitteeName"),
+      function (value: any) {
+        return value && value.trim() !== "";
+      }
+    ),
+    foundedDate: Yup.string().test(
+      "required",
+      t("text.reqfoundedDates"),
+      function (value: any) {
+        return value && value.trim() !== "";
+      }
+    ),
+  });
 
   const formik = useFormik({
     initialValues: {
@@ -132,7 +143,7 @@ const CommitteeAdd = (props: Props) => {
       "committeeDesc": "",
       "type": ""
     },
-    // validationSchema: validationSchema,
+    validationSchema: validationSchema,
 
     onSubmit: async (values) => {
 
@@ -146,17 +157,21 @@ const CommitteeAdd = (props: Props) => {
         );
         if (response.data.isSuccess) {
           toast.success(response.data.mesg);
-          navigate("/Committee/CommitteeMaster");
+          navigate("/E-Office/CommitteeMaster");
         } else {
           setToaster(true);
           toast.error(response.data.mesg);
         }
       } catch (error) {
         toast.error("An error occurred. Please try again.");
-      }}
+     }
+    }
   });
 
-  const requiredFields = ["fileName", "chackNo"];
+  const requiredFields = ["committeeName", "foundedDate"];
+  const handleConversionChange = (params: any, text: string) => {
+    formik.setFieldValue(params, text);
+  };
 
   const back = useNavigate();
 
@@ -167,35 +182,47 @@ const CommitteeAdd = (props: Props) => {
           padding: "-5px 5px",
           backgroundColor: "#ffffff",
           borderRadius: "5px",
-          border: ".5px solid #FF7722",
+          border: ".5px solid #00009c",
           marginTop: "3vh",
         }}
       >
         <CardContent>
-          <Typography
-            variant="h5"
-            textAlign="center"
-            style={{ fontSize: "18px", fontWeight: 500 }}
-          >
-            {t("text.AddCommittee")}
-          </Typography>
-
-          <Grid item sm={4} xs={12}>
-            <Typography style={{ marginTop: "-75px" }}>
+        <Grid item xs={12} container spacing={2} >
+            <Grid item lg={2} md={2} xs={2} marginTop={2}>
               <Button
                 type="submit"
                 onClick={() => back(-1)}
                 variant="contained"
-                style={{
-                  marginBottom: 15,
-                  marginTop: "45px",
-                  backgroundColor: "blue",
-                  width: 20,
-                }}
+                style={{backgroundColor:`var(--grid-headerBackground)`,color: `var(--grid-headerColor)`}}
               >
                 <ArrowBackSharpIcon />
               </Button>
-            </Typography>
+            </Grid>
+            <Grid item lg={7} md={7} xs={7} alignItems="center" justifyContent="center">
+              <Typography
+                gutterBottom
+                variant="h5"
+                component="div"
+                sx={{ padding: "20px" }}
+                align="center"
+              >
+                {t("text.AddCommittee")}
+              </Typography>
+            </Grid>
+
+            <Grid item lg={3} md={3} xs={3} marginTop={3}>
+              <select
+                className="language-dropdown"
+                value={lang}
+                onChange={(e) => setLang(e.target.value as Language)}
+              >
+                {Languages.map((l) => (
+                  <option key={l.value} value={l.value}>
+                    {l.label}
+                  </option>
+                ))}
+              </select>
+            </Grid>
           </Grid>
           <Divider />
           <br />
@@ -245,29 +272,25 @@ const CommitteeAdd = (props: Props) => {
               </Grid>
 
               <Grid item sm={4} md={4} xs={12}>
-                <TextField
-                  id="committeeName"
-                  name="committeeName"
-                  label={<CustomLabel text={t("text.committeeName")} />}
+              <TranslateTextField
+                  label={t("text.committeeName")}
                   value={formik.values.committeeName}
-                  placeholder={t("text.committeeName")}
-                  size="small"
-                  fullWidth
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
+                  onChangeText={(text: string) =>
+                    handleConversionChange("committeeName", text)
+                  }
+                  required={true}
+                  lang={lang}
                 />
-                {/* {formik.touched.fileName && formik.errors.fileName ? (
-                    <div style={{ color: "red", margin: "5px" }}>
-                      {formik.errors.fileName}
-                    </div>
-                  ) : null} */}
+                  {formik.touched.committeeName && formik.errors.committeeName ? (
+                    <div style={{ color: "red", margin: "5px" }}>{formik.errors.committeeName}</div>
+                  ) : null}
               </Grid>
 
               <Grid item sm={4} md={4} xs={12}>
                 <TextField
                   id="foundedDate"
                   name="foundedDate"
-                  label={<CustomLabel text={t("text.foundedDate")} />}
+                  label={<CustomLabel text={t("text.foundedDate")} required={requiredFields.includes('foundedDate')} />}
                   value={formik.values.foundedDate}
                   placeholder={t("text.foundedDate")}
                   size="small"
@@ -278,6 +301,11 @@ const CommitteeAdd = (props: Props) => {
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                 />
+                {formik.touched.foundedDate && formik.errors.foundedDate ? (
+                    <div style={{ color: "red", margin: "5px" }}>
+                      {formik.errors.foundedDate}
+                    </div>
+                  ) : null}
               </Grid>
 
 
@@ -291,7 +319,7 @@ const CommitteeAdd = (props: Props) => {
                 >
                   <TextField
                     type="file"
-                    //   inputProps={{ accept: "application/pdf" }}
+                    inputProps={{ accept: "image/*" }}
                     InputLabelProps={{ shrink: true }}
                     label={<CustomLabel text={t("text.AttachedFile")} />}
                     size="small"
@@ -313,7 +341,7 @@ const CommitteeAdd = (props: Props) => {
                   >
                     {formik.values.committeeLogo == "" ? (
                       <img
-                        //   src={nopdf}
+                          src={nopdf}
                         style={{
                           width: 150,
                           height: 100,
@@ -322,7 +350,7 @@ const CommitteeAdd = (props: Props) => {
                         }}
                       />
                     ) : (
-                      <embed
+                      <img
                         src={formik.values.committeeLogo}
                         style={{
                           width: 150,
@@ -361,7 +389,6 @@ const CommitteeAdd = (props: Props) => {
                       <div style={{ width: "100%", height: "100%" }}>
                         <img
                           src={modalImg}
-                          // type="application/pdf"
                           width="100%"
                           height="100%"
                           style={{ borderRadius: 10 }}
@@ -372,22 +399,14 @@ const CommitteeAdd = (props: Props) => {
                 </Modal>
               </Grid>
               <Grid xs={12} sm={12} item>
-                <TextareaAutosize
-                  aria-label="empty textarea"
-                  placeholder={t("text.EnterDescriptionofcommittee")}
-                  name="committeeDesc"
-                  id="committeeDesc"
-                  style={{
-                    width: "100%",
-                    fontSize: " 1.075rem",
-                    fontWeight: "400",
-                    // lineHeight: "5",
-                    padding: "8px 12px",
-                    borderRadius: "4px",
-                  }}
+              <TranslateTextField
+                  label={t("text.EnterDescriptionofcommittee")}
                   value={formik.values.committeeDesc}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
+                  onChangeText={(text: string) =>
+                    handleConversionChange("committeeDesc", text)
+                  }
+                  required={true}
+                  lang={lang}
                 />
               </Grid>
               <Grid
@@ -400,11 +419,7 @@ const CommitteeAdd = (props: Props) => {
                   <Button
                     type="submit"
                     fullWidth
-                    style={{
-                      backgroundColor: "#059669",
-                      color: "white",
-                      marginTop: "10px",
-                    }}
+                    style={{backgroundColor:`var(--grid-headerBackground)`,color: `var(--grid-headerColor)`,marginTop:'10px'}}
                   >
                     {t("text.save")}
                   </Button>

@@ -54,35 +54,35 @@ export default function CommitteeMaster() {
 
     useEffect(() => {
         const dataString = localStorage.getItem("userdata");
-        // if (dataString) {
-        //     const data = JSON.parse(dataString);
-        //     if (data && data.length > 0) {
-        //         const userPermissionData = data[0]?.userPermission;
-        //         if (userPermissionData && userPermissionData.length > 0) {
-        //             const menudata = userPermissionData[0]?.parentMenu;
-        //             for (let index = 0; index < menudata.length; index++) {
-        //                 const childMenudata = menudata[index]?.childMenu;
-        //                 const pathrow = childMenudata.find(
-        //                     (x: any) => x.path === location.pathname
-        //                 );
-        //                 console.log("data", pathrow);
-        //                 if (pathrow) {
-        //                     setPermissionData(pathrow);
-        //                 }
-        //             }
-        //         }
-        //     }
-        // }
-        fetchZonesData();
-    }, []);
+        if (dataString) {
+            const data = JSON.parse(dataString);
+            if (data && data.length > 0) {
+                const userPermissionData = data[0]?.userPermission;
+                if (userPermissionData && userPermissionData.length > 0) {
+                    const menudata = userPermissionData[0]?.parentMenu;
+                    for (let index = 0; index < menudata.length; index++) {
+                        const childMenudata = menudata[index]?.childMenu;
+                        const pathrow = childMenudata.find(
+                            (x: any) => x.path === location.pathname
+                        );
+                        console.log("data", pathrow);
+                        if (pathrow) {
+                            setPermissionData(pathrow);
+                            fetchZonesData();
+                        }
+                    }
+                }
+            }
+        }
+    }, [isLoading]);
     // }, [isLoading]);
     const routeChangeAdd = () => {
-        let path = `/Committee/CommitteeAdd`;
+        let path = `/E-Office/CommitteeAdd`;
         navigate(path);
     };
 
     const routeChangeEdit = (row: any) => {
-        let path = `/Committee/CommitteeEdit`;
+        let path = `/E-Office/CommitteeEdit`;
         navigate(path, {
             state: row,
         });
@@ -165,7 +165,7 @@ export default function CommitteeMaster() {
                                     direction="row"
                                     sx={{ alignItems: "center", marginTop: "5px" }}
                                 >
-                                    {/* {permissionData?.isEdit ? ( */}
+                                    {permissionData?.isEdit === true && ( 
                                     <EditIcon
                                         style={{
                                             fontSize: "20px",
@@ -175,10 +175,8 @@ export default function CommitteeMaster() {
                                         className="cursor-pointer"
                                         onClick={() => routeChangeEdit(params.row)}
                                     />
-                                    {/* ) : ( */}
-                                    {/*  "" */}
-                                    {/*)} */}
-                                    {/*{permissionData?.isDel ? ( */}
+                                    ) } 
+                                   {permissionData?.isDel === true && ( 
                                     <DeleteIcon
                                         style={{
                                             fontSize: "20px",
@@ -189,7 +187,7 @@ export default function CommitteeMaster() {
                                             handledeleteClick(params.row.id);
                                         }}
                                     />
-
+                                ) } 
 
                                 </Stack>,
                             ];
@@ -202,6 +200,17 @@ export default function CommitteeMaster() {
                         headerClassName: "MuiDataGrid-colCell",
                     },
                     {
+                        field: "type",
+                        headerName: t("text.Type"),
+                        flex: 1,
+                        headerClassName: "MuiDataGrid-colCell",
+                        renderCell: (params) => (
+                            <div>
+                                {params.row.type === "G" ? "Group" : "Committee"}
+                            </div>
+                        )
+                    },
+                    {
                         field: "committeeName",
                         headerName: t("text.committeeNames"),
                         flex: 1,
@@ -209,7 +218,7 @@ export default function CommitteeMaster() {
                     },
                     {
                         field: "foundedDate",
-                        headerName: t("text.FileNo"),
+                        headerName: t("text.foundedDates"),
                         flex: 1,
                         headerClassName: "MuiDataGrid-colCell",
                         renderCell: (params) => {
@@ -244,21 +253,21 @@ export default function CommitteeMaster() {
                     width: "100%",
                     // height: "100%",
                     backgroundColor: "#E9FDEE",
-                    // border: ".5px solid #FF7722 ",
+                    border: ".5px solid #00009c ",
                     marginTop: "3vh"
                 }}
             >
                 <Paper
-                    sx={{
-                        width: "100%",
-                        overflow: "hidden",
-                        "& .MuiDataGrid-colCell": {
-                            backgroundColor: "#2B4593",
-                            color: "#fff",
-                            fontSize: 17,
-                            fontWeight: 900
-                        },
-                    }}
+                    // sx={{
+                    //     width: "100%",
+                    //     overflow: "hidden",
+                    //     "& .MuiDataGrid-colCell": {
+                    //         backgroundColor: "#2B4593",
+                    //         color: "#fff",
+                    //         fontSize: 17,
+                    //         fontWeight: 900
+                    //     },
+                    // }}
                     style={{ padding: "10px", }}
                 >
                     <ConfirmDialog />
@@ -277,28 +286,19 @@ export default function CommitteeMaster() {
                     <Box height={10} />
 
                     <Stack direction="row" spacing={2} classes="my-2 mb-2">
-                        {/*permissionData?.isAdd == true && ( */}
+                        {permissionData?.isAdd === true  && (
                         <Button
                             onClick={routeChangeAdd}
                             variant="contained"
                             endIcon={<AddCircleIcon />}
+                            style={{backgroundColor:`var(--grid-headerBackground)`,color: `var(--grid-headerColor)`}}
                             size="large"
                         >
                             {t("text.Add")}
                         </Button>
-                        {/*)} */}
+                        )}
 
-                        {/*{permissionData?.isPrint == true ? (
-              <Button variant="contained" endIcon={<PrintIcon />} size="large">
-                {t("text.print")}
-              </Button>
-            ) : (
-              ""
-            )} */}
                     </Stack>
-
-
-
 
                     {isLoading ? (
                         <div

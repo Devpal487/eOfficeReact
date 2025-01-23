@@ -75,8 +75,8 @@ export default function EmployeeMaster() {
         }
       }
     }
-  }, []);
-  // }, [isLoading]);
+  }, [isLoading]);
+
   const routeChangeAdd = () => {
     let path = `/Employee/EmployeeAdd`;
     navigate(path);
@@ -229,7 +229,7 @@ export default function EmployeeMaster() {
                   direction="row"
                   sx={{ alignItems: "center", marginTop: "5px" }}
                 >
-                  {/* {permissionData?.isEdit ? ( */}
+                  {permissionData?.isEdit ? ( 
                   <EditIcon
                     style={{
                       fontSize: "20px",
@@ -239,23 +239,23 @@ export default function EmployeeMaster() {
                     className="cursor-pointer"
                     onClick={() => routeChangeEdit(params.row)}
                   />
-                  {/* ) : ( */}
-                  {/*  "" */}
-                  {/*)} */}
-                  {/*{permissionData?.isDel ? ( */}
+                  ) : ( 
+                   "" 
+                 )} 
+                 {permissionData?.isDel ? ( 
                   <DeleteIcon
                     style={{
                       fontSize: "20px",
-                      color: "blue",
+                      color: "red",
                       cursor: "pointer",
                     }}
                     onClick={() => {
                       handledeleteClick(params.row.id);
                     }}
                   />
-                  {/* ) : ( */}
-                  {/*  "" */}
-                  {/* )} */}
+                  ) : ( 
+                   "" 
+                  )} 
                   <Switch
                     // checked={(params.row.empStatus)}
                     checked={params.row.empStatus === "Active"}
@@ -342,23 +342,23 @@ export default function EmployeeMaster() {
       <Card
         style={{
           width: "100%",
-          // height: "100%",
           backgroundColor: "#E9FDEE",
-          // border: ".5px solid #FF7722 ",
-          marginTop: "3vh"
+
+          marginTop: "3vh",
+          border:"0.5px solid #00009c"
         }}
       >
         <Paper
-          sx={{
-            width: "100%",
-            overflow: "hidden",
-            "& .MuiDataGrid-colCell": {
-              backgroundColor: "#2B4593",
-              color: "#fff",
-              fontSize: 17,
-              fontWeight: 900
-            },
-          }}
+          // sx={{
+          //   width: "100%",
+          //   overflow: "hidden",
+          //   "& .MuiDataGrid-colCell": {
+          //     backgroundColor: "#2B4593",
+          //     color: "#fff",
+          //     fontSize: 17,
+          //     fontWeight: 900
+          //   },
+          // }}
           style={{ padding: "10px", }}
         >
           <ConfirmDialog />
@@ -377,24 +377,18 @@ export default function EmployeeMaster() {
           <Box height={10} />
 
           <Stack direction="row" spacing={2} classes="my-2 mb-2">
-            {/*permissionData?.isAdd == true && ( */}
+           {permissionData?.isAdd == true && (
             <Button
               onClick={routeChangeAdd}
               variant="contained"
               endIcon={<AddCircleIcon />}
+              style={{backgroundColor:`var(--grid-headerBackground)`,color: `var(--grid-headerColor)`}}
               size="large"
             >
               {t("text.Add")}
             </Button>
-            {/*)} */}
+            )}
 
-            {/*{permissionData?.isPrint == true ? (
-              <Button variant="contained" endIcon={<PrintIcon />} size="large">
-                {t("text.print")}
-              </Button>
-            ) : (
-              ""
-            )} */}
           </Stack>
 
           {isLoading ? (

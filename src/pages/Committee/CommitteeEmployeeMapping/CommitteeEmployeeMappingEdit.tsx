@@ -162,11 +162,11 @@ const CommitteeEmployeeMappingAdd = (props: Props) => {
             if (response.data.isSuccess) {
                 setToaster(false);
                 toast.success(response.data.mesg);
+                navigate("/E-Office/CommitteeEmployeeMapping");
             } else {
                 setToaster(true);
                 toast.error(response.data.mesg);
             }
-            navigate("/Committee/CommitteeEmployeeMapping");
         },
     });
 
@@ -179,7 +179,7 @@ const CommitteeEmployeeMappingAdd = (props: Props) => {
                     padding: "-5px 5px",
                     backgroundColor: "#FFFFFF",
                     borderRadius: "5px",
-                    border: ".5px solid #ff7722",
+                    border: ".5px solid #00009c",
                     marginTop: "3vh",
                 }}
             >
@@ -200,7 +200,8 @@ const CommitteeEmployeeMappingAdd = (props: Props) => {
                                 style={{
                                     marginBottom: 15,
                                     marginTop: "45px",
-                                    backgroundColor: "blue",
+                                    backgroundColor:`var(--grid-headerBackground)`,
+                                    color: `var(--grid-headerColor)`,
                                     width: 20,
                                 }}
                             >
@@ -356,11 +357,12 @@ const CommitteeEmployeeMappingAdd = (props: Props) => {
                                         variant="contained"
                                         style={{
                                             width: "48%",
-                                            backgroundColor: "#059669",
+                                            backgroundColor:`var(--grid-headerBackground)`,
+                                            color: `var(--grid-headerColor)`,
                                             margin: "1%",
-                                        }}
+                                          }}
                                     >
-                                        {t("text.save")}
+                                        {t("text.update")}
                                     </Button>
 
                                     <Button

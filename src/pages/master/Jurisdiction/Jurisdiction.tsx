@@ -27,29 +27,38 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import CustomDataGrid from "../../../utils/CustomDatagrid";
 import CustomLabel from "../../../CustomLable";
+import ButtonWithLoader from "../../../utils/ButtonWithLoader";
+import Languages from "../../../Languages";
+import { Language } from "react-transliterate";
+import "react-transliterate/dist/index.css";
+import TranslateTextField from "../../../TranslateTextField";
 
 
-
+interface MenuPermission {
+  isAdd: boolean;
+  isEdit: boolean;
+  isPrint: boolean;
+  isDel: boolean;
+}
 
 export default function Jurisdiction() {
   const { i18n, t } = useTranslation();
   const { defaultValues, defaultValuestime } = getISTDate();
-
   const userId = getId();
-
-  
-
   const [columns, setColumns] = useState<any>([]);
   const [rows, setRows] = useState<any>([]);
   const [editId, setEditId] = useState<any>(-1);
   const location = useLocation();
   const [isLoading, setIsLoading] = useState(true);
-
-  const [fileTypeOption, setFileTypeOption] = useState([{ value: "-1", label: t("text.SelectFileType") }]);
-
+  const [lang, setLang] = useState<Language>("en");
   const [NodeOption, setNodeOption] = useState([{ value: "-1", label: t("text.SelectNode") }]);
 
-
+  const [permissionData, setPermissionData] = useState<MenuPermission>({
+    isAdd: false,
+    isEdit: false,
+    isPrint: false,
+    isDel: false,
+  });
 
   const getNode = () => {
     const collectData = {
@@ -69,26 +78,45 @@ export default function Jurisdiction() {
       });
   };
 
-
-
-
   useEffect(() => {
     const dataString = localStorage.getItem("userdata");
-    getNode();
+    if (dataString) {
+      const data = JSON.parse(dataString);
+      if (data && data.length > 0) {
+        const userPermissionData = data[0]?.userPermission;
+        if (userPermissionData && userPermissionData.length > 0) {
+          const menudata = userPermissionData[0]?.parentMenu;
+          for (let index = 0; index < menudata.length; index++) {
+            const childMenudata = menudata[index]?.childMenu;
+            console.log("childMenudata", childMenudata);
+            console.log("location.pathname", location.pathname);
 
-    getList();
+            const pathrow = childMenudata.find(
+              (x: any) => x.path === location.pathname
+            );
+            if (pathrow) {
+              setPermissionData(pathrow);
+              console.log("data", pathrow);
+              getList();
+              // break;
+            }
+          }
+        }
+      }
+    }
 
-
-  }, []);
-
-
+  }, [isLoading,location.pathname]);
+  
+  useEffect(()=>{
+  getNode();
+},[])
 
   let delete_id = "";
   const accept = () => {
     const collectData = {
       id: delete_id,
     };
-    console.log("collectData " + JSON.stringify(collectData));
+    // console.log("collectData " + JSON.stringify(collectData));
     api
       .delete(`NewNodeMaster/DeleteNewNodeMaster`, { data: collectData })
       .then((response) => {
@@ -100,8 +128,8 @@ export default function Jurisdiction() {
         }
       });
   };
+
   const reject = () => {
-    // toast.warn({summary: 'Rejected', detail: 'You have rejected', life: 3000 });
     toast.warn("Rejected: You have rejected", { autoClose: 3000 });
   };
 
@@ -129,7 +157,7 @@ export default function Jurisdiction() {
       api
         .post(`NewNodeMaster/GetNewNodeMaster`, collectData)
         .then((res) => {
-          console.log("result" + JSON.stringify(res.data.data));
+          // console.log("result" + JSON.stringify(res.data.data));
           const data = res.data.data;
           const arr = data.map((item: any, index: any) => ({
             ...item,
@@ -154,7 +182,7 @@ export default function Jurisdiction() {
                       direction="row"
                       sx={{ alignItems: "center", marginTop: "5px" }}
                     >
-                      {/*  {permissionData?.isEdit ? ( */}
+                       {permissionData?.isEdit ? (
                       <EditIcon
                         style={{
                           fontSize: "20px",
@@ -164,10 +192,10 @@ export default function Jurisdiction() {
                         className="cursor-pointer"
                         onClick={() => routeChangeEdit(params.row)}
                       />
-                      {/* ) : ( */}
-                      {/*   "" */}
-                      {/* )} */}
-                      {/*  {permissionData?.isDel ? ( */}
+                      ) : (
+                        "" 
+                      )} 
+                       {permissionData?.isDel ? (
                       <DeleteIcon
                         style={{
                           fontSize: "20px",
@@ -178,9 +206,9 @@ export default function Jurisdiction() {
                           handledeleteClick(params.row.id);
                         }}
                       />
-                      {/*  ) : ( */}
-                      {/*  "" */}
-                      {/* )} */}
+                      ) : ( 
+                      ""
+                   )} 
                     </Stack>,
                   ];
                 },
@@ -193,8 +221,14 @@ export default function Jurisdiction() {
                 headerClassName: "MuiDataGrid-colCell",
               },
               {
+                field: "nodeName",
+                headerName: "Node ",
+                flex: 1,
+                headerClassName: "MuiDataGrid-colCell",
+              },
+              {
                 field: "name",
-                headerName: "Name",
+                headerName: "Jurisdiction",
                 flex: 1,
                 headerClassName: "MuiDataGrid-colCell",
               },
@@ -203,12 +237,13 @@ export default function Jurisdiction() {
             setColumns(columns as any);
           }
         });
-      // setIsLoading(false);
+      // setIsLoading(false); 
     } catch (error) {
       console.error("Error fetching data:", error);
       // setIsLoading(false);
     }
   };
+
   const validationSchema = Yup.object({
     nodeID: Yup.string().test(
       "required",
@@ -218,7 +253,9 @@ export default function Jurisdiction() {
       }
     ),
   });
+
   const [toaster, setToaster] = useState(false);
+
   const formik = useFormik({
     initialValues: {
 
@@ -228,15 +265,6 @@ export default function Jurisdiction() {
       "titleID": 0,
       "user_Id": userId,
       "childnode": []
-
-
-      // "fnId": -1,
-      // "fId": "",
-      // "fileNm": "",
-      // "inst_id": 0,
-      // "user_id": 0,
-      // "createdDate": defaultValuestime,
-      // "divisionId": 0
     },
     validationSchema: validationSchema,
     onSubmit: async (values) => {
@@ -271,6 +299,16 @@ export default function Jurisdiction() {
     setEditId(row.id);
   };
 
+
+  const handleSubmitWrapper = async () => {
+    await formik.handleSubmit();
+  };
+
+  const handleConversionChange = (params: any, text: string) => {
+    formik.setFieldValue(params, text);
+  };
+
+
   return (
     <>
       <Grid item lg={6} sm={6} xs={12} sx={{ marginTop: "3vh" }}>
@@ -279,33 +317,52 @@ export default function Jurisdiction() {
             width: "100%",
             height: "50%",
             backgroundColor: "#E9FDEE",
-            border: ".5px solid #42AEEE ",
+            border: ".5px solid #2B4593 ",
             marginTop: "5px",
           }}
         >
           <Paper
-            sx={{
-              width: "100%",
-              overflow: "hidden",
-              "& .MuiDataGrid-colCell": {
-                backgroundColor: "#00009C",
-                color: "#fff",
-                fontSize: 18,
-                fontWeight: 800,
-              },
-            }}
+            // sx={{
+            //   width: "100%",
+            //   overflow: "hidden",
+            //   "& .MuiDataGrid-colCell": {
+            //     backgroundColor: "#00009C",
+            //     color: "#fff",
+            //     fontSize: 18,
+            //     fontWeight: 800,
+            //   },
+            // }}
             style={{ padding: "10px" }}
           >
             <ConfirmDialog />
+            <Grid item xs={12} container spacing={2}>
+            <Grid item lg={10} md={10} xs={12}>
             <Typography
-              gutterBottom
-              variant="h5"
-              component="div"
-              sx={{ padding: "20px" }}
-              align="left"
-            >
-              {t("text.JurisdictionMaster")}
-            </Typography>
+            gutterBottom
+            variant="h5"
+            component="div"
+            sx={{ padding: "20px" }}
+            align="left"
+          >
+            {t("text.JurisdictionMaster")}
+          </Typography>
+            </Grid>
+
+            <Grid item lg={2} md={2} xs={12} marginTop={2}>
+              <select
+                className="language-dropdown"
+                value={lang}
+                onChange={(e) => setLang(e.target.value as Language)}
+              >
+                {Languages.map((l) => (
+                  <option key={l.value} value={l.value}>
+                    {l.label}
+                  </option>
+                ))}
+              </select>
+            </Grid>
+          </Grid>
+           
             <Divider />
 
             <Box height={10} />
@@ -348,19 +405,14 @@ export default function Jurisdiction() {
                 </Grid>
 
                 <Grid item xs={5} sm={5}>
-                  <TextField
-                    type="text"
-                    name="name"
-                    id="name"
-                    label={<CustomLabel text={t("text.EnterJurisdictionName")} required={requiredFields.includes('name')} />}
-                    value={formik.values.name}
-                    placeholder={t("text.EnterJurisdictionName")}
-                    size="small"
-                    fullWidth
-                    style={{ backgroundColor: "white", borderColor: formik.touched.name && formik.errors.name ? 'red' : 'initial', }}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                  />
+
+                <TranslateTextField
+                  label={t("text.EnterJurisdictionName")}
+                  value={formik.values.name}
+                  onChangeText={(text: string) => handleConversionChange('name', text)}
+                  required={true}
+                  lang={lang}
+                />
                   {formik.touched.name && formik.errors.name ? (
                     <div style={{ color: "red", margin: "5px" }}>
                       {formik.errors.name}
@@ -368,14 +420,22 @@ export default function Jurisdiction() {
                   ) : null}
                 </Grid>
 
-                <Grid item xs={2}>
-                  {/*  {permissionData?.isAdd == true ? ( */}
-                  <Button type="submit" variant="contained" size="large">
-                    {editId == "-1" ? t("text.save") : t("text.update")}
-                  </Button>
-                  {/* ) : ( */}
-                  {/*   "" */}
-                  {/* )} */}
+                <Grid item xs={2}  sx={{m:-1}}>
+                {editId === -1 && permissionData?.isAdd && (
+  <ButtonWithLoader
+    buttonText={t("text.save")}
+    onClickHandler={handleSubmitWrapper}
+    fullWidth={true}
+  />
+)}
+
+{editId !== -1 && (
+  <ButtonWithLoader
+    buttonText={t("text.update")}
+    onClickHandler={handleSubmitWrapper}
+    fullWidth={true}
+  />
+)}
                 </Grid>
               </Grid>
             </form>

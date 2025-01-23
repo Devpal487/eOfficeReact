@@ -1,6 +1,16 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Box, CircularProgress } from '@mui/material';
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
+//import "./ThemeStyle.css";
+
+
+const themes = [
+  "light-theme",
+  "dark-theme",
+  "ocean-theme",
+  "sunset-theme",
+  "forest-theme",
+];
 
 
 interface CustomDataGridProps {
@@ -21,8 +31,47 @@ const CustomDataGrid: React.FC<CustomDataGridProps> = ({
   
   ...otherProps
 }) => {
+
+  // const [selectedTheme, setShowThemeMenu] = useState("");
+  // console.log('CheckTheme',selectedTheme)
+
+  // const showTheme:any = localStorage.getItem("theme");
+
+  // useEffect(() => {
+  //   setShowThemeMenu(showTheme)
+   
+  // }, []);
+
+  // // const selectedTheme:any = () => {
+  // //   const storedTheme = localStorage.getItem("theme");
+  // //   return storedTheme ? storedTheme : themes[0]; 
+  // // };
+
+
+  // useEffect(() => {
+   
+   
+  //   document.body.className = selectedTheme;
+   
+  // }, [selectedTheme]);
+
+  
+  // useEffect(() => {
+  //   console.log(selectedTheme)
+  //   const theme = localStorage.getItem("theme") || themes[0];
+  //   console.log(theme)
+  //   document.body.className = theme ;
+  //   localStorage.setItem("theme", theme);
+  // }, [selectedTheme]);
+
+
+
+
+
+
   return (
     isLoading ? (
+      
       <div
         style={{
           display: "flex",
@@ -35,7 +84,8 @@ const CustomDataGrid: React.FC<CustomDataGridProps> = ({
     ) : (
       <Box>
         <br />
-        <div style={{ width: "100%", backgroundColor: "#FFFFFF" }}>
+        <div style={{ height: "50vh", width: "100%", backgroundColor:`var(--grid-background)` ,overflowY: "auto" }}>
+          
           <DataGrid
             rows={rows}
             columns={columns}
@@ -61,8 +111,8 @@ const CustomDataGrid: React.FC<CustomDataGridProps> = ({
             
               sx={{
                 '& .MuiDataGrid-columnHeaders': {
-                  backgroundColor: '#2B4593',
-                  color: '#fff',
+                  backgroundColor:`var(--grid-headerBackground)` ,
+                  color: `var(--grid-headerColor)` ,
                   fontSize: '15px !important',
                   fontWeight: 900,
                   height: '37px',
@@ -90,7 +140,7 @@ const CustomDataGrid: React.FC<CustomDataGridProps> = ({
                 },
                 '& .MuiDataGrid-columnHeaderTitle': {
                   overflow: 'visible',
-                  whiteSpace: 'normal',
+                  // whiteSpace: 'normal',
                 },
                 '& .MuiDataGrid-colCell' :{
                   fontSize: '15px !important',
@@ -99,6 +149,7 @@ const CustomDataGrid: React.FC<CustomDataGridProps> = ({
           />
         </div>
       </Box>
+      
     )
   );
 };

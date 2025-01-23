@@ -292,7 +292,7 @@ values.subNode = arrOfStringIndexes;
           padding: "-5px 5px",
           backgroundColor: "#FFFFFF",
           borderRadius: "5px",
-          // border: ".5px solid #ff7722",
+          border: ".5px solid #00009c",
           margin: "3vh"
         }}
       >
@@ -442,7 +442,7 @@ values.subNode = arrOfStringIndexes;
                 </Grid>
               </Grid> */}
 
-              <Grid xs={6} item>
+              <Grid xs={12} item>
                 <Box>
                   <div style={{ height: "300px", overflow: "auto" }}>
                     <SimpleTreeView
@@ -461,7 +461,8 @@ values.subNode = arrOfStringIndexes;
                     variant="contained"
                     style={{
                       width: "48%",
-                      backgroundColor: "#059669",
+                      backgroundColor:`var(--grid-headerBackground)`,
+                      color: `var(--grid-headerColor)`,
                       margin: "1%",
                     }}
 

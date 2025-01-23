@@ -31,6 +31,12 @@ import { getISTDate } from "../../../utils/Constant";
 import CustomLabel from "../../../CustomLable";
 import ButtonWithLoader from "../../../utils/ButtonWithLoader";
 import CustomDataGrid from "../../../utils/CustomDatagrid";
+import Languages from "../../../Languages";
+import { Language, ReactTransliterate } from "react-transliterate";
+import "react-transliterate/dist/index.css";
+import TranslateTextField from "../../../TranslateTextField";
+
+
 interface MenuPermission {
   isAdd: boolean;
   isEdit: boolean;
@@ -55,7 +61,7 @@ export default function StateMaster() {
     isPrint: false,
     isDel: false,
   });
-
+  const [lang, setLang] = useState<Language>("en");
   let navigate = useNavigate();
 
   useEffect(() => {
@@ -140,15 +146,12 @@ export default function StateMaster() {
         `State/AddUpdateStateMaster`,
         values
       );
-      try {
+      if (response.data.isSuccess) {
         toast.success(response.data.mesg);
-        // setToaster(false);
-        // navigate('/master/StateMaster');
         fetchZonesData();
         formik.resetForm();
         setEditId(-1);
-      } catch (error) {
-        // setToaster(true);
+      } else {
         toast.error(response.data.mesg);
       }
     },
@@ -165,9 +168,8 @@ export default function StateMaster() {
     setEditId(row.id);
   };
 
-  const routeChangeAdd = () => {
-    let path = `/master/StateMasterAdd`;
-    navigate(path);
+  const handleConversionChange = (params: any, text: string) => {
+    formik.setFieldValue(params, text);
   };
 
   let delete_id = "";
@@ -183,10 +185,10 @@ export default function StateMaster() {
       .then((response) => {
         if (response.data.isSuccess) {
           toast.success(response.data.mesg);
+          fetchZonesData();
         } else {
           toast.error(response.data.mesg);
         }
-        fetchZonesData();
       });
   };
 
@@ -267,18 +269,6 @@ export default function StateMaster() {
                   ) : (
                     ""
                   )}
-                  {/* <Switch
-                    checked={Boolean(params.row.isActive)}
-                    style={{
-                      color: params.row.isActive ? "green" : "#FE0000",
-                    }}
-                    onChange={(value: any) =>
-                      handleSwitchChange(value, params.row)
-                    }
-                    inputProps={{
-                      "aria-label": "Toggle Switch",
-                    }}
-                  /> */}
                 </Stack>,
               ];
             },
@@ -307,30 +297,7 @@ export default function StateMaster() {
             headerName: t("text.CountryName"),
             flex: 1,
             headerClassName: "MuiDataGrid-colCell",
-          },
-          // {
-          //   field: "isActive",
-          //   headerName: t("text.Status"),
-          //   flex: 1,
-          //   headerClassName: "MuiDataGrid-colCell",
-          //   renderCell: (params) => [
-          //     <Stack direction="row" spacing={1}>
-          //       {params.row.isActive ? (
-          //         <Chip
-          //           label={t("text.Active")}
-          //           color="success"
-          //           style={{ fontSize: "14px" }}
-          //         />
-          //       ) : (
-          //         <Chip
-          //           label={t("text.InActive")}
-          //           color="error"
-          //           style={{ fontSize: "14px" }}
-          //         />
-          //       )}
-          //     </Stack>,
-          //   ],
-          // },
+          }
         ];
         setColumns(columns as any);
       }
@@ -349,34 +316,28 @@ export default function StateMaster() {
     await formik.handleSubmit();
   };
 
-
-
   return (
     <>
       <Card
         style={{
           width: "100%",
           backgroundColor: "#E9FDEE",
-          border: ".5px solid #FF7722 ",
+          border: ".5px solid #2B4593 ",
           marginTop: "3vh"
         }}
       >
         <Paper
           sx={{
             width: "100%",
-            overflow: "hidden",
-            "& .MuiDataGrid-colCell": {
-              backgroundColor: "#2B4593",
-              color: "#fff",
-              fontSize: 17,
-              fontWeight: 900
-            },
+            overflow: "hidden"
           }}
           style={{ padding: "10px", }}
         >
           <ConfirmDialog />
 
-          <Typography
+          <Grid item xs={12} container spacing={2}>
+            <Grid item lg={10} md={10} xs={12}>
+            <Typography
             gutterBottom
             variant="h5"
             component="div"
@@ -385,29 +346,28 @@ export default function StateMaster() {
           >
             {t("text.StateMaster")}
           </Typography>
+            </Grid>
+
+            <Grid item lg={2} md={2} xs={12} marginTop={2}>
+              <select
+                className="language-dropdown"
+                value={lang}
+                onChange={(e) => setLang(e.target.value as Language)}
+              >
+                {Languages.map((l) => (
+                  <option key={l.value} value={l.value}>
+                    {l.label}
+                  </option>
+                ))}
+              </select>
+            </Grid>
+          </Grid>
+
           <Divider />
 
           <Box height={10} />
 
           <Stack direction="row" spacing={2} classes="my-2 mb-2">
-            {/* {permissionData?.isAdd == true && (
-              <Button
-                onClick={routeChangeAdd}
-                variant="contained"
-                endIcon={<AddCircleIcon />}
-                size="large"
-              >
-                {t("text.add")}
-              </Button>
-            ) } */}
-
-            {/* {permissionData?.isPrint == true ? (
-              <Button variant="contained" endIcon={<PrintIcon />} size="large">
-                {t("text.print")}
-              </Button>
-            ) : (
-              ""
-            )} */}
 
           </Stack>
 
@@ -446,24 +406,18 @@ export default function StateMaster() {
               </Grid>
 
               <Grid item xs={3.5} sm={3.5}>
-                <TextField
-                  label={<CustomLabel text={t("text.EnterStateName")} required={requiredFields.includes('stateName')} />}
+              <TranslateTextField
+                  label={t("text.EnterStateName")}
                   value={formik.values.stateName}
-                  name="stateName"
-                  id="stateName"
-                  placeholder={t("text.EnterStateName")}
-                  size="small"
-                  fullWidth
-                  style={{ backgroundColor: "white" }}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
+                  onChangeText={(text: string) => handleConversionChange('stateName', text)}
+                  required={true}
+                  lang={lang}
                 />
                 {formik.touched.stateName && formik.errors.stateName ? (
                   <div style={{ color: "red", margin: "5px" }}>
                     {formik.errors.stateName}
                   </div>
                 ) : null}
-
               </Grid>
 
               <Grid xs={3.5} sm={3.5} item>
@@ -485,10 +439,26 @@ export default function StateMaster() {
               <Grid item xs={2} sx={{ m: -1 }}>
                 {/*  {permissionData?.isAdd == true ? ( */}
 
-                <ButtonWithLoader buttonText={editId == -1 ? t("text.save") : t("text.update")} onClickHandler={handleSubmitWrapper} fullWidth={true} />
+                {/* <ButtonWithLoader buttonText={editId == -1 ? t("text.save") : t("text.update")} onClickHandler={handleSubmitWrapper} fullWidth={true} /> */}
                 {/* ) : ( */}
                 {/*   "" */}
                 {/* )} */}
+
+                {editId === -1 && permissionData?.isAdd && (
+  <ButtonWithLoader
+    buttonText={t("text.save")}
+    onClickHandler={handleSubmitWrapper}
+    fullWidth={true}
+  />
+)}
+
+{editId !== -1 && (
+  <ButtonWithLoader
+    buttonText={t("text.update")}
+    onClickHandler={handleSubmitWrapper}
+    fullWidth={true}
+  />
+)}
               </Grid>
 
             </Grid>

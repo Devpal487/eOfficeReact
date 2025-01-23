@@ -184,38 +184,45 @@ export default function UserPermissionMaster() {
         ? `${matchingUser.firsT_NAME} ${matchingUser.middlE_NAME} ${matchingUser.suR_NAME}`
         : ""
     );
-    // console.log(setEnteredEployeeName);
-    // console.log(enteredEmployeeName);
   };
 
   let delete_id = "";
+
   useEffect(() => {
+    // getRole();
+    // fetchZonesData();
+    // getEmployeeNamebyID(selectedRoleID);
+    // getEmployeeName();
+}, []);
+
+  useEffect(() => {
+  
+    const dataString = localStorage.getItem("userdata");
+    if (dataString) {
+      const data = JSON.parse(dataString);
+      if (data && data.length > 0) {
+        const userPermissionData = data[0]?.userPermission;
+        if (userPermissionData && userPermissionData.length > 0) {
+          const menudata = userPermissionData[0]?.parentMenu;
+          for (let index = 0; index < menudata.length; index++) {
+            const childMenudata = menudata[index]?.childMenu;
+            const pathrow = childMenudata.find(
+              (x: any) => x.path === location.pathname
+            );
+            console.log("data", pathrow);
+            if (pathrow) {
+              setPermissionData(pathrow);
+              getList();
+            }
+          }
+        }
+      }
+    }
     getRole();
     fetchZonesData();
     getEmployeeNamebyID(selectedRoleID);
     getEmployeeName();
-    // const dataString = localStorage.getItem("userdata");
-    // if (dataString) {
-    //   const data = JSON.parse(dataString);
-    //   if (data && data.length > 0) {
-    //     const userPermissionData = data[0]?.userPermission;
-    //     if (userPermissionData && userPermissionData.length > 0) {
-    //       const menudata = userPermissionData[0]?.parentMenu;
-    //       for (let index = 0; index < menudata.length; index++) {
-    //         const childMenudata = menudata[index]?.childMenu;
-    //         const pathrow = childMenudata.find(
-    //           (x: any) => x.path === location.pathname
-    //         );
-    //         console.log("data", pathrow);
-    //         if (pathrow) {
-    //           setPermissionData(pathrow);
-              getList();
-    //         }
-    //       }
-    //     }
-    //   }
-    // }
-  }, [isLoading]);
+  }, [isLoading, location.pathname]);
 
   interface FilmOptionType {
     label: string;
@@ -386,7 +393,7 @@ export default function UserPermissionMaster() {
                 direction="row"
                 sx={{ alignItems: "center", marginTop: "5px" }}
               >
-                {/* {permissionData?.isEdit ? ( */}
+                 {permissionData?.isEdit ? ( 
                 <EditIcon
                   style={{
                     fontSize: "20px",
@@ -396,10 +403,10 @@ export default function UserPermissionMaster() {
                   className="cursor-pointer"
                   onClick={() => routeChangeEdit(params.row)}
                 />
-                {/* ) : (
+                 ) : (
                     ""
-                  )} */}
-                {/* {permissionData?.isDel ? ( */}
+                  )} 
+                 {permissionData?.isDel ? ( 
                 <DeleteIcon
                   style={{
                     fontSize: "20px",
@@ -410,9 +417,9 @@ export default function UserPermissionMaster() {
                     handledeleteClick(params.row.id);
                   }}
                 />
-                {/* ) : (
+                 ) : (
                     ""
-                  )} */}
+                  )} 
 
                 {/* <Switch
                     checked={Boolean(params.row.isActive)}
@@ -738,11 +745,11 @@ export default function UserPermissionMaster() {
           toast.success(res.data.mesg);
           setEnteredRoleName(null);
           setEnteredEployeeName(null);
-
           setOpen(false);
-          let path = `/UserManagement/UserPermissionMaster`;
           getList();
-          navigate(path);
+
+          //let path = `/UserManagement/UserPermissionMaster`;
+          //navigate(path);
         } else {
           toast.error(res.data.mesg);
         }
@@ -757,18 +764,19 @@ export default function UserPermissionMaster() {
             width: "100%",
             height: "50%",
             backgroundColor: "#E9FDEE",
-            // border: ".5px solid #ff7722",
+            border: ".5px solid #00009c",
+            marginTop: "5px",
           }}
         >
           <Paper
-            sx={{
-              width: "100%", overflow: "hidden", "& .MuiDataGrid-colCell": {
-                backgroundColor: "#2B4593",
-                color: "#fff",
-                fontSize: 17,
-                fontWeight: 900
-              },
-            }}
+            // sx={{
+            //   width: "100%", overflow: "hidden", "& .MuiDataGrid-colCell": {
+            //     backgroundColor: "#2B4593",
+            //     color: "#fff",
+            //     fontSize: 17,
+            //     fontWeight: 900
+            //   },
+            // }}
             style={{ padding: "10px" }}
 
           >
@@ -785,17 +793,18 @@ export default function UserPermissionMaster() {
             <Divider />
             <Box height={10} />
             <Stack direction="row" spacing={2} classes="my-2 mb-2">
-              {/* {permissionData?.isAdd == true ? ( */}
+              {permissionData?.isAdd == true ? (
                 <Button
                   onClick={handleOpen}
                   variant="contained"
+                  style={{backgroundColor:`var(--grid-headerBackground)`,color: `var(--grid-headerColor)`}}
                   endIcon={<AddCircleIcon />}
                 >
                   {t("text.Add")}
                 </Button>
-              {/* ) : (
+               ) : (
                 ""
-              )} */}
+              )}
 
               {/* <Typography
                 variant="h6"
@@ -865,8 +874,8 @@ export default function UserPermissionMaster() {
                           type="submit"
                           fullWidth
                           style={{
-                            backgroundColor: "#059669",
-                            color: "white",
+                            backgroundColor:`var(--grid-headerBackground)`,
+                            color: `var(--grid-headerColor)`,
                             marginBottom: "10px",
                             marginTop: "3px",
                           }}

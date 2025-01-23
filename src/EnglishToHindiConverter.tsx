@@ -248,30 +248,14 @@ const EnglishToHindiConverter: React.FC<EnglishToHindiConverterProps> = ({ label
   size,
   fullWidth,
   textFieldStyle = {},
-  type = 'text' // Default value for type
+  type = 'text' 
 }) => {
     const [inputText, setInputText] = useState<string>('');
     const { inputMode } = useInputMode();
 
-    React.useEffect(() => {
-        setInputText('');
-    }, [inputMode]);
-
-    // const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    //     const { value } = event.target;
-    //     setInputText(inputMode === 'english' ? value : convertToHindi(value));
-    // };
-
-
-//     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-//       const { value } = event.target;
-//       const convertedText = inputMode === 'english' ? value : convertToHindi(value);
-//       setInputText(convertedText);
-//       if (onChange) {
-//           onChange(convertedText);
-//       }
-//   };
-
+React.useEffect(() => {
+    setInputText(value);
+    }, [value]);
 
 const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = event.target;
@@ -281,29 +265,6 @@ const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         onChange(convertedText);
     }
 };
-
-    // const convertToHindi = (englishText: string): string => {
-    //     let convertedText = englishText;
-
-    //     Object.keys(conversionMap).forEach(key => {
-    //         const regex = new RegExp(escapeRegExp(key), 'g');
-    //         convertedText = convertedText.replace(regex, conversionMap[key]);
-    //     });
-
-    //     return convertedText;
-    // };
-
-
-//     const convertToHindi = (englishText: string): string => {
-//       let convertedText = englishText;
-
-//       Object.keys(conversionMap).forEach(key => {
-//           const regex = new RegExp(escapeRegExp(key), 'g');
-//           convertedText = convertedText.replace(regex, conversionMap[key]);
-//       });
-
-//       return convertedText;
-//   };
 
 const convertToHindi = (englishText: string): string => {
     let convertedText = englishText;
@@ -316,48 +277,8 @@ const convertToHindi = (englishText: string): string => {
     return convertedText;
 };
 
-    // const handleRadioChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    //     const { value } = event.target;
-    //     setInputMode(value as 'english' | 'hindi');
-    //     setInputText(''); 
-    // };
-
-
-//     const handleRadioChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-//       const { value } = event.target;
-//       setInputMode(value as 'english' | 'hindi');
-//       setInputText('');
-//       if (onChange) {
-//           onChange('');
-//       }
-//   };
-
     return (
         <div>
-            {/* <h2>English to Hindi Converter</h2> */}
-            {/* <div>
-                <input
-                    type="radio"
-                    id="english"
-                    name="inputMode"
-                    value="english"
-                    checked={inputMode === 'english'}
-                    onChange={handleRadioChange}
-                />
-                <label htmlFor="english">English</label>
-
-                <input
-                    type="radio"
-                    id="hindi"
-                    name="inputMode"
-                    value="hindi"
-                    checked={inputMode === 'hindi'}
-                    onChange={handleRadioChange}
-                />
-                <label htmlFor="hindi">Hindi</label>
-            </div>
-            <br /> */}
-
             <TextField
              type={type}
                 value={inputText}

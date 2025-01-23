@@ -314,7 +314,7 @@ const UserManagementEdit = (props: Props) => {
           padding: "-5px 5px",
           backgroundColor: "#FFFFFF",
           borderRadius: "5px",
-          border: ".5px solid #ff7722",
+          border: ".5px solid #2B4593",
           marginTop: "3vh"
         }}
       >
@@ -335,7 +335,8 @@ const UserManagementEdit = (props: Props) => {
                 style={{
                   marginBottom: 15,
                   marginTop: "45px",
-                  backgroundColor: "blue",
+                  backgroundColor:`var(--grid-headerBackground)`,
+                  color: `var(--grid-headerColor)`,
                   width: 20,
                 }}
               >
@@ -486,7 +487,7 @@ const UserManagementEdit = (props: Props) => {
 
               <Grid xs={12} sm={4} item>
                 <TextField
-                  type="text"
+                  type="number"
                   label={
                     <span>
                       {t("text.EnterMobileNo")}{" "}
@@ -725,7 +726,8 @@ const UserManagementEdit = (props: Props) => {
                     variant="contained"
                     style={{
                       width: "48%",
-                      backgroundColor: "#059669",
+                      backgroundColor:`var(--grid-headerBackground)`,
+                      color: `var(--grid-headerColor)`,
                       margin: "1%",
                     }}
                   >

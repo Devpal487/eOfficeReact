@@ -40,6 +40,12 @@ const selectStatus = [
 
 ];
 
+interface MenuPermission {
+    isAdd: boolean;
+    isEdit: boolean;
+    isPrint: boolean;
+    isDel: boolean;
+  }
 
 
 export default function AuthorityEmployeeMapping() {
@@ -57,17 +63,45 @@ export default function AuthorityEmployeeMapping() {
 
     const [selectDepartment, setSelectDepartment] = useState([{ value: "-1", label: t("text.SelectDepartment") }]);
     const [selectSection, setSelectSection] = useState([{ value: "-1", label: t("text.SelectSection") }]);
+    const [permissionData, setPermissionData] = useState<MenuPermission>({
+        isAdd: false,
+        isEdit: false,
+        isPrint: false,
+        isDel: false,
+      });
+    
 
     useEffect(() => {
-        const dataString = localStorage.getItem("userdata");
-        getList();
         getIP();
         getEmployee();
         getAuthority();
-
         getDepartment();
-        getSection();
     }, []);
+
+    useEffect(() => {
+        const dataString = localStorage.getItem("userdata");
+        if (dataString) {
+          const data = JSON.parse(dataString);
+          if (data && data.length > 0) {
+            const userPermissionData = data[0]?.userPermission;
+            if (userPermissionData && userPermissionData.length > 0) {
+              const menudata = userPermissionData[0]?.parentMenu;
+              for (let index = 0; index < menudata.length; index++) {
+                const childMenudata = menudata[index]?.childMenu;
+                const pathrow = childMenudata.find(
+                  (x: any) => x.path === location.pathname
+                );
+                console.log("data", pathrow);
+                if (pathrow) {
+    
+                  setPermissionData(pathrow);
+                  getList();
+                }
+              }
+            }
+          }
+        }
+      }, [isLoading]);
 
     const getEmployee = () => {
         const collectData = {
@@ -94,7 +128,6 @@ export default function AuthorityEmployeeMapping() {
             });
     };
 
-
     const getAuthority = () => {
         const collectData = {
             "id": -1,
@@ -113,12 +146,10 @@ export default function AuthorityEmployeeMapping() {
             });
     };
 
-
-
-
     const getDepartment = () => {
         const collectData = {
-            "departmentId": -1
+            "departmentId": -1,
+            departmentName:""
         };
         api
             .post(`Department/GetDepartmentmaster`, collectData)
@@ -131,13 +162,18 @@ export default function AuthorityEmployeeMapping() {
             });
     };
 
-    const getSection = () => {
+    const getSection = (id:any) => {
         const collectData = {
             "id": -1,
+            "department": id?.toString(),
+            "section": "",
+            "instid": -1,
+            "sesid": "",
+            "uid": ""
 
         };
         api
-            .post(`SectionMaster/GetDesignationmaster`, collectData)
+            .post(`SectionMaster/GetSectionMaster`, collectData)
             .then((res) => {
                 const arr = res.data.data.map((item: any) => ({
                     label: item.section,
@@ -262,7 +298,7 @@ export default function AuthorityEmployeeMapping() {
                                             direction="row"
                                             sx={{ alignItems: "center", marginTop: "5px" }}
                                         >
-                                            {/*  {permissionData?.isEdit ? ( */}
+                                             {permissionData?.isEdit ? ( 
                                             <EditIcon
                                                 style={{
                                                     fontSize: "20px",
@@ -272,10 +308,10 @@ export default function AuthorityEmployeeMapping() {
                                                 className="cursor-pointer"
                                                 onClick={() => routeChangeEdit(params.row)}
                                             />
-                                            {/* ) : ( */}
-                                            {/*   "" */}
-                                            {/* )} */}
-                                            {/*  {permissionData?.isDel ? ( */}
+                                            ) : ( 
+                                              "" 
+                                            )} 
+                                             {permissionData?.isDel ? ( 
                                             <DeleteIcon
                                                 style={{
                                                     fontSize: "20px",
@@ -286,9 +322,9 @@ export default function AuthorityEmployeeMapping() {
                                                     handledeleteClick(params.row.id);
                                                 }}
                                             />
-                                            {/*  ) : ( */}
-                                            {/*  "" */}
-                                            {/* )} */}
+                                             ) : ( 
+                                             "" 
+                                            )} 
                                             <Switch
                     checked={Boolean(params.row.authorityStatus === "Y"? true :false)}
                     style={{
@@ -453,21 +489,21 @@ export default function AuthorityEmployeeMapping() {
                         width: "100%",
                         height: "50%",
                         backgroundColor: "#E9FDEE",
-                        border: ".5px solid #42AEEE ",
+                        border: ".5px solid #2B4593 ",
                         marginTop: "5px",
                     }}
                 >
                     <Paper
-                        sx={{
-                            width: "100%",
-                            overflow: "hidden",
-                            "& .MuiDataGrid-colCell": {
-                                backgroundColor: "#00009C",
-                                color: "#fff",
-                                fontSize: 18,
-                                fontWeight: 800,
-                            },
-                        }}
+                        // sx={{
+                        //     width: "100%",
+                        //     overflow: "hidden",
+                        //     "& .MuiDataGrid-colCell": {
+                        //         backgroundColor: "#00009C",
+                        //         color: "#fff",
+                        //         fontSize: 18,
+                        //         fontWeight: 800,
+                        //     },
+                        // }}
                         style={{ padding: "10px" }}
                     >
                         <ConfirmDialog />
@@ -602,8 +638,10 @@ export default function AuthorityEmployeeMapping() {
                                         size="small"
                                         onChange={(event: any, newValue: any) => {
                                             console.log(newValue?.value);
-
-                                            formik.setFieldValue("deptId", newValue?.value);
+                                            if(newValue != null){
+                                                formik.setFieldValue("deptId", newValue?.value);
+                                                getSection(newValue?.value);
+                                            }
                                             // formik.setFieldValue("deptId", newValue?.label);
                                             formik.setFieldTouched("deptId", true);
                                             formik.setFieldTouched("deptId", false);
@@ -646,10 +684,26 @@ export default function AuthorityEmployeeMapping() {
                                 <Grid item xs={2} sx={{ m: -1 }}>
                                     {/*  {permissionData?.isAdd == true ? ( */}
 
-                                    <ButtonWithLoader buttonText={editId == -1 ? t("text.save") : t("text.update")} onClickHandler={handleSubmitWrapper} />
+                                    {/* <ButtonWithLoader buttonText={editId == -1 ? t("text.save") : t("text.update")} onClickHandler={handleSubmitWrapper} /> */}
                                     {/* ) : ( */}
                                     {/*   "" */}
                                     {/* )} */}
+
+                                    {editId === -1 && permissionData?.isAdd && (
+  <ButtonWithLoader
+    buttonText={t("text.save")}
+    onClickHandler={handleSubmitWrapper}
+    fullWidth={true}
+  />
+)}
+
+{editId !== -1 && (
+  <ButtonWithLoader
+    buttonText={t("text.update")}
+    onClickHandler={handleSubmitWrapper}
+    fullWidth={true}
+  />
+)}
                                 </Grid>
                             </Grid>
                         </form>

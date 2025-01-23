@@ -1,34 +1,15 @@
 import * as React from "react";
 import Paper from "@mui/material/Paper";
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
-import TablePagination from "@mui/material/TablePagination";
-import TableRow from "@mui/material/TableRow";
 import { useEffect, useState } from "react";
-import {
-  Box,
-  Button,
-  Divider,
-  Modal,
-  Stack,
-  TextField,
-  Typography,
-} from "@mui/material";
+import {Box,Button,Divider,Modal,Stack,TextField,Typography} from "@mui/material";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
-import SearchIcon from "@mui/icons-material/Search";
-import Swal from "sweetalert2";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import Card from "@mui/material/Card";
 import Grid from "@mui/material/Grid";
-import PrintIcon from "@mui/icons-material/Print";
 import { useNavigate, useLocation } from "react-router-dom";
-import axios from "axios";
 import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
-import HOST_URL from "../../../utils/Url";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
 import CircularProgress from "@mui/material/CircularProgress";
@@ -39,12 +20,11 @@ import { toast } from "react-toastify";
 import ToastApp from "../../../ToastApp";
 import api from "../../../utils/Url";
 import { getId } from '../../../utils/Constant';
-import {
-  DataGrid,
-  GridColDef,
-  GridToolbar,
-} from "@mui/x-data-grid";
+import {GridColDef} from "@mui/x-data-grid";
 import CustomDataGrid from "../../../utils/CustomDatagrid";
+import { Language } from "react-transliterate";
+import Languages from "../../../Languages";
+import TranslateTextField from "../../../TranslateTextField";
 
 
 const style = {
@@ -62,24 +42,12 @@ const style = {
   overflowX: "auto",
 };
 
-function createData(
-  srno: number,
-  id: string,
-  roleName: string,
-  rolePermission: string
-): any {
-  return { srno, id, roleName, rolePermission };
-}
 
 function childMenuCreateData(
   roleId: string,
   menuId: string,
   menuName: string,
   parentId: number,
-  // pageUrl: string,
-  // icon: string,
-  // displayNo: number,
-  //isMenu: boolean,
   isAdd: boolean,
   isEdit: boolean,
   isDel: boolean,
@@ -93,10 +61,6 @@ function childMenuCreateData(
     roleId,
     menuId,
     menuName,
-    // pageUrl,
-    // icon,
-    // displayNo,
-    // isMenu,
     isAdd,
     isEdit,
     isDel,
@@ -120,10 +84,7 @@ export default function RoleMaster() {
   const ID = getId();
   const [zones, setZones] = useState([]);
   const [columns, setColumns] = useState<any>([]);
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
   const [rows, setRows] = useState<any>([]);
-  const [records, setRecords] = useState(rows);
   const [childMenuRecords, setChildMenuRecords] = useState(rows);
   const [enteredrolename, setEnteredrolename] = useState("");
   const [editID, setEditID] = useState("-1");
@@ -134,6 +95,7 @@ export default function RoleMaster() {
     isPrint: false,
     isDel: false,
   });
+  const [lang, setLang] = useState<Language>("en");
 
   const location = useLocation();
   const { i18n, t } = useTranslation();
@@ -165,8 +127,8 @@ export default function RoleMaster() {
       );
       if (response.data.isSuccess) {
         toast.success(response.data.mesg);
-        navigate("/UserManagement/RoleMaster");
-        setOpen(false);
+        formik.resetForm();
+        handleClose();
         getList();
       } else {
         toast.error(response.data.mesg);
@@ -207,6 +169,7 @@ export default function RoleMaster() {
     setEnteredrolename("");
     setEditID("-1");
     setOpen(false);
+    formik.resetForm();
   };
 
   const handleOpen = () => {
@@ -316,10 +279,6 @@ export default function RoleMaster() {
             res.data.data[index]["menuId"],
             res.data.data[index]["menuName"],
             res.data.data[index]["parentId"],
-            // res.data.data[index]["pageUrl"],
-            // res.data.data[index]["icon"],
-            // res.data.data[index]["displayNo"],
-            //res.data.data[index]["isMenu"],
             res.data.data[index]["isAdd"],
             res.data.data[index]["isEdit"],
             res.data.data[index]["isDel"],
@@ -331,10 +290,8 @@ export default function RoleMaster() {
           )
         );
       }
-      // console.log(arr);
       setRows(arr);
       setChildMenuRecords(arr);
-      // console.log(records);
     });
   };
 
@@ -358,10 +315,6 @@ export default function RoleMaster() {
               res.data.data[0]["rolePermission"][index]["menuId"],
               res.data.data[0]["rolePermission"][index]["menuName"],
               res.data.data[0]["rolePermission"][index]["parentId"],
-              // res.data.data[0]["rolePermission"][index]["pageUrl"],
-              // res.data.data[0]["rolePermission"][index]["icon"],
-              // res.data.data[0]["rolePermission"][index]["displayNo"],
-              //res.data.data[0]["rolePermission"][index]["isMenu"],
               res.data.data[0]["rolePermission"][index]["isAdd"],
               res.data.data[0]["rolePermission"][index]["isEdit"],
               res.data.data[0]["rolePermission"][index]["isDel"],
@@ -373,12 +326,8 @@ export default function RoleMaster() {
             )
           );
         }
-        // console.log(arr);
-        //setRows(arr);
         setChildMenuRecords(null);
         setChildMenuRecords(arr);
-        // console.log("records");
-        // console.log(arr);
       });
   };
 
@@ -386,7 +335,6 @@ export default function RoleMaster() {
     const collectData = {
       "roleId": delete_id,
     };
-    // console.log(collectData);
     api
       .delete("Auth/DeleteRoleMaster", { data: collectData })
       .then((response) => {
@@ -400,12 +348,10 @@ export default function RoleMaster() {
   };
 
   const reject = () => {
-    //toast.current.show({ severity: 'warn', summary: 'Rejected', detail: 'You have rejected', life: 3000 });
     toast.warn("Rejected: You have rejected", { autoClose: 3000 });
 
   };
   const handledeleteClick = (del_id: any) => {
-    // console.log(del_id);
     delete_id = del_id;
     confirmDialog({
       message: "Do you want to delete this record ?",
@@ -418,31 +364,17 @@ export default function RoleMaster() {
   };
 
   const routeChangeEdit = (row: any) => {
-    // let path = `/master/TaxMasterEdit`;
-    // navigate(path, {
-    //   state: row,
-    // });
+    console.log("🚀 ~ 421 ~ routeChangeEdit ~ row:", row)
     console.log(row.roleName);
-
-    //getModalList();
     setEditID(row.id);
     setOpen(true);
     getRolebyID(row.id);
     formik.values.roleId = row.id;
-    //setEnteredrolename(row.roleName);
     formik.values.roleName = row.roleName;
   };
 
-  /// NExt Page
   let navigate = useNavigate();
-  const routeChangeAdd = () => {
-    let path = `/master/TaxMasterAdd`;
-    // navigate(path);
-  };
-
   const handleSelectAll = (value: string, evnt: any) => {
-    // console.log(value)
-    // console.log(evnt)
     if (value == "isAdd") {
       setChildMenuRecords((prevData: any) =>
         prevData.map((item: any) => ({
@@ -504,8 +436,6 @@ export default function RoleMaster() {
 
   const handleCheckboxChange = (id: any, header: string) => {
     if (header == "isAdd") {
-      //   console.log(header)
-      // console.log(id)
       setChildMenuRecords((prevData: any) =>
         prevData.map((item: any) =>
           item.menuId === id ? { ...item, isAdd: !item.isAdd } : item
@@ -556,9 +486,10 @@ export default function RoleMaster() {
     }
   };
 
-  const numberToBoolean = (num: any) => {
-    return num !== 0;
+  const handleConversionChange = (params: any, text: string) => {
+    formik.setFieldValue(params, text);
   };
+
   return (
     <>
       <Grid item lg={6} sm={6} xs={12}>
@@ -567,50 +498,63 @@ export default function RoleMaster() {
             width: "100%",
             height: "50%",
             backgroundColor: "#E9FDEE",
-            // border: ".5px solid #ff7722",
+            border: ".5px solid #00009c",
+            marginTop:"5px"
           }}
         >
           <Paper
             sx={{
               width: "100%",
-              overflow: "hidden",
-              "& .MuiDataGrid-colCell": {
-                backgroundColor: "#00009C",
-                color: "#fff",
-                fontSize: 17,
-                fontWeight: 900
-              },
+              overflow: "hidden"
             }}
             style={{ padding: "10px" }}
           >
             <ConfirmDialog />
-            <Typography
-              gutterBottom
-              variant="h5"
-              component="div"
-              sx={{ padding: "20px" }}
-              align="left"
-            >
-              {t("text.RoleMaster")}
-            </Typography>
+            <Grid item xs={12} container spacing={1}>
+            <Grid item lg={10} md={10} xs={12}>
+              <Typography
+                gutterBottom
+                variant="h5"
+                component="div"
+                sx={{ padding: "20px" }}
+                align="left"
+              >
+                {t("text.RoleMaster")}
+              </Typography>
+            </Grid>
+
+            <Grid item lg={2} md={2} xs={12} marginTop={2}>
+              <select
+                className="language-dropdown"
+                value={lang}
+                onChange={(e) => setLang(e.target.value as Language)}
+              >
+                {Languages.map((l) => (
+                  <option key={l.value} value={l.value}>
+                    {l.label}
+                  </option>
+                ))}
+              </select>
+            </Grid>
+          </Grid>
+
             <Divider />
+
             <Box height={10} />
+
             <Stack direction="row" spacing={2} classes="my-2 mb-2">
-              {/* {permissionData?.isAdd == true ? ( */}
               <Button
                 onClick={handleOpen}
                 variant="contained"
                 endIcon={<AddCircleIcon />}
+                style={{backgroundColor:`var(--grid-headerBackground)`,color: `var(--grid-headerColor)`}}
               >
                 {t("text.add")}
               </Button>
-              {/* ) : (
-                ""
-              )} */}
-
-
 
             </Stack>
+
+
             <Modal open={open} style={{ height: "600px" }}>
               <Box sx={style}>
                 <IconButton
@@ -628,34 +572,15 @@ export default function RoleMaster() {
                 <form onSubmit={formik.handleSubmit}>
                   <Grid container spacing={2}>
                     <Grid md={5} item>
-                      <TextField
-                        type="text"
-                        value={formik.values.roleName}
-                        label={
-                          <span>
-                            {t("text.enterRoleName")}{" "}
-                            {requiredFields.includes("roleName") && (
-                              <span
-                                style={{
-                                  color: formik.values.roleName
-                                    ? "green"
-                                    : "red",
-                                }}
-                              >
-                                *
-                              </span>
-                            )}
-                          </span>
-                        }
-                        size="small"
-                        InputLabelProps={{ shrink: true }}
-                        fullWidth
-                        name="roleName"
-                        id="roleName"
-                        style={{ marginBottom: "10px" }}
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                      />
+
+                    <TranslateTextField
+                  label={t("text.enterRoleName")}
+                  value={formik.values.roleName}
+                  onChangeText={(text: string) => handleConversionChange('roleName', text)}
+                  required={true}
+                  lang={lang}
+                />
+
                       {formik.touched.roleName && formik.errors.roleName ? (
                         <div style={{ color: "red", margin: "5px" }}>
                           {formik.errors.roleName}
@@ -669,8 +594,8 @@ export default function RoleMaster() {
                           type="submit"
                           fullWidth
                           style={{
-                            backgroundColor: "#059669",
-                            color: "white",
+                            backgroundColor:`var(--grid-headerBackground)`,
+                            color: `var(--grid-headerColor)`,
                             marginBottom: "10px",
                             marginTop: "3px",
                           }}

@@ -53,35 +53,38 @@ export default function CommitteeEmployeeMapping() {
 
     useEffect(() => {
         const dataString = localStorage.getItem("userdata");
-        // if (dataString) {
-        //     const data = JSON.parse(dataString);
-        //     if (data && data.length > 0) {
-        //         const userPermissionData = data[0]?.userPermission;
-        //         if (userPermissionData && userPermissionData.length > 0) {
-        //             const menudata = userPermissionData[0]?.parentMenu;
-        //             for (let index = 0; index < menudata.length; index++) {
-        //                 const childMenudata = menudata[index]?.childMenu;
-        //                 const pathrow = childMenudata.find(
-        //                     (x: any) => x.path === location.pathname
-        //                 );
-        //                 console.log("data", pathrow);
-        //                 if (pathrow) {
-        //                     setPermissionData(pathrow);
-        //                 }
-        //             }
-        //         }
-        //     }
-        // }
-        fetchZonesData();
-    }, []);
-    // }, [isLoading]);
+        if (dataString) {
+            const data = JSON.parse(dataString);
+            if (data && data.length > 0) {
+                const userPermissionData = data[0]?.userPermission;
+                if (userPermissionData && userPermissionData.length > 0) {
+                    const menudata = userPermissionData[0]?.parentMenu;
+                    for (let index = 0; index < menudata.length; index++) {
+                        const childMenudata = menudata[index]?.childMenu;
+                        const pathrow = childMenudata.find(
+                            (x: any) => x.path === location.pathname
+                        );
+                        console.log("data", pathrow);
+                        if (pathrow) {
+                            setPermissionData(pathrow);
+                            fetchZonesData();
+                        }
+                    }
+                }
+            }
+        }
+    }, [isLoading]);
+    
+    // console.log("🚀 ~ useEffect ~ isAdd:", permissionData.isAdd)
+
+    
     const routeChangeAdd = () => {
-        let path = `/Committee/CommitteeEmployeeMappingAdd`;
+        let path = `/E-Office/CommitteeEmployeeMappingAdd`;
         navigate(path);
     };
 
     const routeChangeEdit = (row: any) => {
-        let path = `/Committee/CommitteeEmployeeMappingEdit`;
+        let path = `/E-Office/CommitteeEmployeeMappingEdit`;
         navigate(path, {
             state: row,
         });
@@ -166,7 +169,7 @@ export default function CommitteeEmployeeMapping() {
                                     direction="row"
                                     sx={{ alignItems: "center", marginTop: "5px" }}
                                 >
-                                    {/* {permissionData?.isEdit ? ( */}
+                                     {permissionData?.isEdit === true && ( 
                                     <EditIcon
                                         style={{
                                             fontSize: "20px",
@@ -176,10 +179,8 @@ export default function CommitteeEmployeeMapping() {
                                         className="cursor-pointer"
                                         onClick={() => routeChangeEdit(params.row)}
                                     />
-                                    {/* ) : ( */}
-                                    {/*  "" */}
-                                    {/*)} */}
-                                    {/*{permissionData?.isDel ? ( */}
+                                     )} 
+                                    {permissionData?.isDel === true && ( 
                                     <DeleteIcon
                                         style={{
                                             fontSize: "20px",
@@ -190,20 +191,12 @@ export default function CommitteeEmployeeMapping() {
                                             handledeleteClick(params.row.id);
                                         }}
                                     />
-
+                                    )}
 
                                 </Stack>,
                             ];
                         },
                     },
-
-                    // {
-                    //   field: "empid",
-                    //   headerName: "Emp Id",
-                    //   flex: 1,
-                    //   headerClassName: "MuiDataGrid-colCell",
-                    // },
-
                     {
                         field: "serialNo",
                         headerName: t("text.SrNo"),
@@ -225,30 +218,6 @@ export default function CommitteeEmployeeMapping() {
                             return dayjs(params.row.doj).format("DD-MM-YYYY");
                         }
                     },
-
-                    // {
-                    //     field: "empStatus",
-                    //     headerName: "Emp status",
-                    //     flex: 1,
-                    //     headerClassName: "MuiDataGrid-colCell",
-                    //     renderCell: (params) => [
-                    //         <Stack direction="row" spacing={1}>
-                    //             {params.row.isActive ? (
-                    //                 <Chip
-                    //                     label={t("Active")}
-                    //                     color="success"
-                    //                     style={{ fontSize: "14px" }}
-                    //                 />
-                    //             ) : (
-                    //                 <Chip
-                    //                     label={("InActive")}
-                    //                     color="error"
-                    //                     style={{ fontSize: "14px" }}
-                    //                 />
-                    //             )}
-                    //         </Stack>,
-                    //     ],
-                    // },
                 ];
                 setColumns(columns as any);
             }
@@ -271,21 +240,21 @@ export default function CommitteeEmployeeMapping() {
                     width: "100%",
                     // height: "100%",
                     backgroundColor: "#E9FDEE",
-                    // border: ".5px solid #FF7722 ",
+                    border: ".5px solid #00009c ",
                     marginTop: "3vh"
                 }}
             >
                 <Paper
-                    sx={{
-                        width: "100%",
-                        overflow: "hidden",
-                        "& .MuiDataGrid-colCell": {
-                            backgroundColor: "#2B4593",
-                            color: "#fff",
-                            fontSize: 17,
-                            fontWeight: 900
-                        },
-                    }}
+                    // sx={{
+                    //     width: "100%",
+                    //     overflow: "hidden",
+                    //     "& .MuiDataGrid-colCell": {
+                    //         backgroundColor: "#2B4593",
+                    //         color: "#fff",
+                    //         fontSize: 17,
+                    //         fontWeight: 900
+                    //     },
+                    // }}
                     style={{ padding: "10px", }}
                 >
                     <ConfirmDialog />
@@ -304,24 +273,18 @@ export default function CommitteeEmployeeMapping() {
                     <Box height={10} />
 
                     <Stack direction="row" spacing={2} classes="my-2 mb-2">
-                        {/*permissionData?.isAdd == true && ( */}
+                        {permissionData?.isAdd === true && (
                         <Button
                             onClick={routeChangeAdd}
                             variant="contained"
                             endIcon={<AddCircleIcon />}
+                            style={{backgroundColor:`var(--grid-headerBackground)`,color: `var(--grid-headerColor)`}}
                             size="large"
                         >
                             {t("text.Add")}
                         </Button>
-                        {/*)} */}
+                        )}
 
-                        {/*{permissionData?.isPrint == true ? (
-              <Button variant="contained" endIcon={<PrintIcon />} size="large">
-                {t("text.print")}
-              </Button>
-            ) : (
-              ""
-            )} */}
                     </Stack>
 
 

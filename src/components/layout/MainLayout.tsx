@@ -20,6 +20,7 @@ const MainLayout = () => {
 
   if (localStorage.getItem("userdata") == null) {
     navigate("/");
+
   } else {
     const items2 = JSON.parse(localStorage.getItem("userdata")!);
     if (items2.length > 0) {

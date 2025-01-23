@@ -2,43 +2,64 @@ import React, { useEffect, useState } from "react";
 import {
     GridColDef,
 } from "@mui/x-data-grid";
+import { useNavigate } from "react-router-dom";
 import {
+    Button,
     Paper,
     CircularProgress,
 } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import api from "../../../utils/Url"; 
+import Box from "@mui/material/Box";
+import { getinstId, getId, getdivisionId } from  "../../../utils/Constant";
 import { toast } from "react-toastify";
 import CustomDataGrid from "../../../utils/CustomDatagrid"; 
 
+interface MenuPermission {
+    isAdd: boolean;
+    isEdit: boolean;
+    isPrint: boolean;
+    isDel: boolean;
+}
+
 interface ReportProps {
-    triggerFetch: boolean;
     fileID:any | null;
 }
 
-const Correspondence: React.FC<ReportProps> = ({ fileID, triggerFetch }) => {
+const Correspondence: React.FC<ReportProps> = ({ fileID }) => {
     const [totalFile, setTotalFile] = useState([]);
     const [columns, setColumns] = useState<any>([]);
     const [isLoading, setIsLoading] = useState(true);
-
+    const [ReviewModalData, setReviewModalData] = useState(false);
     const { t } = useTranslation();
+
+    const userId = getId();
+
+    const instId = getinstId();
+    // console.log("🚀 ~ ViewEditFile ~ userId:", userId);
+    const divId = getdivisionId();
+    // console.log("🚀 ~ ViewEditFile ~ divId:", divId);
+
+    const navigate = useNavigate();
+
    
     useEffect(() => {
-        console.log(fileID);
-        if (fileID == null || fileID == "" ) {
-            toast.error("Please select file for further proceed....")
-        }else{
-        fetchTotalFile(fileID);
+        if (fileID !== null) {
+            fetchTotalFile(fileID);
         }
-    }, [fileID, triggerFetch]);
+    }, [fileID]);
+
+
+
+
 
     const fetchTotalFile = async (fileID:any) => {
-        
+
         const value = {
             "fileId":-1,
             "fNid": fileID,
             "nodeId": -1,
-            "reviewFlag": "C"
+            "reviewFlag": ""
         };
             console.log("collectData", value);
             const response = await api.post(`Correspondance/GetCorrespondance`, value)
@@ -62,24 +83,44 @@ const Correspondence: React.FC<ReportProps> = ({ fileID, triggerFetch }) => {
                         width: 120,
                         headerClassName: "MuiDataGrid-colCell",
                     },
+
                     {
                         field: "fileNo",
                         headerName: "File Name",
                         flex: 1,
                         headerClassName: "MuiDataGrid-colCell",
                     },
-                    {
-                        field: "fileCont",
-                        headerName: "Message ",
-                        flex: 1,
-                        headerClassName: "MuiDataGrid-colCell",
-                    },
-                    {
-                        field: "remark",
-                        headerName: "Remark ",
-                        flex: 1,
-                        headerClassName: "MuiDataGrid-colCell",
-                    }
+
+
+                    // {
+                    //     field: "cSubject",
+                    //     headerName: "Subject ",
+                    //     flex: 1,
+                    //     headerClassName: "MuiDataGrid-colCell",
+                    // },
+
+                    // {
+                    //     field: "dairyDate",
+                    //     headerName: "Dairy Date",
+                    //     flex: 1,
+                    //     headerClassName: "MuiDataGrid-colCell",
+                    // },
+                    // {
+                    //     field: "fileStatus",
+                    //     headerName: "File Status ",
+                    //     flex: 1,
+                    //     headerClassName: "MuiDataGrid-colCell",
+                    // },
+
+                    // {
+                    //     field: "createdby",
+                    //     headerName: "Created By",
+                    //     flex: 1,
+                    //     headerClassName: "MuiDataGrid-colCell",
+                    // },
+
+
+                   
                 ];
                 setColumns(columns as any);
             }
@@ -89,7 +130,6 @@ const Correspondence: React.FC<ReportProps> = ({ fileID, triggerFetch }) => {
         ...column,
     }));
 
-    
     return (
         <Paper
             sx={{

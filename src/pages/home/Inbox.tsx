@@ -74,9 +74,9 @@ export default function Inbox() {
             "lastUpdatedDate ": "1900-01-01",
             "type": 2,
 
-            "inst_id": 1,
-            "user_id": userId,
-
+            "inst_id":1,
+            "user_id":userId,
+          
 
 
             "divisionid": parseInt(localStorage.getItem("id") + ""),
@@ -163,58 +163,58 @@ export default function Inbox() {
 
                     {
                         field: "fileNm",
-                        headerName: t('text.FileNo'),
+                        headerName: "File Number",
                         flex: 1,
                         headerClassName: "MuiDataGrid-colCell",
                         renderCell: (params) => {
                             return [
-                                <a
-                                    onClick={() => navigate('/E-Office/ViewEditFile')}
-                                    style={{
-                                        color: "blue",
-                                        cursor: "pointer",
-                                        textDecoration: "underline",
-                                    }}
-                                >
-                                    {params.value}
-                                </a>,
+                              <a
+                                onClick={() => navigate('/Committee/ViewEditFile')}
+                                style={{
+                                  color: "blue",
+                                  cursor: "pointer",
+                                  textDecoration: "underline",
+                                }}
+                              >
+                                {params.value}
+                              </a>,
                             ];
-                        },
+                          },
                     },
 
 
                     {
                         field: "cSubject",
-                        headerName:t('text.Subject'),
+                        headerName: "Subject ",
                         flex: 1,
                         headerClassName: "MuiDataGrid-colCell",
                     },
 
-
+                  
                     {
                         field: "fileStatus",
-                        headerName:t('text.FileStatus'),
+                        headerName: "File Status ",
                         flex: 1,
                         headerClassName: "MuiDataGrid-colCell",
                     },
 
                     {
                         field: "createdby",
-                        headerName: t('text.CreatedBy'),
+                        headerName: "Created By",
                         flex: 1,
                         headerClassName: "MuiDataGrid-colCell",
                     },
 
                     {
                         field: "updatedRemark",
-                        headerName:t('text.Remark'),
+                        headerName: "Remark",
                         flex: 1,
                         headerClassName: "MuiDataGrid-colCell",
                     },
 
                     {
                         field: "dairyDate",
-                        headerName:t('text.Date'),
+                        headerName: "Date",
                         flex: 1,
                         headerClassName: "MuiDataGrid-colCell",
                     },
@@ -222,7 +222,7 @@ export default function Inbox() {
 
                     {
                         field: "sendWorkPlace",
-                        headerName:t('text.WorkPlace'),
+                        headerName: "Work Place",
                         flex: 1,
                         headerClassName: "MuiDataGrid-colCell",
                         renderCell: (params) => {
@@ -235,7 +235,7 @@ export default function Inbox() {
                                     onClick={() => handleMove(params.row)}
                                     style={{ height: "80%" }}
                                 >
-                                   {t('text.Move')}
+                                    Move
                                 </Button>
 
                             ]

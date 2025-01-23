@@ -315,6 +315,10 @@ const resources = {
         ethroughyby: "Enter Through whom",
         nodeID: "Select Jurisdiction",
         SendTo:"Send To",
+
+
+        // E-office
+
         eoffice: "Workflow Management System",
         FileMaster: "File Master",
         FileNumber: "File Number",
